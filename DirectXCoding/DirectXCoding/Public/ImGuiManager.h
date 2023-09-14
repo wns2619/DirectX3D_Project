@@ -19,6 +19,9 @@ public:
 	void	LateTick(const _float& timeDelta);
 	HRESULT Render();
 
+private:
+	_bool _someCondition = true;
+
 public:
 	virtual void Free() override;
 };

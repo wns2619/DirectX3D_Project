@@ -438,7 +438,7 @@ void ImGui::ShowDemoWindow(bool* p_open)
 
     IMGUI_DEMO_MARKER("Configuration");
     if (ImGui::CollapsingHeader("Configuration"))
-    {
+    {   
         ImGuiIO& io = ImGui::GetIO();
 
         if (ImGui::TreeNode("Configuration##2"))
