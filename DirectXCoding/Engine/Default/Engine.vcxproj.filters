@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="00.System">
+      <UniqueIdentifier>{e7c5e594-4346-4052-8440-ca63f3171f9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility">
+      <UniqueIdentifier>{7b0ae995-18f9-4ca0-88fe-1e8d60ffd1cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Defines">
+      <UniqueIdentifier>{a1d3e09a-e24c-4f05-aa50-89358fb2f044}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Defines\99.Headers">
+      <UniqueIdentifier>{587cac85-b735-44ab-acaa-7edee5d422f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Defines\99.Headers\99.Utils">
+      <UniqueIdentifier>{78a20373-563b-4fda-afcf-e2164a62b16c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\99.Super">
+      <UniqueIdentifier>{2eaece1d-84cf-491c-a185-c9b623b742e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.System\Manager">
+      <UniqueIdentifier>{bec746d1-f559-4463-a7ca-ed19d40b37b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.System\Manager\Time">
+      <UniqueIdentifier>{b983a42b-98eb-4873-a5ed-3390213e78ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Defines\99.Headers\98.Export">
+      <UniqueIdentifier>{07aac3b9-8dea-45e7-bd0b-58db26491b39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Defines\99.Headers\Default">
+      <UniqueIdentifier>{c6d0c6ea-9121-4b32-80d8-8eeb5de5f316}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.System\Manager\Device">
+      <UniqueIdentifier>{17e6ff13-e4a5-41d2-9fb8-b967cfa9b7c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\00.GameInstance">
+      <UniqueIdentifier>{f7ad1a99-bab6-4be0-87c5-e8469aced877}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Pipeline">
+      <UniqueIdentifier>{7a8683dc-a612-4b21-ac63-68c987552041}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Pipeline\00.Geometry">
+      <UniqueIdentifier>{19b8f293-d442-431f-800d-72022f853039}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Resource">
+      <UniqueIdentifier>{ea2b697d-1a85-4924-b761-b7081d05113a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02.Level">
+      <UniqueIdentifier>{fca59a7a-d21d-418d-8c6d-b3e9fe3e4bce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.GameObject">
+      <UniqueIdentifier>{947e4995-311f-49eb-a198-ef44b8337138}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.GameObject\Layer">
+      <UniqueIdentifier>{484ab6c2-15f5-4c1e-9031-40e37383a9d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component">
+      <UniqueIdentifier>{d5f9c34d-aa1e-438b-99ca-35b95ceeb432}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\98.Manager">
+      <UniqueIdentifier>{22d52135-4918-4dcd-b467-2d53ab917751}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\98.Manager\Object">
+      <UniqueIdentifier>{f5fcd7f4-b5d3-46b1-85c2-c6a5a77c950c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\98.Manager\Level">
+      <UniqueIdentifier>{d91e8a61-1308-4c3a-a9aa-25cb065c2c89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Renderer">
+      <UniqueIdentifier>{5e7e40b0-55e3-4865-a414-0ec6eda9d43f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\98.Manager\Component">
+      <UniqueIdentifier>{3d746c19-f9bc-43f3-b2dc-9f7ee3926b69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\VIBuffer">
+      <UniqueIdentifier>{e664c24d-1fab-4464-ae5c-0fac17a4da72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\VIBuffer\Rect">
+      <UniqueIdentifier>{ff0334b0-5174-4032-9617-98e7b88b0df1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Shader">
+      <UniqueIdentifier>{9ff6c2bf-6a9f-4a43-885d-dfe44c71c493}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Texture">
+      <UniqueIdentifier>{4038bbc9-8a06-42f3-bfe8-7efc9c89225e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Transform">
+      <UniqueIdentifier>{c9cc8031-3f73-4142-ae6b-43cad3bdc0e7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Public\SimpleMath.h">
+      <Filter>02.Defines\99.Headers\99.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Base.h">
+      <Filter>01.Utility\99.Super</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Timer.h">
+      <Filter>00.System\Manager\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TimeManager.h">
+      <Filter>00.System\Manager\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Defines.h">
+      <Filter>02.Defines\99.Headers\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Function.h">
+      <Filter>02.Defines\99.Headers\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Functor.h">
+      <Filter>02.Defines\99.Headers\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Macro.h">
+      <Filter>02.Defines\99.Headers\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>02.Defines\99.Headers\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Struct.h">
+      <Filter>02.Defines\99.Headers\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Types.h">
+      <Filter>02.Defines\99.Headers\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Values.h">
+      <Filter>02.Defines\99.Headers\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GraphicsManager.h">
+      <Filter>00.System\Manager\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GameInstance.h">
+      <Filter>01.Utility\00.GameInstance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ResourceBase.h">
+      <Filter>04.Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level.h">
+      <Filter>01.Utility\02.Level</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LevelManager.h">
+      <Filter>01.Utility\98.Manager\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GameObject.h">
+      <Filter>01.Utility\03.GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ObjectManager.h">
+      <Filter>01.Utility\98.Manager\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Layer.h">
+      <Filter>01.Utility\03.GameObject\Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Component.h">
+      <Filter>01.Utility\04.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Renderer.h">
+      <Filter>01.Utility\04.Component\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ComponentManager.h">
+      <Filter>01.Utility\98.Manager\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer.h">
+      <Filter>01.Utility\04.Component\VIBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBufferRect.h">
+      <Filter>01.Utility\04.Component\VIBuffer\Rect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shader.h">
+      <Filter>01.Utility\04.Component\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Texture.h">
+      <Filter>01.Utility\04.Component\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Transform.h">
+      <Filter>01.Utility\04.Component\Transform</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Private\SimpleMath.cpp">
+      <Filter>02.Defines\99.Headers\99.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Base.cpp">
+      <Filter>01.Utility\99.Super</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Timer.cpp">
+      <Filter>00.System\Manager\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TimeManager.cpp">
+      <Filter>00.System\Manager\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>02.Defines\99.Headers\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GraphicsManager.cpp">
+      <Filter>00.System\Manager\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameInstance.cpp">
+      <Filter>01.Utility\00.GameInstance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ResourceBase.cpp">
+      <Filter>04.Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level.cpp">
+      <Filter>01.Utility\02.Level</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LevelManager.cpp">
+      <Filter>01.Utility\98.Manager\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameObject.cpp">
+      <Filter>01.Utility\03.GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ObjectManager.cpp">
+      <Filter>01.Utility\98.Manager\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Layer.cpp">
+      <Filter>01.Utility\03.GameObject\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Component.cpp">
+      <Filter>01.Utility\04.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Renderer.cpp">
+      <Filter>01.Utility\04.Component\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ComponentManager.cpp">
+      <Filter>01.Utility\98.Manager\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer.cpp">
+      <Filter>01.Utility\04.Component\VIBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBufferRect.cpp">
+      <Filter>01.Utility\04.Component\VIBuffer\Rect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shader.cpp">
+      <Filter>01.Utility\04.Component\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Struct.cpp">
+      <Filter>02.Defines\99.Headers\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Texture.cpp">
+      <Filter>01.Utility\04.Component\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Transform.cpp">
+      <Filter>01.Utility\04.Component\Transform</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Public\SimpleMath.inl">
+      <Filter>02.Defines\99.Headers\99.Utils</Filter>
+    </None>
+  </ItemGroup>
+</Project>

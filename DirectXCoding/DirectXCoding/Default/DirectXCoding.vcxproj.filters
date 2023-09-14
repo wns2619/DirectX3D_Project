@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="소스 파일\00.Main">
+      <UniqueIdentifier>{1945cd4f-b70c-4912-8504-5a2a5056b060}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\98.Shaders">
+      <UniqueIdentifier>{bb23d39d-dd4a-4c3f-9ace-37e1163770ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01.Levels">
+      <UniqueIdentifier>{39456d9e-2f16-46bb-99d9-1a587898536e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01.Levels\00. Logo">
+      <UniqueIdentifier>{c04c7a8f-a38e-4908-b997-f01ab4ab2e40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01.Levels\01. Game">
+      <UniqueIdentifier>{9cc51205-9458-47e5-9a92-0225175d1f36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01.Levels\99. Loading">
+      <UniqueIdentifier>{e826aafa-eb7a-4880-987d-d7bf1fef1968}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01.Levels\99. Loading\Helper">
+      <UniqueIdentifier>{161a2456-9da0-46b1-9516-e82530712e20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects">
+      <UniqueIdentifier>{b9ad45b3-d4d7-4396-8a49-5df76a8a5713}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\00.BackGround">
+      <UniqueIdentifier>{e4a1f4f5-81df-49b4-921a-4d5bc0baee58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\97.Imgui">
+      <UniqueIdentifier>{e190cf66-95d9-4344-8e7e-cb00ba87d069}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\97.Imgui\Manager">
+      <UniqueIdentifier>{77f84edf-0773-46ab-9fe1-050bab4a7c27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\99.Headers">
+      <UniqueIdentifier>{57d8fca7-ae1c-415a-b22b-0f439a2e6edf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\99.Headers\Trash">
+      <UniqueIdentifier>{135d3ffa-94e5-4e24-aeb1-a8ae7a95bd78}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>소스 파일\99.Headers\Trash</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>소스 파일\99.Headers\Trash</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>소스 파일\99.Headers\Trash</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXCoding.h">
+      <Filter>소스 파일\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>소스 파일\99.Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Game.h">
+      <Filter>소스 파일\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_Define.h">
+      <Filter>소스 파일\99.Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Logo.h">
+      <Filter>소스 파일\01.Levels\00. Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GameScene.h">
+      <Filter>소스 파일\01.Levels\01. Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LevelLoading.h">
+      <Filter>소스 파일\01.Levels\99. Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LevelHelper.h">
+      <Filter>소스 파일\01.Levels\99. Loading\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BackGround.h">
+      <Filter>소스 파일\02.GameObjects\00.BackGround</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\imconfig.h">
+      <Filter>소스 파일\97.Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\imgui.h">
+      <Filter>소스 파일\97.Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\imgui_impl_dx11.h">
+      <Filter>소스 파일\97.Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\imgui_impl_win32.h">
+      <Filter>소스 파일\97.Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\imgui_internal.h">
+      <Filter>소스 파일\97.Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\imstb_rectpack.h">
+      <Filter>소스 파일\97.Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\imstb_textedit.h">
+      <Filter>소스 파일\97.Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\imstb_truetype.h">
+      <Filter>소스 파일\97.Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGuiManager.h">
+      <Filter>소스 파일\97.Imgui\Manager</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DirectXCoding.cpp">
+      <Filter>소스 파일\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일\99.Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Game.cpp">
+      <Filter>소스 파일\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Logo.cpp">
+      <Filter>소스 파일\01.Levels\00. Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameScene.cpp">
+      <Filter>소스 파일\01.Levels\01. Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LevelLoading.cpp">
+      <Filter>소스 파일\01.Levels\99. Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LevelHelper.cpp">
+      <Filter>소스 파일\01.Levels\99. Loading\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BackGround.cpp">
+      <Filter>소스 파일\02.GameObjects\00.BackGround</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Imgui\imgui.cpp">
+      <Filter>소스 파일\97.Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Imgui\imgui_demo.cpp">
+      <Filter>소스 파일\97.Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Imgui\imgui_draw.cpp">
+      <Filter>소스 파일\97.Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Imgui\imgui_impl_dx11.cpp">
+      <Filter>소스 파일\97.Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Imgui\imgui_impl_win32.cpp">
+      <Filter>소스 파일\97.Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Imgui\imgui_tables.cpp">
+      <Filter>소스 파일\97.Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Imgui\imgui_widgets.cpp">
+      <Filter>소스 파일\97.Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGuiManager.cpp">
+      <Filter>소스 파일\97.Imgui\Manager</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Binaries\Shaders\Shader_VtxPosTex.hlsl">
+      <Filter>소스 파일\98.Shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
