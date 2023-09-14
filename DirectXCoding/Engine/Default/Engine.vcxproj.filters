@@ -88,6 +88,9 @@
     <Filter Include="01.Utility\04.Component\Transform">
       <UniqueIdentifier>{c9cc8031-3f73-4142-ae6b-43cad3bdc0e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Component\VIBuffer\Terrain">
+      <UniqueIdentifier>{d4385ded-d091-4693-9ddf-814862c688d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -174,6 +177,9 @@
     <ClInclude Include="..\Public\Transform.h">
       <Filter>01.Utility\04.Component\Transform</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBufferTerrain.h">
+      <Filter>01.Utility\04.Component\VIBuffer\Terrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -241,6 +247,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Transform.cpp">
       <Filter>01.Utility\04.Component\Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBufferTerrain.cpp">
+      <Filter>01.Utility\04.Component\VIBuffer\Terrain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

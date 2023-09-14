@@ -20,6 +20,9 @@ namespace Engine
 	using _float = float;
 	using _double = double;
 
+	using _long = signed long;
+	using _ulong = unsigned long;
+
 	using int8 = __int8;
 	using int16 = __int16;
 	using int32 = __int32;

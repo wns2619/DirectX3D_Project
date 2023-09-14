@@ -36,6 +36,10 @@ private:
 	Transform* _transform		= nullptr;
 
 private:
+	_float _x = 0, _y = 0, _sizeX = 0, _sizeY = 0;
+	Matrix _viewMatrix = ::XMMatrixIdentity(), _projMatrix = ::XMMatrixIdentity();
+
+private:
 	HRESULT	Ready_Components();
 	HRESULT Bind_ShaderResources();
 

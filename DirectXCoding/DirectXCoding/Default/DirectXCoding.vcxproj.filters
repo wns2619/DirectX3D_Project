@@ -44,6 +44,9 @@
     <Filter Include="소스 파일\99.Headers\Trash">
       <UniqueIdentifier>{135d3ffa-94e5-4e24-aeb1-a8ae7a95bd78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\01.Terrain">
+      <UniqueIdentifier>{5d5884a3-c04f-4d50-ac75-9ee81c1428da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -109,6 +112,9 @@
     <ClInclude Include="..\Public\ImGuiManager.h">
       <Filter>소스 파일\97.Imgui\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Terrain.h">
+      <Filter>소스 파일\02.GameObjects\01.Terrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -158,6 +164,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ImGuiManager.cpp">
       <Filter>소스 파일\97.Imgui\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Terrain.cpp">
+      <Filter>소스 파일\02.GameObjects\01.Terrain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

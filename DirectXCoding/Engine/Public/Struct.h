@@ -34,11 +34,14 @@ namespace Engine
 		Color color = { 0,0,0,0 };
 	};
 
-	struct VertexTextureNormalData
+	struct ENGINE_DLL VertexTextureNormalData
 	{
 		Vec3 position = { 0,0,0 };
-		Vec2 uv = { 0,0 };
 		Vec3 normal = { 0,0,0 };
+		Vec2 uv = { 0,0 };
+
+		static const uint32 numElements = 3;
+		static const D3D11_INPUT_ELEMENT_DESC Elements[numElements];
 	};
 	
 

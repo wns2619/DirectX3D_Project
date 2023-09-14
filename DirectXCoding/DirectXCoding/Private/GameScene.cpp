@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "GameScene.h"
 
+#include "GameInstance.h"
+
 GameScene::GameScene(ID3D11Device* _device, ID3D11DeviceContext* _deviceConetxt)
     : Level(_device, _deviceConetxt)
 {
@@ -14,6 +16,9 @@ GameScene::~GameScene()
 
 HRESULT GameScene::Initialize()
 {
+    if (FAILED(ReadyLayerTerrain(TEXT("ProtoTypeTerrain"))))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -25,6 +30,21 @@ HRESULT GameScene::Tick(const _float& timeDelta)
 HRESULT GameScene::LateTick(const _float& timeDelata)
 {
     SetWindowText(g_hWnd, TEXT("This is GameLevel"));
+
+    return S_OK;
+}
+
+HRESULT GameScene::ReadyLayerTerrain(const wstring& layerTag)
+{
+
+    GameInstance* gameInstance = GameInstance::GetInstance();
+    Safe_AddRef<GameInstance*>(gameInstance);
+
+    if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ProtoTypeTerrain"))))
+        return E_FAIL;
+
+    Safe_Release<GameInstance*>(gameInstance);
+
 
     return S_OK;
 }

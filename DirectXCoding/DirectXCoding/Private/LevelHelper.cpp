@@ -2,6 +2,7 @@
 #include "LevelHelper.h"
 #include "GameInstance.h"
 #include "BackGround.h"
+#include "Terrain.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -96,12 +97,27 @@ HRESULT LevelHelper::LodingforLevelLogo()
 
 HRESULT LevelHelper::LodingforLevelGame()
 {
+    GameInstance* gameInstance = GameInstance::GetInstance();
+    Safe_AddRef<GameInstance*>(gameInstance);
+
+
     _title = TEXT("Texture Loading");
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentTextureTerrain"),
+        Texture::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Terrain/Tile0.jpg")))))
+        return E_FAIL;
 
     _title = TEXT("Mesh Loading");
 
     _title = TEXT("Shader Loading");
 
+    _title = TEXT("Object Loading");
+
+    if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeTerrain"), Terrain::Create(_device, _deviceContext))))
+        return E_FAIL;
+
+
+    Safe_Release<GameInstance*>(gameInstance);
     _title = TEXT("Loading Successed");
     _IsFinished = true;
 

@@ -39,11 +39,29 @@ void ImGuiManager::LateTick(const _float& timeDelta)
 
 HRESULT ImGuiManager::Render()
 {
+	static int counter = 0;
+
+
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 	_bool demo = true;
+	//ImGui::ShowDemoWindow(&demo);
+
+	ImGui::Begin("Test");
+
+	//ImGui::Text("This is example text"); // Begin Window 내부에 text 를 사용할 수 있음.
+	//if (ImGui::Button("CLICK ME!")) // button을 생성할 수 있음.
+	//	counter += 1;
+
+	//ImGui::SameLine(); // 개행시키지않고 같은 라인에 있게 만들어준다.
+	//std::string clickCount = "Click Count: " + std::to_string(counter);
+	//ImGui::Text(clickCount.c_str());
+
+	//ImGui::DragFloat3()
 	ImGui::ShowDemoWindow(&demo);
+	ImGui::End();
+
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 

@@ -16,6 +16,9 @@ public:
 	virtual HRESULT LateTick(const _float& timeDelata)	override;
 
 public:
+	HRESULT	ReadyLayerTerrain(const wstring& layerTag);
+
+public:
 	static GameScene* Create(ID3D11Device* _device, ID3D11DeviceContext* _deviceContext);
 	virtual void Free() override;
 };

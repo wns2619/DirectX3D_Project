@@ -22,13 +22,16 @@ private:
 
 public:
 	XMVECTOR GetState(STATE state) { return XMLoadFloat4x4(&_worldMatrix).r[static_cast<uint32>(state)]; }
-	
+	Vec3 GetScaled();
 
 	void SetState(STATE state, FXMVECTOR vectorState);
-
+	void SetScaling(const Vec3& vectorScale);
 public:
 	virtual HRESULT InitializePrototype()		override;
 	virtual HRESULT Initialize(void* argument)	override;
+
+public:
+	HRESULT	BindShaderResources(class Shader* shader, const _char* constantName);
 
 public:
 	void Forward(const _float& timeDelta);
@@ -37,6 +40,9 @@ public:
 	void Right(const _float& timeDelta);
 	void FixRotation(XMVECTOR axis, const _float radian);
 	void Turn(XMVECTOR axis, const _float& timeDelta);
+	void LookAt(FXMVECTOR point);
+	void Chase(FXMVECTOR point, _float const& timeDelta, _float distance = 0.1f);
+
 private:
 	Matrix _worldMatrix;
 

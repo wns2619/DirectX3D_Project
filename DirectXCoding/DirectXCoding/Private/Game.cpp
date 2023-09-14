@@ -100,6 +100,10 @@ HRESULT Game::ReadyProtoTypeComponents()
 		VIBufferRect::Create(_device, _devicecontext))))
 		return E_FAIL;
 
+	if (FAILED(_gameInstance->AddProtoType(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentVIBufferTerrain"),
+		VIBufferTerrain::Create(_device, _devicecontext, TEXT("../Binaries/Resources/Textures/Terrain/Height1.bmp")))))
+		return E_FAIL;
+
 	/* ProtoType Component Transform */
 
 	if (FAILED(_gameInstance->AddProtoType(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),

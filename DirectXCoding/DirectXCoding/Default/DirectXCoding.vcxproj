@@ -184,6 +184,7 @@
     <ClInclude Include="..\Public\LevelHelper.h" />
     <ClInclude Include="..\Public\LevelLoading.h" />
     <ClInclude Include="..\Public\Logo.h" />
+    <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="DirectXCoding.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
@@ -229,6 +230,7 @@
     <ClCompile Include="..\Private\LevelHelper.cpp" />
     <ClCompile Include="..\Private\LevelLoading.cpp" />
     <ClCompile Include="..\Private\Logo.cpp" />
+    <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="DirectXCoding.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
