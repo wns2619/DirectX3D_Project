@@ -55,31 +55,24 @@ HRESULT Terrain::Ready_Components()
 		return E_FAIL;
 
 	/* Shader Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), 
-		TEXT("ProtoTypeComponentShaderVertexTextureNormalData"),
-		TEXT("ComponentTerrainShader"), reinterpret_cast<Component**>(&_shader))))
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME),
+		TEXT("ProtoTypeComponentHillsShader"),
+		TEXT("ComponentShader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
 
 	/* VIBuffer Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentVIBufferTerrain"),
-		TEXT("ComponentTerrainVIBuffer"), reinterpret_cast<Component**>(&_viBuffer))))
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentVIBufferTerrain"),
+		TEXT("ComponentVIBuffer"), reinterpret_cast<Component**>(&_viBuffer))))
 		return E_FAIL;
 
 	/* Texture Component */
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentTextureTerrain"),
-		TEXT("ComponentTerrainTexture"), reinterpret_cast<Component**>(&_texture))))
+		TEXT("ComponenetTexture"), reinterpret_cast<Component**>(&_texture))))
 		return E_FAIL;
 
 	/* Transform Component */
-	Transform::TRANSFORM_DESC transformDesc;
-	ZeroMemory(&transformDesc, sizeof(transformDesc));
-	//{
-	//	transformDesc.speedPerSec = 5.f;
-	//	transformDesc.rotationRadianPerSec = ::XMConvertToRadians(90.f);
-	//}
-
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
-		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform), &transformDesc)))
+		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform))))
 		return E_FAIL;
 
 
@@ -88,22 +81,28 @@ HRESULT Terrain::Ready_Components()
 
 HRESULT Terrain::Bind_ShaderResources()
 {
+	//XMStoreFloat4x4(&_viewMatrix, XMMatrixLookAtLH(XMVectorSet(0.f, 100.f, -80.f, 1.f), XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.0f, 1.f, 0.f, 0.f)));
+	//XMStoreFloat4x4(&_projMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(60.0f), g_iWinSizeX / g_iWinSizeY, 0.2f, 300.f));
+
+	GameInstance* gameInstance = GameInstance::GetInstance();
+	Safe_AddRef<GameInstance*>(gameInstance);
+
 	if (FAILED(_transform->BindShaderResources(_shader, "worldMatrix")))
 		return E_FAIL;
-	if (FAILED(_shader->BindMatrix("viewMatrix", &_viewMatrix)))
+	if (FAILED(_shader->BindMatrix("viewMatrix", gameInstance->GetViewMatrix())))
 		return E_FAIL;
-	if (FAILED(_shader->BindMatrix("ProjMatrix", &_projMatrix)))
+	if (FAILED(_shader->BindMatrix("projMatrix", gameInstance->GetProjMatrix())))
 		return E_FAIL;
 
 	if (FAILED(_texture->BindShaderResource(_shader, "ShadersTexture", 0)))
 		return E_FAIL;
-	if (FAILED(_texture->BindShaderReosurces(_shader, "ShadersTextures")))
-		return E_FAIL;
+
+	Safe_Release<GameInstance*>(gameInstance);
 
 	return S_OK;
 }
 
-Terrain* Terrain::Clone(void* argument)
+GameObject* Terrain::Clone(void* argument)
 {
 	Terrain* terrain = new Terrain(*this);
 

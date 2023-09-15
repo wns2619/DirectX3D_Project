@@ -184,6 +184,7 @@
     <ClInclude Include="..\Public\LevelHelper.h" />
     <ClInclude Include="..\Public\LevelLoading.h" />
     <ClInclude Include="..\Public\Logo.h" />
+    <ClInclude Include="..\Public\PlayerCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="DirectXCoding.h" />
     <ClInclude Include="framework.h" />
@@ -230,6 +231,7 @@
     <ClCompile Include="..\Private\LevelHelper.cpp" />
     <ClCompile Include="..\Private\LevelLoading.cpp" />
     <ClCompile Include="..\Private\Logo.cpp" />
+    <ClCompile Include="..\Private\PlayerCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="DirectXCoding.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
@@ -242,7 +244,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\Binaries\Shaders\Shader_VtxPosTex.hlsl" />
+    <FxCompile Include="..\Binaries\Shaders\HillsShader.fx" />
+    <FxCompile Include="..\Binaries\Shaders\Shader_VtxPosTex.fx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

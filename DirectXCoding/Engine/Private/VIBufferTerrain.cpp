@@ -7,7 +7,7 @@ VIBufferTerrain::VIBufferTerrain(ID3D11Device* device, ID3D11DeviceContext* devi
 }
 
 VIBufferTerrain::VIBufferTerrain(const VIBufferTerrain& rhs)
-    : VIBuffer(rhs)
+    : VIBuffer(rhs), _numVerticesX(rhs._numVerticesX), _numVerticesZ(rhs._numVerticesZ)
 {
 
 }
@@ -45,6 +45,87 @@ HRESULT VIBufferTerrain::InitializePrototype(const wstring& heightMapPath)
     _topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
     _numVBs = 1;
 
+    VertexTextureNormalData* vertices = new VertexTextureNormalData[_numvertices];
+    ::ZeroMemory(vertices, sizeof(VertexTextureNormalData) * _numvertices);
+
+    for(_ulong i = 0; i < _numVerticesZ; ++i)
+        for (_ulong j = 0; j < _numVerticesX; ++j)
+        {
+            _ulong index = i * _numVerticesX + j;
+
+            vertices[index].position = Vec3(_float(j), _float(pixel[index] & 0x000000ff) / 10.f, _float(i));
+            vertices[index].normal = Vec3(0.f, 0.f, 0.f);
+            vertices[index].uv = Vec2(_float(j) / (_numVerticesX - 1), _float(i) / (_numVerticesZ - 1));
+
+        }
+
+    Safe_Delete_Array<_ulong*>(pixel);
+
+
+    uint32* indices = new uint32[_numIndices];
+    ::ZeroMemory(indices, sizeof(uint32) * _numIndices);
+
+    uint32 tricount = 0;
+
+    for(uint32 i = 0; i < _numVerticesZ - 1; ++i)
+        for (uint32 j = 0; j < _numVerticesX - 1; ++j)
+        {
+            uint32 Index = i * _numVerticesX + j;
+
+            uint32 indexArray[4] = {
+                Index + _numVerticesX, // 5
+                Index + _numVerticesX + 1, // 6
+                Index + 1, // 1
+                Index // 0
+            };
+
+            XMVECTOR sourDirection, destDirection, normal;
+
+            indices[tricount++] = indexArray[0];
+            indices[tricount++] = indexArray[1];
+            indices[tricount++] = indexArray[2];
+
+            sourDirection = ::XMLoadFloat3(&vertices[indexArray[1]].position) - 
+                ::XMLoadFloat3(&vertices[indexArray[0]].position);
+
+            destDirection = ::XMLoadFloat3(&vertices[indexArray[2]].position) -
+                ::XMLoadFloat3(&vertices[indexArray[1]].position);
+
+            normal = ::XMVector3Normalize(::XMVector3Cross(sourDirection, destDirection));
+
+            ::XMStoreFloat3(&vertices[indexArray[0]].normal,
+                ::XMVector3Normalize(::XMLoadFloat3(&vertices[indexArray[0]].normal) + normal));
+
+            ::XMStoreFloat3(&vertices[indexArray[1]].normal,
+                ::XMVector3Normalize(::XMLoadFloat3(&vertices[indexArray[1]].normal) + normal));
+
+            ::XMStoreFloat3(&vertices[indexArray[2]].normal,
+                ::XMVector3Normalize(::XMLoadFloat3(&vertices[indexArray[2]].normal) + normal));
+
+            indices[tricount++] = indexArray[0];
+            indices[tricount++] = indexArray[2];
+            indices[tricount++] = indexArray[3];
+
+            sourDirection = ::XMLoadFloat3(&vertices[indexArray[2]].position) -
+                ::XMLoadFloat3(&vertices[indexArray[0]].position);
+
+            destDirection = ::XMLoadFloat3(&vertices[indexArray[3]].position) -
+                ::XMLoadFloat3(&vertices[indexArray[2]].position);
+
+            normal = ::XMVector3Normalize(::XMVector3Cross(sourDirection, destDirection));
+
+            ::XMStoreFloat3(&vertices[indexArray[0]].normal,
+                ::XMVector3Normalize(::XMLoadFloat3(&vertices[indexArray[0]].normal) + normal));
+
+            ::XMStoreFloat3(&vertices[indexArray[2]].normal,
+                ::XMVector3Normalize(::XMLoadFloat3(&vertices[indexArray[2]].normal) + normal));
+
+            ::XMStoreFloat3(&vertices[indexArray[3]].normal,
+                ::XMVector3Normalize(::XMLoadFloat3(&vertices[indexArray[3]].normal) + normal));
+        }
+
+    // Vertex
+
     ::ZeroMemory(&_bufferDesc, sizeof(_bufferDesc));
     {
         _bufferDesc.ByteWidth = _stride * _numvertices;
@@ -55,27 +136,13 @@ HRESULT VIBufferTerrain::InitializePrototype(const wstring& heightMapPath)
         _bufferDesc.StructureByteStride = _stride;
     }
 
-    VertexTextureNormalData* vertices = new VertexTextureNormalData[_numvertices];
-    ::ZeroMemory(vertices, sizeof(VertexTextureNormalData) * _numvertices);
-
-    for(_ulong i = 0; i < _numVerticesZ; ++i)
-        for (_ulong j = 0; j < _numVerticesX; ++j)
-        {
-            _ulong index = i * _numVerticesX + j;
-
-            vertices[index].position = Vec3(_float(j), _float(pixel[index] & 0x000000ff), _float(i));
-            vertices[index].normal = Vec3(0.f, 1.f, 0.f);
-            vertices[index].uv = Vec2(_float(j) / (_numVerticesX - 1) * 20.f, _float(i) / (_numVerticesZ - 1) * 20.f);
-
-        }
-
     ::ZeroMemory(&_subResourceData, sizeof(_subResourceData));
     _subResourceData.pSysMem = vertices;
 
     if (FAILED(__super::CreateBuffer(&_vertexBuffer)))
         return E_FAIL;
 
-    Safe_Delete_Array<VertexTextureNormalData*>(vertices);
+    // Index
 
     ::ZeroMemory(&_bufferDesc, sizeof(_bufferDesc));
     {
@@ -87,25 +154,6 @@ HRESULT VIBufferTerrain::InitializePrototype(const wstring& heightMapPath)
         _bufferDesc.StructureByteStride = 0;
     }
 
-    _ulong* indices = new _ulong[_numIndices];
-    ::ZeroMemory(indices, sizeof(_ulong) * _numIndices);
-
-    _ulong tricount = 0;
-
-    for(_ulong i = 0; i < _numVerticesZ - 1; ++i)
-        for (_ulong j = 0; j < _numVerticesX - 1; ++j)
-        {
-            indices[tricount] = i * _numVerticesX + j;
-            indices[tricount + 1] = i * _numVerticesX + j + 1;
-            indices[tricount + 2] = (i + 1) * _numVerticesX + j;
-
-            indices[tricount + 3] = (i + 1) * _numVerticesX + j;
-            indices[tricount + 4] = i * _numVerticesX + j + 1;
-            indices[tricount + 5] = (i + 1) * _numVerticesX + j + 1;
-
-            tricount += 6;
-        }
-
 
     ::ZeroMemory(&_subResourceData, sizeof(_subResourceData));
     _subResourceData.pSysMem = indices;
@@ -113,9 +161,8 @@ HRESULT VIBufferTerrain::InitializePrototype(const wstring& heightMapPath)
     if (FAILED(__super::CreateBuffer(&_indexBuffer)))
         return E_FAIL;
 
-    Safe_Delete_Array<_ulong*>(indices);
-
-    Safe_Delete_Array<_ulong*>(pixel);
+    Safe_Delete_Array<VertexTextureNormalData*>(vertices);
+    Safe_Delete_Array<uint32*>(indices);
 
     return S_OK;
 }

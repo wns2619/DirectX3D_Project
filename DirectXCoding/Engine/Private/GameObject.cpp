@@ -21,7 +21,7 @@ HRESULT GameObject::InitializePrototype()
 	return S_OK;
 }
 
-HRESULT GameObject::Initialize()
+HRESULT GameObject::Initialize(void* argument)
 {
 	return S_OK;
 }

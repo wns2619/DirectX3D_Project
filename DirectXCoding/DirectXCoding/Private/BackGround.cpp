@@ -77,12 +77,12 @@ HRESULT BackGround::Ready_Components()
 
 	/* VIBuffer Component */
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentVIBufferRect"),
-		TEXT("ComponentVIBufferRect"), reinterpret_cast<Component**>(&_viBuffer))))
+		TEXT("ComponentVIBuffer"), reinterpret_cast<Component**>(&_viBuffer))))
 		return E_FAIL;
 
 	/* Texture Component */
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::LOGO), TEXT("ProtoTypeComponentTextureBackGround"),
-		TEXT("ComponentBackGroundTexture"), reinterpret_cast<Component**>(&_texture))))
+		TEXT("ComponenetTexture"), reinterpret_cast<Component**>(&_texture))))
 		return E_FAIL;
 
 	/* Transform Component */

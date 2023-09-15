@@ -42,8 +42,8 @@ private:
 	HRESULT Bind_ShaderResources();
 
 public:
-	virtual Terrain* Clone(void* argument)			override;
-	virtual void Free()								override;
+	virtual GameObject* Clone(void* argument)			override;
+	virtual void Free()									override;
 	static Terrain* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 };
 

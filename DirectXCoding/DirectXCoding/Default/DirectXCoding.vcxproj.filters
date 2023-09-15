@@ -47,6 +47,9 @@
     <Filter Include="소스 파일\02.GameObjects\01.Terrain">
       <UniqueIdentifier>{5d5884a3-c04f-4d50-ac75-9ee81c1428da}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\02.Camera">
+      <UniqueIdentifier>{cb5b2d94-eea7-4fec-b8e1-d5e6fa3b43a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -115,6 +118,9 @@
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>소스 파일\02.GameObjects\01.Terrain</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PlayerCamera.h">
+      <Filter>소스 파일\02.GameObjects\02.Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -168,9 +174,15 @@
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>소스 파일\02.GameObjects\01.Terrain</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\PlayerCamera.cpp">
+      <Filter>소스 파일\02.GameObjects\02.Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\Binaries\Shaders\Shader_VtxPosTex.hlsl">
+    <FxCompile Include="..\Binaries\Shaders\Shader_VtxPosTex.fx">
+      <Filter>소스 파일\98.Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Binaries\Shaders\HillsShader.fx">
       <Filter>소스 파일\98.Shaders</Filter>
     </FxCompile>
   </ItemGroup>

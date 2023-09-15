@@ -4,14 +4,16 @@
 #include "GraphicsManager.h"
 #include "LevelManager.h"
 #include "ObjectManager.h"
+#include "CameraHelper.h"
 
 IMPLEMENT_SINGLETON(GameInstance)
 
 GameInstance::GameInstance()
     : _timeManager(TimeManager::GetInstance()), _graphicManager(GraphicsManager::GetInstance()), 
     _levelManager(LevelManager::GetInstance()), _objectManager(ObjectManager::GetInstance()),
-    _componentManager(ComponentManager::GetInstance())
+    _componentManager(ComponentManager::GetInstance()), _cameraHelper(CameraHelper::GetInstance())
 {
+    Safe_AddRef<CameraHelper*>(_cameraHelper);
     Safe_AddRef<ComponentManager*>(_componentManager);
     Safe_AddRef<ObjectManager*>(_objectManager);
     Safe_AddRef<LevelManager*>(_levelManager);
@@ -130,6 +132,7 @@ Component* GameInstance::CloneComponent(uint32 levelIndex, const wstring& protoT
 
 void GameInstance::Release_Engine()
 {
+    CameraHelper::GetInstance()->DestroyInstance();
     GameInstance::GetInstance()->DestroyInstance();
     ObjectManager::GetInstance()->DestroyInstance();
     LevelManager::GetInstance()->DestroyInstance();
@@ -140,6 +143,7 @@ void GameInstance::Release_Engine()
 
 void GameInstance::Free()
 {
+    Safe_Release<CameraHelper*>(_cameraHelper);
     Safe_Release<ComponentManager*>(_componentManager);
     Safe_Release<ObjectManager*>(_objectManager);
     Safe_Release<LevelManager*>(_levelManager);

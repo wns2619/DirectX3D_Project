@@ -43,6 +43,11 @@ public:
 	void LookAt(FXMVECTOR point);
 	void Chase(FXMVECTOR point, _float const& timeDelta, _float distance = 0.1f);
 
+public: // camera test
+	void Strafe(const _float& timeDelta);
+	void Pitch(const _float& timeDelta);
+	void RotateY(_float angle);
+
 private:
 	Matrix _worldMatrix;
 

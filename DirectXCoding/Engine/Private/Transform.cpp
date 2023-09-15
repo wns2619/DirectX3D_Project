@@ -175,6 +175,36 @@ void Transform::Chase(FXMVECTOR point, _float const& timeDelta, _float distance)
     SetState(STATE::POSITION, position);
 }
 
+void Transform::Strafe(const _float& timeDelta)
+{
+    Vec3 test = GetState(STATE::RIGHT);
+    Vec3 test2 = GetState(STATE::POSITION);
+
+    XMVECTOR s = ::XMVectorReplicate(timeDelta);
+    XMVECTOR r = ::XMLoadFloat3(&test);
+    XMVECTOR p = ::XMLoadFloat3(&test2);
+    SetState(STATE::POSITION, ::XMVectorMultiplyAdd(s, r, p));
+
+}
+
+void Transform::Pitch(const _float& timeDelta)
+{
+    
+}
+
+void Transform::RotateY(_float angle)
+{
+    XMMATRIX R = ::XMMatrixRotationY(angle);
+    
+    Vec3 right = GetState(STATE::RIGHT);
+    Vec3 up = GetState(STATE::UP);
+    Vec3 look = GetState(STATE::LOOK);
+
+    SetState(STATE::RIGHT, ::XMVector3TransformNormal(::XMLoadFloat3(&right), R));
+    SetState(STATE::UP, ::XMVector3TransformNormal(::XMLoadFloat3(&up), R));
+    SetState(STATE::LOOK, ::XMVector3TransformNormal(::XMLoadFloat3(&look), R));
+}
+
 Transform* Transform::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
     Transform* transform = new Transform(device, deviceContext);

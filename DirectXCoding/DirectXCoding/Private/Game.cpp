@@ -91,7 +91,7 @@ HRESULT Game::ReadyProtoTypeComponents()
 	/* ProtoType Component Shader_VtxPosTex */
 
 	if (FAILED(_gameInstance->AddProtoType(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentShaderVertexTextureData"),
-		Shader::Create(_device, _devicecontext, TEXT("../Binaries/Shaders/Shader_VtxPosTex.hlsl"), VertexTextureData::Elements,
+		Shader::Create(_device, _devicecontext, TEXT("../Binaries/Shaders/Shader_VtxPosTex.fx"), VertexTextureData::Elements,
 			VertexTextureData::numElements))))
 		return E_FAIL;
 
@@ -99,10 +99,6 @@ HRESULT Game::ReadyProtoTypeComponents()
 	
 	if(FAILED(_gameInstance->AddProtoType(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentVIBufferRect"),
 		VIBufferRect::Create(_device, _devicecontext))))
-		return E_FAIL;
-
-	if (FAILED(_gameInstance->AddProtoType(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentVIBufferTerrain"),
-		VIBufferTerrain::Create(_device, _devicecontext, TEXT("../Binaries/Resources/Textures/Terrain/Height1.bmp")))))
 		return E_FAIL;
 
 	/* ProtoType Component Transform */

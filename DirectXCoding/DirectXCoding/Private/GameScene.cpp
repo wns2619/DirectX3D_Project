@@ -40,7 +40,11 @@ HRESULT GameScene::ReadyLayerTerrain(const wstring& layerTag)
     GameInstance* gameInstance = GameInstance::GetInstance();
     Safe_AddRef<GameInstance*>(gameInstance);
 
-    if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ProtoTypeTerrain"))))
+
+    if(FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ProtoTypeGameObjectCamera"))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ProtoTypeGameObjectTerrain"))))
         return E_FAIL;
 
     Safe_Release<GameInstance*>(gameInstance);

@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "BackGround.h"
 #include "Terrain.h"
+#include "PlayerCamera.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -109,11 +110,25 @@ HRESULT LevelHelper::LodingforLevelGame()
 
     _title = TEXT("Mesh Loading");
 
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentVIBufferTerrain"),
+        VIBufferTerrain::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Terrain/Height1.bmp")))))
+        return E_FAIL;
+
     _title = TEXT("Shader Loading");
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentHillsShader"),
+        Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/HillsShader.fx"),
+            VertexTextureNormalData::Elements, VertexTextureNormalData::numElements))))
+        return E_FAIL;
 
     _title = TEXT("Object Loading");
 
-    if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeTerrain"), Terrain::Create(_device, _deviceContext))))
+    if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectTerrain"), 
+        Terrain::Create(_device, _deviceContext))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectCamera"),
+        PlayerCamera::Create(_device, _deviceContext))))
         return E_FAIL;
 
 

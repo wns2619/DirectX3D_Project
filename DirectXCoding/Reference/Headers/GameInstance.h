@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ComponentManager.h"
+#include "CameraHelper.h"
 
 BEGIN(Engine)
 
@@ -35,9 +36,13 @@ public: // ObjectManager
 	HRESULT AddProtoType(const wstring& prototypeTag, GameObject* prototype);
 	HRESULT AddGameObject(uint32 levelIndex, const wstring& layerTag, const wstring& prototypeTag, void* argument = nullptr);
 
-public:
+public: // Component Manager
 	HRESULT	AddProtoType(uint32 levelIndex, const wstring& PrototypeTag, class Component* protoType);
 	class Component* CloneComponent(uint32 levelIndex, const wstring& protoTypeTag, void* argument = nullptr);
+
+public: // Camera Helper
+	Matrix* GetViewMatrix() { return _cameraHelper->GetViewMatrix(); }
+	Matrix* GetProjMatrix() { return _cameraHelper->GetProjMatrix(); }
 
 private:
 	class TimeManager* _timeManager = nullptr;
@@ -45,6 +50,7 @@ private:
 	class LevelManager* _levelManager = nullptr;
 	class ObjectManager* _objectManager = nullptr;
 	class ComponentManager* _componentManager = nullptr;
+	class CameraHelper* _cameraHelper = nullptr;
 public:
 	static void Release_Engine();
 	virtual void Free() override;
