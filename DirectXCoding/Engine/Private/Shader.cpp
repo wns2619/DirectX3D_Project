@@ -130,6 +130,7 @@ HRESULT Shader::BindTextures(const _char* constantName, ID3D11ShaderResourceView
 	return resourceVariable->SetResourceArray(srv, 0, numTextures);
 }
 
+
 Shader* Shader::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wstring& shaderPath, const D3D11_INPUT_ELEMENT_DESC* pElements, uint32 iNumElements)
 {
 	Shader* shader = new Shader(device, deviceContext);

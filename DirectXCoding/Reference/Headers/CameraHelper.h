@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Defines.h"
-#include "Camera.h"
 
 BEGIN(Engine)
 
@@ -11,17 +10,35 @@ class CameraHelper : public Base
 {
 	DECLARE_SINGLETON(CameraHelper)
 
+public:
+	enum class TRANSFORMSTATE { D3DTS_VIEW, D3DTS_PROJ, D3DTS_END };
+
 private:
 	CameraHelper();
 	virtual ~CameraHelper() = default;
 
 public:
-	HRESULT SetViewProjMatrix(Matrix* viewMatrix, Matrix* projMatrix, Transform& transform, Camera::CAMERA_DESC desc);
+	void SetTransform(TRANSFORMSTATE state, FXMMATRIX trasnsformMatrix);
+	Matrix GetTransform(TRANSFORMSTATE state)						const;
+	FXMMATRIX GetTransformCalculator(TRANSFORMSTATE state)			const;
+	Matrix GetInverseTransform(TRANSFORMSTATE state)				const;
+	FXMMATRIX GetInverseTransformCalculator(TRANSFORMSTATE state)	const;
+	Vec4 GetCameraPosition(TRANSFORMSTATE state)					const;
+	XMVECTOR GetCameraCaculator(TRANSFORMSTATE state)				const;
 
-	Matrix* GetViewMatrix() { return &_viewMatrix; }
-	Matrix* GetProjMatrix() { return &_projMatrix; }
+public:
+	HRESULT BindTransformToShader(Shader* shader, const char* constantName, CameraHelper::TRANSFORMSTATE state);
+
+public:
+	void Tick();
+
 private:
-	Matrix _viewMatrix = ::XMMatrixIdentity(), _projMatrix = ::XMMatrixIdentity();
+	Matrix _transformMatrices[static_cast<uint32>(TRANSFORMSTATE::D3DTS_END)];
+	Matrix _transformInverseMatrices[static_cast<uint32>(TRANSFORMSTATE::D3DTS_END)];
+	Vec4   _camPosition = { 0.f,0.f,0.f,1.f };
+
+public:
+	virtual void Free() override;
 };
 
 END

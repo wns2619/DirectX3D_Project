@@ -4,7 +4,6 @@
 #include "GraphicsManager.h"
 #include "LevelManager.h"
 #include "ObjectManager.h"
-#include "CameraHelper.h"
 
 IMPLEMENT_SINGLETON(GameInstance)
 
@@ -39,6 +38,8 @@ void GameInstance::Tick(_float fTimeDelta)
 {
     _objectManager->Tick(fTimeDelta);
     _levelManager->Tick(fTimeDelta);
+
+    _cameraHelper->Tick();
 
     _objectManager->LateTick(fTimeDelta);
     _levelManager->LateTick(fTimeDelta);
@@ -128,6 +129,11 @@ Component* GameInstance::CloneComponent(uint32 levelIndex, const wstring& protoT
         return nullptr;
 
     return _componentManager->CloneComponent(levelIndex, protoTypeTag, argument);
+}
+
+HRESULT GameInstance::BindTransformToShader(Shader* shader, const char* constantName, CameraHelper::TRANSFORMSTATE state)
+{
+    return _cameraHelper->BindTransformToShader(shader, constantName, state);
 }
 
 void GameInstance::Release_Engine()

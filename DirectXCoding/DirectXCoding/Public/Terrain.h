@@ -17,6 +17,8 @@ BEGIN(Client)
 
 class Terrain final : public GameObject
 {
+
+private:
 	explicit Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	explicit Terrain(const Terrain& rhs);
 	virtual ~Terrain() = default;
@@ -29,13 +31,11 @@ public:
 	virtual void LateTick(const _float& fTimeDelta) override;
 
 private:
-	Renderer* _renderComponent = nullptr;
-	Shader* _shader = nullptr;
-	Texture* _texture = nullptr;
-	VIBufferTerrain* _viBuffer = nullptr;
-	Transform* _transform = nullptr;
-
-	Matrix _viewMatrix = ::XMMatrixIdentity(), _projMatrix = ::XMMatrixIdentity();
+	Renderer* _renderComponent	= nullptr;
+	Shader* _shader				= nullptr;
+	Texture* _texture			= nullptr;
+	VIBufferTerrain* _viBuffer	= nullptr;
+	Transform* _transform		= nullptr;
 
 private:
 	HRESULT	Ready_Components();

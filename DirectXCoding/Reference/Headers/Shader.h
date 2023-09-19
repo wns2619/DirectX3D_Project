@@ -6,6 +6,8 @@ BEGIN(Engine)
 
 class ENGINE_DLL Shader final : public Component
 {
+public:
+	enum class LIGHTTYPE { DIRECTIONAL, POINT, SPOT, LIGHT_END };
 private:
 	explicit Shader(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	explicit Shader(const Shader& rhs);
@@ -21,6 +23,9 @@ public:
 	HRESULT BindMatrices(const _char* constantName, const Matrix* matrix, uint32 numMatrices) const;
 	HRESULT BindTexture(const _char* constantName, ID3D11ShaderResourceView* srv) const;
 	HRESULT BindTextures(const _char* constantName, ID3D11ShaderResourceView** srv, uint32 numTextures) const;
+	
+	//Test
+public:
 
 private:
 	ID3DX11Effect*				_effect = nullptr;

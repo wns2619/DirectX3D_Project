@@ -1,22 +1,22 @@
 #pragma once
 
 #include "GameObject.h"
+#include "Transform.h"
 
 BEGIN(Engine)
 
 class Transform;
+class CameraHelper;
 
 class ENGINE_DLL Camera abstract : public GameObject
 {
 public:
 	enum class CameraMode { FirstCamera, Camera_END };
 public:
-	struct CAMERA_DESC
+	struct CAMERA_DESC : public Transform::TRANSFORM_DESC
 	{
-		_float _near	= 0;
-		_float _far		= 0;
-		_float _aspect	= 0;
-		_float _fov		= 0;
+		Vec4 _eye, _at;
+		_float _fovy, _aspect, _near, _far;
 	};
 protected:
 	explicit Camera(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
@@ -29,14 +29,11 @@ public:
 	virtual void Tick(const _float& timeDelta) override;
 	virtual void LateTick(const _float& timeDelta) override;
 
-public:
-
-
 protected:
 	Transform* _transform = nullptr;
+	CameraHelper* _cameraHelper = nullptr;
 
 	CAMERA_DESC _cameraDesc = {};
-	Matrix _viewMatrix = ::XMMatrixIdentity(), _projMatrix = ::XMMatrixIdentity();
 
 public:
 	virtual GameObject* Clone(void* argument) = 0;

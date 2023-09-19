@@ -6,11 +6,12 @@
 PlayerCamera::PlayerCamera(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: Camera(device, deviceContext)
 {
-
+	::ZeroMemory(&_playerCameraDesc, sizeof(_playerCameraDesc));
 }
 
 PlayerCamera::PlayerCamera(const PlayerCamera& rhs)
 	: Camera(rhs)
+	, _playerCameraDesc(rhs._playerCameraDesc)
 {
 
 }
@@ -26,26 +27,12 @@ HRESULT PlayerCamera::InitializePrototype()
 
 HRESULT PlayerCamera::Initialize(void* argument)
 {
+	PLAYERCAMERA_DESC* playercameraDesc = static_cast<PLAYERCAMERA_DESC*>(argument);
 
-	if (FAILED(Ready_Components()))
+	_playerCameraDesc._mouseSensitive = playercameraDesc->_mouseSensitive;
+
+	if(FAILED(__super::Initialize(argument)))
 		return E_FAIL;
-
-	CAMERA_DESC desc;
-	::ZeroMemory(&desc, sizeof(desc));
-	{
-		desc._aspect = g_iWinSizeX / (_float)g_iWinSizeY;
-		desc._far	= 300.f;
-		desc._fov	= ::XMConvertToRadians(60.f);
-		desc._near	= 0.2f;
-	}
-
-
-	_transform->SetState(Transform::STATE::POSITION, FXMVECTOR(::XMVectorSet(20.f,50,-100.f,1.f)));
-
-	if (FAILED(Camera::Initialize(&desc)))
-		return E_FAIL;
-
-	
 
 	return S_OK;
 }
@@ -54,40 +41,25 @@ void PlayerCamera::Tick(const _float& timeDelta)
 {
 	
 
-	if (::GetAsyncKeyState('D') & 0x8000)
-		_transform->RotateY(10.f);
+	if (::GetAsyncKeyState('W') & 0x8000)
+		_transform->Forward(timeDelta);
 
-	if (::GetAsyncKeyState('E') & 0x8000)
-		_transform->RotateY(10.f);
+	if (::GetAsyncKeyState('S') & 0x8000)
+		_transform->Backward(timeDelta);
 
 	if (::GetAsyncKeyState('D') & 0x8000)
-		_transform->Strafe(100 * timeDelta);
+		_transform->Right(timeDelta);
 
 	if (::GetAsyncKeyState('A') & 0x8000)
-		_transform->Strafe(-100 * timeDelta);
+		_transform->Left(timeDelta);
+
+	__super::Tick(timeDelta);
 
 }
 
 void PlayerCamera::LateTick(const _float& timeDelta)
 {
-	__super::LateTick(timeDelta);
-}
 
-HRESULT PlayerCamera::Ready_Components()
-{
-	/* Transform Component */
-
-	Transform::TRANSFORM_DESC desc;
-	{
-		desc.rotationRadianPerSec = ::XMConvertToRadians(50.f);
-		desc.speedPerSec = 30.f;
-	}
-
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
-		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform), &desc)))
-		return E_FAIL;
-
-	return S_OK;
 }
 
 GameObject* PlayerCamera::Clone(void* argument)

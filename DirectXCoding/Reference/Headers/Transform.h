@@ -23,6 +23,16 @@ private:
 public:
 	XMVECTOR GetState(STATE state) { return XMLoadFloat4x4(&_worldMatrix).r[static_cast<uint32>(state)]; }
 	Vec3 GetScaled();
+	
+	Matrix GetWorldMatrix() const { return _worldMatrix; }
+	XMMATRIX GetWorldMatrixCaculator() const { return ::XMLoadFloat4x4(&_worldMatrix); }
+	Matrix GetInverseWorldMatrix() const
+	{
+		Matrix inverseWorldMatrix;
+		::XMStoreFloat4x4(&inverseWorldMatrix, ::XMMatrixInverse(nullptr, _worldMatrix));
+		return inverseWorldMatrix;
+	}
+	XMMATRIX GetInverseMatrixCaculator() const { return ::XMMatrixInverse(nullptr, ::XMLoadFloat4x4(&_worldMatrix)); }
 
 	void SetState(STATE state, FXMVECTOR vectorState);
 	void SetScaling(const Vec3& vectorScale);
@@ -42,11 +52,6 @@ public:
 	void Turn(XMVECTOR axis, const _float& timeDelta);
 	void LookAt(FXMVECTOR point);
 	void Chase(FXMVECTOR point, _float const& timeDelta, _float distance = 0.1f);
-
-public: // camera test
-	void Strafe(const _float& timeDelta);
-	void Pitch(const _float& timeDelta);
-	void RotateY(_float angle);
 
 private:
 	Matrix _worldMatrix;

@@ -23,6 +23,7 @@ HRESULT Terrain::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	return S_OK;
 }
 
 HRESULT Terrain::Render()
@@ -53,6 +54,7 @@ HRESULT Terrain::Ready_Components()
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentRenderer"),
 		TEXT("ComponentRenderer"), reinterpret_cast<Component**>(&_renderComponent))))
 		return E_FAIL;
+		
 
 	/* Shader Component */
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME),
@@ -65,6 +67,7 @@ HRESULT Terrain::Ready_Components()
 		TEXT("ComponentVIBuffer"), reinterpret_cast<Component**>(&_viBuffer))))
 		return E_FAIL;
 
+
 	/* Texture Component */
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentTextureTerrain"),
 		TEXT("ComponenetTexture"), reinterpret_cast<Component**>(&_texture))))
@@ -76,7 +79,7 @@ HRESULT Terrain::Ready_Components()
 		return E_FAIL;
 
 
-	return S_OK;
+ 	return S_OK;
 }
 
 HRESULT Terrain::Bind_ShaderResources()
@@ -89,11 +92,11 @@ HRESULT Terrain::Bind_ShaderResources()
 
 	if (FAILED(_transform->BindShaderResources(_shader, "worldMatrix")))
 		return E_FAIL;
-	if (FAILED(_shader->BindMatrix("viewMatrix", gameInstance->GetViewMatrix())))
+	if (FAILED(gameInstance->BindTransformToShader(_shader, "viewMatrix", CameraHelper::TRANSFORMSTATE::D3DTS_VIEW)))
 		return E_FAIL;
-	if (FAILED(_shader->BindMatrix("projMatrix", gameInstance->GetProjMatrix())))
+	if (FAILED(gameInstance->BindTransformToShader(_shader, "projMatrix", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
 		return E_FAIL;
-
+	
 	if (FAILED(_texture->BindShaderResource(_shader, "ShadersTexture", 0)))
 		return E_FAIL;
 
@@ -108,7 +111,7 @@ GameObject* Terrain::Clone(void* argument)
 
 	if (FAILED(terrain->Initialize(argument)))
 	{
-		MSG_BOX("Failed to Cloned : Terrain");
+ 		MSG_BOX("Failed to Cloned : Terrain");
 		Safe_Release<Terrain*>(terrain);
 		return nullptr;
 	}

@@ -33,7 +33,7 @@ HRESULT Game::Initialize(HWND hwnd)
 	if (FAILED(ReadyProtoTypeComponents()))
 		return E_FAIL;
 
-	ImGuiManager::GetInstance()->Initialize(_device, _devicecontext);
+	//ImGuiManager::GetInstance()->Initialize(_device, _devicecontext);
 
 
 	if (FAILED(OpenLevel(LEVEL::LOGO)))
@@ -45,7 +45,7 @@ HRESULT Game::Initialize(HWND hwnd)
 
 void Game::Tick(const _float& timeDelta)
 {
-	ImGuiManager::GetInstance()->LateTick(timeDelta);
+	//ImGuiManager::GetInstance()->LateTick(timeDelta);
 	_gameInstance->Tick(timeDelta);
 }
 
@@ -59,7 +59,7 @@ HRESULT Game::Render()
 
 	_renderer->DrawRenderObjects();
 
-	ImGuiManager::GetInstance()->Render();
+	//ImGuiManager::GetInstance()->Render();
 
 	_gameInstance->Present();
 
@@ -138,7 +138,7 @@ void Game::Free()
 
 	Safe_Release<GameInstance*>(_gameInstance);
 
-	ImGuiManager::GetInstance()->DestroyInstance();
+	//ImGuiManager::GetInstance()->DestroyInstance();
 
 	GameInstance::Release_Engine();
 }

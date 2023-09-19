@@ -39,7 +39,7 @@ struct PS_IN
     float2 uv : TEXCOORD0;
 };
 
-struct PS_OUT
+struct PS_OUT 
 {
     float4 Color : SV_TARGET0;
 };
@@ -47,11 +47,17 @@ struct PS_OUT
 sampler LinearSampler = sampler_state
 {
     Filter = MIN_MAG_MIP_LINEAR;
+    AddressU = wrap;
+    AddressV = wrap;
+
 };
 
 sampler PointSampler = sampler_state
 {
     Filter = MIN_MAG_MIP_POINT;
+    AddressU = wrap;
+    AddressV = wrap;
+   
 };
 
 Texture2D ShadersTexture;
@@ -61,7 +67,7 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
     
-    Out.Color = ShadersTexture.Sample(LinearSampler, In.uv);
+    Out.Color = ShadersTexture.Sample(LinearSampler, In.uv * 30.f);
 
     return Out;
 }

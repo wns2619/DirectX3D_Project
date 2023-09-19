@@ -94,6 +94,9 @@
     <Filter Include="03.Pipeline\CameraHelper">
       <UniqueIdentifier>{03e2ffb7-43d8-496f-9744-75047c17132c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Component\Light">
+      <UniqueIdentifier>{8a71af49-5061-4da5-a435-a0fcd6a444f5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -189,6 +192,9 @@
     <ClInclude Include="..\Public\CameraHelper.h">
       <Filter>03.Pipeline\CameraHelper</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Light.h">
+      <Filter>01.Utility\04.Component\Light</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -265,6 +271,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\CameraHelper.cpp">
       <Filter>03.Pipeline\CameraHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Light.cpp">
+      <Filter>01.Utility\04.Component\Light</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

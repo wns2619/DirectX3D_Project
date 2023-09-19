@@ -41,8 +41,7 @@ public: // Component Manager
 	class Component* CloneComponent(uint32 levelIndex, const wstring& protoTypeTag, void* argument = nullptr);
 
 public: // Camera Helper
-	Matrix* GetViewMatrix() { return _cameraHelper->GetViewMatrix(); }
-	Matrix* GetProjMatrix() { return _cameraHelper->GetProjMatrix(); }
+	HRESULT BindTransformToShader(Shader* shader, const char* constantName, CameraHelper::TRANSFORMSTATE state);
 
 private:
 	class TimeManager* _timeManager = nullptr;

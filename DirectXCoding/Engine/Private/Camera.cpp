@@ -5,15 +5,18 @@
 
 Camera::Camera(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: GameObject(device, deviceContext)
+	, _cameraHelper(CameraHelper::GetInstance())
 {
+	::ZeroMemory(&_cameraDesc, sizeof(Camera::CAMERA_DESC));
+	Safe_AddRef<CameraHelper*>(_cameraHelper);
 }
 
 Camera::Camera(const Camera& rhs)
 	: GameObject(rhs),
-	_viewMatrix(rhs._viewMatrix),
-	_projMatrix(rhs._projMatrix),
 	_cameraDesc(rhs._cameraDesc)
+	, _cameraHelper(rhs._cameraHelper)
 {
+	Safe_AddRef<CameraHelper*>(_cameraHelper);
 }
 
 HRESULT Camera::InitializePrototype()
@@ -25,42 +28,41 @@ HRESULT Camera::Initialize(void* argument)
 {
 	if (nullptr != argument)
 	{
-		CAMERA_DESC desc;
-
-		::memmove(&desc, argument, sizeof(desc));
-
-		_cameraDesc._aspect = desc._aspect;
-		_cameraDesc._far	= desc._far;
-		_cameraDesc._fov	= desc._fov;
-		_cameraDesc._near	= desc._near;
+		CAMERA_DESC* desc = static_cast<CAMERA_DESC*>(argument);
+		_cameraDesc._eye = desc->_eye;
+		_cameraDesc._at = desc->_at;
+		_cameraDesc._fovy = desc->_fovy;
+		_cameraDesc._aspect = desc->_aspect;
+		_cameraDesc._near = desc->_near;
+		_cameraDesc._far = desc->_far;
 	}
 
-	CameraHelper::GetInstance()->SetViewProjMatrix(&_viewMatrix, &_projMatrix, *_transform, _cameraDesc);
+	_transform = Transform::Create(_device, _deviceContext);
+	if (nullptr == _transform)
+		return E_FAIL;
+	
+	if (_transform->Initialize(argument))
+		return E_FAIL;
 
-	//::XMStoreFloat4x4(&_viewMatrix, ::XMMatrixLookAtLH(_transform->GetState(Transform::STATE::POSITION),
-	//	_transform->GetState(Transform::STATE::LOOK), _transform->GetState(Transform::STATE::UP)));
-
-	//::XMStoreFloat4x4(&_projMatrix,
-	//	::XMMatrixPerspectiveFovLH(_cameraDesc._fov, _cameraDesc._aspect, _cameraDesc._near, _cameraDesc._far));
+	_transform->SetState(Transform::STATE::POSITION, ::XMLoadFloat4(&_cameraDesc._eye));
+	_transform->LookAt(::XMLoadFloat4(&_cameraDesc._at));
 
 	return S_OK;
 }
 
 void Camera::Tick(const _float& timeDelta)
 {
+	if (nullptr == _cameraHelper)
+		return;
 
-
-
-	//::XMStoreFloat4x4(&_viewMatrix, ::XMMatrixLookAtLH(_transform->GetState(Transform::STATE::POSITION),
-	//	_transform->GetState(Transform::STATE::LOOK), _transform->GetState(Transform::STATE::UP)));
-
-	//::XMStoreFloat4x4(&_projMatrix,
-	//	::XMMatrixPerspectiveFovLH(_cameraDesc._fov, _cameraDesc._aspect, _cameraDesc._near, _cameraDesc._far));
+	_cameraHelper->SetTransform(CameraHelper::TRANSFORMSTATE::D3DTS_VIEW, _transform->GetInverseMatrixCaculator());
+	_cameraHelper->SetTransform(CameraHelper::TRANSFORMSTATE::D3DTS_PROJ,
+		::XMMatrixPerspectiveFovLH(_cameraDesc._fovy, _cameraDesc._aspect, _cameraDesc._near, _cameraDesc._far));
 }
 
 void Camera::LateTick(const _float& timeDelta)
 {
-	CameraHelper::GetInstance()->SetViewProjMatrix(&_viewMatrix, &_projMatrix, *_transform, _cameraDesc);
+
 }
 
 void Camera::Free()
@@ -68,4 +70,5 @@ void Camera::Free()
 	__super::Free();
 	
 	Safe_Release<Transform*>(_transform);
+	Safe_Release<CameraHelper*>(_cameraHelper);
 }

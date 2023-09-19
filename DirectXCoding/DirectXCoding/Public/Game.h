@@ -24,10 +24,10 @@ public:
 	HRESULT Render();
 
 private:
-	GameInstance* _gameInstance = nullptr;
-	Renderer* _renderer = nullptr;
+	GameInstance* _gameInstance			= nullptr;
+	Renderer* _renderer					= nullptr;
 
-	ID3D11Device* _device = nullptr;
+	ID3D11Device* _device				= nullptr;
 	ID3D11DeviceContext* _devicecontext = nullptr;
 	
 private:

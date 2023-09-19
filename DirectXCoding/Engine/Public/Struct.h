@@ -1,6 +1,8 @@
 #ifndef Engine_Struct_h__
 #define Engine_Struct_h__
 
+#pragma warning(disable : 26495)
+
 namespace Engine
 {
 	typedef struct tagGraphicDesc
@@ -13,11 +15,6 @@ namespace Engine
 	}GRAPHIC_DESC;
 
 
-	struct VertexData
-	{
-		Vec3 position = { 0,0,0 };
-	};
-
 	struct ENGINE_DLL VertexTextureData
 	{
 		Vec3 position = { 0,0,0, };
@@ -28,11 +25,6 @@ namespace Engine
 
 	};
 
-	struct VertexColorData
-	{
-		Vec3 position = { 0,0,0 };
-		Color color = { 0,0,0,0 };
-	};
 
 	struct ENGINE_DLL VertexTextureNormalData
 	{
@@ -44,6 +36,67 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC Elements[numElements];
 	};
 	
+	struct DirectionalLight
+	{
+		DirectionalLight() { ::ZeroMemory(this, sizeof(this)); }
+
+		Vec4 Ambient;
+		Vec4 Diffuse;
+		Vec4 Specular;
+		Vec3 Direction;
+		_float pad;
+	};
+
+	struct PointLight
+	{
+		PointLight() { ::ZeroMemory(this, sizeof(this)); }
+
+		Vec4 Ambient;
+		Vec4 Diffuse;
+		Vec4 Specular;
+
+		Vec3 Position;
+		_float Range;
+
+		Vec3 Attenuation;
+		_float Pad;
+	};
+
+	struct SpotLight
+	{
+		SpotLight() { ::ZeroMemory(this, sizeof(this)); }
+
+		Vec4 Ambient;
+		Vec4 Diffuse;
+		Vec4 Specular;
+
+		Vec3 Position;
+		_float Range;
+
+		Vec3 Direction;
+		_float Spot;
+
+		Vec3 Attenuation;
+		_float Pad;
+	};
+
+	struct ENGINE_DLL Material
+	{
+		Material() { ::ZeroMemory(this, sizeof(this)); }
+
+		Vec4 Ambient;
+		Vec4 Diffuse;
+		Vec4 Specular;
+		Vec4 Reflect;
+	};
+
+	struct ENGINE_DLL LightGroup
+	{
+		DirectionalLight dirLight;
+		PointLight pointLight;
+		SpotLight spotLight;
+	};
+
 
 }
 
