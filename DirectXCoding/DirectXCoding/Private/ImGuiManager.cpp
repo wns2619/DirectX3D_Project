@@ -23,6 +23,8 @@ HRESULT ImGuiManager::Initialize(ID3D11Device* device, ID3D11DeviceContext* devi
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(device, deviceContext);
 
+	GuiStyle();
+
 	Safe_Release<ID3D11Device*>(device);
 	Safe_Release<ID3D11DeviceContext*>(deviceContext);
 
@@ -120,6 +122,43 @@ HRESULT ImGuiManager::Render()
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	return S_OK;
+}
+
+void ImGuiManager::GuiStyle()
+{
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	style.FrameBorderSize = 0.f;
+	style.ChildBorderSize = 2.f;
+	style.TabBorderSize = 0.f;
+	style.PopupBorderSize = 0.f;
+
+	style.WindowPadding = ImVec2(5, 5);
+	style.WindowRounding = 2.f;
+	style.FramePadding = ImVec2(5, 5);
+	style.FrameRounding = 2.f;
+	style.ItemSpacing = ImVec2(5, 5);
+	style.ItemInnerSpacing = ImVec2(5, 5);
+
+	style.Colors[ImGuiCol_WindowBg] = ImVec4(0.f, 0.f, 0.1f, 0.5f);
+	style.Colors[ImGuiCol_Border] = ImVec4(0.f, 0.f, 0.1f, 0.3f);
+	style.Colors[ImGuiCol_FrameBg] = ImVec4(0.1f, 0.15f, 0.2f, 1.f);
+	style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.15f, 0.225f, 0.4f, 1.f);
+	style.Colors[ImGuiCol_FrameBgActive] = ImVec4(0.05f, 0.075f, 0.1f, 1.f);
+
+	style.Colors[ImGuiCol_MenuBarBg] = ImVec4(0.f, 0.f, 0.f, 1.f);
+
+	style.Colors[ImGuiCol_ChildBg] = ImVec4(0.f, 0.f, 0.1f, 0.2f);
+	style.Colors[ImGuiCol_CheckMark] = ImVec4(0.5f, 0.6f, 0.9f, 1.f);
+	style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
+	style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.f);
+	style.Colors[ImGuiCol_Button] = ImVec4(0.f, 1.f / 255.f * 150.f, 1.f, 1.f);
+	style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.f, 1.f / 255.f * 130.f, 1.f, 1.f);
+	style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.f, 1.f / 255.f * 130.f, 1.f, 0.8f);
+	style.Colors[ImGuiCol_Header] = ImVec4(0.10f, 0.15f, 0.20f, 1.00f);
+	style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.15f, 0.225f, 0.30f, 1.00f);
+	style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.05f, 0.075f, 0.10f, 1.00f);
+	style.Colors[ImGuiCol_Separator] = ImVec4(.8f, .8f, .8f, 1.f);
 }
 
 void ImGuiManager::Free()

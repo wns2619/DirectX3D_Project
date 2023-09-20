@@ -23,9 +23,6 @@
     <Filter Include="소스 파일\01.Levels\99. Loading">
       <UniqueIdentifier>{e826aafa-eb7a-4880-987d-d7bf1fef1968}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\01.Levels\99. Loading\Helper">
-      <UniqueIdentifier>{161a2456-9da0-46b1-9516-e82530712e20}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\02.GameObjects">
       <UniqueIdentifier>{b9ad45b3-d4d7-4396-8a49-5df76a8a5713}</UniqueIdentifier>
     </Filter>
@@ -49,6 +46,12 @@
     </Filter>
     <Filter Include="소스 파일\02.GameObjects\02.Camera">
       <UniqueIdentifier>{cb5b2d94-eea7-4fec-b8e1-d5e6fa3b43a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01.Levels\99. Loading\Helper">
+      <UniqueIdentifier>{161a2456-9da0-46b1-9516-e82530712e20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01.Levels\02. Edit">
+      <UniqueIdentifier>{470f438a-e938-461a-a023-537bd4aef7d4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -121,6 +124,9 @@
     <ClInclude Include="..\Public\PlayerCamera.h">
       <Filter>소스 파일\02.GameObjects\02.Camera</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\EditScene.h">
+      <Filter>소스 파일\01.Levels\02. Edit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -176,6 +182,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\PlayerCamera.cpp">
       <Filter>소스 파일\02.GameObjects\02.Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EditScene.cpp">
+      <Filter>소스 파일\01.Levels\02. Edit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

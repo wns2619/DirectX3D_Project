@@ -26,14 +26,14 @@ HRESULT Game::Initialize(HWND hwnd)
 		desc._hwnd = g_hWnd;
 	}
 
-	if (FAILED(_gameInstance->Initialize_Engine(static_cast<uint32>(LEVEL::LEVEL_END), desc, &_device, &_devicecontext)))
+	if (FAILED(_gameInstance->Initialize_Engine(static_cast<uint32>(LEVEL::LEVEL_END), g_hInstance, desc, &_device, &_devicecontext)))
 		return E_FAIL;
 
 
 	if (FAILED(ReadyProtoTypeComponents()))
 		return E_FAIL;
 
-	//ImGuiManager::GetInstance()->Initialize(_device, _devicecontext);
+
 
 
 	if (FAILED(OpenLevel(LEVEL::LOGO)))
@@ -59,7 +59,8 @@ HRESULT Game::Render()
 
 	_renderer->DrawRenderObjects();
 
-	//ImGuiManager::GetInstance()->Render();
+	if(_gameInstance->GetCurrentLevelIndex() == static_cast<uint32>(LEVEL::EDIT))
+		ImGuiManager::GetInstance()->Render();
 
 	_gameInstance->Present();
 

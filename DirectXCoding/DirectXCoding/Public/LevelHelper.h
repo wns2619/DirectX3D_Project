@@ -31,6 +31,7 @@ private:
 private:
 	HRESULT	LodingforLevelLogo();
 	HRESULT LodingforLevelGame();
+	HRESULT LodingforLevelEdit();
 
 public:
 	static LevelHelper* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, LEVEL nextLevel);

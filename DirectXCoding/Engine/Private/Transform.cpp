@@ -139,11 +139,14 @@ void Transform::Turn(XMVECTOR axis, const _float& timeDelta)
     XMVECTOR up = GetState(STATE::UP);
     XMVECTOR look = GetState(STATE::LOOK);
 
-    Matrix rotationMatrix = ::XMMatrixRotationAxis(axis, _transformDesc.rotationRadianPerSec * timeDelta);
+    XMVECTOR rotationMatrix = ::XMQuaternionRotationAxis(axis, _transformDesc.rotationRadianPerSec * timeDelta);
+    XMVECTOR rotationQuaternion = ::XMQuaternionIdentity();
 
-    right = ::XMVector4Transform(right, rotationMatrix);
-    up = ::XMVector4Transform(up, rotationMatrix);
-    look = ::XMVector4Transform(look, rotationMatrix);
+    rotationQuaternion = ::XMQuaternionMultiply(rotationQuaternion, rotationMatrix);
+
+    right = ::XMVector3Rotate(right, rotationMatrix);
+    up = ::XMVector3Rotate(up, rotationMatrix);
+    look = ::XMVector3Rotate(look, rotationMatrix);
 
     SetState(STATE::RIGHT, right);
     SetState(STATE::UP, up);

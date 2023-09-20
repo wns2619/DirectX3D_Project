@@ -19,6 +19,9 @@ public:
 	void	LateTick(const _float& timeDelta);
 	HRESULT Render();
 
+public:
+	void GuiStyle();
+
 private:
 	_bool _someCondition = true;
 

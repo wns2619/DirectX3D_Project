@@ -6,6 +6,7 @@
 
 #include "Logo.h"
 #include "GameScene.h"
+#include "EditScene.h"
 
 LevelLoading::LevelLoading(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: Level(device, deviceContext)
@@ -56,6 +57,8 @@ HRESULT LevelLoading::LateTick(const _float& timeDelta)
 			case LEVEL::GAME:
 				newLevel = GameScene::Create(_device, _deviceContext);
 				break;
+			case LEVEL::EDIT:
+				newLevel = EditScene::Create(_device, _deviceContext);
 			}
 
 			if (nullptr == newLevel)

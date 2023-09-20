@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "PlayerCamera.h"
-#include "Transform.h"
+
 #include "GameInstance.h"
 
 PlayerCamera::PlayerCamera(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
@@ -40,21 +40,38 @@ HRESULT PlayerCamera::Initialize(void* argument)
 void PlayerCamera::Tick(const _float& timeDelta)
 {
 	
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-	if (::GetAsyncKeyState('W') & 0x8000)
-		_transform->Forward(timeDelta);
+	POINT		pt{ g_iWinSizeX >> 1, g_iWinSizeY >> 1 };
 
-	if (::GetAsyncKeyState('S') & 0x8000)
-		_transform->Backward(timeDelta);
+	::ClientToScreen(g_hWnd, &pt);
+	::SetCursorPos(pt.x, pt.y);
 
-	if (::GetAsyncKeyState('D') & 0x8000)
-		_transform->Right(timeDelta);
 
-	if (::GetAsyncKeyState('A') & 0x8000)
+	if (gameInstance->Get_DIKeyState(DIK_A) & 0x80)
 		_transform->Left(timeDelta);
 
-	__super::Tick(timeDelta);
+	if (gameInstance->Get_DIKeyState(DIK_D) & 0x80)
+		_transform->Right(timeDelta);
 
+	if (gameInstance->Get_DIKeyState(DIK_W) & 0x80)
+		_transform->Forward(timeDelta);
+
+	if (gameInstance->Get_DIKeyState(DIK_S) & 0x80)
+		_transform->Backward(timeDelta);
+
+	_long mouseMove = 0l;
+
+	if (mouseMove = gameInstance->Get_DIMouseMove(InputManager::MMS_X))
+		_transform->Turn(::XMVectorSet(0.f, 1.f, 0.f, 0.f), mouseMove * _playerCameraDesc._mouseSensitive * timeDelta);
+
+	if(mouseMove = gameInstance->Get_DIMouseMove(InputManager::MMS_Y))
+		_transform->Turn(_transform->GetState(Transform::STATE::RIGHT), mouseMove * _playerCameraDesc._mouseSensitive* timeDelta);
+
+
+	RELEASE_INSTANCE(GameInstance);
+
+	__super::Tick(timeDelta);
 }
 
 void PlayerCamera::LateTick(const _float& timeDelta)

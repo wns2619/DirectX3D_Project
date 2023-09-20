@@ -27,16 +27,24 @@ HRESULT Logo::LateTick(const _float& timeDelta)
 {
 	SetWindowText(g_hWnd, TEXT("This is LogoLevel"));
 
-	if (GetKeyState(VK_RETURN) & 0x8000)
-	{
-		GameInstance* _gameInstance = GameInstance::GetInstance();
-		Safe_AddRef<GameInstance*>(_gameInstance);
+	GameInstance* _gameInstance = GET_INSTANCE(GameInstance);
 
+
+	if (_gameInstance->Get_DIKeyState(DIK_0) & 0x80)
+	{
 		if(FAILED(_gameInstance->OpenLevel(static_cast<uint32>(LEVEL::LOADING), LevelLoading::Create(_device, _deviceContext, LEVEL::GAME))))
 			return E_FAIL;
-
-		Safe_Release<GameInstance*>(_gameInstance);
 	}
+
+
+	if (_gameInstance->Get_DIKeyState(DIK_1) & 0x80)
+	{
+		if (FAILED(_gameInstance->OpenLevel(static_cast<uint32>(LEVEL::LOADING), LevelLoading::Create(_device, _deviceContext, LEVEL::EDIT))))
+			return E_FAIL;
+	}
+
+
+	RELEASE_INSTANCE(GameInstance);
 
 	return S_OK;
 }

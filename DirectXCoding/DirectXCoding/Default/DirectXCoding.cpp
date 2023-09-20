@@ -12,7 +12,7 @@
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
-HINSTANCE hInst;                                // 현재 인스턴스입니다.
+HINSTANCE g_hInstance;                                // 현재 인스턴스입니다.
 HWND      g_hWnd;
 extern IMGUI_IMPL_API   LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lParam);
 
@@ -133,7 +133,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-   hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
+    g_hInstance = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
    RECT windowRect = { 0, 0, g_iWinSizeX, g_iWinSizeY };
    ::AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, false);

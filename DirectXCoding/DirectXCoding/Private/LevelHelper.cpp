@@ -57,6 +57,9 @@ int32 LevelHelper::Loading()
     case LEVEL::GAME:
         hr = LodingforLevelGame();
         break;
+    case LEVEL::EDIT:
+        hr = LodingforLevelEdit();
+        break;
     }
 
 
@@ -136,6 +139,30 @@ HRESULT LevelHelper::LodingforLevelGame()
     _title = TEXT("Loading Successed");
     _IsFinished = true;
 
+    return S_OK;
+}
+
+HRESULT LevelHelper::LodingforLevelEdit()
+{
+    GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+    _title = TEXT("Texture Loading");
+
+
+    _title = TEXT("Mesh Loading");
+
+
+    _title = TEXT("Shader Loading");
+
+
+    _title = TEXT("Object Loading");
+
+
+    _title = TEXT("Loading Successed");
+    _IsFinished = true;
+
+
+    RELEASE_INSTANCE(GameInstance);
     return S_OK;
 }
 

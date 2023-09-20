@@ -2,6 +2,7 @@
 
 #include "ComponentManager.h"
 #include "CameraHelper.h"
+#include "InputManager.h"
 
 BEGIN(Engine)
 
@@ -16,7 +17,7 @@ private:
 	virtual ~GameInstance() = default;
 
 public: // GameInstance Manager
-	HRESULT	Initialize_Engine(uint32 levelNumbers, const GRAPHIC_DESC& graphicDesc, _Inout_ ID3D11Device** device, _Inout_ ID3D11DeviceContext** deviceContext);
+	HRESULT	Initialize_Engine(uint32 levelNumbers, HINSTANCE instance, const GRAPHIC_DESC& graphicDesc, _Inout_ ID3D11Device** device, _Inout_ ID3D11DeviceContext** deviceContext);
 	void Tick(_float fTimeDelta);
 	void Clear(uint32 levelIndex);
 public: // Timer Manager
@@ -28,9 +29,14 @@ public: // Graphic Device
 	HRESULT ClearDepthStencilView();
 	HRESULT Present();
 
+public: // InputDevice
+	_byte	Get_DIKeyState(_ubyte byKeyID);
+	_byte	Get_DIMouseState(InputManager::MOUSEKEYSTATE eMouse);
+	_long	Get_DIMouseMove(InputManager::MOUSEMOVESTATE eMouseState);
+
 public: // LevelManager
 	HRESULT	OpenLevel(uint32 levelIndex, class Level* newLevel);
-
+	uint32  GetCurrentLevelIndex();
 
 public: // ObjectManager
 	HRESULT AddProtoType(const wstring& prototypeTag, GameObject* prototype);
@@ -50,6 +56,7 @@ private:
 	class ObjectManager* _objectManager = nullptr;
 	class ComponentManager* _componentManager = nullptr;
 	class CameraHelper* _cameraHelper = nullptr;
+	InputManager* _inputManager = nullptr;
 public:
 	static void Release_Engine();
 	virtual void Free() override;

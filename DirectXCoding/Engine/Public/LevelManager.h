@@ -20,6 +20,8 @@ public:
 public:
 	HRESULT	OpenLevel(uint32 levelIndex, Level* newLevel);
 
+	uint32 GetCurrentLevelIndex() { return _CurrentLevelIndex; }
+
 private:
 	Level* _CurrentLevel = nullptr;
 	uint32 _CurrentLevelIndex = 0;

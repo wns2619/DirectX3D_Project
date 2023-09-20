@@ -11,7 +11,9 @@ GameInstance::GameInstance()
     : _timeManager(TimeManager::GetInstance()), _graphicManager(GraphicsManager::GetInstance()), 
     _levelManager(LevelManager::GetInstance()), _objectManager(ObjectManager::GetInstance()),
     _componentManager(ComponentManager::GetInstance()), _cameraHelper(CameraHelper::GetInstance())
+    , _inputManager(InputManager::GetInstance())
 {
+    Safe_AddRef<InputManager*>(_inputManager);
     Safe_AddRef<CameraHelper*>(_cameraHelper);
     Safe_AddRef<ComponentManager*>(_componentManager);
     Safe_AddRef<ObjectManager*>(_objectManager);
@@ -20,9 +22,12 @@ GameInstance::GameInstance()
     Safe_AddRef<GraphicsManager*>(_graphicManager);
 }
 
-HRESULT GameInstance::Initialize_Engine(uint32 levelNumbers, const GRAPHIC_DESC& graphicDesc, _Inout_ ID3D11Device** device, _Inout_ ID3D11DeviceContext** deviceContext)
+HRESULT GameInstance::Initialize_Engine(uint32 levelNumbers, HINSTANCE instance, const GRAPHIC_DESC& graphicDesc, _Inout_ ID3D11Device** device, _Inout_ ID3D11DeviceContext** deviceContext)
 {
     if (FAILED(_graphicManager->Initialize(graphicDesc, device, deviceContext)))
+        return E_FAIL;
+
+    if (FAILED(_inputManager->Ready_Input_Device(instance, graphicDesc._hwnd)))
         return E_FAIL;
 
     if (FAILED(_objectManager->ReserveManager(levelNumbers)))
@@ -36,6 +41,8 @@ HRESULT GameInstance::Initialize_Engine(uint32 levelNumbers, const GRAPHIC_DESC&
 
 void GameInstance::Tick(_float fTimeDelta)
 {
+    _inputManager->Tick();
+
     _objectManager->Tick(fTimeDelta);
     _levelManager->Tick(fTimeDelta);
 
@@ -90,12 +97,41 @@ HRESULT GameInstance::Present()
     return _graphicManager->Present();
 }
 
+_byte GameInstance::Get_DIKeyState(_ubyte byKeyID)
+{
+    if (nullptr == _inputManager)
+        return 0;
+
+    return _inputManager->Get_DIKeyState(byKeyID);
+}
+
+_byte GameInstance::Get_DIMouseState(InputManager::MOUSEKEYSTATE eMouse)
+{
+    if (nullptr == _inputManager)
+        return 0;
+
+    return _inputManager->Get_DIMouseState(eMouse);
+}
+
+_long GameInstance::Get_DIMouseMove(InputManager::MOUSEMOVESTATE eMouseState)
+{
+    return _inputManager->Get_DIMouseMove(eMouseState);
+}
+
 HRESULT GameInstance::OpenLevel(uint32 levelIndex, Level* newLevel)
 {
     if (nullptr == _levelManager)
         return E_FAIL;
 
     return _levelManager->OpenLevel(levelIndex, newLevel);
+}
+
+uint32 GameInstance::GetCurrentLevelIndex()
+{
+    if (nullptr == _levelManager)
+        return 0;
+
+    return _levelManager->GetCurrentLevelIndex();
 }
 
 HRESULT GameInstance::AddProtoType(const wstring& protoTypeTag, GameObject* prototype)
@@ -138,6 +174,7 @@ HRESULT GameInstance::BindTransformToShader(Shader* shader, const char* constant
 
 void GameInstance::Release_Engine()
 {
+    InputManager::GetInstance()->DestroyInstance();
     CameraHelper::GetInstance()->DestroyInstance();
     GameInstance::GetInstance()->DestroyInstance();
     ObjectManager::GetInstance()->DestroyInstance();
@@ -149,6 +186,7 @@ void GameInstance::Release_Engine()
 
 void GameInstance::Free()
 {
+    Safe_Release<InputManager*>(_inputManager);
     Safe_Release<CameraHelper*>(_cameraHelper);
     Safe_Release<ComponentManager*>(_componentManager);
     Safe_Release<ObjectManager*>(_objectManager);

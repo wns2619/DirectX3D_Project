@@ -61,7 +61,7 @@ HRESULT GameScene::ReadyLayerCamera(const wstring& layerTag)
     PlayerCamera::PLAYERCAMERA_DESC cameraDesc;
     ZeroMemory(&cameraDesc, sizeof(cameraDesc));
     {
-        cameraDesc._mouseSensitive = 1.f;
+        cameraDesc._mouseSensitive = 0.1f;
         cameraDesc._eye = Vec4(0.f, 10.f, -8.f, 1.f);
         cameraDesc._at = Vec4(0.f, 0.f, 0.f, 1.f);
         cameraDesc._fovy = ::XMConvertToRadians(60.f);
