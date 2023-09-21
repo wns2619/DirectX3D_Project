@@ -64,7 +64,8 @@ private:
 	class ObjectManager* _objectManager = nullptr;
 	class ComponentManager* _componentManager = nullptr;
 	class CameraHelper* _cameraHelper = nullptr;
-	InputManager* _inputManager = nullptr;
+	class InputManager* _inputManager = nullptr;
+
 public:
 	static void Release_Engine();
 	virtual void Free() override;

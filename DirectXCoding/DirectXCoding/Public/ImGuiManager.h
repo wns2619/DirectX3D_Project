@@ -21,21 +21,25 @@ public:
 
 public:
 	void GuiStyle();
+	void DrawSplitter(_bool split_vertically, _float thickness, _float* size0, _float* size1,
+		_float min_size0, _float min_size1, _float size = -1.f, _float buttonPadding = 0.f);
 
 private:
 	_bool _someCondition		= true;
 
-	_bool m_windowMoveFlag		= false;
-	_bool m_windowResizeFlag	= false;
-	_bool m_mouseCameraRotation = true;
+	_bool _windowMoveFlag		= false;
+	_bool _windowResizeFlag		= false;
+	_bool _mouseCameraRotation	= true;
 
-	_float m_windowContentHeight		= g_iWinSizeY;
-	_float m_objectsWindowWidth			= 450.f;
-	_float m_objectWdowHeaderHeight		= 70.f;
-	_float m_gameObjectSectionHeight	= 420.f;
-	_float m_lightSectionHeight			= 275.f;
-	_float m_sectionSeperatorHeight		= 25.f;
-	_float m_splitterButtonPadding		= 10.f;
+	_float _windowContentHeight			= 400.f;
+	_float _objectsWindowWidth			= 450.f;
+	_float _objectWdowHeaderHeight		= 70.f;
+	_float _gameObjectSectionHeight		= 420.f;
+	_float _lightSectionHeight			= 275.f;
+	_float _sectionSeperatorHeight		= 25.f;
+	_float _splitterButtonPadding		= 10.f;
+	
+	_float _TerrainSectionHeight		= 130.f;
 
 public:
 	virtual void Free() override;

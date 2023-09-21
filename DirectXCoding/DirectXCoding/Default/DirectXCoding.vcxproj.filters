@@ -192,8 +192,8 @@
     <ClCompile Include="..\Private\EditScene.cpp">
       <Filter>소스 파일\01.Levels\02. Edit</Filter>
     </ClCompile>
-    <ClCompile Include="..\Public\ImguiResourceHandler.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="..\Private\ImguiResourceHandler.cpp">
+      <Filter>소스 파일\97.Imgui\ImguiController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -123,7 +123,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../../Reference/Libraries/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;Engine.lib;DirectXTKd.lib;DirectXTex_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
     </Link>
@@ -155,7 +155,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../../Reference/Libraries/Release/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Engine_Release.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Engine_Release.lib;DirectXTK.lib;DirectXTex.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
     </Link>
@@ -232,6 +232,7 @@
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
+    <ClCompile Include="..\Private\ImguiResourceHandler.cpp" />
     <ClCompile Include="..\Private\LevelHelper.cpp" />
     <ClCompile Include="..\Private\LevelLoading.cpp" />
     <ClCompile Include="..\Private\Logo.cpp" />
@@ -239,7 +240,6 @@
     <ClCompile Include="..\Private\Terrain.cpp">
       <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">EditAndContinue</DebugInformationFormat>
     </ClCompile>
-    <ClCompile Include="..\Public\ImguiResourceHandler.cpp" />
     <ClCompile Include="DirectXCoding.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>

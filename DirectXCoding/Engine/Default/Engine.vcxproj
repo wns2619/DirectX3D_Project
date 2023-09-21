@@ -30,6 +30,7 @@
     <ClInclude Include="..\Public\GameInstance.h" />
     <ClInclude Include="..\Public\GameObject.h" />
     <ClInclude Include="..\Public\GraphicsManager.h" />
+    <ClInclude Include="..\Public\ImguiResourceHandler.h" />
     <ClInclude Include="..\Public\InputManager.h" />
     <ClInclude Include="..\Public\Layer.h" />
     <ClInclude Include="..\Public\Level.h" />
@@ -61,6 +62,7 @@
     <ClCompile Include="..\Private\GameInstance.cpp" />
     <ClCompile Include="..\Private\GameObject.cpp" />
     <ClCompile Include="..\Private\GraphicsManager.cpp" />
+    <ClCompile Include="..\Private\ImguiResourceHandler.cpp" />
     <ClCompile Include="..\Private\InputManager.cpp" />
     <ClCompile Include="..\Private\Layer.cpp" />
     <ClCompile Include="..\Private\Level.cpp" />
@@ -191,8 +193,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../lib/FX11/;../lib/DirectXTK/;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>d3d11.lib;Effects11d.lib;DirectXTKd.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../lib/FX11/;../lib/DirectXTK/;../lib/DirectXTex/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;Effects11d.lib;DirectXTKd.lib;DirectXTex_Debug.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <NoEntryPoint>false</NoEntryPoint>
     </Link>
     <PostBuildEvent>

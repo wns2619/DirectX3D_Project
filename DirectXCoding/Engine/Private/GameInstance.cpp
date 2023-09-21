@@ -4,6 +4,7 @@
 #include "GraphicsManager.h"
 #include "LevelManager.h"
 #include "ObjectManager.h"
+#include "ImguiResourceHandler.h"
 
 IMPLEMENT_SINGLETON(GameInstance)
 

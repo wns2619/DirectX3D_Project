@@ -8,6 +8,23 @@
 #include "framework.h"
 
 #include "Client_Define.h"
+#include <d3d11.h>
+#include <d3dcompiler.h>
+#include <d3d11shader.h>
+#include <wrl.h>
+#include <dinput.h>
 
+#include <DirectXMath.h>
+#include <Include\d3dx11effect.h>
+#include <DirectXTK\DDSTextureLoader.h>
+#include <DirectXTK\WICTextureLoader.h>
+#include <DirectXTex\DirectXTex.h>
+#include <DirectXTex\DirectXTex.inl>
+
+using namespace DirectX;
+using namespace Microsoft::WRL;
+
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "d3dcompiler.lib")
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.

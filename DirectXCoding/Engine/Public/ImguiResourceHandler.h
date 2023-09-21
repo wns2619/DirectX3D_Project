@@ -2,7 +2,6 @@
 
 #include "Base.h"
 
-BEGIN(Client)
 
 class ImGuiResourceHandler final : public Base
 {
@@ -31,10 +30,10 @@ private:
 
 	map<const wstring, ID3D11ShaderResourceView*> _imguitextures;
 
-	const wstring rootTexturePath = TEXT("../Binaries/Resources/Textures/");
+	const wstring rootTexturePath = L"Resources\\";
 public:
 	virtual void Free() override;
 
 };
 
-END
+

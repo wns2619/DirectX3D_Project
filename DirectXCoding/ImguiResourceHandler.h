@@ -2,8 +2,6 @@
 
 #include "Base.h"
 
-BEGIN(Client)
-
 class ImGuiResourceHandler final : public Base
 {
 	DECLARE_SINGLETON(ImGuiResourceHandler)
@@ -18,12 +16,9 @@ public:
 	void	LateTick(const _float& timeDelta);
 	HRESULT Render();
 
-
-public:
-	ID3D11ShaderResourceView* GetResourceTexture(const WCHAR* texturePath, _bool isCubeMap = false);
-
-public:
+private:
 	_bool CreateTextureFormFile(const WCHAR* texturePath, _bool isCubeMap = false);
+
 
 private:
 	ID3D11Device* _device				= nullptr;
@@ -31,10 +26,10 @@ private:
 
 	map<const wstring, ID3D11ShaderResourceView*> _imguitextures;
 
-	const wstring rootTexturePath = TEXT("../Binaries/Resources/Textures/");
+	const wstring rootTexturePath = L"Resources\\";
 public:
 	virtual void Free() override;
 
 };
 
-END
+

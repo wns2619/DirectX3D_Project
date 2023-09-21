@@ -13,6 +13,9 @@
 #include <Include\d3dx11effect.h>
 #include <DirectXTK\DDSTextureLoader.h>
 #include <DirectXTK\WICTextureLoader.h>
+#include <DirectXTex\DirectXTex.h>
+#include <DirectXTex\DirectXTex.inl>
+
 using namespace DirectX;
 using namespace Microsoft::WRL;
 

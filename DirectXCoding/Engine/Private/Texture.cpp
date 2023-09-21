@@ -46,6 +46,7 @@ HRESULT Texture::InitializePrototype(const wstring& textureFilePath, uint32 numT
 			return E_FAIL;
 
 		_shaderResourceViews[i] = resourceView;
+
 	}
 
 	return S_OK;
@@ -76,6 +77,7 @@ Texture* Texture::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContex
 		Safe_Release<Texture*>(texture);
 		return nullptr;
 	}
+
 
 	return texture;
 }
