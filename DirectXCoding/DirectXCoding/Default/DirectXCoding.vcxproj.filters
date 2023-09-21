@@ -53,6 +53,9 @@
     <Filter Include="소스 파일\01.Levels\02. Edit">
       <UniqueIdentifier>{470f438a-e938-461a-a023-537bd4aef7d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\97.Imgui\ImguiController">
+      <UniqueIdentifier>{1c2b7cd7-befc-44d0-9266-e112d371c70d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -127,6 +130,9 @@
     <ClInclude Include="..\Public\EditScene.h">
       <Filter>소스 파일\01.Levels\02. Edit</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ImguiResourceHandler.h">
+      <Filter>소스 파일\97.Imgui\ImguiController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -185,6 +191,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\EditScene.cpp">
       <Filter>소스 파일\01.Levels\02. Edit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Public\ImguiResourceHandler.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

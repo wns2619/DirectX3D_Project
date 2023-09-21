@@ -195,9 +195,6 @@
     <ClInclude Include="..\Public\CameraHelper.h">
       <Filter>03.Pipeline\CameraHelper</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Light.h">
-      <Filter>01.Utility\04.Component\Light</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\InputManager.h">
       <Filter>00.System\Input</Filter>
     </ClInclude>
@@ -277,9 +274,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\CameraHelper.cpp">
       <Filter>03.Pipeline\CameraHelper</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Light.cpp">
-      <Filter>01.Utility\04.Component\Light</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\InputManager.cpp">
       <Filter>00.System\Input</Filter>

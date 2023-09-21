@@ -19,6 +19,7 @@ public:
 
 public:
 	HRESULT Begin(uint32 passIndex);
+	HRESULT BindRawValue(const _char* constantName, const void* data, uint32 legnth);
 	HRESULT	BindMatrix(const _char* constantName, const Matrix* matrix) const ;
 	HRESULT BindMatrices(const _char* constantName, const Matrix* matrix, uint32 numMatrices) const;
 	HRESULT BindTexture(const _char* constantName, ID3D11ShaderResourceView* srv) const;

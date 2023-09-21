@@ -34,7 +34,6 @@
     <ClInclude Include="..\Public\Layer.h" />
     <ClInclude Include="..\Public\Level.h" />
     <ClInclude Include="..\Public\LevelManager.h" />
-    <ClInclude Include="..\Public\Light.h" />
     <ClInclude Include="..\Public\Macro.h" />
     <ClInclude Include="..\Public\ObjectManager.h" />
     <ClInclude Include="..\Public\Renderer.h" />
@@ -66,7 +65,6 @@
     <ClCompile Include="..\Private\Layer.cpp" />
     <ClCompile Include="..\Private\Level.cpp" />
     <ClCompile Include="..\Private\LevelManager.cpp" />
-    <ClCompile Include="..\Private\Light.cpp" />
     <ClCompile Include="..\Private\ObjectManager.cpp" />
     <ClCompile Include="..\Private\Renderer.cpp" />
     <ClCompile Include="..\Private\ResourceBase.cpp" />

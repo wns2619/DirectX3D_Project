@@ -78,6 +78,16 @@ HRESULT Shader::Begin(uint32 passIndex)
 	return S_OK;
 }
 
+HRESULT Shader::BindRawValue(const _char* constantName, const void* data, uint32 legnth)
+{
+	ID3DX11EffectVariable* variable = _effect->GetVariableByName(constantName);
+
+	if (nullptr == variable)
+		return E_FAIL;
+
+	return variable->SetRawValue(data, 0, legnth);
+}
+
 HRESULT Shader::BindMatrix(const _char* constantName, const Matrix* matrix) const
 {
 	ID3DX11EffectVariable* variable = _effect->GetVariableByName(constantName);

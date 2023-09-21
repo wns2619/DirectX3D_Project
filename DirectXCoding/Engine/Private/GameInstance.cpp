@@ -169,7 +169,75 @@ Component* GameInstance::CloneComponent(uint32 levelIndex, const wstring& protoT
 
 HRESULT GameInstance::BindTransformToShader(Shader* shader, const char* constantName, CameraHelper::TRANSFORMSTATE state)
 {
+    if (nullptr == _cameraHelper)
+        return E_FAIL;
+
     return _cameraHelper->BindTransformToShader(shader, constantName, state);
+}
+
+HRESULT GameInstance::BindCameraPosition(Shader* shader, const _char* constantName, uint32 legnth)
+{
+    if (nullptr == _cameraHelper)
+        return E_FAIL;
+
+    return _cameraHelper->BindCameraPosition(shader, constantName,legnth);
+}
+
+void GameInstance::SetTransform(CameraHelper::TRANSFORMSTATE state, FXMMATRIX trasnsformMatrix)
+{
+    if (nullptr == _cameraHelper)
+        return;
+
+    return _cameraHelper->SetTransform(state, trasnsformMatrix);
+}
+
+Matrix GameInstance::GetTransform(CameraHelper::TRANSFORMSTATE state) const
+{
+    if (nullptr == _cameraHelper)
+        return ::XMMatrixIdentity();
+
+    return _cameraHelper->GetTransform(state);
+}
+
+FXMMATRIX GameInstance::GetTransformCalculator(CameraHelper::TRANSFORMSTATE state) const
+{
+    if (nullptr == _cameraHelper)
+        return FXMMATRIX();
+
+
+    return _cameraHelper->GetTransformCalculator(state);
+}
+
+Matrix GameInstance::GetInverseTransform(CameraHelper::TRANSFORMSTATE state) const
+{
+    if (nullptr == _cameraHelper)
+        return ::XMMatrixIdentity();
+
+    return _cameraHelper->GetInverseTransform(state);
+}
+
+FXMMATRIX GameInstance::GetInverseTransformCalculator(CameraHelper::TRANSFORMSTATE state) const
+{
+    if (nullptr == _cameraHelper)
+        return FXMMATRIX();
+
+    return _cameraHelper->GetInverseTransformCalculator(state);
+}
+
+Vec4 GameInstance::GetCameraPosition() const
+{
+    if (nullptr == _cameraHelper)
+        return Vec4();
+
+    return _cameraHelper->GetCameraPosition();
+}
+
+XMVECTOR GameInstance::GetCameraCaculator() const
+{
+    if(nullptr == _cameraHelper)
+        return XMVECTOR();
+
+    return _cameraHelper->GetCameraCaculator();
 }
 
 void GameInstance::Release_Engine()

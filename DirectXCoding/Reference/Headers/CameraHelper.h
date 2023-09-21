@@ -23,11 +23,12 @@ public:
 	FXMMATRIX GetTransformCalculator(TRANSFORMSTATE state)			const;
 	Matrix GetInverseTransform(TRANSFORMSTATE state)				const;
 	FXMMATRIX GetInverseTransformCalculator(TRANSFORMSTATE state)	const;
-	Vec4 GetCameraPosition(TRANSFORMSTATE state)					const;
-	XMVECTOR GetCameraCaculator(TRANSFORMSTATE state)				const;
+	XMVECTOR GetCameraCaculator()									const;
+	Vec4 GetCameraPosition()										const;
 
 public:
 	HRESULT BindTransformToShader(Shader* shader, const char* constantName, CameraHelper::TRANSFORMSTATE state);
+	HRESULT BindCameraPosition(Shader* shader, const _char* constantName, uint32 legnth);
 
 public:
 	void Tick();

@@ -96,14 +96,19 @@ HRESULT Terrain::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(gameInstance->BindTransformToShader(_shader, "projMatrix", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
 		return E_FAIL;
-	
-	if (FAILED(_texture->BindShaderResource(_shader, "ShadersTexture", 0)))
+
+	if(FAILED(gameInstance->BindCameraPosition(_shader, "camPosition",sizeof(Vec4))))
 		return E_FAIL;
 
 	Safe_Release<GameInstance*>(gameInstance);
 
+	if (FAILED(_texture->BindShaderResource(_shader, "DiffuseTexture", 0)))
+		return E_FAIL;
+
 	return S_OK;
 }
+
+
 
 GameObject* Terrain::Clone(void* argument)
 {

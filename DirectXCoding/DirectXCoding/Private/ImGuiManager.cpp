@@ -55,64 +55,78 @@ HRESULT ImGuiManager::Render()
 
 	ImGui::ShowDemoWindow(&map_tool_window);
 
+	ImGuiWindowFlags windowFlags = 0;
+	if (!m_windowResizeFlag)
+		windowFlags |= ImGuiWindowFlags_NoResize;
+	if (!m_windowMoveFlag)
+		windowFlags |= ImGuiWindowFlags_NoMove;
 
 	if (map_tool_window)
 	{
-		ImGui::Begin("My Tool", &map_tool_window, ImGuiWindowFlags_MenuBar);
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.f, 0.05f, 0.1f, 1.f));
+		ImGui::SetNextWindowSize(ImVec2(200.f, 0.f));
+		ImGui::Begin("Main", NULL, windowFlags | ImGuiWindowFlags_NoTitleBar);
+		ImGui::Text("%.0f FPS", ImGui::GetIO().Framerate);
 
-		if (ImGui::BeginMenuBar())
-		{
-			if (ImGui::BeginMenu("Menu"))
-			{
-				if (ImGui::MenuItem("Open", "Ctrl+O")) {}
-				if (ImGui::MenuItem("Save", "Ctrl+S")) {}
-				if (ImGui::MenuItem("Close", "Ctrl+W")) {}
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+		ImGui::SameLine(ImGui::GetWindowWidth() - 28);
 
-				ImGui::EndMenu();
-			}
+		//if(ImGui::ImageButton())
 
-			ImGui::EndMenuBar();
-		}
+		//if (ImGui::BeginMenuBar())
+		//{
+		//	if (ImGui::BeginMenu("Menu"))
+		//	{
+		//		if (ImGui::MenuItem("Open", "Ctrl+O")) {}
+		//		if (ImGui::MenuItem("Save", "Ctrl+S")) {}
+		//		if (ImGui::MenuItem("Close", "Ctrl+W")) {}
 
-		ImGui::Text("dear imgui says hello! (%s) (%d)", IMGUI_VERSION, IMGUI_VERSION_NUM);
-		ImGui::Spacing();
+		//		ImGui::EndMenu();
+		//	}
 
-		if (ImGui::CollapsingHeader("Object"))
-		{
-			if (ImGui::TreeNode("Test"))
-			{
-				ImGui::SeparatorText("Furniture");
+		//	ImGui::EndMenuBar();
+		//}
 
-				ImGui::Spacing();
+		//ImGui::Text("dear imgui says hello! (%s) (%d)", IMGUI_VERSION, IMGUI_VERSION_NUM);
+		//ImGui::Spacing();
 
-				ImGui::BulletText("Inputs");
+		//if (ImGui::CollapsingHeader("Object"))
+		//{
+		//	if (ImGui::TreeNode("Test"))
+		//	{
+		//		ImGui::SeparatorText("Furniture");
 
-				ImGui::SeparatorText("Position Sliders");
+		//		ImGui::Spacing();
 
-				{
-					static int i = 0;
-					ImGui::SliderInt("Slider left or Right", &i, -1, 3);
+		//		ImGui::BulletText("Inputs");
 
-					static float f1 = 0.123f, f2 = 0.f;
-					ImGui::SliderFloat("Slider float", &f1, 0.f, 1.f, "Ratio = %.3f");
-					ImGui::SliderFloat("slider float (log)", &f2, -10.0f, 10.0f, "%.4f", ImGuiSliderFlags_Logarithmic);
+		//		ImGui::SeparatorText("Position Sliders");
 
-					static float angle = 0.0f;
-					ImGui::SliderAngle("slider angle", &angle);
+		//		{
+		//			static int i = 0;
+		//			ImGui::SliderInt("Slider left or Right", &i, -1, 3);
 
-					enum Element { Element_Fire, Element_Earth, Element_Air, Element_Water, Element_COUNT };
-					static int elem = Element_Fire;
-					const char* elems_names[Element_COUNT] = { "Fire", "Earth", "Air", "Water" };
-					const char* elem_name = (elem >= 0 && elem < Element_COUNT) ? elems_names[elem] : "Unknown";
-					ImGui::SliderInt("slider enum", &elem, 0, Element_COUNT - 1, elem_name); // Use ImGuiSliderFlags_NoInput flag to disable CTRL+Click here.
-					ImGui::SameLine();
-				}
+		//			static float f1 = 0.123f, f2 = 0.f;
+		//			ImGui::SliderFloat("Slider float", &f1, 0.f, 1.f, "Ratio = %.3f");
+		//			ImGui::SliderFloat("slider float (log)", &f2, -10.0f, 10.0f, "%.4f", ImGuiSliderFlags_Logarithmic);
 
-				ImGui::TreePop();
-			}
-		}
+		//			static float angle = 0.0f;
+		//			ImGui::SliderAngle("slider angle", &angle);
 
+		//			enum Element { Element_Fire, Element_Earth, Element_Air, Element_Water, Element_COUNT };
+		//			static int elem = Element_Fire;
+		//			const char* elems_names[Element_COUNT] = { "Fire", "Earth", "Air", "Water" };
+		//			const char* elem_name = (elem >= 0 && elem < Element_COUNT) ? elems_names[elem] : "Unknown";
+		//			ImGui::SliderInt("slider enum", &elem, 0, Element_COUNT - 1, elem_name); // Use ImGuiSliderFlags_NoInput flag to disable CTRL+Click here.
+		//			ImGui::SameLine();
+		//		}
 
+		//		ImGui::TreePop();
+		//	}
+		//}
+
+		ImGui::PopStyleVar();
+		ImGui::PopStyleColor();
 		ImGui::End();
 	}
 

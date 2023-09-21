@@ -1,19 +1,41 @@
-cbuffer MatrixBuffer
+cbuffer MatrixBuffer : register(b0)
 {
     matrix worldMatrix, viewMatrix, projMatrix;
 };
 
+cbuffer LightBuffer : register(b1)
+{
+    float3 lightDirection   = float3(1.f, -1.f, 1.f);
+    vector lightDiffuse     = vector(1.f, 1.f, 1.f, 1.f);
+    vector lightAmbient     = vector(1.f, 1.f, 1.f, 1.f);
+    vector lightSpecular    = vector(1.f, 1.f, 1.f, 1.f);
+}
+
+cbuffer Material : register(b2)
+{
+    vector materialAmbient   = vector(0.4f, 0.4f, 0.4f, 1.f);
+    vector materialSpecular  = vector(1.f, 1.f, 1.f, 1.f);
+}
+
+cbuffer camera : register(b3)
+{
+    vector camPosition;
+}
+
 struct VS_IN
 {
     float3 position : POSITION;
-    float3 normal : NORMAL;
-    float2 uv : TEXCOORD0;
+    float3 normal   : NORMAL;
+    float2 uv       : TEXCOORD0;
+   
 };
 
 struct VS_OUT
 {
     float4 position : SV_POSITION;
-    float2 uv : TEXCOORD0;
+    float3 normal   : NORMAL;
+    float2 uv       : TEXCOORD0;
+    float4 worldPos : TEXCOORD1;
 };
 
 
@@ -28,6 +50,8 @@ VS_OUT VS_MAIN(VS_IN input)
     
     output.position = mul(float4(input.position, 1.f), matWVP);
     output.uv = input.uv;
+    output.normal = mul(float4(input.normal, 0.f), worldMatrix);
+    output.worldPos = mul(float4(input.position, 1.f), worldMatrix);
     
     
     return output;
@@ -35,8 +59,10 @@ VS_OUT VS_MAIN(VS_IN input)
 
 struct PS_IN
 {
-    float4 postion : SV_POSITION;
-    float2 uv : TEXCOORD0;
+    float4 postion  : SV_POSITION;
+    float3 noraml   : NORMAL;
+    float2 uv       : TEXCOORD0;
+    float4 worldPos : TEXCOORD1;
 };
 
 struct PS_OUT 
@@ -44,7 +70,7 @@ struct PS_OUT
     float4 Color : SV_TARGET0;
 };
 
-sampler LinearSampler = sampler_state
+SamplerState LinearSampler : register(s0)
 {
     Filter = MIN_MAG_MIP_LINEAR;
     AddressU = wrap;
@@ -52,7 +78,7 @@ sampler LinearSampler = sampler_state
 
 };
 
-sampler PointSampler = sampler_state
+SamplerState PointSampler : register(s1)
 {
     Filter = MIN_MAG_MIP_POINT;
     AddressU = wrap;
@@ -60,15 +86,24 @@ sampler PointSampler = sampler_state
    
 };
 
-Texture2D ShadersTexture;
+Texture2D DiffuseTexture : register(t0);
 
 
 PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
     
-    Out.Color = ShadersTexture.Sample(LinearSampler, In.uv * 30.f);
-
+    vector mtldff = DiffuseTexture.Sample(LinearSampler, In.uv * 30.f);
+    
+    vector shader = max(dot(normalize(-lightDirection), normalize(In.noraml)), 0.f) + lightAmbient * materialAmbient;
+    
+    float3 reflectDirection = reflect(normalize(lightDirection), normalize(In.noraml));
+    float3 look = In.worldPos - camPosition;
+    
+    float specular = pow(max(dot(normalize(-look), normalize(reflectDirection)), 0.f), 30.f);
+    
+    Out.Color = (lightDiffuse * mtldff) * saturate(shader) + (lightSpecular * materialSpecular) * specular;
+    
     return Out;
 }
 

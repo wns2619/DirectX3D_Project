@@ -53,15 +53,12 @@ FXMMATRIX CameraHelper::GetInverseTransformCalculator(TRANSFORMSTATE state) cons
 	return ::XMLoadFloat4x4(&_transformInverseMatrices[static_cast<uint32>(state)]);
 }
 
-Vec4 CameraHelper::GetCameraPosition(TRANSFORMSTATE state) const
+Vec4 CameraHelper::GetCameraPosition() const
 {
-	if (state >= TRANSFORMSTATE::D3DTS_END || TRANSFORMSTATE::D3DTS_VIEW > state)
-		return Vec4();
-
 	return _camPosition;
 }
 
-XMVECTOR CameraHelper::GetCameraCaculator(TRANSFORMSTATE state) const
+XMVECTOR CameraHelper::GetCameraCaculator() const
 {
 	return ::XMLoadFloat4(&_camPosition);
 }
@@ -69,6 +66,11 @@ XMVECTOR CameraHelper::GetCameraCaculator(TRANSFORMSTATE state) const
 HRESULT CameraHelper::BindTransformToShader(Shader* shader, const char* constantName, CameraHelper::TRANSFORMSTATE state)
 {
 	return shader->BindMatrix(constantName, &_transformMatrices[static_cast<uint32>(state)]);
+}
+
+HRESULT CameraHelper::BindCameraPosition(Shader* shader, const _char* constantName, uint32 legnth)
+{
+	return shader->BindRawValue(constantName, &_camPosition, legnth);
 }
 
 void CameraHelper::Tick()

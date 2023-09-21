@@ -2,11 +2,12 @@
 #include "EditScene.h"
 
 #include "ImGuiManager.h"
+#include "ImguiResourceHandler.h"
 
 EditScene::EditScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : Level(device, deviceContext)
 {
-    ImGuiManager::GetInstance()->Initialize(device, deviceContext);
+
 }
 
 EditScene::~EditScene()
@@ -15,8 +16,8 @@ EditScene::~EditScene()
 
 HRESULT EditScene::Initialize()
 {
-
-
+    ImGuiManager::GetInstance()->Initialize(_device, _deviceContext);
+    //Im
     return S_OK;
 }
 

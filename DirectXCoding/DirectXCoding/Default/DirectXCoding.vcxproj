@@ -115,7 +115,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../Public/;../../Reference/Headers/;../Imgui/;./</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Public/;../../Reference/Headers/DirectXTK;../../Reference/Headers/;../Imgui/;./</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -144,7 +144,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../Public/;../../Reference/Headers/;../Imgui/;./</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Public/;../../Reference/Headers/DirectXTK;../../Reference/Headers/;../Imgui/;./</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -183,6 +183,7 @@
     <ClInclude Include="..\Public\Game.h" />
     <ClInclude Include="..\Public\GameScene.h" />
     <ClInclude Include="..\Public\ImGuiManager.h" />
+    <ClInclude Include="..\Public\ImguiResourceHandler.h" />
     <ClInclude Include="..\Public\LevelHelper.h" />
     <ClInclude Include="..\Public\LevelLoading.h" />
     <ClInclude Include="..\Public\Logo.h" />
@@ -238,6 +239,7 @@
     <ClCompile Include="..\Private\Terrain.cpp">
       <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">EditAndContinue</DebugInformationFormat>
     </ClCompile>
+    <ClCompile Include="..\Public\ImguiResourceHandler.cpp" />
     <ClCompile Include="DirectXCoding.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>

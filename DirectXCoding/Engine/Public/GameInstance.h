@@ -48,6 +48,14 @@ public: // Component Manager
 
 public: // Camera Helper
 	HRESULT BindTransformToShader(Shader* shader, const char* constantName, CameraHelper::TRANSFORMSTATE state);
+	HRESULT BindCameraPosition(Shader* shader, const _char* constantName, uint32 legnth);
+	void SetTransform(CameraHelper::TRANSFORMSTATE state, FXMMATRIX trasnsformMatrix);
+	Matrix GetTransform(CameraHelper::TRANSFORMSTATE state)						const;
+	FXMMATRIX GetTransformCalculator(CameraHelper::TRANSFORMSTATE state)		const;
+	Matrix GetInverseTransform(CameraHelper::TRANSFORMSTATE state)				const;
+	FXMMATRIX GetInverseTransformCalculator(CameraHelper::TRANSFORMSTATE state)	const;
+	XMVECTOR GetCameraCaculator()												const;
+	Vec4 GetCameraPosition()													const;
 
 private:
 	class TimeManager* _timeManager = nullptr;
