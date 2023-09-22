@@ -5,7 +5,7 @@ VIBufferTerrain::VIBufferTerrain(ID3D11Device* device, ID3D11DeviceContext* devi
     : VIBuffer(device, deviceContext)
 {
 }
-
+    
 VIBufferTerrain::VIBufferTerrain(const VIBufferTerrain& rhs)
     : VIBuffer(rhs), _numVerticesX(rhs._numVerticesX), _numVerticesZ(rhs._numVerticesZ)
 {
@@ -164,6 +164,8 @@ HRESULT VIBufferTerrain::InitializePrototype(const wstring& heightMapPath)
     Safe_Delete_Array<VertexTextureNormalData*>(vertices);
     Safe_Delete_Array<uint32*>(indices);
 
+    int a = 0;
+
     return S_OK;
 }
 
@@ -171,13 +173,11 @@ HRESULT VIBufferTerrain::Initialize(void* argument)
 {
     if (nullptr != argument)
     {
+
         TERRAIN_DESC* desc = static_cast<TERRAIN_DESC*>(argument);
 
         _numVerticesX = desc->numVerticesX;
         _numVerticesZ = desc->numVerticesZ;
-
-        _ulong* pixel = nullptr;
-        pixel = new _ulong[_numVerticesX * _numVerticesZ];
 
         _stride = sizeof(VertexTextureNormalData);
         _numvertices = _numVerticesX * _numVerticesZ;
@@ -202,7 +202,7 @@ HRESULT VIBufferTerrain::Initialize(void* argument)
 
             }
 
-        Safe_Delete_Array<_ulong*>(pixel);
+        //Safe_Delete_Array<_ulong*>(pixel);
 
 
         uint32* indices = new uint32[_numIndices];
@@ -281,6 +281,7 @@ HRESULT VIBufferTerrain::Initialize(void* argument)
 
         ::ZeroMemory(&_subResourceData, sizeof(_subResourceData));
         _subResourceData.pSysMem = vertices;
+   
 
         if (FAILED(__super::CreateBuffer(&_vertexBuffer)))
             return E_FAIL;
@@ -301,12 +302,16 @@ HRESULT VIBufferTerrain::Initialize(void* argument)
         ::ZeroMemory(&_subResourceData, sizeof(_subResourceData));
         _subResourceData.pSysMem = indices;
 
+
+
         if (FAILED(__super::CreateBuffer(&_indexBuffer)))
             return E_FAIL;
 
         Safe_Delete_Array<VertexTextureNormalData*>(vertices);
         Safe_Delete_Array<uint32*>(indices);
+        int a = 0;
     }
+
 
     return S_OK;
 }

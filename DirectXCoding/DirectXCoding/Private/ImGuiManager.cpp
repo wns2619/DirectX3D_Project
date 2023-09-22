@@ -8,6 +8,8 @@
 #include "ImguiResourceHandler.h"
 #include "GameInstance.h"
 
+
+
 IMPLEMENT_SINGLETON(ImGuiManager)
 
 ImGuiManager::ImGuiManager()
@@ -246,8 +248,8 @@ HRESULT ImGuiManager::Render()
 		static int i1 = 0;
 
 		ImGui::SeparatorText("Terrain Width or Height");
-		ImGui::DragInt("Terrain Width", &i1, 2, 0, INT_MAX);
-		ImGui::DragInt("Terrain Height", &i1, 2, 0, INT_MAX);
+		ImGui::DragInt("Terrain Width", &i1, 4, 0, INT_MAX);
+		ImGui::DragInt("Terrain Height", &i1, 4, 0, INT_MAX);
 
 
 		ImGui::Spacing();
@@ -256,7 +258,13 @@ HRESULT ImGuiManager::Render()
 
 		if (ImGui::Button("Create"))
 		{
-			//if(FAILED(gameInstance->))
+			desc.numVerticesX = i1;
+			desc.numVerticesZ = i1;
+
+
+
+			if(FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), TEXT("LayerEditTerrain"), TEXT("ProtoTypeGameObjectEditTerrain"))))
+				return E_FAIL;
 		}
 
 		ImGui::SameLine();
@@ -356,59 +364,3 @@ void ImGuiManager::Free()
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 }
-
-
-
-//if(ImGui::ImageButton())
-
-//if (ImGui::BeginMenuBar())
-//{
-//	if (ImGui::BeginMenu("Menu"))
-//	{
-//		if (ImGui::MenuItem("Open", "Ctrl+O")) {}
-//		if (ImGui::MenuItem("Save", "Ctrl+S")) {}
-//		if (ImGui::MenuItem("Close", "Ctrl+W")) {}
-
-//		ImGui::EndMenu();
-//	}
-
-//	ImGui::EndMenuBar();
-//}
-
-//ImGui::Text("dear imgui says hello! (%s) (%d)", IMGUI_VERSION, IMGUI_VERSION_NUM);
-//ImGui::Spacing();
-
-//if (ImGui::CollapsingHeader("Object"))
-//{
-//	if (ImGui::TreeNode("Test"))
-//	{
-//		ImGui::SeparatorText("Furniture");
-
-//		ImGui::Spacing();
-
-//		ImGui::BulletText("Inputs");
-
-//		ImGui::SeparatorText("Position Sliders");
-
-//		{
-//			static int i = 0;
-//			ImGui::SliderInt("Slider left or Right", &i, -1, 3);
-
-//			static float f1 = 0.123f, f2 = 0.f;
-//			ImGui::SliderFloat("Slider float", &f1, 0.f, 1.f, "Ratio = %.3f");
-//			ImGui::SliderFloat("slider float (log)", &f2, -10.0f, 10.0f, "%.4f", ImGuiSliderFlags_Logarithmic);
-
-//			static float angle = 0.0f;
-//			ImGui::SliderAngle("slider angle", &angle);
-
-//			enum Element { Element_Fire, Element_Earth, Element_Air, Element_Water, Element_COUNT };
-//			static int elem = Element_Fire;
-//			const char* elems_names[Element_COUNT] = { "Fire", "Earth", "Air", "Water" };
-//			const char* elem_name = (elem >= 0 && elem < Element_COUNT) ? elems_names[elem] : "Unknown";
-//			ImGui::SliderInt("slider enum", &elem, 0, Element_COUNT - 1, elem_name); // Use ImGuiSliderFlags_NoInput flag to disable CTRL+Click here.
-//			ImGui::SameLine();
-//		}
-
-//		ImGui::TreePop();
-//	}
-//}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Client_Define.h"
+#include "VIBufferTerrain.h"
 #include "Base.h"
 
 BEGIN(Client)
@@ -40,6 +41,8 @@ private:
 	_float _splitterButtonPadding		= 10.f;
 	
 	_float _TerrainSectionHeight		= 130.f;
+
+	VIBufferTerrain::TERRAIN_DESC desc = {};
 
 public:
 	virtual void Free() override;

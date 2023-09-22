@@ -212,5 +212,8 @@
     <FxCompile Include="..\Binaries\Shaders\HillsShader.fx">
       <Filter>소스 파일\98.Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="..\Binaries\Shaders\WireFrameHills.fx">
+      <Filter>소스 파일\98.Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

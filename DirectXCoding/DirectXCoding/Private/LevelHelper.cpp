@@ -147,20 +147,16 @@ HRESULT LevelHelper::LodingforLevelEdit()
 {
     GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentEditVIBufferTerrain"),
-        Texture::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Terrain/Tile0.jpg")))))
-        return E_FAIL;
-
     _title = TEXT("Mesh Loading");
 
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentEditTextureTerrain"),
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentEditVIBufferTerrain"),
         VIBufferTerrain::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Terrain/Height1.bmp")))))
         return E_FAIL;
 
     _title = TEXT("Shader Loading");
 
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentEditHillsShader"),
-        Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/HillsShader.fx"),
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentEditHillsShader"),
+        Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/WireFrameHills.fx"),
             VertexTextureNormalData::Elements, VertexTextureNormalData::numElements))))
         return E_FAIL;
 

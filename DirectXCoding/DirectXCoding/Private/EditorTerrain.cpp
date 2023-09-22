@@ -17,7 +17,7 @@ EditorTerrain::EditorTerrain(const EditorTerrain& rhs)
 
 HRESULT EditorTerrain::InitializePrototype()
 {
-	return S_OK;
+ 	return S_OK;
 }
 
 HRESULT EditorTerrain::Initialize(void* pArg)
@@ -88,11 +88,6 @@ HRESULT EditorTerrain::Ready_Components(void* pArg)
 		return E_FAIL;
 
 
-	/* Texture Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentEditTextureTerrain"),
-		TEXT("ComponenetEditTexture"), reinterpret_cast<Component**>(&_texture))))
-		return E_FAIL;
-
 	/* Transform Component */
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
 		TEXT("ComponentEditTransform"), reinterpret_cast<Component**>(&_transform))))
@@ -119,8 +114,8 @@ HRESULT EditorTerrain::Bind_ShaderResources()
 
 	Safe_Release<GameInstance*>(gameInstance);
 
-	if (FAILED(_texture->BindShaderResource(_shader, "DiffuseTexture", 0)))
-		return E_FAIL;
+	//if (FAILED(_texture->BindShaderResource(_shader, "DiffuseTexture", 0)))
+	//	return E_FAIL;
 
 	return S_OK;
 }
