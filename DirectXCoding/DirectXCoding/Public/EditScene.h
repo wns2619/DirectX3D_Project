@@ -16,6 +16,9 @@ public:
 	virtual HRESULT LateTick(const _float& timeDelata)	override;
 
 public:
+	HRESULT ReadyLayerEditCamera(const wstring& layerTag);
+
+public:
 	static EditScene* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	virtual void Free() override;
 };

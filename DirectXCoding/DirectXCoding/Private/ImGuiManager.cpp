@@ -242,8 +242,31 @@ HRESULT ImGuiManager::Render()
 	if (ImGui::CollapsingHeader("Terrain Panel", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		// TODO
-	}
 
+		static int i1 = 0;
+
+		ImGui::SeparatorText("Terrain Width or Height");
+		ImGui::DragInt("Terrain Width", &i1, 2, 0, INT_MAX);
+		ImGui::DragInt("Terrain Height", &i1, 2, 0, INT_MAX);
+
+
+		ImGui::Spacing();
+
+		ImGui::SeparatorText("Terrain Create or Delete");
+
+		if (ImGui::Button("Create"))
+		{
+			//if(FAILED(gameInstance->))
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Delete"))
+		{
+
+		}
+
+	}
 	ImGui::EndChild();
 
 	ImGui::End();

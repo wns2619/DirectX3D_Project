@@ -4,6 +4,7 @@
 #include "BackGround.h"
 #include "Terrain.h"
 #include "PlayerCamera.h"
+#include "EditorTerrain.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -127,7 +128,7 @@ HRESULT LevelHelper::LodingforLevelGame()
     _title = TEXT("Object Loading");
 
     if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectTerrain"), 
-        Terrain::Create(_device, _deviceContext))))
+        EditorTerrain::Create(_device, _deviceContext))))
         return E_FAIL;
 
     if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectCamera"),
@@ -146,16 +147,32 @@ HRESULT LevelHelper::LodingforLevelEdit()
 {
     GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-    _title = TEXT("Texture Loading");
-
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentEditVIBufferTerrain"),
+        Texture::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Terrain/Tile0.jpg")))))
+        return E_FAIL;
 
     _title = TEXT("Mesh Loading");
 
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentEditTextureTerrain"),
+        VIBufferTerrain::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Terrain/Height1.bmp")))))
+        return E_FAIL;
 
     _title = TEXT("Shader Loading");
 
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentEditHillsShader"),
+        Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/HillsShader.fx"),
+            VertexTextureNormalData::Elements, VertexTextureNormalData::numElements))))
+        return E_FAIL;
 
     _title = TEXT("Object Loading");
+
+    if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectEditTerrain"),
+        EditorTerrain::Create(_device, _deviceContext))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectEditCamera"),
+        PlayerCamera::Create(_device, _deviceContext))))
+        return E_FAIL;
 
 
     _title = TEXT("Loading Successed");

@@ -42,10 +42,10 @@ void PlayerCamera::Tick(const _float& timeDelta)
 	
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-	POINT		pt{ g_iWinSizeX >> 1, g_iWinSizeY >> 1 };
-
-	::ClientToScreen(g_hWnd, &pt);
-	::SetCursorPos(pt.x, pt.y);
+	//POINT		pt{ g_iWinSizeX >> 1, g_iWinSizeY >> 1 };
+	//
+	//::ClientToScreen(g_hWnd, &pt);
+	//::SetCursorPos(pt.x, pt.y);
 
 
 	if (gameInstance->Get_DIKeyState(DIK_A) & 0x80)

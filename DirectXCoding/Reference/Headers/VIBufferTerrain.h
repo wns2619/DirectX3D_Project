@@ -6,6 +6,12 @@ BEGIN(Engine)
 
 class ENGINE_DLL VIBufferTerrain final : public VIBuffer
 {
+public:
+	struct TERRAIN_DESC
+	{
+		_ulong numVerticesX = 0;
+		_ulong numVerticesZ = 0;
+	};
 private:
 	explicit VIBufferTerrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	explicit VIBufferTerrain(const VIBufferTerrain& rhs);
