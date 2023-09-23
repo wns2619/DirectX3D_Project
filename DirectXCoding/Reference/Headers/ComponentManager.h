@@ -6,6 +6,8 @@
 #include "VIBufferTerrain.h"
 #include "Texture.h"
 #include "Transform.h"
+#include "ConstantBuffer.h"
+#include "Light.h"
 
 BEGIN(Engine)
 
@@ -23,6 +25,7 @@ public:
 	HRESULT	ReserveManager(uint32 numLevels);
 	HRESULT	AddProtoType(uint32 levelIndex, const wstring& protoTypeTag, class Component* protoType);
 	Component* CloneComponent(uint32 levelIndex, const wstring& protoTypeTag, void* argument);
+	void Clear(uint32 levelIndex);
 
 private:
 	uint32 _numLevels = 0;

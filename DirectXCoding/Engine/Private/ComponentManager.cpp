@@ -45,6 +45,14 @@ Component* ComponentManager::CloneComponent(uint32 levelIndex, const wstring& pr
 	return component;
 }
 
+void ComponentManager::Clear(uint32 levelIndex)
+{
+	for (auto& pair : _protoTypes[levelIndex])
+		Safe_Release<Component*>(pair.second);
+
+	_protoTypes[levelIndex].clear();
+}
+
 Component* ComponentManager::FindProtoType(uint32 levelIndex, const wstring& protoTypeTag)
 {
 	if (levelIndex >= _numLevels)

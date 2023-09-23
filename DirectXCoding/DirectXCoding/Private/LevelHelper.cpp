@@ -125,10 +125,14 @@ HRESULT LevelHelper::LodingforLevelGame()
             VertexTextureNormalData::Elements, VertexTextureNormalData::numElements))))
         return E_FAIL;
 
+    if (FAILED(gameInstance->AddLightProtoType(static_cast<uint32>(LEVEL::GAME), Light::LightType::DIRECTIONAL, TEXT("ProtoTypeComponentLight"),
+        Light::Create(_device, _deviceContext))))
+        return E_FAIL;
+
     _title = TEXT("Object Loading");
 
     if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectTerrain"), 
-        EditorTerrain::Create(_device, _deviceContext))))
+        Terrain::Create(_device, _deviceContext))))
         return E_FAIL;
 
     if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectCamera"),
@@ -159,6 +163,7 @@ HRESULT LevelHelper::LodingforLevelEdit()
         Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/WireFrameHills.fx"),
             VertexTextureNormalData::Elements, VertexTextureNormalData::numElements))))
         return E_FAIL;
+
 
     _title = TEXT("Object Loading");
 

@@ -1,14 +1,14 @@
+#include "LightHelper.fx"
+
 cbuffer MatrixBuffer : register(b0)
 {
     matrix worldMatrix, viewMatrix, projMatrix;
 };
 
+
 cbuffer LightBuffer : register(b1)
 {
-    float3 lightDirection   = float3(1.f, -1.f, 1.f);
-    vector lightDiffuse     = vector(1.f, 1.f, 1.f, 1.f);
-    vector lightAmbient     = vector(1.f, 1.f, 1.f, 1.f);
-    vector lightSpecular    = vector(1.f, 1.f, 1.f, 1.f);
+    DirectionalLight dirLight;
 }
 
 cbuffer Material : register(b2)
@@ -95,14 +95,14 @@ PS_OUT PS_MAIN(PS_IN In)
     
     vector mtldff = DiffuseTexture.Sample(LinearSampler, In.uv * 30.f);
     
-    vector shader = max(dot(normalize(-lightDirection), normalize(In.noraml)), 0.f) + lightAmbient * materialAmbient;
+    vector shader = max(dot(normalize(-dirLight.Direction.xyz), normalize(In.noraml)), 0.f) + dirLight.Ambient * materialAmbient;
     
-    float3 reflectDirection = reflect(normalize(lightDirection), normalize(In.noraml));
+    float3 reflectDirection = reflect(normalize(dirLight.Direction.xyz), normalize(In.noraml));
     float3 look = In.worldPos - camPosition;
     
     float specular = pow(max(dot(normalize(-look), normalize(reflectDirection)), 0.f), 30.f);
     
-    Out.Color = (lightDiffuse * mtldff) * saturate(shader) + (lightSpecular * materialSpecular) * specular;
+    Out.Color = (dirLight.Diffuse * mtldff) * saturate(shader) + (dirLight.Specular * materialSpecular) * specular;
     
     return Out;
 }

@@ -6,8 +6,6 @@ BEGIN(Engine)
 
 class ENGINE_DLL Shader final : public Component
 {
-public:
-	enum class LIGHTTYPE { DIRECTIONAL, POINT, SPOT, LIGHT_END };
 private:
 	explicit Shader(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	explicit Shader(const Shader& rhs);
@@ -19,7 +17,7 @@ public:
 
 public:
 	HRESULT Begin(uint32 passIndex);
-	HRESULT BindRawValue(const _char* constantName, const void* data, uint32 legnth);
+	HRESULT BindRawValue(const _char* constantName, const void* data, uint32 legnth, uint32 offset = 0);
 	HRESULT	BindMatrix(const _char* constantName, const Matrix* matrix) const ;
 	HRESULT BindMatrices(const _char* constantName, const Matrix* matrix, uint32 numMatrices) const;
 	HRESULT BindTexture(const _char* constantName, ID3D11ShaderResourceView* srv) const;

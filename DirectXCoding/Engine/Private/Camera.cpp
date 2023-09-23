@@ -41,7 +41,7 @@ HRESULT Camera::Initialize(void* argument)
 	if (nullptr == _transform)
 		return E_FAIL;
 	
-	if (_transform->Initialize(argument))
+	if (FAILED(_transform->Initialize(argument)))
 		return E_FAIL;
 
 	_transform->SetState(Transform::STATE::POSITION, ::XMLoadFloat4(&_cameraDesc._eye));

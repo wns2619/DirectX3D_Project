@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base.h"
+#include "Light.h"
 
 BEGIN(Engine)
 
@@ -29,6 +30,8 @@ protected:
 
 protected:
 	HRESULT	AddComponent(uint32 levelIndex, const wstring& prototypeTag, const wstring& ComponentTag,
+		_Inout_ Component** componentout, void* argument = nullptr);
+	HRESULT AddLightComponent(uint32 levelIndex, const Light::LightType type, const wstring& ComponentTag,
 		_Inout_ Component** componentout, void* argument = nullptr);
 	Component* FindComponent(const wstring& componentTag);
 public:

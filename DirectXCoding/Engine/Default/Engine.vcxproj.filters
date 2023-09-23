@@ -94,14 +94,17 @@
     <Filter Include="03.Pipeline\CameraHelper">
       <UniqueIdentifier>{03e2ffb7-43d8-496f-9744-75047c17132c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\04.Component\Light">
-      <UniqueIdentifier>{8a71af49-5061-4da5-a435-a0fcd6a444f5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="00.System\Input">
       <UniqueIdentifier>{b10aa7c9-7451-4f64-ad1e-c6b58b7ff81a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\97.ResourceHandler">
-      <UniqueIdentifier>{6a99171a-f515-4ea2-81dd-ef7a4bbe7c6f}</UniqueIdentifier>
+    <Filter Include="01.Utility\98.Manager\Light">
+      <UniqueIdentifier>{32b97810-b562-497f-9f42-e8f3c018a078}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Light">
+      <UniqueIdentifier>{d2a58286-bc7e-46c1-b232-42e437613960}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\VIBuffer\ConstantBuffer">
+      <UniqueIdentifier>{46b8bbaf-ae0f-4b4f-bd28-8de67cabe7b7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -201,8 +204,14 @@
     <ClInclude Include="..\Public\InputManager.h">
       <Filter>00.System\Input</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ImguiResourceHandler.h">
-      <Filter>01.Utility\97.ResourceHandler</Filter>
+    <ClInclude Include="..\Public\Light.h">
+      <Filter>01.Utility\04.Component\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LightManager.h">
+      <Filter>01.Utility\98.Manager\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ConstantBuffer.h">
+      <Filter>01.Utility\04.Component\VIBuffer\ConstantBuffer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -284,8 +293,14 @@
     <ClCompile Include="..\Private\InputManager.cpp">
       <Filter>00.System\Input</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ImguiResourceHandler.cpp">
-      <Filter>01.Utility\97.ResourceHandler</Filter>
+    <ClCompile Include="..\Private\Light.cpp">
+      <Filter>01.Utility\04.Component\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LightManager.cpp">
+      <Filter>01.Utility\98.Manager\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ConstantBuffer.cpp">
+      <Filter>01.Utility\04.Component\VIBuffer\ConstantBuffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -108,6 +108,7 @@ HRESULT Game::ReadyProtoTypeComponents()
 		Transform::Create(_device, _devicecontext))))
 		return E_FAIL;
 
+
 	Safe_AddRef<Renderer*>(_renderer);
 
 	return S_OK;

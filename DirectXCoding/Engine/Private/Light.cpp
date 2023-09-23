@@ -5,53 +5,66 @@
 Light::Light(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: Component(device, deviceContext)
 {
-	::ZeroMemory(&_lightGroup, sizeof(_lightGroup));
+	
 }
 
 Light::Light(const Light& rhs)
-	: Component(rhs)
-	, _lightGroup(rhs._lightGroup)
+	: Component(rhs), _dirLight(rhs._dirLight)
 {
-	
 }
 
 HRESULT Light::InitializePrototype()
 {
+
 	return S_OK;
 }
 
 HRESULT Light::Initialize(void* argument)
-{ 
-	if (nullptr != argument)
+{
+	if (argument != nullptr)
 	{
-		LightGroup* group = static_cast<LightGroup*>(argument);
-		/* Directional Light */
-		_lightGroup.dirLight.Ambient = group->dirLight.Ambient;
-		_lightGroup.dirLight.Diffuse = group->dirLight.Diffuse;
-		_lightGroup.dirLight.Direction = group->dirLight.Direction;
-		_lightGroup.dirLight.Specular = group->dirLight.Specular;
+		DirectinoalLight* light = static_cast<DirectinoalLight*>(argument);
 
-		/* Point Light */
-		_lightGroup.pointLight.Ambient = group->pointLight.Ambient;
-		_lightGroup.pointLight.Attenuation = group->pointLight.Attenuation;
-		_lightGroup.pointLight.Diffuse = group->pointLight.Diffuse;
-		_lightGroup.pointLight.Position = group->pointLight.Position;
-		_lightGroup.pointLight.Range = group->pointLight.Range;
-		_lightGroup.pointLight.Specular = group->pointLight.Specular;
-
-		/* Spot Light */
-		_lightGroup.spotLight.Ambient = group->spotLight.Ambient;
-		_lightGroup.spotLight.Attenuation = group->spotLight.Attenuation;
-		_lightGroup.spotLight.Diffuse = group->spotLight.Diffuse;
-		_lightGroup.spotLight.Direction = group->spotLight.Direction;
-		_lightGroup.spotLight.Position = group->spotLight.Position;
-		_lightGroup.spotLight.Range = group->spotLight.Range;
-		_lightGroup.spotLight.Specular = group->spotLight.Specular;
-		_lightGroup.spotLight.Spot = group->spotLight.Spot;
-		
+		_dirLight.Ambient = light->Ambient;
+		_dirLight.Diffuse = light->Diffuse;
+		_dirLight.Direction = light->Direction;
+		_dirLight.Specular = light->Specular;
+		_dirLight.Pad = light->Pad;
 	}
+
 	return S_OK;
 }
+
+void Light::FowardSetup(ID3D11Buffer* constantbuffer, LightType type)
+{
+	//ID3D11DepthStencilState* lightDepthStencilState = nullptr;
+	//_deviceContext->OMSetDepthStencilState(lightDepthStencilState, 0);
+
+	//D3D11_MAPPED_SUBRESOURCE MappedResource;
+	//if (FAILED(_deviceContext->Map(constantbuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource)))
+	//{
+	//	CB_DIRECTIONAL* directionalValues = static_cast<CB_DIRECTIONAL*>(MappedResource.pData);
+	//	directionalValues->ambientLower = GammaToLinear(_directionalLight.ambientLower);
+	//	directionalValues->ambientRange = GammaToLinear(_directionalLight.ambientRange) - GammaToLinear(_directionalLight.ambientLower);
+	//	directionalValues->directionToLight = -DirectionalDir;
+	//	directionalValues->DirectionalColor = GammaToLinear(_directionalLight.DirectionalColor);
+	//	_deviceContext->Unmap(constantbuffer, 0);
+
+	//	_deviceContext->PSSetConstantBuffers(1, 1, &constantbuffer);
+	//}
+
+	//Safe_Release<ID3D11DepthStencilState*>(lightDepthStencilState);
+}
+
+HRESULT Light::BindingLightToShader(Shader* shader, const _char* constantName, LightType type, uint32 legnth, uint32 offset)
+{
+	if (type < LightType::AMBIENT || type >= LightType::LIGHT_END)
+		return E_FAIL;
+
+	if(LightType::DIRECTIONAL == type)
+		return shader->BindRawValue(constantName, &_dirLight, legnth, offset);
+}
+
 
 Light* Light::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
@@ -59,7 +72,7 @@ Light* Light::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 
 	if (FAILED(light->InitializePrototype()))
 	{
-		MSG_BOX("Light Created Failed");
+		::MSG_BOX("Create Failed Light : prototype");
 		Safe_Release<Light*>(light);
 		return nullptr;
 	}
@@ -73,12 +86,13 @@ Component* Light::Clone(void* argument)
 
 	if (FAILED(light->Initialize(argument)))
 	{
-		MSG_BOX("Light Created Clond Failed");
+		::MSG_BOX("Create Filaed Light : Clone");
 		Safe_Release<Light*>(light);
 		return nullptr;
 	}
 
 	return light;
+
 }
 
 void Light::Free()

@@ -215,5 +215,11 @@
     <FxCompile Include="..\Binaries\Shaders\WireFrameHills.fx">
       <Filter>소스 파일\98.Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="..\Binaries\Shaders\DirectionalLight.fx">
+      <Filter>소스 파일\98.Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Binaries\Shaders\LightHelper.fx">
+      <Filter>소스 파일\98.Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

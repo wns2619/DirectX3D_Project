@@ -3,6 +3,7 @@
 #include "ComponentManager.h"
 #include "CameraHelper.h"
 #include "InputManager.h"
+#include "LightManager.h"
 
 BEGIN(Engine)
 
@@ -57,6 +58,11 @@ public: // Camera Helper
 	XMVECTOR GetCameraCaculator()												const;
 	Vec4 GetCameraPosition()													const;
 
+public: // LightManager
+	HRESULT AddLightProtoType(uint32 levelIndex, Light::LightType type, const wstring& lighttag, Component* prototype);
+	Component* CloneLight(uint32 levelIndex, Light::LightType type, const wstring& lighttag, void* argument);
+
+
 private:
 	class TimeManager* _timeManager = nullptr;
 	class GraphicsManager* _graphicManager = nullptr;
@@ -65,6 +71,7 @@ private:
 	class ComponentManager* _componentManager = nullptr;
 	class CameraHelper* _cameraHelper = nullptr;
 	class InputManager* _inputManager = nullptr;
+	class LightManager* _lightManager = nullptr;
 
 public:
 	static void Release_Engine();

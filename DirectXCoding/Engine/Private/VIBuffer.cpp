@@ -55,15 +55,17 @@ HRESULT VIBuffer::Render()
 		0,
 	};
 
-	_deviceContext->IASetVertexBuffers(0, _numVBs, vertexBuffer, Strides, offSet);
+	_deviceContext->IASetPrimitiveTopology(_topology);
 
+	_deviceContext->IASetVertexBuffers(0, _numVBs, vertexBuffer, Strides, offSet);
 	_deviceContext->IASetIndexBuffer(_indexBuffer, _indexFormat, 0);
 
 	// 1
 	// 2 shader code 
-	_deviceContext->IASetPrimitiveTopology(_topology);
 
+	// 콘스탄트 버퍼 셋
 
+	// 가장 마지막에 그린다.
 	_deviceContext->DrawIndexed(_numIndices, 0, 0);
 
 	return S_OK;

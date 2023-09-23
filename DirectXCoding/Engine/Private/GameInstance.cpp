@@ -4,7 +4,7 @@
 #include "GraphicsManager.h"
 #include "LevelManager.h"
 #include "ObjectManager.h"
-#include "ImguiResourceHandler.h"
+
 
 IMPLEMENT_SINGLETON(GameInstance)
 
@@ -12,10 +12,11 @@ GameInstance::GameInstance()
     : _timeManager(TimeManager::GetInstance()), _graphicManager(GraphicsManager::GetInstance()), 
     _levelManager(LevelManager::GetInstance()), _objectManager(ObjectManager::GetInstance()),
     _componentManager(ComponentManager::GetInstance()), _cameraHelper(CameraHelper::GetInstance())
-    , _inputManager(InputManager::GetInstance())
+    , _inputManager(InputManager::GetInstance()), _lightManager(LightManager::GetInstance())
 {
     Safe_AddRef<InputManager*>(_inputManager);
     Safe_AddRef<CameraHelper*>(_cameraHelper);
+    Safe_AddRef<LightManager*>(_lightManager);
     Safe_AddRef<ComponentManager*>(_componentManager);
     Safe_AddRef<ObjectManager*>(_objectManager);
     Safe_AddRef<LevelManager*>(_levelManager);
@@ -37,6 +38,9 @@ HRESULT GameInstance::Initialize_Engine(uint32 levelNumbers, HINSTANCE instance,
     if (FAILED(_componentManager->ReserveManager(levelNumbers)))
         return E_FAIL;
 
+    if (FAILED(_lightManager->ReserveManager(levelNumbers)))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -56,6 +60,8 @@ void GameInstance::Tick(_float fTimeDelta)
 void GameInstance::Clear(uint32 levelIndex)
 {
     _objectManager->Clear(levelIndex);
+    _lightManager->Clear(levelIndex);
+    //_componentManager->Clear(levelIndex);
 }
 
 _float GameInstance::ComputeTimeDelta(const wstring& timerTag)
@@ -233,6 +239,24 @@ Vec4 GameInstance::GetCameraPosition() const
     return _cameraHelper->GetCameraPosition();
 }
 
+HRESULT GameInstance::AddLightProtoType(uint32 levelIndex, Light::LightType type, const wstring& lighttag, Component* prototype)
+{
+    if (nullptr == _lightManager)
+        return E_FAIL;
+
+    _lightManager->AddLightProtoType(levelIndex, type, lighttag, prototype);
+
+    return S_OK;
+}
+
+Component* GameInstance::CloneLight(uint32 levelIndex, Light::LightType type, const wstring& lighttag, void* argument)
+{
+    if(nullptr == _lightManager)
+        return nullptr;
+
+    return _lightManager->CloneLight(levelIndex, type, lighttag, argument);
+}
+
 XMVECTOR GameInstance::GetCameraCaculator() const
 {
     if(nullptr == _cameraHelper)
@@ -248,6 +272,7 @@ void GameInstance::Release_Engine()
     GameInstance::GetInstance()->DestroyInstance();
     ObjectManager::GetInstance()->DestroyInstance();
     LevelManager::GetInstance()->DestroyInstance();
+    LightManager::GetInstance()->DestroyInstance();
     ComponentManager::GetInstance()->DestroyInstance();
     TimeManager::GetInstance()->DestroyInstance();
     GraphicsManager::GetInstance()->DestroyInstance();
@@ -257,6 +282,7 @@ void GameInstance::Free()
 {
     Safe_Release<InputManager*>(_inputManager);
     Safe_Release<CameraHelper*>(_cameraHelper);
+    Safe_Release<LightManager*>(_lightManager);
     Safe_Release<ComponentManager*>(_componentManager);
     Safe_Release<ObjectManager*>(_objectManager);
     Safe_Release<LevelManager*>(_levelManager);
