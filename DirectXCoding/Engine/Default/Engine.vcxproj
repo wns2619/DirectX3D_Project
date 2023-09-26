@@ -22,6 +22,7 @@
     <ClInclude Include="..\Public\Base.h" />
     <ClInclude Include="..\Public\Camera.h" />
     <ClInclude Include="..\Public\CameraHelper.h" />
+    <ClInclude Include="..\Public\ColliderBase.h" />
     <ClInclude Include="..\Public\Component.h" />
     <ClInclude Include="..\Public\ComponentManager.h" />
     <ClInclude Include="..\Public\ConstantBuffer.h" />
@@ -41,6 +42,7 @@
     <ClInclude Include="..\Public\Mesh.h" />
     <ClInclude Include="..\Public\Model.h" />
     <ClInclude Include="..\Public\ObjectManager.h" />
+    <ClInclude Include="..\Public\Picking.h" />
     <ClInclude Include="..\Public\Renderer.h" />
     <ClInclude Include="..\Public\ResourceBase.h" />
     <ClInclude Include="..\Public\Shader.h" />
@@ -61,6 +63,7 @@
     <ClCompile Include="..\Private\Base.cpp" />
     <ClCompile Include="..\Private\Camera.cpp" />
     <ClCompile Include="..\Private\CameraHelper.cpp" />
+    <ClCompile Include="..\Private\ColliderBase.cpp" />
     <ClCompile Include="..\Private\Component.cpp" />
     <ClCompile Include="..\Private\ComponentManager.cpp" />
     <ClCompile Include="..\Private\ConstantBuffer.cpp" />
@@ -76,6 +79,7 @@
     <ClCompile Include="..\Private\Mesh.cpp" />
     <ClCompile Include="..\Private\Model.cpp" />
     <ClCompile Include="..\Private\ObjectManager.cpp" />
+    <ClCompile Include="..\Private\Picking.cpp" />
     <ClCompile Include="..\Private\Renderer.cpp" />
     <ClCompile Include="..\Private\ResourceBase.cpp" />
     <ClCompile Include="..\Private\Shader.cpp" />

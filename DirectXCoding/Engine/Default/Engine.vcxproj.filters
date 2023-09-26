@@ -112,6 +112,15 @@
     <Filter Include="01.Utility\04.Component\Model\Mesh">
       <UniqueIdentifier>{5cf39855-b1d7-4d80-b96c-43f464a08999}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Component\Collider">
+      <UniqueIdentifier>{9a4b20af-400d-4186-85c5-8a75ef80e558}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Picking">
+      <UniqueIdentifier>{78f85660-3401-4d82-9aef-a3df15abac56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Collider\Base">
+      <UniqueIdentifier>{ce459943-038f-4030-8344-5d4316dd140a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -225,6 +234,12 @@
     <ClInclude Include="..\Public\Mesh.h">
       <Filter>01.Utility\04.Component\Model\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Picking.h">
+      <Filter>01.Utility\04.Component\Picking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ColliderBase.h">
+      <Filter>01.Utility\04.Component\Collider\Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -319,6 +334,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Mesh.cpp">
       <Filter>01.Utility\04.Component\Model\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Picking.cpp">
+      <Filter>01.Utility\04.Component\Picking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ColliderBase.cpp">
+      <Filter>01.Utility\04.Component\Collider\Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
