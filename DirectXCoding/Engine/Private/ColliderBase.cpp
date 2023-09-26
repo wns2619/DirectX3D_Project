@@ -11,8 +11,9 @@ ColliderBase::ColliderBase(const ColliderBase& rhs)
 {
 }
 
-ColliderBase::~ColliderBase()
+Component* ColliderBase::Clone(void* argument)
 {
+	return nullptr;
 }
 
 void ColliderBase::Free()
