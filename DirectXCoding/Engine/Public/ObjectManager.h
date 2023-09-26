@@ -2,10 +2,10 @@
 
 
 #include "Base.h"
+#include "GameObject.h"
 
 BEGIN(Engine)
 
-class GameObject;
 class Layer;
 
 class ObjectManager final : public Base
@@ -23,6 +23,8 @@ public:
 	void Tick(const _float& timeDelta);
 	void LateTick(const _float& timeDelta);
 	void Clear(uint32 levelIndex);
+
+	GameObject* GetLayerObject(const wstring& layertag, OBJECT_TYPE type);
 
 private:
 	map<const wstring, GameObject*> _protoTypes;

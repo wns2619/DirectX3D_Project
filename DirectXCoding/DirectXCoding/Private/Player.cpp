@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "Player.h"
+#include "Terrain.h"
 
 #include "GameInstance.h"
 
 Player::Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: GameObject(device, deviceContext)
+	: GameObject(device, deviceContext, OBJECT_TYPE::PLAYER)
 {
+	_objectType = OBJECT_TYPE::PLAYER;
 }
 
 Player::Player(const Player& rhs)
@@ -28,6 +30,30 @@ HRESULT Player::Initialize(void* pArg)
 
 void Player::Tick(const _float& fTimeDelta)
 {
+
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+	if (gameInstance->Get_DIMouseState(InputManager::MOUSEKEYSTATE::MKS_LBUTTON))
+	{
+		//POINT pt;
+		//::GetCursorPos(&pt);
+		//::ScreenToClient(g_hWnd, &pt);
+
+		//GameObject* terraininfo = gameInstance->GetLayerObject(TEXT("LayerTerrain"), OBJECT_TYPE::TERRAIN);
+		//if (terraininfo == nullptr)
+		//{
+		//	MSG_BOX("NULL TERRAIN");
+		//	return;
+		//}
+
+		//XMVECTOR posCal = _transform->GetState(Transform::STATE::POSITION);
+		//Vec3 currentPos;
+		//::XMStoreFloat3(&currentPos, posCal);
+
+		//dynamic_cast<Terrain*>(terraininfo)->GetVIBuffer()->Pick(pt.x, pt.y, currentPos,)
+	}
+
+	RELEASE_INSTANCE(GameInstance);
 }
 
 void Player::LateTick(const _float& fTimeDelta)

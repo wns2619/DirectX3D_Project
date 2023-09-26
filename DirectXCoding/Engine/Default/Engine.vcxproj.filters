@@ -237,8 +237,20 @@
     <ClInclude Include="..\Public\Picking.h">
       <Filter>01.Utility\04.Component\Picking</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ColliderBase.h">
+    <ClInclude Include="..\Public\Collider.h">
       <Filter>01.Utility\04.Component\Collider\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AABBBoxCollider.h">
+      <Filter>01.Utility\04.Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SphereCollider.h">
+      <Filter>01.Utility\04.Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\OBBBoxCollider.h">
+      <Filter>01.Utility\04.Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MathHelper.h">
+      <Filter>02.Defines\99.Headers\Default</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -338,8 +350,17 @@
     <ClCompile Include="..\Private\Picking.cpp">
       <Filter>01.Utility\04.Component\Picking</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ColliderBase.cpp">
+    <ClCompile Include="..\Private\Collider.cpp">
       <Filter>01.Utility\04.Component\Collider\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AABBBoxCollider.cpp">
+      <Filter>01.Utility\04.Component\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SphereCollider.cpp">
+      <Filter>01.Utility\04.Component\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\OBBBoxCollider.cpp">
+      <Filter>01.Utility\04.Component\Collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

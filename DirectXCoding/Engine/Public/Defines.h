@@ -18,6 +18,8 @@
 #include <DirectXTex\DirectXTex.h>
 #include <DirectXTex\DirectXTex.inl>
 #include <DirectXTK\ScreenGrab.h>
+#include <DirectXCollision.h>
+#include <DirectXColors.h>
 
 
 // Assimp
@@ -60,6 +62,7 @@ using namespace std;
 #include "Functor.h"
 #include "Values.h"
 #include "VertexData.h"
+#include "MathHelper.h"
 
 using namespace Engine;
 

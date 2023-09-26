@@ -40,6 +40,8 @@ namespace Engine
 	using Matrix = DirectX::SimpleMath::Matrix;
 	using Quaternion = DirectX::SimpleMath::Quaternion;
 	using Ray = DirectX::SimpleMath::Ray;
+
+
 }
 
 #endif // Engine_Typedef_h__

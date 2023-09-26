@@ -2,15 +2,15 @@
 #include "GameObject.h"
 #include "GameInstance.h"
 
-GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: _device(device), _deviceContext(deviceContext)
+GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, OBJECT_TYPE type)
+	: _device(device), _deviceContext(deviceContext), _objectType(type)
 {
 	Safe_AddRef<ID3D11Device*>(_device);
 	Safe_AddRef<ID3D11DeviceContext*>(_deviceContext);
 }
 
 GameObject::GameObject(const GameObject& rhs)
-	: _device(rhs._device), _deviceContext(rhs._deviceContext)
+	: _device(rhs._device), _deviceContext(rhs._deviceContext), _objectType(rhs._objectType)
 {
 	Safe_AddRef<ID3D11Device*>(_device);
 	Safe_AddRef<ID3D11DeviceContext*>(_deviceContext);

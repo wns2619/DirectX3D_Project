@@ -4,8 +4,9 @@
 #include "GameInstance.h"
 
 Terrain::Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: GameObject(device, deviceContext)
+	: GameObject(device, deviceContext, OBJECT_TYPE::TERRAIN)
 {
+	_objectType = OBJECT_TYPE::TERRAIN;
 }
 
 Terrain::Terrain(const Terrain& rhs)

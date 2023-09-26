@@ -4,10 +4,9 @@
 #include "CameraHelper.h"
 #include "InputManager.h"
 #include "LightManager.h"
+#include "GameObject.h"
 
 BEGIN(Engine)
-
-class GameObject;
 
 class ENGINE_DLL GameInstance final : public Base
 {
@@ -42,6 +41,7 @@ public: // LevelManager
 public: // ObjectManager
 	HRESULT AddProtoType(const wstring& prototypeTag, GameObject* prototype);
 	HRESULT AddGameObject(uint32 levelIndex, const wstring& layerTag, const wstring& prototypeTag, void* argument = nullptr);
+	GameObject* GetLayerObject(const wstring& layertag, OBJECT_TYPE type);
 
 public: // Component Manager
 	HRESULT	AddProtoType(uint32 levelIndex, const wstring& PrototypeTag, class Component* protoType);

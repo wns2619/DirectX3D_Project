@@ -18,6 +18,9 @@ public:
 	void Tick(const _float& timeDelta);
 	void LateTick(const _float& timeDelta);
 
+public:
+	list<GameObject*>& GetGameObject() { return _gameObjects; }
+
 private:
 	list<GameObject*> _gameObjects;
 

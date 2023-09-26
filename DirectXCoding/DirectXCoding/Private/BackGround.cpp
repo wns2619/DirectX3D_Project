@@ -4,8 +4,9 @@
 #include "GameInstance.h"
 
 BackGround::BackGround(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: GameObject(device, deviceContext)
+	: GameObject(device, deviceContext, OBJECT_TYPE::BACKGROUND)
 {
+	_objectType = OBJECT_TYPE::BACKGROUND;
 }
 
 BackGround::BackGround(const GameObject& rhs)

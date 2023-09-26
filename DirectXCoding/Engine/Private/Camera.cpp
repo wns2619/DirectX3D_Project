@@ -4,7 +4,7 @@
 #include "CameraHelper.h"
 
 Camera::Camera(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: GameObject(device, deviceContext)
+	: GameObject(device, deviceContext, OBJECT_TYPE::CAMERA)
 	, _cameraHelper(CameraHelper::GetInstance())
 {
 	::ZeroMemory(&_cameraDesc, sizeof(Camera::CAMERA_DESC));

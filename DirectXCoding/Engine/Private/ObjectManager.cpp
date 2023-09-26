@@ -81,6 +81,30 @@ void ObjectManager::Clear(uint32 levelIndex)
 	_Layers[levelIndex].clear();
 }
 
+GameObject* ObjectManager::GetLayerObject(const wstring& layertag, OBJECT_TYPE type)
+{
+	Layer* CurrentLayer = FindLayer(_levelNumber, layertag);
+	if (CurrentLayer == nullptr)
+		return nullptr;
+
+	list<GameObject*>& objectlist = CurrentLayer->GetGameObject();
+
+	auto findObjectByEnum = [&type, &objectlist]()->GameObject*
+		{
+			for (GameObject* gameObject : objectlist)
+			{
+				if (gameObject->GetObjectType() == type)
+					return gameObject;
+			}
+
+			return nullptr;
+		};
+
+	GameObject* foundObject = findObjectByEnum();
+
+	return foundObject;
+}
+
 GameObject* ObjectManager::FindPrototype(const wstring& prototypeTag)
 {
 	auto iter = _protoTypes.find(prototypeTag);

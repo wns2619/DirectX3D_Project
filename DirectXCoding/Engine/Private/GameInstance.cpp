@@ -157,6 +157,14 @@ HRESULT GameInstance::AddGameObject(uint32 levelIndex, const wstring& layerTag, 
     return _objectManager->AddGameObject(levelIndex, layerTag, prototypeTag, argument);
 }
 
+GameObject* GameInstance::GetLayerObject(const wstring& layertag, OBJECT_TYPE type)
+{
+    if (nullptr == _objectManager)
+        return nullptr;
+
+    return _objectManager->GetLayerObject(layertag, type);
+}
+
 HRESULT GameInstance::AddProtoType(uint32 levelIndex, const wstring& PrototypeTag, Component* protoType)
 {
     if (nullptr == _componentManager)

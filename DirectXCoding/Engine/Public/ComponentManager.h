@@ -9,6 +9,7 @@
 #include "Transform.h"
 #include "ConstantBuffer.h"
 #include "Light.h"
+#include "Collider.h"
 
 BEGIN(Engine)
 
