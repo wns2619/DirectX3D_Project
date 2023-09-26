@@ -5,6 +5,7 @@
 #include "Terrain.h"
 #include "PlayerCamera.h"
 #include "EditorTerrain.h"
+#include "Player.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -118,6 +119,10 @@ HRESULT LevelHelper::LodingforLevelGame()
         VIBufferTerrain::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Terrain/Height1.bmp")))))
         return E_FAIL;
 
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelFiona"),
+        Model::Create(_device, _deviceContext, "../Binaries/Resources/Models/Fiona/Fiona.fbx"))))
+        return E_FAIL;
+
     _title = TEXT("Shader Loading");
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentHillsShader"),
@@ -139,6 +144,9 @@ HRESULT LevelHelper::LodingforLevelGame()
         PlayerCamera::Create(_device, _deviceContext))))
         return E_FAIL;
 
+    if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectPlayer"),
+        Player::Create(_device, _deviceContext))))
+        return E_FAIL;
 
     Safe_Release<GameInstance*>(gameInstance);
     _title = TEXT("Loading Successed");

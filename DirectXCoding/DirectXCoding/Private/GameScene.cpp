@@ -23,6 +23,9 @@ HRESULT GameScene::Initialize()
     if (FAILED(ReadyLayerCamera(TEXT("LayerCamera"))))
         return E_FAIL;
 
+    if (FAILED(ReadyLayerPlayer(TEXT("LayerPlayer"))))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -77,6 +80,21 @@ HRESULT GameScene::ReadyLayerCamera(const wstring& layerTag)
         return E_FAIL;
 
     Safe_Release<GameInstance*>(gameInstance);
+
+    return S_OK;
+}
+
+HRESULT GameScene::ReadyLayerPlayer(const wstring& layerTag)
+{
+
+    GameInstance* gameInstance = GameInstance::GetInstance();
+    Safe_AddRef<GameInstance*>(gameInstance);
+
+    if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ProtoTypeGameObjectPlayer"))))
+        return E_FAIL;
+   
+    Safe_Release<GameInstance*>(gameInstance);
+
 
     return S_OK;
 }

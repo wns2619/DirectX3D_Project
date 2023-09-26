@@ -24,6 +24,7 @@ public:
 	void GuiStyle();
 	void DrawSplitter(_bool split_vertically, _float thickness, _float* size0, _float* size1,
 		_float min_size0, _float min_size1, _float size = -1.f, _float buttonPadding = 0.f);
+	void MouseMove();
 
 private:
 	_bool _someCondition		= true;

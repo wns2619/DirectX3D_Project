@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Model.h"
 #include "Renderer.h"
 #include "Shader.h"
 #include "VIBufferRect.h"

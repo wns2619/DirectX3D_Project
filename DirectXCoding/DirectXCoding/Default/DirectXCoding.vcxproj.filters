@@ -59,6 +59,9 @@
     <Filter Include="소스 파일\02.GameObjects\01.Terrain\EditTerrain">
       <UniqueIdentifier>{664282ae-8a8e-4895-a290-64f3540053bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\03.Player">
+      <UniqueIdentifier>{137ba0c2-5442-49b7-b290-00834f73843e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -139,6 +142,9 @@
     <ClInclude Include="..\Public\EditorTerrain.h">
       <Filter>소스 파일\02.GameObjects\01.Terrain\EditTerrain</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Player.h">
+      <Filter>소스 파일\02.GameObjects\03.Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -203,6 +209,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\EditorTerrain.cpp">
       <Filter>소스 파일\02.GameObjects\01.Terrain\EditTerrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp">
+      <Filter>소스 파일\02.GameObjects\03.Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

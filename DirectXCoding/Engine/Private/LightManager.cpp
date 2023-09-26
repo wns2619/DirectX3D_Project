@@ -57,7 +57,7 @@ HRESULT LightManager::ReserveManager(uint32 numLevels)
 HRESULT LightManager::AddLightProtoType(uint32 levelIndex, Light::LightType type, const wstring& lighttag, Component* prototype)
 {
 
-	if (Light::LightType::DIRECTIONAL == type)
+ 	if (Light::LightType::DIRECTIONAL == type)
 	{
 		if (nullptr == _directionalLight || nullptr != FindProtoType(levelIndex, type, lighttag))
 			return E_FAIL;

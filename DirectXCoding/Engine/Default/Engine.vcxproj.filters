@@ -106,6 +106,12 @@
     <Filter Include="01.Utility\04.Component\VIBuffer\ConstantBuffer">
       <UniqueIdentifier>{46b8bbaf-ae0f-4b4f-bd28-8de67cabe7b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Component\Model">
+      <UniqueIdentifier>{3dd797b0-d6a0-43b0-b506-4b5c52348e84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Model\Mesh">
+      <UniqueIdentifier>{5cf39855-b1d7-4d80-b96c-43f464a08999}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -213,6 +219,12 @@
     <ClInclude Include="..\Public\ConstantBuffer.h">
       <Filter>01.Utility\04.Component\VIBuffer\ConstantBuffer</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Model.h">
+      <Filter>01.Utility\04.Component\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mesh.h">
+      <Filter>01.Utility\04.Component\Model\Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -301,6 +313,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\ConstantBuffer.cpp">
       <Filter>01.Utility\04.Component\VIBuffer\ConstantBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Model.cpp">
+      <Filter>01.Utility\04.Component\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mesh.cpp">
+      <Filter>01.Utility\04.Component\Model\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

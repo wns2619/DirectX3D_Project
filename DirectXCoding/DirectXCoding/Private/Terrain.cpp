@@ -92,6 +92,8 @@ HRESULT Terrain::Ready_Components()
 		TEXT("ProtoTypeComponentLight"),reinterpret_cast<Component**>(&_light), &testlightinfo)))
 		return E_FAIL;
 
+	
+
  	return S_OK;
 }
 

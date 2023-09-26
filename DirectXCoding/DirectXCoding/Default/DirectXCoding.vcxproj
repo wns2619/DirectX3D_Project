@@ -188,6 +188,7 @@
     <ClInclude Include="..\Public\LevelHelper.h" />
     <ClInclude Include="..\Public\LevelLoading.h" />
     <ClInclude Include="..\Public\Logo.h" />
+    <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\PlayerCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="DirectXCoding.h" />
@@ -238,6 +239,7 @@
     <ClCompile Include="..\Private\LevelHelper.cpp" />
     <ClCompile Include="..\Private\LevelLoading.cpp" />
     <ClCompile Include="..\Private\Logo.cpp" />
+    <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\PlayerCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp">
       <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">EditAndContinue</DebugInformationFormat>

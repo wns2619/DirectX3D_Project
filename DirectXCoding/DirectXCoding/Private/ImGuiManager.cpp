@@ -60,9 +60,9 @@ HRESULT ImGuiManager::Render()
 
 	_bool map_tool_window = true;
 
-	const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
-	ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 650, main_viewport->WorkPos.y + 20), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
+	//const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
+	//ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 650, main_viewport->WorkPos.y + 20), ImGuiCond_FirstUseEver);
+	//ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
 
 	ImGui::ShowDemoWindow(&map_tool_window);
 
@@ -74,6 +74,7 @@ HRESULT ImGuiManager::Render()
 
 	/* Main Space */
 	{
+		MouseMove();
 
 		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.f, 0.05f, 0.1f, 1.f));
 		ImGui::SetNextWindowSize(ImVec2(200.f, 0.f));
@@ -354,6 +355,18 @@ void ImGuiManager::DrawSplitter(_bool split_vertically, _float thickness, _float
 		*size1 -= mouse_delta;
 	}
 	ImGui::SetCursorPos(backup_pos);
+}
+
+void ImGuiManager::MouseMove()
+{
+	POINT pt;
+	::GetCursorPos(&pt);
+	::ScreenToClient(g_hWnd, &pt);
+	//::SetCursorPos(pt.x, pt.y);
+
+	ImGui::Begin("Mouse Pose");
+	ImGui::Text("Mouse Position X(%d), Y(%d)", pt.x, pt.y);
+	ImGui::End();
 }
 
 void ImGuiManager::Free()

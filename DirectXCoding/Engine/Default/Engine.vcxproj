@@ -38,6 +38,8 @@
     <ClInclude Include="..\Public\Light.h" />
     <ClInclude Include="..\Public\LightManager.h" />
     <ClInclude Include="..\Public\Macro.h" />
+    <ClInclude Include="..\Public\Mesh.h" />
+    <ClInclude Include="..\Public\Model.h" />
     <ClInclude Include="..\Public\ObjectManager.h" />
     <ClInclude Include="..\Public\Renderer.h" />
     <ClInclude Include="..\Public\ResourceBase.h" />
@@ -71,6 +73,8 @@
     <ClCompile Include="..\Private\LevelManager.cpp" />
     <ClCompile Include="..\Private\Light.cpp" />
     <ClCompile Include="..\Private\LightManager.cpp" />
+    <ClCompile Include="..\Private\Mesh.cpp" />
+    <ClCompile Include="..\Private\Model.cpp" />
     <ClCompile Include="..\Private\ObjectManager.cpp" />
     <ClCompile Include="..\Private\Renderer.cpp" />
     <ClCompile Include="..\Private\ResourceBase.cpp" />
@@ -197,7 +201,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../lib/FX11/;../lib/DirectXTK/;../lib/DirectXTex/;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../lib/FX11/;../lib/DirectXTK/;../lib/DirectXTex/;../lib/Assimp\;</AdditionalLibraryDirectories>
       <AdditionalDependencies>d3d11.lib;Effects11d.lib;DirectXTKd.lib;DirectXTex_Debug.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <NoEntryPoint>false</NoEntryPoint>
     </Link>
@@ -231,7 +235,7 @@ call Copy.bat</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d11.lib;Effects11.lib;DirectXTK.lib;dinput8.lib;$(CoreLibraryDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../lib/FX11/;../lib/DirectXTK/;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../lib/FX11/;../lib/DirectXTK/;../lib/Assimp\;../lib/DirectXTex/\</AdditionalLibraryDirectories>
       <NoEntryPoint>false</NoEntryPoint>
     </Link>
     <PostBuildEvent>

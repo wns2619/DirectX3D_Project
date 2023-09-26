@@ -7,6 +7,8 @@
 #include <d3dcompiler.h>
 #include <d3d11shader.h>
 #include <wrl.h>
+
+#define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
 #include <DirectXMath.h>
@@ -15,6 +17,13 @@
 #include <DirectXTK\WICTextureLoader.h>
 #include <DirectXTex\DirectXTex.h>
 #include <DirectXTex\DirectXTex.inl>
+#include <DirectXTK\ScreenGrab.h>
+
+
+// Assimp
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -22,11 +31,11 @@ using namespace Microsoft::WRL;
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
-//#ifdef _DEBUG
-//#pragma comment(lib, "lib/FX11/Effects11d.lib")
-//#else
-//#pragma comment(lib, "lib/FX11/Effects11.lib")
-//#endif
+#ifdef _DEBUG
+#pragma comment(lib, "assimp-vc143-mtd.lib")
+#else
+#pragma comment(lib, "assimp-vc143-mt.lib")
+#endif
 
 
 #include <vector>
