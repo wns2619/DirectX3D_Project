@@ -43,3 +43,13 @@ struct Material
     float4 Specular;
     float4 Reflect;
 };
+
+matrix ComputeTransformMatrix(matrix world, matrix view, matrix proj)
+{
+    matrix matWV, matWVP;
+    
+    matWV = mul(world, view);
+    matWVP = mul(matWV, proj);
+    
+    return matWVP;
+};

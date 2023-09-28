@@ -14,6 +14,7 @@ public:
 		_ulong numVerticesX = 0;
 		_ulong numVerticesZ = 0;
 	};
+
 private:
 	explicit VIBufferTerrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	explicit VIBufferTerrain(const VIBufferTerrain& rhs);
@@ -24,13 +25,13 @@ public:
 	virtual HRESULT	Initialize(void* argument) override;	
 
 public:
-	_bool Pick(int32 screenX, int32 screenY, Vec3& pickPos, _float& distance, Transform& trans, _float& winSizeX, _float& winSizeY);
+
+	Vec3* GetVerticesPosition() { return _vertices; }
+	TERRAIN_DESC GetTerranDesc() { return _terrainDesc; }
 
 private:
-	_ulong _numVerticesX = 0;
-	_ulong _numVerticesZ = 0;
-
-	VertexTextureNormalData* _vertices = nullptr;
+	TERRAIN_DESC				_terrainDesc = {};
+	Vec3* _vertices							 = nullptr;
 
 public:
 	static VIBufferTerrain* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wstring& heightMapPath);

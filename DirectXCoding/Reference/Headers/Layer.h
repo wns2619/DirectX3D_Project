@@ -5,6 +5,7 @@
 BEGIN(Engine)
 
 class GameObject;
+class Component;
 
 class Layer final : public Base
 {

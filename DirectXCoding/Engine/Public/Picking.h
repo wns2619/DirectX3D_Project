@@ -1,22 +1,24 @@
 #pragma once
 
 #include "Component.h"
+#include "Transform.h"
+#include "VIBufferTerrain.h"
 
 BEGIN(Engine)
 
-class ENGINE_DLL Picking : public Component
+class ENGINE_DLL Picking : public Base
 {
+	DECLARE_SINGLETON(Picking)
+
 private:
-	explicit Picking(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
-	explicit Picking(const Picking& rhs);
+	Picking();
 	virtual ~Picking() = default;
 
 public:
-	void Pick(int32 screenX, int32 screenY, _float winsizeX, _float winSizeY);
+	_bool PickObject(POINT pt);
+	_bool TerrainPicking(POINT pt, Vec3& pickPos, _float& distance, Transform* trans, VIBufferTerrain* buffer);
 	
 public:
-	static Picking* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
-	virtual Component* Clone(void* argument) override;
 	virtual void Free() override;
 };
 

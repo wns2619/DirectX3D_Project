@@ -12,11 +12,15 @@ private:
 	virtual ~Model() = default;
 
 public:
-	virtual HRESULT InitializePrototype(const char* pModelFilePath);
+	uint32 GetNumMeshes() const { return m_iNumMeshes; }
+
+public:
+	virtual HRESULT InitializePrototype(const string& pModelFilePath, FXMMATRIX pivotMat);
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
-	HRESULT Render();
+	HRESULT BindMaterialTexture(class Shader* shader, const char* constantName, uint32 meshIndex, aiTextureType type);
+	HRESULT Render(uint32 meshIndex);
 
 private: /* .fbx파일을 열어서 읽어주는 역활 */
 	Assimp::Importer			m_Importer;
@@ -29,10 +33,17 @@ private:
 	vector<class Mesh*>		m_Meshes;
 
 private:
+	uint32					_numMaterial = 0;
+	vector<MESH_MATERIAL>	_materials;
+	
+	Matrix					_pivotMatrix;
+
+private:
 	HRESULT ReadyMeshes();
+	HRESULT ReadyMaterial(const string& modelFilePath);
 
 public:
-	static Model* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const char* pModelFilePath);
+	static Model* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const string& pModelFilePath, FXMMATRIX pivotMat = ::XMMatrixIdentity());
 	virtual Component* Clone(void* pArg) override;
 	virtual void Free() override;
 };

@@ -56,6 +56,8 @@ sampler PointSampler = sampler_state
     Filter = MIN_MAG_MIP_POINT;
 };
 
+
+
 Texture2D ShadersTexture;
 Texture2D ShadersTextures[2];
 

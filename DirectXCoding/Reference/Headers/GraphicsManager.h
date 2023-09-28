@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base.h"
+#include "Viewport.h"
 
 BEGIN(Engine)
 
@@ -18,6 +19,9 @@ public:
 	HRESULT ClearDepthStencil();
 	HRESULT Present();
 
+	void SetViewport(float width, float height, float x = 0, float y = 0, float minDepth = 0, float maxDepth = 1);
+	Viewport& GetViewPort() { return _vp; }
+
 private:
 	ID3D11Device* _device = nullptr;
 	ID3D11DeviceContext* _deviceContext = nullptr;
@@ -33,6 +37,8 @@ private:
 
 public:
 	virtual void Free() override;
+
+	Viewport _vp;
 };
 
 END

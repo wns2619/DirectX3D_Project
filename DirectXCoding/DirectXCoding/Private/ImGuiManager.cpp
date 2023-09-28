@@ -8,6 +8,9 @@
 #include "ImguiResourceHandler.h"
 #include "GameInstance.h"
 
+#include "GameObject.h"
+#include "EditorTerrain.h"
+
 
 
 IMPLEMENT_SINGLETON(ImGuiManager)
@@ -32,6 +35,7 @@ HRESULT ImGuiManager::Initialize(ID3D11Device* device, ID3D11DeviceContext* devi
 	ImGuiResourceHandler::GetInstance()->Initialize(device, deviceContext);
 
 	GuiStyle();
+	LoadModelList();
 
 	Safe_Release<ID3D11Device*>(device);
 	Safe_Release<ID3D11DeviceContext*>(deviceContext);
@@ -58,17 +62,17 @@ HRESULT ImGuiManager::Render()
 
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-	_bool map_tool_window = true;
+	//_bool map_tool_window = true;
 
 	//const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
 	//ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 650, main_viewport->WorkPos.y + 20), ImGuiCond_FirstUseEver);
 	//ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
 
-	ImGui::ShowDemoWindow(&map_tool_window);
+	//ImGui::ShowDemoWindow(&map_tool_window);
 
 	ImGuiWindowFlags windowFlags = 0;
 	if (!_windowResizeFlag)
-		windowFlags |= ImGuiWindowFlags_NoResize;
+		windowFlags |= ImGuiWindowFlags_None;
 	if (!_windowMoveFlag)
 		windowFlags |= ImGuiWindowFlags_None;
 
@@ -96,9 +100,82 @@ HRESULT ImGuiManager::Render()
 		}
 
 		ImGui::PopStyleVar();
+
+		if (ImGui::CollapsingHeader("Settings"))
+		{
+			_bool mode = true;
+			ImGui::Checkbox("Wireframe Mode", &mode);
+
+			ImGui::PushItemWidth(-1);
+			ImGui::PopItemWidth();
+			ImGui::Checkbox("Window Resize", &_windowResizeFlag);
+			ImGui::Checkbox("Window Move", &_windowMoveFlag);
+			if (ImGui::CollapsingHeader("Camera"))
+			{
+
+			}
+		}
+
+		ImGui::End();
 		ImGui::PopStyleColor();
+	}
+
+	 // Model Card Window
+	if(_modelNames.size())
+	{
+		ImGui::Begin("Models", NULL, windowFlags);
+		ImGui::Columns(3, 0, false);
+
+		for (size_t i = 0; i < _modelNames.size(); i++)
+		{
+			if (_modelNameHoveringState[i])
+			{
+				ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.5f, 0.7f, 0.9f, 1.f));
+				ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 2.f);
+			}
+			else
+			{
+				ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.1f, 0.15f, 0.2f, 1.f));
+				ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.f);
+			}
+
+
+			// Model Card Begin
+			ImGui::BeginChildFrame(static_cast<ImGuiID>(i + 1), ImVec2(110, 130));
+			if (_modelNames[i].second)
+			{
+
+				if (_modelNames[i].first == "..")
+					ImGui::Image(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon/previous_folder_icon.png"), ImVec2(100, 100));
+				else
+					ImGui::Image(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon/folder_icon.png"), ImVec2(100, 100));
+			}
+			else
+				ImGui::Image(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon/model_icon.png"), ImVec2(100, 100));
+
+
+			// Name
+			if (_modelNames[i].first == "..")
+				ImGui::Text("%s", "Back");
+			else
+				ImGui::Text("%s", _modelNames[i].first.c_str());
+
+			ImGui::EndChildFrame();
+			// model card End
+
+			// Hover stryle pop
+			ImGui::PopStyleColor();
+			ImGui::PopStyleVar();
+
+			// objects
+
+			ImGui::NextColumn();
+		}
+
+		ImGui::Columns(1);
 		ImGui::End();
 	}
+
 
 	/* Objects Space */
 
@@ -117,6 +194,8 @@ HRESULT ImGuiManager::Render()
 		_gameObjectSectionHeight), true, ImGuiWindowFlags_HorizontalScrollbar);
 	{
 		// TODO : for문으로 gameobject 순회 
+
+
 	}
 
 	ImGui::EndChild();
@@ -262,10 +341,12 @@ HRESULT ImGuiManager::Render()
 			desc.numVerticesX = i1;
 			desc.numVerticesZ = i1;
 
-
-
-			if(FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), TEXT("LayerEditTerrain"), TEXT("ProtoTypeGameObjectEditTerrain"))))
+			if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), TEXT("LayerEditTerrain"), TEXT("ProtoTypeGameObjectEditTerrain"), &desc)))
 				return E_FAIL;
+
+			
+			
+			_Isterrain = true;
 		}
 
 		ImGui::SameLine();
@@ -364,9 +445,90 @@ void ImGuiManager::MouseMove()
 	::ScreenToClient(g_hWnd, &pt);
 	//::SetCursorPos(pt.x, pt.y);
 
+
+
 	ImGui::Begin("Mouse Pose");
 	ImGui::Text("Mouse Position X(%d), Y(%d)", pt.x, pt.y);
+
+	Vec3 pos = Vec3(0.f, 0.f, 0.f);
+	_float distance = 0.f;
+
+	if (_Isterrain)
+	{
+		GameInstance* gameinstance = GET_INSTANCE(GameInstance);
+
+		EditorTerrain* terrain = static_cast<EditorTerrain*>(gameinstance->GetLayerObject(TEXT("LayerEditTerrain"), OBJECT_TYPE::TERRAIN));
+
+		terrain->TerrainPick(pos, distance);
+
+		RELEASE_INSTANCE(GameInstance);
+	}
+	ImGui::Spacing();
+
+	ImGui::Text("Terrain Pos X : %.f", pos.x);
+	ImGui::Text("Terrain Pos Y : %.f", pos.y);
+	ImGui::Text("Terrain Pos Z : %.f", pos.z);
+
+
 	ImGui::End();
+}
+
+void ImGuiManager::LoadModelList(string path)
+{
+	string name = "";
+	string fileExtension = "";
+	struct dirent* entry;
+	DIR* dir = ::opendir(path.c_str());
+	// opendir 인자값 디렉토리 경로, 성공시 디렉토리 스트림 포인터 반환하고 실패시 NULL 
+	// DIR 구조체에 dirent가 있음.
+	// 내부에 파일 경로 읽을 때 wdirent는 w_char 기반이고 dirent는 기본 char 임. 그러므로 dirent 사용한다.
+
+	_modelNames.clear();
+	_modelNameHoveringState.clear();
+
+	vector<string> modelNames;
+	if (dir != NULL)
+	{
+		// readdir은 디렉토리 스트림 포인터를 인자 값을 원함. opendir로 스트림 포인터를 얻었음.
+		// 성공하면 엔트리 포인터(시작 포인터)를 얻고, 실패 시 NULL 반환 
+		// 함수를 호출할 때마다 디렉터리 하위 파일들을 차례로 반환함. 더 이상 반환할 파일이 없을 떄 NULL 반환하므로 while문의 조건 식에 넣어서 사용.
+		while ((entry = ::readdir(dir)) != NULL)
+		{
+			name = entry->d_name;
+			// 디렉토리 경로
+			if (entry->d_type == DT_DIR && name != "." && ((path == _rootModelDirection && name != ".." || (path != _rootModelDirection))))
+			{
+				pair<string, _bool> directory(name, true);
+				_modelNames.push_back(directory);
+				_modelNameHoveringState.push_back(false);
+			}
+			else
+			{
+				size_t i = name.rfind('.', name.length());
+				// rfind -> reverse find 문자열 뒷 자리부터 검색함. .fbx .obj 등 확장자를 찾을 때 뒤에부터 탐색하는 것이 더 빠름.
+				if (i != string::npos)
+				{
+					// string::npos : -1을 가진 상수이고, find 함수 수행 시에 찾는 문자열이 없을 때 반환된다. 만약 못 찾았으면
+					// string은 파인드 함수는 문자열을 찾지 못하면 npos를 리턴함.
+					fileExtension = name.substr(i + 1, name.length() - 1);
+					// substr(), str의 n번 째 index부터 k개의 문자를 부분 문자열로 반환함.
+					if (fileExtension == "obj" || fileExtension == "FBX" || fileExtension == "fbx")
+					{
+						modelNames.push_back(name);
+					}
+				}
+			}
+		}
+
+		for (size_t i = 0; i < modelNames.size(); i++)
+		{
+			pair<string, _bool> modelFile(modelNames[i], false);
+			_modelNames.push_back(modelFile);
+			_modelNameHoveringState.push_back(false);
+		}
+
+		::closedir(dir);
+	}
 }
 
 void ImGuiManager::Free()

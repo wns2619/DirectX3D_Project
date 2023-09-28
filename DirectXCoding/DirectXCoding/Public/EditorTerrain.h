@@ -28,6 +28,8 @@ public:
 	virtual void Tick(const _float& fTimeDelta)		override;
 	virtual void LateTick(const _float& fTimeDelta) override;
 
+	_bool TerrainPick(Vec3& rPos, _float& distance);
+
 private:
 	Renderer* _renderComponent = nullptr;
 	Shader* _shader = nullptr;

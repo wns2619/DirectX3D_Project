@@ -179,6 +179,7 @@
     <ClInclude Include="..\Imgui\imstb_truetype.h" />
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\Public\Client_Define.h" />
+    <ClInclude Include="..\Public\dirent.h" />
     <ClInclude Include="..\Public\EditorTerrain.h" />
     <ClInclude Include="..\Public\EditScene.h" />
     <ClInclude Include="..\Public\Game.h" />
@@ -255,6 +256,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Binaries\Shaders\DefaultMeshShader.fx">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+    </FxCompile>
     <FxCompile Include="..\Binaries\Shaders\DirectionalLight.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>

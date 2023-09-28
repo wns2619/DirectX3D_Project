@@ -31,29 +31,6 @@ HRESULT Player::Initialize(void* pArg)
 void Player::Tick(const _float& fTimeDelta)
 {
 
-	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
-
-	if (gameInstance->Get_DIMouseState(InputManager::MOUSEKEYSTATE::MKS_LBUTTON))
-	{
-		//POINT pt;
-		//::GetCursorPos(&pt);
-		//::ScreenToClient(g_hWnd, &pt);
-
-		//GameObject* terraininfo = gameInstance->GetLayerObject(TEXT("LayerTerrain"), OBJECT_TYPE::TERRAIN);
-		//if (terraininfo == nullptr)
-		//{
-		//	MSG_BOX("NULL TERRAIN");
-		//	return;
-		//}
-
-		//XMVECTOR posCal = _transform->GetState(Transform::STATE::POSITION);
-		//Vec3 currentPos;
-		//::XMStoreFloat3(&currentPos, posCal);
-
-		//dynamic_cast<Terrain*>(terraininfo)->GetVIBuffer()->Pick(pt.x, pt.y, currentPos,)
-	}
-
-	RELEASE_INSTANCE(GameInstance);
 }
 
 void Player::LateTick(const _float& fTimeDelta)
@@ -66,7 +43,16 @@ HRESULT Player::Render()
 	if (FAILED(BindShaderResuorces()))
 		return E_FAIL;
 
-	_model->Render();
+	uint32 numMeshes = _model->GetNumMeshes();
+
+	for (size_t i = 0; i < numMeshes; i++)
+	{
+		_model->BindMaterialTexture(_shader, "DiffuseTexture", i, aiTextureType_DIFFUSE);
+
+		_shader->Begin(0);
+
+		_model->Render(i);
+	}
 	
 
 	return S_OK;
@@ -81,8 +67,8 @@ HRESULT Player::ReadyComponents()
 
 	/* Shader Component */
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME),
-		TEXT("ProtoTypeComponentHillsShader"),
-		TEXT("ComponentShader"), reinterpret_cast<Component**>(&_shader))))
+		TEXT("ProtoTypeComponentDefaultMeshShader"),
+		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
 
 	/* Transform Component */
@@ -126,13 +112,12 @@ HRESULT Player::BindShaderResuorces()
 	if (FAILED(gameInstance->BindTransformToShader(_shader, "projMatrix", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
 		return E_FAIL;
 
-	if (FAILED(gameInstance->BindCameraPosition(_shader, "camPosition", sizeof(Vec4))))
+	if (FAILED(gameInstance->BindCameraPosition(_shader, "cameraPosition", sizeof(Vec4))))
 		return E_FAIL;
 
 	if (FAILED(_light->BindingLightToShader(_shader, "dirLight", Light::LightType::DIRECTIONAL, sizeof(Light::DirectinoalLight))))
 		return E_FAIL;
 
-	_shader->Begin(0);
 
 	Safe_Release<GameInstance*>(gameInstance);
 

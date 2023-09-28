@@ -46,6 +46,8 @@ HRESULT GraphicsManager::Initialize(GRAPHIC_DESC desc, _Inout_ ID3D11Device** de
 
 	_deviceContext->RSSetViewports(1, &viewportDesc);
 
+	SetViewport(static_cast<_float>(desc.iWinSizeX), static_cast<_float>(desc.iWinSizeY));
+
 	*device = _device;
 	*deviceContext = _deviceContext;
 
@@ -82,6 +84,11 @@ HRESULT GraphicsManager::Present()
 		return E_FAIL;
 
 	return _swapChain->Present(0, 0);
+}
+
+void GraphicsManager::SetViewport(float width, float height, float x, float y, float minDepth, float maxDepth)
+{
+	_vp.Set(width, height, x, y, minDepth, maxDepth);
 }
 
 HRESULT GraphicsManager::CreateSwapChain(GRAPHIC_DESC desc)

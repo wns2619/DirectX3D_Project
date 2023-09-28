@@ -51,6 +51,8 @@ HRESULT ObjectManager::AddGameObject(uint32 levelIndex, const wstring& layerTag,
 		layer->AddGameObject(gameObject);
 
 		_Layers[levelIndex].emplace(layerTag, layer);
+
+		_currenlevel = levelIndex;
 	}
 	else
 		layer->AddGameObject(gameObject);
@@ -83,26 +85,19 @@ void ObjectManager::Clear(uint32 levelIndex)
 
 GameObject* ObjectManager::GetLayerObject(const wstring& layertag, OBJECT_TYPE type)
 {
-	Layer* CurrentLayer = FindLayer(_levelNumber, layertag);
+	Layer* CurrentLayer = FindLayer(_currenlevel, layertag);
 	if (CurrentLayer == nullptr)
 		return nullptr;
 
 	list<GameObject*>& objectlist = CurrentLayer->GetGameObject();
 
-	auto findObjectByEnum = [&type, &objectlist]()->GameObject*
-		{
-			for (GameObject* gameObject : objectlist)
-			{
-				if (gameObject->GetObjectType() == type)
-					return gameObject;
-			}
+	for (GameObject* gameObject : objectlist)
+	{
+		if (gameObject->GetObjectType() == type)
+			return gameObject;
+	}
 
-			return nullptr;
-		};
-
-	GameObject* foundObject = findObjectByEnum();
-
-	return foundObject;
+	return nullptr;
 }
 
 GameObject* ObjectManager::FindPrototype(const wstring& prototypeTag)

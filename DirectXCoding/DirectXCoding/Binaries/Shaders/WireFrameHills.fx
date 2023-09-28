@@ -64,10 +64,16 @@ PS_OUT PS_MAIN(PS_IN vertexin)
     return Out;
 }
 
+RasterizerState FillWireFrame
+{
+    FillMode = WireFrame;
+};
+
 technique11 WireframeTechnique
 {
     pass EditTerrain
     {
+        SetRasterizerState(FillWireFrame);
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         HullShader = NULL;

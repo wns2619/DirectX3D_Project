@@ -27,6 +27,9 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+//dirent
+#include "dirent.h"
+
 using namespace DirectX;
 using namespace Microsoft::WRL;
 

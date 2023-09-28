@@ -41,7 +41,7 @@ HRESULT Terrain::Render()
 
 void Terrain::Tick(const _float& fTimeDelta)
 {
-
+	
 }
 
 void Terrain::LateTick(const _float& fTimeDelta)
@@ -100,9 +100,6 @@ HRESULT Terrain::Ready_Components()
 
 HRESULT Terrain::Bind_ShaderResources()
 {
-	//XMStoreFloat4x4(&_viewMatrix, XMMatrixLookAtLH(XMVectorSet(0.f, 100.f, -80.f, 1.f), XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.0f, 1.f, 0.f, 0.f)));
-	//XMStoreFloat4x4(&_projMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(60.0f), g_iWinSizeX / g_iWinSizeY, 0.2f, 300.f));
-
 	GameInstance* gameInstance = GameInstance::GetInstance();
 	Safe_AddRef<GameInstance*>(gameInstance);
 

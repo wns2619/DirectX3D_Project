@@ -5,6 +5,8 @@
 #include "InputManager.h"
 #include "LightManager.h"
 #include "GameObject.h"
+#include "Viewport.h"
+
 
 BEGIN(Engine)
 
@@ -28,6 +30,7 @@ public: // Graphic Device
 	HRESULT	ClearBackBufferView(Color color);
 	HRESULT ClearDepthStencilView();
 	HRESULT Present();
+	Viewport& GetViewPort();
 
 public: // InputDevice
 	_byte	Get_DIKeyState(_ubyte byKeyID);
@@ -62,6 +65,9 @@ public: // LightManager
 	HRESULT AddLightProtoType(uint32 levelIndex, Light::LightType type, const wstring& lighttag, Component* prototype);
 	Component* CloneLight(uint32 levelIndex, Light::LightType type, const wstring& lighttag, void* argument);
 
+public: // Picking
+	_bool TerrainPicking(POINT pt, Vec3& pickPos, _float& distance, Transform* trans, VIBufferTerrain* buffer);
+	_bool PickObject(POINT pt);
 
 private:
 	class TimeManager* _timeManager = nullptr;
@@ -72,6 +78,7 @@ private:
 	class CameraHelper* _cameraHelper = nullptr;
 	class InputManager* _inputManager = nullptr;
 	class LightManager* _lightManager = nullptr;
+	class Picking* _picking = nullptr;
 
 public:
 	static void Release_Engine();

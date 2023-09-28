@@ -119,8 +119,11 @@ HRESULT LevelHelper::LodingforLevelGame()
         VIBufferTerrain::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Terrain/Height1.bmp")))))
         return E_FAIL;
 
+    Matrix modelInitializMatrix = ::XMMatrixIdentity();
+    modelInitializMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
+
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelFiona"),
-        Model::Create(_device, _deviceContext, "../Binaries/Resources/Models/Fiona/Fiona.fbx"))))
+        Model::Create(_device, _deviceContext, "../Binaries/Resources/Models/Fiona/Fiona.fbx", modelInitializMatrix))))
         return E_FAIL;
 
     _title = TEXT("Shader Loading");
@@ -128,6 +131,11 @@ HRESULT LevelHelper::LodingforLevelGame()
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentHillsShader"),
         Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/HillsShader.fx"),
             VertexTextureNormalData::Elements, VertexTextureNormalData::numElements))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentDefaultMeshShader"),
+        Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/DefaultMeshShader.fx"),
+            VertexPosNormTexTan::Elements, VertexPosNormTexTan::numElements))))
         return E_FAIL;
 
     if (FAILED(gameInstance->AddLightProtoType(static_cast<uint32>(LEVEL::GAME), Light::LightType::DIRECTIONAL, TEXT("ProtoTypeComponentLight"),

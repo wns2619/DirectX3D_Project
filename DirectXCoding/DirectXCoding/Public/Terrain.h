@@ -31,9 +31,6 @@ public:
 	virtual void Tick(const _float& fTimeDelta)		override;
 	virtual void LateTick(const _float& fTimeDelta) override;
 
-public:
-	VIBufferTerrain* GetVIBuffer() { return _viBuffer; }
-
 private:
 	Renderer* _renderComponent	= nullptr;
 	Shader* _shader				= nullptr;

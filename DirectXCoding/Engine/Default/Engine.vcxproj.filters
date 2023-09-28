@@ -121,6 +121,9 @@
     <Filter Include="01.Utility\04.Component\Collider\Base">
       <UniqueIdentifier>{ce459943-038f-4030-8344-5d4316dd140a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.System\Manager\Device\ViewPort">
+      <UniqueIdentifier>{ba169b1d-76da-4fe4-ac22-bbfdc718ecea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -252,6 +255,12 @@
     <ClInclude Include="..\Public\MathHelper.h">
       <Filter>02.Defines\99.Headers\Default</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Viewport.h">
+      <Filter>00.System\Manager\Device\ViewPort</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\dirent.h">
+      <Filter>02.Defines\99.Headers\99.Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -361,6 +370,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\OBBBoxCollider.cpp">
       <Filter>01.Utility\04.Component\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Viewport.cpp">
+      <Filter>00.System\Manager\Device\ViewPort</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

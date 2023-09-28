@@ -21,6 +21,8 @@
 #include <DirectXTex\DirectXTex.h>
 #include <DirectXTex\DirectXTex.inl>
 
+#include "dirent.h"
+
 using namespace DirectX;
 using namespace Microsoft::WRL;
 

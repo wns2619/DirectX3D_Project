@@ -62,6 +62,23 @@ void EditorTerrain::LateTick(const _float& fTimeDelta)
 	_renderComponent->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
 }
 
+_bool EditorTerrain::TerrainPick(Vec3& rPos, _float& distance)
+{
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+	POINT pt;
+	::GetCursorPos(&pt);
+	::ScreenToClient(g_hWnd, &pt);
+
+	_bool check = false;
+
+	check = gameInstance->TerrainPicking(pt, rPos, distance, _transform, _viBuffer);
+
+	RELEASE_INSTANCE(GameInstance);
+
+	return check;
+}
+
 HRESULT EditorTerrain::Ready_Components(void* pArg)
 {
 	/* Renderer Component */

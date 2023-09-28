@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "VIBuffer.h"
+#include "GameInstance.h"
+#include "Transform.h"
 
 VIBuffer::VIBuffer(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: Component(device, deviceContext)
@@ -70,7 +72,6 @@ HRESULT VIBuffer::Render()
 
 	return S_OK;
 }
-
 
 HRESULT VIBuffer::CreateBuffer(_Inout_ ID3D11Buffer** bufferOut)
 {

@@ -27,13 +27,15 @@ public:
 	void MouseMove();
 
 private:
+	// IMGUI
 	_bool _someCondition		= true;
+	_bool _Isterrain = false;
 
 	_bool _windowMoveFlag		= false;
 	_bool _windowResizeFlag		= false;
 	_bool _mouseCameraRotation	= true;
 
-	_float _windowContentHeight			= 400.f;
+	_float _windowContentHeight			= 900.f;
 	_float _objectsWindowWidth			= 450.f;
 	_float _objectWdowHeaderHeight		= 70.f;
 	_float _gameObjectSectionHeight		= 420.f;
@@ -43,6 +45,27 @@ private:
 	
 	_float _TerrainSectionHeight		= 130.f;
 
+
+	// GameObjects
+
+
+	// Camera
+
+
+	// Lights
+
+
+	// Load && Save
+	void LoadModelList(string path = "../Binaries/Resources/MyModels/");
+
+
+	vector<pair<string, _bool>> _modelNames;
+	vector<_bool> _modelNameHoveringState;
+	
+	const string _rootModelDirection = "../Binaries/Resources/MyModels/";
+	// Selection
+
+	// Terrain
 	VIBufferTerrain::TERRAIN_DESC desc = {};
 
 public:

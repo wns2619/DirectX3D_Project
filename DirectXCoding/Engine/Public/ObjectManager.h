@@ -33,6 +33,7 @@ private:
 private:
 	map<const wstring, Layer*>* _Layers = nullptr;
 	int32	_levelNumber = 0;
+	int32	_currenlevel = 0;
 	typedef map<const wstring, Layer*>	LAYERS;
 
 private:

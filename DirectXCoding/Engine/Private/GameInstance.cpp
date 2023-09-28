@@ -4,7 +4,7 @@
 #include "GraphicsManager.h"
 #include "LevelManager.h"
 #include "ObjectManager.h"
-
+#include "Picking.h"
 
 IMPLEMENT_SINGLETON(GameInstance)
 
@@ -13,8 +13,10 @@ GameInstance::GameInstance()
     _levelManager(LevelManager::GetInstance()), _objectManager(ObjectManager::GetInstance()),
     _componentManager(ComponentManager::GetInstance()), _cameraHelper(CameraHelper::GetInstance())
     , _inputManager(InputManager::GetInstance()), _lightManager(LightManager::GetInstance())
+    , _picking(Picking::GetInstance())
 {
     Safe_AddRef<InputManager*>(_inputManager);
+    Safe_AddRef<Picking*>(_picking);
     Safe_AddRef<CameraHelper*>(_cameraHelper);
     Safe_AddRef<LightManager*>(_lightManager);
     Safe_AddRef<ComponentManager*>(_componentManager);
@@ -60,8 +62,8 @@ void GameInstance::Tick(_float fTimeDelta)
 void GameInstance::Clear(uint32 levelIndex)
 {
     _objectManager->Clear(levelIndex);
-    _lightManager->Clear(levelIndex);
     //_componentManager->Clear(levelIndex);
+    _lightManager->Clear(levelIndex);
 }
 
 _float GameInstance::ComputeTimeDelta(const wstring& timerTag)
@@ -102,6 +104,11 @@ HRESULT GameInstance::Present()
         return E_FAIL;
 
     return _graphicManager->Present();
+}
+
+Viewport& GameInstance::GetViewPort()
+{
+    return _graphicManager->GetViewPort();
 }
 
 _byte GameInstance::Get_DIKeyState(_ubyte byKeyID)
@@ -265,6 +272,22 @@ Component* GameInstance::CloneLight(uint32 levelIndex, Light::LightType type, co
     return _lightManager->CloneLight(levelIndex, type, lighttag, argument);
 }
 
+_bool GameInstance::TerrainPicking(POINT pt, Vec3& pickPos, _float& distance, Transform* trans, VIBufferTerrain* buffer)
+{
+    if (nullptr == _picking)
+        return false;
+
+    return _picking->GetInstance()->TerrainPicking(pt, pickPos, distance, trans, buffer);
+}
+
+_bool GameInstance::PickObject(POINT pt)
+{
+    if (nullptr == _picking)
+        return false;
+
+    return _picking->PickObject(pt);
+}
+
 XMVECTOR GameInstance::GetCameraCaculator() const
 {
     if(nullptr == _cameraHelper)
@@ -276,6 +299,7 @@ XMVECTOR GameInstance::GetCameraCaculator() const
 void GameInstance::Release_Engine()
 {
     InputManager::GetInstance()->DestroyInstance();
+    Picking::GetInstance()->DestroyInstance();
     CameraHelper::GetInstance()->DestroyInstance();
     GameInstance::GetInstance()->DestroyInstance();
     ObjectManager::GetInstance()->DestroyInstance();
@@ -289,6 +313,7 @@ void GameInstance::Release_Engine()
 void GameInstance::Free()
 {
     Safe_Release<InputManager*>(_inputManager);
+    Safe_Release<Picking*>(_picking);
     Safe_Release<CameraHelper*>(_cameraHelper);
     Safe_Release<LightManager*>(_lightManager);
     Safe_Release<ComponentManager*>(_componentManager);

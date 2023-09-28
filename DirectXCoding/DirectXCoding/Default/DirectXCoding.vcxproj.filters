@@ -62,6 +62,12 @@
     <Filter Include="소스 파일\02.GameObjects\03.Player">
       <UniqueIdentifier>{137ba0c2-5442-49b7-b290-00834f73843e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\98.Shaders\MapShader">
+      <UniqueIdentifier>{6eaca1e4-e13a-45eb-a005-e12b6667c821}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\98.Shaders\ObjectShader">
+      <UniqueIdentifier>{8f037d34-86d0-4dc2-b479-2243d614366d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -145,6 +151,9 @@
     <ClInclude Include="..\Public\Player.h">
       <Filter>소스 파일\02.GameObjects\03.Player</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\dirent.h">
+      <Filter>소스 파일\99.Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -218,17 +227,20 @@
     <FxCompile Include="..\Binaries\Shaders\Shader_VtxPosTex.fx">
       <Filter>소스 파일\98.Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="..\Binaries\Shaders\HillsShader.fx">
-      <Filter>소스 파일\98.Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Binaries\Shaders\WireFrameHills.fx">
+    <FxCompile Include="..\Binaries\Shaders\LightHelper.fx">
       <Filter>소스 파일\98.Shaders</Filter>
     </FxCompile>
     <FxCompile Include="..\Binaries\Shaders\DirectionalLight.fx">
-      <Filter>소스 파일\98.Shaders</Filter>
+      <Filter>소스 파일\98.Shaders\MapShader</Filter>
     </FxCompile>
-    <FxCompile Include="..\Binaries\Shaders\LightHelper.fx">
-      <Filter>소스 파일\98.Shaders</Filter>
+    <FxCompile Include="..\Binaries\Shaders\HillsShader.fx">
+      <Filter>소스 파일\98.Shaders\MapShader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Binaries\Shaders\WireFrameHills.fx">
+      <Filter>소스 파일\98.Shaders\MapShader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Binaries\Shaders\DefaultMeshShader.fx">
+      <Filter>소스 파일\98.Shaders\ObjectShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
