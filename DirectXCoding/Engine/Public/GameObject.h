@@ -26,10 +26,14 @@ public:
 public:
 	OBJECT_TYPE GetObjectType() { return _objectType; }
 
+	void SetModelPath(const string& modelPath) { _ownModelPath = modelPath; }
+	const string& GetModelPath() { return _ownModelPath; }
 protected:
 	ID3D11Device* _device = nullptr;
 	ID3D11DeviceContext* _deviceContext = nullptr;
 	OBJECT_TYPE _objectType = OBJECT_TYPE::OBJECT_END;
+
+	string _ownModelPath = "";
 
 protected:
 	map<const wstring, Component*> _Components;

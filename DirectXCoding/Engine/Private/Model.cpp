@@ -4,7 +4,7 @@
 #include "Texture.h"
 
 Model::Model(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : Component(pDevice, pContext)
+    : Component(pDevice, pContext, COMPONENT_TYPE::MODEL)
 {
 
 }
@@ -15,6 +15,7 @@ Model::Model(const Model& rhs)
     , m_Meshes(rhs.m_Meshes)
     , _numMaterial(rhs._numMaterial)
     , _materials(rhs._materials)
+    , _modelPath(rhs._modelPath)
 {
     for (auto& material : _materials)
         for (size_t i = 0; i < AI_TEXTURE_TYPE_MAX; i++)
@@ -26,6 +27,8 @@ Model::Model(const Model& rhs)
 
 HRESULT Model::InitializePrototype(const string& pModelFilePath, FXMMATRIX pivotMat)
 {
+    _modelPath = pModelFilePath;
+
     m_pAIScene = m_Importer.ReadFile(pModelFilePath.c_str(), aiProcess_PreTransformVertices | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast);
     if (nullptr == m_pAIScene)
         return E_FAIL;

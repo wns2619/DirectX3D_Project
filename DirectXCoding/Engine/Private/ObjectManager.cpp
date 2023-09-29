@@ -100,6 +100,39 @@ GameObject* ObjectManager::GetLayerObject(const wstring& layertag, OBJECT_TYPE t
 	return nullptr;
 }
 
+HRESULT ObjectManager::ComparisonAddObject(int32 levelIndex, const string& addObjectfile, const wstring& layertag, void* argument)
+{
+	if (levelIndex >= _levelNumber)
+		return E_FAIL;
+
+	// ImGui에서 받은 경로를 ProtoType의 경로에 쏴준다.
+	GameObject* protoType = FindPrototype(wstring(addObjectfile.begin(), addObjectfile.end()));
+	if (nullptr == protoType)
+		return E_FAIL;
+
+	GameObject* gameObject = protoType->Clone(argument);
+	if (nullptr == gameObject)
+		return E_FAIL;
+
+	Layer* layer = FindLayer(levelIndex, layertag);
+
+	if (nullptr == layer)
+	{
+		layer = Layer::Create();
+
+		layer->AddGameObject(gameObject);
+
+		_Layers[levelIndex].emplace(layertag, layer);
+
+		_currenlevel = levelIndex;
+	}
+	else
+		layer->AddGameObject(gameObject);
+
+
+	return S_OK;
+}
+
 GameObject* ObjectManager::FindPrototype(const wstring& prototypeTag)
 {
 	auto iter = _protoTypes.find(prototypeTag);

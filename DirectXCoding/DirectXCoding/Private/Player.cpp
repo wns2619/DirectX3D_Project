@@ -66,7 +66,7 @@ HRESULT Player::ReadyComponents()
 		return E_FAIL;
 
 	/* Shader Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT),
 		TEXT("ProtoTypeComponentDefaultMeshShader"),
 		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
@@ -77,11 +77,9 @@ HRESULT Player::ReadyComponents()
 		return E_FAIL;
 
 	/* Model Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelFiona"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelFiona"),
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_model))))
 		return E_FAIL;
-
-	
 
 	/* Light Component */
 	Light::DirectinoalLight testlightinfo;
@@ -93,7 +91,7 @@ HRESULT Player::ReadyComponents()
 		testlightinfo.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
 		testlightinfo.Pad = 0.f;
 	}
-	if (FAILED(__super::AddLightComponent(static_cast<uint32>(LEVEL::GAME), Light::LightType::DIRECTIONAL,
+	if (FAILED(__super::AddLightComponent(static_cast<uint32>(LEVEL::EDIT), Light::LightType::DIRECTIONAL,
 		TEXT("ProtoTypeComponentLight"), reinterpret_cast<Component**>(&_light), &testlightinfo)))
 		return E_FAIL;
 

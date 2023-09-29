@@ -3,7 +3,7 @@
 #include "Shader.h"
 
 Transform::Transform(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-    : Component(device, deviceContext), _worldMatrix(::XMMatrixIdentity())
+    : Component(device, deviceContext, COMPONENT_TYPE::TRANSFORM), _worldMatrix(::XMMatrixIdentity())
 {
     ::ZeroMemory(&_transformDesc, sizeof(_transformDesc));
 }

@@ -22,8 +22,15 @@ ImGuiManager::ImGuiManager()
 
 HRESULT ImGuiManager::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
-	Safe_AddRef<ID3D11Device*>(device);
-	Safe_AddRef<ID3D11DeviceContext*>(deviceContext);
+	_device = device;
+	_deviceContext = deviceContext;
+
+
+	Safe_AddRef<ID3D11Device*>(_device);
+	Safe_AddRef<ID3D11DeviceContext*>(_deviceContext);
+
+	_currentDirectoryName = _rootModelDirection;
+	_currentDirectoryPath = _rootModelDirection;
 
 
 	IMGUI_CHECKVERSION();
@@ -32,13 +39,10 @@ HRESULT ImGuiManager::Initialize(ID3D11Device* device, ID3D11DeviceContext* devi
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(device, deviceContext);
 
-	ImGuiResourceHandler::GetInstance()->Initialize(device, deviceContext);
-
 	GuiStyle();
 	LoadModelList();
 
-	Safe_Release<ID3D11Device*>(device);
-	Safe_Release<ID3D11DeviceContext*>(deviceContext);
+
 
 	return S_OK;
 }
@@ -168,6 +172,58 @@ HRESULT ImGuiManager::Render()
 			ImGui::PopStyleVar();
 
 			// objects
+			if (ImGui::IsItemClicked())
+			{
+				if (false == _modelNames[i].second)
+				{
+
+					// 지정한 아이템을 클릭 했을 때 해당 FBX를 불러오려면 해당 FBX를 눌렀을 때 그 위치를 Model한테 쏴준 다음에 불러내야함.
+					size_t position = _currentDirectoryPath.find_first_of("\\/") + 1;
+					string modelPath = _currentDirectoryPath + _modelNames[i].first;
+					//modelPath.erase(0, position);
+
+					// 모델 경로를 받아오는 코드. 경로를 받아서 어떻게 할 것인가. Loading에서 미리 불러올 것인지. 아니면 누를 때마다 생성되게 만들 것인지.
+					// 눌렀을 때 경로를 반환하니까. 이 경로랑 ProtoType 경로랑 비교해서 게임오브젝트를 생성하자.
+					// 그렇다면 ObjectManager에 있는 prototype find를 사용해서. 비교 한 뒤에 생성하면 될 것 같은데.
+
+					// 불러내고 EDIT에 만든다. 다른 곳에서 불러 올 때는 레이어 위치만 바꿔주면 됨.
+					Matrix modelInitializMatrix = ::XMMatrixIdentity();
+					modelInitializMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
+
+					// 누를 때 생성해야 되니까 IMGUI에서 ProtoType을 만들고 AddObject까지 전부 수행시키는게 맞을 것 같다.
+					// Model 생성을 도와줄 Helper 클래스를 만들어서 내부에서 ProtoType 만들고 그 즉시 Clone까지 해주자.
+					// 그러면 받을 인자 값은 Layer 위치 + ProtoTypeTag
+
+					wstring findPrototypename = ImGuiResourceHandler::GetInstance()->FindProtoFilePath(modelPath);
+
+					if(FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), TEXT("LayerEntireObject"), findPrototypename)))
+						return E_FAIL;
+
+					
+
+					//if(FAILED())
+
+
+				}
+				else
+				{
+					if (_modelNames[i].first == "..")
+					{
+						_currentDirectoryPath.erase(_currentDirectoryPath.length() - _currentDirectoryName.length() - 1, _currentDirectoryName.length() + 2);
+						size_t position = _currentDirectoryPath.find_last_of("\\/");
+						_currentDirectoryName = _currentDirectoryPath.substr(0, position);
+					}
+					else
+					{
+						_currentDirectoryName = _modelNames[i].first;
+						_currentDirectoryPath += _currentDirectoryName + "\\";
+					}
+					LoadModelList(_currentDirectoryPath);
+					break;
+				}
+			}
+
+
 
 			ImGui::NextColumn();
 		}
@@ -533,9 +589,12 @@ void ImGuiManager::LoadModelList(string path)
 
 void ImGuiManager::Free()
 {
-	ImGuiResourceHandler::GetInstance()->DestroyInstance();
-
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
+
+
+
+	Safe_Release<ID3D11Device*>(_device);
+	Safe_Release<ID3D11DeviceContext*>(_deviceContext);
 }

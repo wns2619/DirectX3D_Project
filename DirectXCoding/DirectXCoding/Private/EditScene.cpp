@@ -4,6 +4,7 @@
 #include "ImGuiManager.h"
 #include "GameInstance.h"
 #include "PlayerCamera.h"
+#include "ImguiResourceHandler.h"
 
 EditScene::EditScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : Level(device, deviceContext)
@@ -21,7 +22,6 @@ HRESULT EditScene::Initialize()
         return E_FAIL;
 
 
-    ImGuiManager::GetInstance()->Initialize(_device, _deviceContext);
     //Im
     return S_OK;
 }
@@ -80,7 +80,7 @@ EditScene* EditScene::Create(ID3D11Device* device, ID3D11DeviceContext* deviceCo
 
 void EditScene::Free()
 {
-    ImGuiManager::GetInstance()->DestroyInstance();
+
 
     __super::Free();
 }

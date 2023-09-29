@@ -2,8 +2,9 @@
 #include "Collider.h"
 
 Collider::Collider(ID3D11Device* device, ID3D11DeviceContext* deviceContext, COLLIDER_TYPE type)
-    : Component(device, deviceContext), _colliderType(type)
+    : Component(device, deviceContext, COMPONENT_TYPE::COLLIDER), _colliderType(type)
 {
+
 }
 
 Collider::Collider(const Collider& rhs)

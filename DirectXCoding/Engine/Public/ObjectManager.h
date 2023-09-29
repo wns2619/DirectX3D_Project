@@ -26,6 +26,9 @@ public:
 
 	GameObject* GetLayerObject(const wstring& layertag, OBJECT_TYPE type);
 
+public: // IMGUI ¿ëµµ
+	HRESULT ComparisonAddObject(int32 levelIndex, const string& addObjectfile = "", const wstring& layertag = L"", void* argument = nullptr);
+
 private:
 	map<const wstring, GameObject*> _protoTypes;
 

@@ -4,7 +4,7 @@
 #include "Transform.h"
 
 VIBuffer::VIBuffer(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: Component(device, deviceContext)
+	: Component(device, deviceContext, COMPONENT_TYPE::BUFFER)
 	, _vertexBuffer(nullptr)
 	, _indexBuffer(nullptr)
 	, _topology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)

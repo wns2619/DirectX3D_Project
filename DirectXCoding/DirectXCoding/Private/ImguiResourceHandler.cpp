@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ImguiResourceHandler.h"
+#include "GameInstance.h"
 
 IMPLEMENT_SINGLETON(ImGuiResourceHandler)
 
@@ -48,6 +49,18 @@ ID3D11ShaderResourceView* ImGuiResourceHandler::GetResourceTexture(const WCHAR* 
     else
         return _imguitextures[path.c_str()];
 
+}
+
+HRESULT ImGuiResourceHandler::ComparisonPathwithObject(const string& filePath)
+{
+    GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+
+
+
+    RELEASE_INSTANCE(GameInstance);
+
+    return S_OK;
 }
 
 _bool ImGuiResourceHandler::CreateTextureFormFile(const WCHAR* texturePath, _bool isCubeMap)
@@ -106,12 +119,32 @@ _bool ImGuiResourceHandler::CreateTextureFormFile(const WCHAR* texturePath, _boo
     return couldLoad;
 }
 
+const wstring& ImGuiResourceHandler::FindProtoFilePath(const string& filePathKey)
+{
+    auto iter = _prototypefilepath.find(filePathKey);
+
+    if (iter == _prototypefilepath.end())
+        return wstring();
+
+    return iter->second;
+}
+
+HRESULT ImGuiResourceHandler::AddProtoFilePath(const string& filePathKey, const wstring& filePathValue)
+{
+    _prototypefilepath.emplace(filePathKey, filePathValue);
+
+    return S_OK;
+}
+
 void ImGuiResourceHandler::Free()
 {
     __super::Free();
 
     for (auto& iter : _imguitextures)
         Safe_Release<ID3D11ShaderResourceView*>(iter.second);
+
+    _imguitextures.clear();
+    _prototypefilepath.clear();
 
     Safe_Release<ID3D11Device*>(_device);
     Safe_Release<ID3D11DeviceContext*>(_deviceContext);

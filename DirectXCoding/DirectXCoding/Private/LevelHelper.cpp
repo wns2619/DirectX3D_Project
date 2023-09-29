@@ -6,6 +6,7 @@
 #include "PlayerCamera.h"
 #include "EditorTerrain.h"
 #include "Player.h"
+#include "ImguiResourceHandler.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -119,7 +120,7 @@ HRESULT LevelHelper::LodingforLevelGame()
         VIBufferTerrain::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Terrain/Height1.bmp")))))
         return E_FAIL;
 
-    Matrix modelInitializMatrix = ::XMMatrixIdentity();
+    XMMATRIX modelInitializMatrix = ::XMMatrixIdentity();
     modelInitializMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelFiona"),
@@ -134,8 +135,7 @@ HRESULT LevelHelper::LodingforLevelGame()
         return E_FAIL;
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentDefaultMeshShader"),
-        Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/DefaultMeshShader.fx"),
-            VertexPosNormTexTan::Elements, VertexPosNormTexTan::numElements))))
+        Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/DefaultMeshShader.fx"), VTXMESH::Elements, VTXMESH::iNumElements))))
         return E_FAIL;
 
     if (FAILED(gameInstance->AddLightProtoType(static_cast<uint32>(LEVEL::GAME), Light::LightType::DIRECTIONAL, TEXT("ProtoTypeComponentLight"),
@@ -156,6 +156,7 @@ HRESULT LevelHelper::LodingforLevelGame()
         Player::Create(_device, _deviceContext))))
         return E_FAIL;
 
+
     Safe_Release<GameInstance*>(gameInstance);
     _title = TEXT("Loading Successed");
     _IsFinished = true;
@@ -173,11 +174,31 @@ HRESULT LevelHelper::LodingforLevelEdit()
         VIBufferTerrain::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Terrain/Height1.bmp")))))
         return E_FAIL;
 
+
+    Matrix modelInitializMatrix = ::XMMatrixIdentity();
+    modelInitializMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelFiona"),
+        Model::Create(_device, _deviceContext, "../Binaries/Resources/MyModels/Fiona.fbx", modelInitializMatrix))))
+        return E_FAIL;
+
     _title = TEXT("Shader Loading");
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentEditHillsShader"),
         Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/WireFrameHills.fx"),
             VertexTextureNormalData::Elements, VertexTextureNormalData::numElements))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentDefaultMeshShader"),
+        Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/DefaultMeshShader.fx"),
+            VTXMESH::Elements, VTXMESH::iNumElements))))
+        return E_FAIL;
+
+
+    // Light
+
+    if (FAILED(gameInstance->AddLightProtoType(static_cast<uint32>(LEVEL::EDIT), Light::LightType::DIRECTIONAL, TEXT("ProtoTypeComponentLight"),
+        Light::Create(_device, _deviceContext))))
         return E_FAIL;
 
 
@@ -190,6 +211,14 @@ HRESULT LevelHelper::LodingforLevelEdit()
     if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectEditCamera"),
         PlayerCamera::Create(_device, _deviceContext))))
         return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectPlayer"),
+        Player::Create(_device, _deviceContext))))
+        return E_FAIL;
+
+
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("../Binaries/Resources/MyModels/Fiona.fbx", TEXT("ProtoTypeGameObjectPlayer"));
+
 
 
     _title = TEXT("Loading Successed");
@@ -223,6 +252,7 @@ void LevelHelper::Free()
     DeleteCriticalSection(&_criticalSection);
 
     CloseHandle(_lodingThread);
+
 
     Safe_Release<ID3D11Device*>(_device);
     Safe_Release<ID3D11DeviceContext*>(_deviceContext);

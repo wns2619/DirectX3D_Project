@@ -22,6 +22,10 @@ public:
 	HRESULT BindMaterialTexture(class Shader* shader, const char* constantName, uint32 meshIndex, aiTextureType type);
 	HRESULT Render(uint32 meshIndex);
 
+public: // IMGUI
+	void SetModelPath(const string& modelPath) { _modelPath = modelPath; }
+	const string& GetModelPath() { return _modelPath; }
+
 private: /* .fbx파일을 열어서 읽어주는 역활 */
 	Assimp::Importer			m_Importer;
 
@@ -30,13 +34,17 @@ private: /* .fbx파일을 열어서 읽어주는 역활 */
 
 private:
 	uint32					m_iNumMeshes = { 0 };
-	vector<class Mesh*>		m_Meshes;
+	vector<class Mesh*>		m_Meshes; // 메쉬정보를 들고있으니까 여기다가 넣어야함.
 
 private:
 	uint32					_numMaterial = 0;
 	vector<MESH_MATERIAL>	_materials;
 	
 	Matrix					_pivotMatrix;
+
+private: // IMGUI
+	string _modelPath = "";
+
 
 private:
 	HRESULT ReadyMeshes();

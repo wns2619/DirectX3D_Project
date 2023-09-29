@@ -4,6 +4,7 @@
 #include "ImGuiManager.h"
 
 #include "LevelLoading.h"
+#include "ImguiResourceHandler.h"
 
 Game::Game()
 	: _gameInstance(GameInstance::GetInstance())
@@ -30,10 +31,11 @@ HRESULT Game::Initialize(HWND hwnd)
 		return E_FAIL;
 
 
+	ImGuiManager::GetInstance()->Initialize(_device, _devicecontext);
+	ImGuiResourceHandler::GetInstance()->Initialize(_device, _devicecontext);
+
 	if (FAILED(ReadyProtoTypeComponents()))
 		return E_FAIL;
-
-
 
 
 	if (FAILED(OpenLevel(LEVEL::LOGO)))
@@ -140,7 +142,8 @@ void Game::Free()
 
 	Safe_Release<GameInstance*>(_gameInstance);
 
-	//ImGuiManager::GetInstance()->DestroyInstance();
+	ImGuiResourceHandler::GetInstance()->DestroyInstance();
+	ImGuiManager::GetInstance()->DestroyInstance();
 
 	GameInstance::Release_Engine();
 }

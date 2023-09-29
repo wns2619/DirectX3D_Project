@@ -68,18 +68,6 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC Elements[numElements];
 	};
 
-	struct ENGINE_DLL VertexPosNormTexTan
-	{
-		XMFLOAT3 position;
-		XMFLOAT3 normal;
-		XMFLOAT3 tangent;
-		XMFLOAT3 bitangent;
-		XMFLOAT2 texCoord;
-
-		static const uint32 numElements = 5;
-		static const D3D11_INPUT_ELEMENT_DESC Elements[numElements];
-	};
-
 	struct ENGINE_DLL VertexParticle
 	{
 		XMFLOAT3 position;
@@ -106,9 +94,19 @@ namespace Engine
 		XMFLOAT3		normal;
 		XMFLOAT2		texcoord;
 		XMFLOAT3		tangent;
+		XMFLOAT3		bitangent;
 
-		static const unsigned int				iNumElements = 4;
+		static const unsigned int				iNumElements = 5;
 		static const D3D11_INPUT_ELEMENT_DESC	Elements[iNumElements];
+	};
+
+
+	struct ENGINE_DLL TexturePaths
+	{
+		wstring diffusePath = L"";
+		wstring specularPath = L"";
+		wstring normalPath = L"";
+		wstring displacementPath = L"";
 	};
 
 };

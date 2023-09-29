@@ -27,6 +27,10 @@ public:
 	void MouseMove();
 
 private:
+	// Device && DeviceContext
+	ID3D11Device* _device				= nullptr;
+	ID3D11DeviceContext* _deviceContext = nullptr;
+
 	// IMGUI
 	_bool _someCondition		= true;
 	_bool _Isterrain = false;
@@ -47,7 +51,7 @@ private:
 
 
 	// GameObjects
-
+	
 
 	// Camera
 
@@ -59,9 +63,11 @@ private:
 	void LoadModelList(string path = "../Binaries/Resources/MyModels/");
 
 
-	vector<pair<string, _bool>> _modelNames;
+	vector<pair<string, _bool>> _modelNames; // string = name, bool = Isdirectory
 	vector<_bool> _modelNameHoveringState;
-	
+	string _currentDirectoryPath;
+	string _currentDirectoryName;
+
 	const string _rootModelDirection = "../Binaries/Resources/MyModels/";
 	// Selection
 

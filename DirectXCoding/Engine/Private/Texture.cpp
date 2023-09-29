@@ -3,7 +3,7 @@
 #include "Shader.h"
 
 Texture::Texture(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: Component(device, deviceContext)
+	: Component(device, deviceContext, COMPONENT_TYPE::TEXTURE)
 {
 }
 

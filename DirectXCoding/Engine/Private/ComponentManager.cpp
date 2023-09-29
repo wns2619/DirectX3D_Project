@@ -27,6 +27,12 @@ HRESULT ComponentManager::AddProtoType(uint32 levelIndex, const wstring& protoTy
 
 	_protoTypes[levelIndex].emplace(protoTypeTag,protoType);
 
+	//if (protoType->GetComponentType() == COMPONENT_TYPE::MODEL)
+	//{
+	//	static_cast<Model*>(protoType)->GetModelPath();
+
+	//}
+
 	return S_OK;
 }
 
