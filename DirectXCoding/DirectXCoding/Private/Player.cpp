@@ -58,6 +58,11 @@ HRESULT Player::Render()
 	return S_OK;
 }
 
+_bool Player::Intersects(POINT pt)
+{
+	return false;
+}
+
 HRESULT Player::ReadyComponents()
 {
 	/* Renderer Component */
@@ -79,6 +84,11 @@ HRESULT Player::ReadyComponents()
 	/* Model Component */
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelFiona"),
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_model))))
+		return E_FAIL;
+
+	/* Collider Component */
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentCollider"),
+		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_owner))))
 		return E_FAIL;
 
 	/* Light Component */

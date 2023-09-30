@@ -10,6 +10,9 @@
 #include "ConstantBuffer.h"
 #include "Light.h"
 #include "Collider.h"
+//#include "OBBBoxCollider.h"
+//#include "AABBBoxCollider.h"
+//#include "SphereCollider.h"
 
 BEGIN(Engine)
 

@@ -293,9 +293,6 @@
     <ClCompile Include="..\Private\LevelManager.cpp">
       <Filter>01.Utility\98.Manager\Level</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\GameObject.cpp">
-      <Filter>01.Utility\03.GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\ObjectManager.cpp">
       <Filter>01.Utility\98.Manager\Object</Filter>
     </ClCompile>
@@ -373,6 +370,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Viewport.cpp">
       <Filter>00.System\Manager\Device\ViewPort</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameObject.cpp">
+      <Filter>01.Utility\03.GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

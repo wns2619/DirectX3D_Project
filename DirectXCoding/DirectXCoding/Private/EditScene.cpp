@@ -54,7 +54,7 @@ HRESULT EditScene::ReadyLayerEditCamera(const wstring& layerTag)
         cameraDesc.rotationRadianPerSec = ::XMConvertToRadians(90.f);
     }
 
-    if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ProtoTypeGameObjectEditCamera"),
+    if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), layerTag, TEXT("ProtoTypeGameObjectEditCamera"),
         &cameraDesc)))
         return E_FAIL;
 

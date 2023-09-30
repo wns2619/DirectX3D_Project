@@ -60,7 +60,7 @@ private:
 
 
 	// Load && Save
-	void LoadModelList(string path = "../Binaries/Resources/MyModels/");
+	void LoadModelList(string path = "..\\Binaries\\Resources\\MyModels\\");
 
 
 	vector<pair<string, _bool>> _modelNames; // string = name, bool = Isdirectory
@@ -68,7 +68,7 @@ private:
 	string _currentDirectoryPath;
 	string _currentDirectoryName;
 
-	const string _rootModelDirection = "../Binaries/Resources/MyModels/";
+	const string _rootModelDirection = "..\\Binaries\\Resources\\MyModels\\";
 	// Selection
 
 	// Terrain

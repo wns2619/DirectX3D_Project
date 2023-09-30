@@ -2,6 +2,7 @@
 
 #include "Base.h"
 #include "Light.h"
+#include "Collider.h"
 
 BEGIN(Engine)
 
@@ -28,12 +29,16 @@ public:
 
 	void SetModelPath(const string& modelPath) { _ownModelPath = modelPath; }
 	const string& GetModelPath() { return _ownModelPath; }
+
+	Collider* GetCollider() { return _owner; }
 protected:
 	ID3D11Device* _device = nullptr;
 	ID3D11DeviceContext* _deviceContext = nullptr;
 	OBJECT_TYPE _objectType = OBJECT_TYPE::OBJECT_END;
 
 	string _ownModelPath = "";
+
+	Collider* _owner = nullptr;
 
 protected:
 	map<const wstring, Component*> _Components;

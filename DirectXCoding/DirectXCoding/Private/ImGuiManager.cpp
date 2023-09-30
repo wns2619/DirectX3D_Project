@@ -66,13 +66,6 @@ HRESULT ImGuiManager::Render()
 
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-	//_bool map_tool_window = true;
-
-	//const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
-	//ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 650, main_viewport->WorkPos.y + 20), ImGuiCond_FirstUseEver);
-	//ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
-
-	//ImGui::ShowDemoWindow(&map_tool_window);
 
 	ImGuiWindowFlags windowFlags = 0;
 	if (!_windowResizeFlag)
@@ -178,7 +171,7 @@ HRESULT ImGuiManager::Render()
 				{
 
 					// 지정한 아이템을 클릭 했을 때 해당 FBX를 불러오려면 해당 FBX를 눌렀을 때 그 위치를 Model한테 쏴준 다음에 불러내야함.
-					size_t position = _currentDirectoryPath.find_first_of("\\/") + 1;
+					size_t position = _currentDirectoryPath.find_first_of('\\/') + 1;
 					string modelPath = _currentDirectoryPath + _modelNames[i].first;
 					//modelPath.erase(0, position);
 
@@ -501,7 +494,7 @@ void ImGuiManager::MouseMove()
 	::ScreenToClient(g_hWnd, &pt);
 	//::SetCursorPos(pt.x, pt.y);
 
-
+	GameInstance* gameinstance = GET_INSTANCE(GameInstance);
 
 	ImGui::Begin("Mouse Pose");
 	ImGui::Text("Mouse Position X(%d), Y(%d)", pt.x, pt.y);
@@ -511,20 +504,21 @@ void ImGuiManager::MouseMove()
 
 	if (_Isterrain)
 	{
-		GameInstance* gameinstance = GET_INSTANCE(GameInstance);
-
 		EditorTerrain* terrain = static_cast<EditorTerrain*>(gameinstance->GetLayerObject(TEXT("LayerEditTerrain"), OBJECT_TYPE::TERRAIN));
 
 		terrain->TerrainPick(pos, distance);
-
-		RELEASE_INSTANCE(GameInstance);
 	}
+
 	ImGui::Spacing();
 
 	ImGui::Text("Terrain Pos X : %.f", pos.x);
 	ImGui::Text("Terrain Pos Y : %.f", pos.y);
 	ImGui::Text("Terrain Pos Z : %.f", pos.z);
 
+
+
+
+	RELEASE_INSTANCE(GameInstance);
 
 	ImGui::End();
 }
@@ -550,7 +544,7 @@ void ImGuiManager::LoadModelList(string path)
 		// 함수를 호출할 때마다 디렉터리 하위 파일들을 차례로 반환함. 더 이상 반환할 파일이 없을 떄 NULL 반환하므로 while문의 조건 식에 넣어서 사용.
 		while ((entry = ::readdir(dir)) != NULL)
 		{
-			name = entry->d_name;
+ 			name = entry->d_name;
 			// 디렉토리 경로
 			if (entry->d_type == DT_DIR && name != "." && ((path == _rootModelDirection && name != ".." || (path != _rootModelDirection))))
 			{

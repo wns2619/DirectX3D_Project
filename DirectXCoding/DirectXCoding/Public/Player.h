@@ -25,6 +25,9 @@ public:
 	virtual void LateTick(const _float& fTimeDelta) override;
 	virtual HRESULT Render()						override;
 
+public:
+	_bool Intersects(POINT pt);
+
 private:
 	Renderer* _render		= nullptr;
 	Transform* _transform	= nullptr;

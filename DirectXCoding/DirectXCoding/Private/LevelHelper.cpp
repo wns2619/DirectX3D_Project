@@ -7,6 +7,9 @@
 #include "EditorTerrain.h"
 #include "Player.h"
 #include "ImguiResourceHandler.h"
+#include "OBBBoxCollider.h"
+#include "AABBboxCollider.h"
+#include "SphereCollider.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -179,7 +182,7 @@ HRESULT LevelHelper::LodingforLevelEdit()
     modelInitializMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelFiona"),
-        Model::Create(_device, _deviceContext, "../Binaries/Resources/MyModels/Fiona.fbx", modelInitializMatrix))))
+        Model::Create(_device, _deviceContext, "..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", modelInitializMatrix))))
         return E_FAIL;
 
     _title = TEXT("Shader Loading");
@@ -201,6 +204,11 @@ HRESULT LevelHelper::LodingforLevelEdit()
         Light::Create(_device, _deviceContext))))
         return E_FAIL;
 
+    // Collider
+
+    if(FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentCollider"),
+        OBBBoxCollider::Create(_device,_deviceContext))))
+        return E_FAIL;
 
     _title = TEXT("Object Loading");
 
@@ -217,7 +225,7 @@ HRESULT LevelHelper::LodingforLevelEdit()
         return E_FAIL;
 
 
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("../Binaries/Resources/MyModels/Fiona.fbx", TEXT("ProtoTypeGameObjectPlayer"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", TEXT("ProtoTypeGameObjectPlayer"));
 
 
 

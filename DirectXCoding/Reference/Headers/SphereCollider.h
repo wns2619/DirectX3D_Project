@@ -31,7 +31,7 @@ public:
 
 private:
 	_float _radius = 1.f;
-	BoundingSphere _boundingSphere;
+	BoundingSphere _boundingSphere; // 충돌 영역 
 
 public:
 	static SphereCollider* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
