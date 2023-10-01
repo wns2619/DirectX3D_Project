@@ -152,10 +152,13 @@ HRESULT ImGuiManager::Render()
 
 
 			// Name
+		
 			if (_modelNames[i].first == "..")
 				ImGui::Text("%s", "Back");
 			else
 				ImGui::Text("%s", _modelNames[i].first.c_str());
+			
+
 
 			ImGui::EndChildFrame();
 			// model card End
@@ -189,7 +192,7 @@ HRESULT ImGuiManager::Render()
 
 					wstring findPrototypename = ImGuiResourceHandler::GetInstance()->FindProtoFilePath(modelPath);
 
-					if(FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), TEXT("LayerEntireObject"), findPrototypename)))
+					if(FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), _editlayerTag, findPrototypename)))
 						return E_FAIL;
 
 					
@@ -215,8 +218,7 @@ HRESULT ImGuiManager::Render()
 					break;
 				}
 			}
-
-
+			_modelNameHoveringState[i] = ImGui::IsItemHovered();
 
 			ImGui::NextColumn();
 		}
@@ -243,8 +245,53 @@ HRESULT ImGuiManager::Render()
 		_gameObjectSectionHeight), true, ImGuiWindowFlags_HorizontalScrollbar);
 	{
 		// TODO : for문으로 gameobject 순회 
+		int32 objectsize = gameInstance->GetLayerObjectCount();
+		for (size_t i = 0; i < objectsize; i++)
+		{
+			if (i > 0)
+				ImGui::NewLine();
+
+			vector<GameObject*>* gamevector = gameInstance->GetCurrentObjectList(_editlayerTag);
+
+			if (gamevector != nullptr)
+			{
+				GameObject* gameObject = (*gamevector)[i];
+				if (gameObject != nullptr)
+				{
+					ImGui::Text(gameObject->GetModelNameId().c_str());
+				}
+			}
+
+			ImGui::PushID("gameobject Uptate" + i);
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+			ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 24);
+
+			if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon/baseline_delete_white_18dp.png"), ImVec2(20, 20)))
+			{
+				if (_selectedIndex = (int32)i)
+				{
+					_selectedIndex = -1;
+				}
+
+				if (gamevector != nullptr)
+				{
+					GameObject* gameObject = (*gamevector)[i];
+					Safe_Release<GameObject*>(gameObject);
+					gamevector->erase(gamevector->begin() + i);
+				}
+
+				ImGui::PopStyleVar();
+			}
+			else
+			{
+				ImGui::PopStyleVar();
 
 
+
+			}
+
+			ImGui::PopID();
+		}
 	}
 
 	ImGui::EndChild();
@@ -390,7 +437,7 @@ HRESULT ImGuiManager::Render()
 			desc.numVerticesX = i1;
 			desc.numVerticesZ = i1;
 
-			if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), TEXT("LayerEditTerrain"), TEXT("ProtoTypeGameObjectEditTerrain"), &desc)))
+			if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), _editlayerTag, TEXT("ProtoTypeGameObjectEditTerrain"), &desc)))
 				return E_FAIL;
 
 			
@@ -448,11 +495,12 @@ void ImGuiManager::GuiStyle()
 	style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.f);
 	style.Colors[ImGuiCol_Button] = ImVec4(0.f, 1.f / 255.f * 150.f, 1.f, 1.f);
 	style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.f, 1.f / 255.f * 130.f, 1.f, 1.f);
-	style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.f, 1.f / 255.f * 130.f, 1.f, 0.8f);
+	style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.f, 1.f / 255.f * 130.f, 1.f, 0.6f);
 	style.Colors[ImGuiCol_Header] = ImVec4(0.10f, 0.15f, 0.20f, 1.00f);
 	style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.15f, 0.225f, 0.30f, 1.00f);
 	style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.05f, 0.075f, 0.10f, 1.00f);
 	style.Colors[ImGuiCol_Separator] = ImVec4(.8f, .8f, .8f, 1.f);
+
 }
 
 void ImGuiManager::DrawSplitter(_bool split_vertically, _float thickness, _float* size0, _float* size1, _float min_size0, _float min_size1, _float size, _float buttonPadding)
@@ -521,6 +569,28 @@ void ImGuiManager::MouseMove()
 	RELEASE_INSTANCE(GameInstance);
 
 	ImGui::End();
+}
+
+void ImGuiManager::GameObjectUpdate(int32 vectorIndex)
+{
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+	vector<GameObject*>* gamevector = gameInstance->GetCurrentObjectList(_editlayerTag);
+
+	if (gamevector != nullptr)
+	{
+		GameObject* gameObject = (*gamevector)[vectorIndex];
+		if (gameObject != nullptr)
+		{
+			ImGui::PushID(gameObject->GetModelNameId().c_str());
+			string enabledLabel = "Enabled##" + to_string(gameObject->GetIdNumber());
+
+			if(ImGui::Checkbox(enabledLabel.c_str(), ))
+		}
+	}
+
+	
+	RELEASE_INSTANCE(GameInstance);
 }
 
 void ImGuiManager::LoadModelList(string path)

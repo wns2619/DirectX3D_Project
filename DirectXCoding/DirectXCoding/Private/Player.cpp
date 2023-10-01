@@ -8,6 +8,7 @@ Player::Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: GameObject(device, deviceContext, OBJECT_TYPE::PLAYER)
 {
 	_objectType = OBJECT_TYPE::PLAYER;
+	_modelName = "Player";
 }
 
 Player::Player(const Player& rhs)

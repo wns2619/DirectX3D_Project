@@ -46,6 +46,8 @@ public: // ObjectManager
 	HRESULT AddGameObject(uint32 levelIndex, const wstring& layerTag, const wstring& prototypeTag, void* argument = nullptr);
 	GameObject* GetLayerObject(const wstring& layertag, OBJECT_TYPE type);
 	HRESULT ComparisonAddObject(int32 levelIndex, const string& addObjectfile = "", const wstring& layertag = L"", void* argument = nullptr);
+	int32	GetLayerObjectCount();
+	vector<GameObject*>* GetCurrentObjectList(wstring& layerTag);
 
 public: // Component Manager
 	HRESULT	AddProtoType(uint32 levelIndex, const wstring& PrototypeTag, class Component* protoType);

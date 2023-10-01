@@ -20,10 +20,10 @@ public:
 	void LateTick(const _float& timeDelta);
 
 public:
-	list<GameObject*>& GetGameObject() { return _gameObjects; }
+	vector<GameObject*>* GetGameObject() { return &_gameObjects; }
 
 private:
-	list<GameObject*> _gameObjects;
+	vector<GameObject*> _gameObjects;
 
 public:
 	static Layer* Create();

@@ -8,7 +8,7 @@ PlayerCamera::PlayerCamera(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 {
 	::ZeroMemory(&_playerCameraDesc, sizeof(_playerCameraDesc));
 	_objectType = OBJECT_TYPE::CAMERA;
-
+	_modelName = "EditCamera";
 }
 
 PlayerCamera::PlayerCamera(const PlayerCamera& rhs)

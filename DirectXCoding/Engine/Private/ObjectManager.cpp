@@ -67,7 +67,7 @@ void ObjectManager::Tick(const _float& timeDelta)
 		for (auto& Pair : _Layers[i])
 			Pair.second->Tick(timeDelta);
 }
-
+	
 void ObjectManager::LateTick(const _float& timeDelta)
 {
 	for (size_t i = 0; i < _levelNumber; ++i)
@@ -89,15 +89,45 @@ GameObject* ObjectManager::GetLayerObject(const wstring& layertag, OBJECT_TYPE t
 	if (CurrentLayer == nullptr)
 		return nullptr;
 
-	list<GameObject*>& objectlist = CurrentLayer->GetGameObject();
+	vector<GameObject*>* objectlist = CurrentLayer->GetGameObject();
 
-	for (GameObject* gameObject : objectlist)
+	for (GameObject* gameObject : *objectlist)
 	{
 		if (gameObject->GetObjectType() == type)
 			return gameObject;
 	}
 
 	return nullptr;
+}
+
+uint32 ObjectManager::GetLayerObjectCount()
+{
+	_levelObjectCount = 0;
+
+	for (const auto& pair : _Layers[_currenlevel])
+	{
+		const Layer* layer = pair.second;
+
+		if (layer)
+		{
+			int32 listsize = pair.second->GetGameObject()->size();
+			_levelObjectCount += listsize;
+		}
+	}
+
+	return _levelObjectCount;
+}
+
+vector<GameObject*>* ObjectManager::GetCurrentObjectList(wstring& layerTag)
+{
+	Layer* layer = FindLayer(_currenlevel, layerTag);
+
+	if (nullptr == layer)
+	{
+		return nullptr;
+	}
+
+	return layer->GetGameObject();
 }
 
 HRESULT ObjectManager::ComparisonAddObject(int32 levelIndex, const string& addObjectfile, const wstring& layertag, void* argument)

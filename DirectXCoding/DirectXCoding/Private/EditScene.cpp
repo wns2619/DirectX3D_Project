@@ -18,7 +18,7 @@ EditScene::~EditScene()
 
 HRESULT EditScene::Initialize()
 {
-    if (FAILED(ReadyLayerEditCamera(TEXT("LayerEditCamera"))))
+    if (FAILED(ReadyLayerEditCamera(TEXT("LayerEntireObject"))))
         return E_FAIL;
 
 
@@ -61,6 +61,11 @@ HRESULT EditScene::ReadyLayerEditCamera(const wstring& layerTag)
     RELEASE_INSTANCE(GameInstance);
 
 
+    return S_OK;
+}
+
+HRESULT EditScene::ReadyLayerEntire(const wstring& layerTage)
+{
     return S_OK;
 }
 

@@ -180,6 +180,19 @@ HRESULT GameInstance::ComparisonAddObject(int32 levelIndex, const string& addObj
     return _objectManager->ComparisonAddObject(levelIndex, addObjectfile, layertag, argument);
 }
 
+int32 GameInstance::GetLayerObjectCount()
+{
+    if (nullptr == _objectManager)
+        return 0;
+
+    return _objectManager->GetLayerObjectCount();
+}
+
+vector<GameObject*>* GameInstance::GetCurrentObjectList(wstring& layerTag)
+{
+    return _objectManager->GetCurrentObjectList(layerTag);
+}
+
 HRESULT GameInstance::AddProtoType(uint32 levelIndex, const wstring& PrototypeTag, Component* protoType)
 {
     if (nullptr == _componentManager)

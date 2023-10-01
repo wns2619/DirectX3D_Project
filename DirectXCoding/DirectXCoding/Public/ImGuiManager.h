@@ -49,9 +49,13 @@ private:
 	
 	_float _TerrainSectionHeight		= 130.f;
 
+	_bool  _IsButtonPreesd = false;
+
+	int32  _selectedIndex = -1;
+
 
 	// GameObjects
-	
+	void GameObjectUpdate(int32 vectorIndex);
 
 	// Camera
 
@@ -61,7 +65,7 @@ private:
 
 	// Load && Save
 	void LoadModelList(string path = "..\\Binaries\\Resources\\MyModels\\");
-
+	
 
 	vector<pair<string, _bool>> _modelNames; // string = name, bool = Isdirectory
 	vector<_bool> _modelNameHoveringState;
@@ -69,6 +73,7 @@ private:
 	string _currentDirectoryName;
 
 	const string _rootModelDirection = "..\\Binaries\\Resources\\MyModels\\";
+	wstring _editlayerTag = TEXT("LayerEntireObject");
 	// Selection
 
 	// Terrain

@@ -25,7 +25,8 @@ public:
 	void Clear(uint32 levelIndex);
 
 	GameObject* GetLayerObject(const wstring& layertag, OBJECT_TYPE type);
-
+	uint32 GetLayerObjectCount();
+	vector<GameObject*>* GetCurrentObjectList(wstring& layerTag);
 
 public: // IMGUI ¿ëµµ
 	HRESULT ComparisonAddObject(int32 levelIndex, const string& addObjectfile = "", const wstring& layertag = L"", void* argument = nullptr);
@@ -39,6 +40,8 @@ private:
 	int32	_levelNumber = 0;
 	int32	_currenlevel = 0;
 	typedef map<const wstring, Layer*>	LAYERS;
+
+	int32  _levelObjectCount = 0;
 
 private:
 	GameObject* FindPrototype(const wstring& prototypeTag);

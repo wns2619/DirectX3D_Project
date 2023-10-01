@@ -10,8 +10,10 @@ GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 }
 
 GameObject::GameObject(const GameObject& rhs)
-	: _device(rhs._device), _deviceContext(rhs._deviceContext), _objectType(rhs._objectType)
+	: _device(rhs._device), _deviceContext(rhs._deviceContext), _objectType(rhs._objectType), _id(rhs._id), _modelName(rhs._modelName)
 {
+	++_id; // 게임 오브젝트의 아이디 번호 -> 복사할 떄마다 증가시킴 
+
 	Safe_AddRef<ID3D11Device*>(_device);
 	Safe_AddRef<ID3D11DeviceContext*>(_deviceContext);
 }
@@ -28,6 +30,7 @@ HRESULT GameObject::Initialize(void* argument)
 
 void GameObject::Tick(const _float& timeDelta)
 {
+
 }
 
 void GameObject::LateTick(const _float& timeDelta)
@@ -37,6 +40,20 @@ void GameObject::LateTick(const _float& timeDelta)
 HRESULT GameObject::Render()
 {
 	return S_OK;
+}
+
+string GameObject::GetModelName() const
+{
+	return _modelName;
+}
+
+string GameObject::GetModelNameId() const
+{
+	string label = _modelName + ", " + ::to_string(_id);
+	if (_modelName.empty())
+		label = ::to_string(_id);
+
+	return label;
 }
 
 HRESULT GameObject::AddComponent(uint32 levelIndex, const wstring& prototypeTag, const wstring& ComponentTag, _Inout_ Component** componentout, void* argument)

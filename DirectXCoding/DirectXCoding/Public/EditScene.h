@@ -17,6 +17,7 @@ public:
 
 public:
 	HRESULT ReadyLayerEditCamera(const wstring& layerTag);
+	HRESULT ReadyLayerEntire(const wstring& layerTage);
 
 public:
 	static EditScene* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);

@@ -26,19 +26,28 @@ public:
 
 public:
 	OBJECT_TYPE GetObjectType() { return _objectType; }
-
-	void SetModelPath(const string& modelPath) { _ownModelPath = modelPath; }
-	const string& GetModelPath() { return _ownModelPath; }
-
 	Collider* GetCollider() { return _owner; }
+
+
+	// IMGUI
+	string GetModelName() const;
+	string GetModelNameId() const;
+	uint32 GetIdNumber() { return _id; }
+
+	void SetEnabled(_bool enabled) { _enabled = enabled; }
+	_bool GetEnabled() { return _enabled; }
 protected:
 	ID3D11Device* _device = nullptr;
 	ID3D11DeviceContext* _deviceContext = nullptr;
 	OBJECT_TYPE _objectType = OBJECT_TYPE::OBJECT_END;
 
-	string _ownModelPath = "";
-
 	Collider* _owner = nullptr;
+
+	// ID && IMGUI
+	uint32 _id = 0;
+	string _modelName = "";
+
+	_bool  _enabled = false;
 
 protected:
 	map<const wstring, Component*> _Components;
