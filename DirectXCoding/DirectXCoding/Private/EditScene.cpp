@@ -21,8 +21,10 @@ EditScene::~EditScene()
 
 HRESULT EditScene::Initialize()
 {
-    if (FAILED(ReadyLayerEditCamera(TEXT("LayerEntireObject"))))
+    if (FAILED(ReadyLayerEditCamera(TEXT("LayerCameraObject"))))
         return E_FAIL;
+
+
 
 
     //Im

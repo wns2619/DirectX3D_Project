@@ -111,15 +111,14 @@ uint32 ObjectManager::GetLayerObjectCount()
 	{
 		const Layer* layer = pair.second;
 
-		if (layer)
+		if (nullptr != layer)
 		{
 			vector<GameObject*>* gameObject = pair.second->GetGameObject();
 
-			for (auto object : *gameObject)
-			{
-				(*gameObject)[_levelObjectCount++]->SetIdNumber(i);
-				++i;
-			}
+
+			for (size_t i = 0; i < gameObject->size(); i++)
+				(*gameObject)[i]->SetIdNumber(i);
+
 
 			listsize = pair.second->GetGameObject()->size();
 		}

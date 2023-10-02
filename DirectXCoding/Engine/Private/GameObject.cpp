@@ -14,6 +14,7 @@ GameObject::GameObject(const GameObject& rhs)
 {
 	Safe_AddRef<ID3D11Device*>(_device);
 	Safe_AddRef<ID3D11DeviceContext*>(_deviceContext);
+
 }
 
 HRESULT GameObject::InitializePrototype()
@@ -113,8 +114,6 @@ Component* GameObject::FindComponent(const wstring& componentTag)
 
 void GameObject::Free()
 {
-	--_id;
-
 	__super::Free();
 
 	for (auto& iter : _Components)

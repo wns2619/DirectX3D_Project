@@ -80,8 +80,7 @@ HRESULT Texture::ChangeShaderResourceView(ID3D11ShaderResourceView* changeResour
 
 void Texture::SelfDelete(Texture* self)
 {
-	for(size_t i = 0; i < 2; ++i)
-		Safe_Release<Texture*>(self);
+	Safe_Release<Texture*>(self);
 }
 
 Texture* Texture::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wstring& textureFilePath, uint32 numTextures)

@@ -54,6 +54,7 @@ HRESULT Model::InitializePrototype(const string& pModelFilePath, FXMMATRIX pivot
 HRESULT Model::Initialize(void* pArg)
 {
 
+
     return S_OK;
 }
 

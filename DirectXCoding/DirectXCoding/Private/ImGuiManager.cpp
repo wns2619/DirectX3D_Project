@@ -114,7 +114,18 @@ HRESULT ImGuiManager::Render()
 			ImGui::Checkbox("Window Move", &_windowMoveFlag);
 			if (ImGui::CollapsingHeader("Camera"))
 			{
+				wstring cameraLayer = TEXT("LayerCameraObject");
+				vector<GameObject*>* gamevector = gameInstance->GetCurrentObjectList(cameraLayer);
 
+				int32 objectsize = gameInstance->GetLayerObjectCount();
+				for (size_t i = 0; i < objectsize; i++)
+					if (gamevector != nullptr)
+					{
+						GameObject* gameObject = (*gamevector)[i];
+						if (gameObject != nullptr)
+							ImGui::Text(gameObject->GetModelNameId().c_str());
+
+					}
 			}
 		}
 
@@ -325,6 +336,8 @@ HRESULT ImGuiManager::Render()
 		if (ImGui::BeginCombo("##Add Light", "Add Light"))
 		{
 			// TODO Light Add
+
+			ImGui::EndCombo();
 		}
 
 		ImGui::PopItemWidth();
@@ -660,6 +673,7 @@ void ImGuiManager::UpdateModelUI(int32 vectorIndex)
 				if (ImGui::TreeNodeEx(string("PBR").c_str()))
 				{
 					UpdateMaterialUI(vectorIndex);
+					
 
 					ImGui::TreePop();
 				}
@@ -676,26 +690,76 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 {
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
+
+	// 여기까진 게임오브젝트의 리스트를 순회해서 마테리얼 정보랑 모델 정보를 갖고 와야 되고.
+
 	vector<GameObject*>* gameObject = gameInstance->GetCurrentObjectList(_editlayerTag);
 
 	Model* modelComponent = (*gameObject)[vectorIndex]->GetModelComponent();
 
 	vector<MESH_MATERIAL>* vectorMesh = (*gameObject)[vectorIndex]->GetModelComponent()->GetMaterial();
 
-	// numMeshes = (*gameObject)[vectorIndex]->GetModelComponent()->GetNumMeshes();
+	uint32 MeshIndex = (*gameObject)[vectorIndex]->GetModelComponent()->GetNumMeshes();
+
+	// 이 밑에 부터는 메쉬가 따로 돌아야함. 그니까 vectorIndex는 여기까지만 사용하고 메쉬 인덱스를 다시 돌아야함.
+	// 콤보박스에서 인덱스 지정해주고 그 인덱스번호에 있는 메쉬 텍스쳐 불러와서 텍스쳐 변경하면 될 듯.
+
+	//if (vectorIndex >= vectorMesh->size()) 
+	//	return;
+
 
 	if (ImGui::TreeNodeEx("Material", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		_bstr_t nameStr(_tempName);
 
+		ImGui::SameLine(ImGui::GetWindowWidth() - 160.f);
+		ImGui::PushItemWidth(120.f);
+
+		static int32 selectIndex = 0;
+		static _bool IsComboOpen = false;
+
+
+		if (ImGui::BeginCombo("##Mesh Number", IsComboOpen ? ("Mesh Number" + std::to_string(selectIndex)).c_str() : "Mesh Number"))
+		{
+			for (_char i = 0; i < MeshIndex; i++)
+			{
+				_char label[32];
+				::snprintf(label, sizeof(label), "Mesh Number %d", i);
+				_bool isSelected = (i == selectIndex);
+
+				if (ImGui::Selectable(label, isSelected))
+				{
+					selectIndex = i;
+				}
+
+				if (isSelected)
+				{
+					ImGui::SetItemDefaultFocus();
+				}
+
+			}
+			ImGui::EndCombo();
+		}
+
+		if (ImGui::IsItemClicked())
+			IsComboOpen = true;
+
+		if (ImGui::IsItemDeactivatedAfterEdit())
+			IsComboOpen = false;
+
+
+		ImGui::PopItemWidth();
+		ImGui::Separator();
+
+
 		// Diffuse
 		if (ImGui::TreeNodeEx((void*)"Diffuse", ImGuiTreeNodeFlags_DefaultOpen, "Diffuse"))
 		{
 			
-			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE])
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE])
 			{
-				ImGui::Image((*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE]->
+				ImGui::Image((*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE]->
 					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.diffusePath.c_str());
 				nameStr = _texturePath.diffusePath.c_str();
 			}
@@ -744,10 +808,10 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 		if (ImGui::TreeNodeEx((void*)"Normal", ImGuiTreeNodeFlags_DefaultOpen, "Normal"))
 		{
 			
-			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[vectorIndex]._texture[aiTextureType_NORMALS])
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[aiTextureType_NORMALS])
 			{
-				ImGui::Image((*vectorMesh)[vectorIndex]._texture[aiTextureType_NORMALS]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_NORMALS]->
+				ImGui::Image((*vectorMesh)[selectIndex]._texture[aiTextureType_NORMALS]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_NORMALS]->
 					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.normalPath.c_str());
 				nameStr = _texturePath.normalPath.c_str();
 			}
@@ -776,10 +840,10 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 		{
 			
 			
-			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[vectorIndex]._texture[aiTextureType_METALNESS])
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[aiTextureType_METALNESS])
 			{
-				ImGui::Image((*vectorMesh)[vectorIndex]._texture[aiTextureType_METALNESS]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_METALNESS]->
+				ImGui::Image((*vectorMesh)[selectIndex]._texture[aiTextureType_METALNESS]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_METALNESS]->
 					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.metallicPath.c_str());
 				nameStr = _texturePath.metallicPath.c_str();
 			}
@@ -815,10 +879,10 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 		if (ImGui::TreeNodeEx((void*)"Rougness", ImGuiTreeNodeFlags_DefaultOpen, "Rougness"))
 		{
 			
-			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS])
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS])
 			{
-				ImGui::Image((*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]->
+				ImGui::Image((*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]->
 					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.roughnessPath.c_str());
 				nameStr = _texturePath.roughnessPath.c_str();
 			}
@@ -855,10 +919,10 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 		if (ImGui::TreeNodeEx((void*)"Emissive", ImGuiTreeNodeFlags_DefaultOpen, "Emissive"))
 		{
 
-			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[vectorIndex]._texture[aiTextureType_EMISSIVE])
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[aiTextureType_EMISSIVE])
 			{
-				ImGui::Image((*vectorMesh)[vectorIndex]._texture[aiTextureType_EMISSIVE]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_EMISSIVE]->
+				ImGui::Image((*vectorMesh)[selectIndex]._texture[aiTextureType_EMISSIVE]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_EMISSIVE]->
 					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.emissivePath.c_str());
 				nameStr = _texturePath.emissivePath.c_str();
 			}
@@ -903,10 +967,10 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 		if (ImGui::TreeNodeEx((void*)"Amibent Occlusion", ImGuiTreeNodeFlags_DefaultOpen, "Amibent Occlusion"))
 		{
 
-			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[vectorIndex]._texture[aiTextureType_AMBIENT_OCCLUSION])
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[aiTextureType_AMBIENT_OCCLUSION])
 			{
-				ImGui::Image((*vectorMesh)[vectorIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]->
+				ImGui::Image((*vectorMesh)[selectIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]->
 					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.ambientOcclusionPath.c_str());
 				nameStr = _texturePath.ambientOcclusionPath.c_str();
 			}
@@ -933,10 +997,10 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 		if (ImGui::TreeNodeEx((void*)"Displacement", ImGuiTreeNodeFlags_DefaultOpen, "Displacement"))
 		{
 
-			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[vectorIndex]._texture[aiTextureType_DISPLACEMENT])
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT])
 			{
-				ImGui::Image((*vectorMesh)[vectorIndex]._texture[aiTextureType_DISPLACEMENT]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DISPLACEMENT]->
+				ImGui::Image((*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT]->
 					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.displacmentPath.c_str());
 				nameStr = _texturePath.displacmentPath.c_str();
 			}
@@ -985,9 +1049,9 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 			case aiTextureType_NONE:
 				break;
 			case aiTextureType_DIFFUSE:
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE]->SelfDelete((*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE]);
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE] = Texture::Create(_device, _deviceContext, path);
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE]->SelfDelete((*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE]);
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.diffusePath = wstring(strPath.begin(), strPath.end());
 				break;
 			case aiTextureType_SPECULAR:
@@ -995,17 +1059,17 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 			case aiTextureType_AMBIENT:
 				break;
 			case aiTextureType_EMISSIVE:
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_EMISSIVE]->SelfDelete((*vectorMesh)[vectorIndex]._texture[aiTextureType_EMISSIVE]);
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_EMISSIVE] = Texture::Create(_device, _deviceContext, path);
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_EMISSIVE]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_EMISSIVE]->SelfDelete((*vectorMesh)[selectIndex]._texture[aiTextureType_EMISSIVE]);
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_EMISSIVE] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_EMISSIVE]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.emissivePath = wstring(strPath.begin(), strPath.end());
 				break;
 			case aiTextureType_HEIGHT:
 				break;
 			case aiTextureType_NORMALS:
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_NORMALS]->SelfDelete((*vectorMesh)[vectorIndex]._texture[aiTextureType_NORMALS]);
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_NORMALS] = Texture::Create(_device, _deviceContext, path);
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_NORMALS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_NORMALS]->SelfDelete((*vectorMesh)[selectIndex]._texture[aiTextureType_NORMALS]);
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_NORMALS] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_NORMALS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.normalPath = wstring(strPath.begin(), strPath.end());
 				break;
 			case aiTextureType_SHININESS:
@@ -1013,9 +1077,9 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 			case aiTextureType_OPACITY:
 				break;
 			case aiTextureType_DISPLACEMENT:
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DISPLACEMENT]->SelfDelete((*vectorMesh)[vectorIndex]._texture[aiTextureType_DISPLACEMENT]);
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DISPLACEMENT] = Texture::Create(_device, _deviceContext, path);
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DISPLACEMENT]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT]->SelfDelete((*vectorMesh)[vectorIndex]._texture[aiTextureType_DISPLACEMENT]);
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.displacmentPath = wstring(strPath.begin(), strPath.end());
 				break;
 			case aiTextureType_LIGHTMAP:
@@ -1029,21 +1093,21 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 			case aiTextureType_EMISSION_COLOR:
 				break;
 			case aiTextureType_METALNESS:
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_METALNESS]->SelfDelete((*vectorMesh)[vectorIndex]._texture[aiTextureType_METALNESS]);
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_METALNESS] = Texture::Create(_device, _deviceContext, path);
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_METALNESS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_METALNESS]->SelfDelete((*vectorMesh)[selectIndex]._texture[aiTextureType_METALNESS]);
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_METALNESS] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_METALNESS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.metallicPath = wstring(strPath.begin(), strPath.end());
 				break;
 			case aiTextureType_DIFFUSE_ROUGHNESS:
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]->SelfDelete((*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]);
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS] = Texture::Create(_device, _deviceContext, path);
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]->SelfDelete((*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]);
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.roughnessPath = wstring(strPath.begin(), strPath.end());
 				break;
 			case aiTextureType_AMBIENT_OCCLUSION:
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]->SelfDelete((*vectorMesh)[vectorIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]);
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_AMBIENT_OCCLUSION] = Texture::Create(_device, _deviceContext, path);
-				(*vectorMesh)[vectorIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]->SelfDelete((*vectorMesh)[selectIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]);
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_AMBIENT_OCCLUSION] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.ambientOcclusionPath = wstring(strPath.begin(), strPath.end());
 				break;
 			case aiTextureType_SHEEN:
