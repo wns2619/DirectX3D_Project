@@ -95,9 +95,9 @@ HRESULT Player::ReadyComponents()
 		return E_FAIL;
 
 	/* Collider Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentCollider"),
-		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_owner))))
-		return E_FAIL;
+	//if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentCollider"),
+	//	TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_owner))))
+	//	return E_FAIL;
 
 	/* Light Component */
 	Light::DirectinoalLight testlightinfo;

@@ -75,8 +75,8 @@ private:
 	_float _imageSize = 50.f;
 	_float _offset = 60.f;
 	_float _checkBoxOffset = 28.f;
-	string _fileguipath = "..\\Binaries\\Resources\\Textures\\";
-	const string _rootTextureDirection = "..\\Binaries\\Resources\\Textures\\";
+	string _fileguipath = "..\\Binaries\\Resources\\Textures\\DDS\\";
+	const string _rootTextureDirection = "..\\Binaries\\Resources\\Textures\\DDS\\";
 	TexturePathPBR _texturePath = {};
 
 	// GameObjects

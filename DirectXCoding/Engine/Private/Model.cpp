@@ -16,10 +16,15 @@ Model::Model(const Model& rhs)
     , _numMaterial(rhs._numMaterial)
     , _materials(rhs._materials)
     , _modelPath(rhs._modelPath)
+    , m_pAIScene(rhs.m_pAIScene)
 {
     for (auto& material : _materials)
         for (size_t i = 0; i < AI_TEXTURE_TYPE_MAX; i++)
+        {
             Safe_AddRef<Texture*>(material._texture[i]);
+        }
+
+
 
     for (auto& mesh : m_Meshes)
         Safe_AddRef<Mesh*>(mesh);
@@ -48,6 +53,7 @@ HRESULT Model::InitializePrototype(const string& pModelFilePath, FXMMATRIX pivot
 
 HRESULT Model::Initialize(void* pArg)
 {
+
     return S_OK;
 }
 

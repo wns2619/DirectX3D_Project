@@ -87,7 +87,11 @@ _bool ImGuiResourceHandler::CreateTextureFormFile(const WCHAR* texturePath, _boo
         DirectX::TexMetadata metadata;
         DirectX::ScratchImage scratchImage;
         hr = ::LoadFromHDRFile(path.c_str(), &metadata, scratchImage);
-        assert(SUCCEEDED(hr) && "Error, Failed to load HDR Texture file!");
+
+
+        (SUCCEEDED(hr) && "Error, Failed to load HDR Texture file!");
+
+
 
         hr = ::CreateShaderResourceView(_device, scratchImage.GetImages(), scratchImage.GetImageCount(), metadata, &_imguitextures[texturePath]);
     }
@@ -99,16 +103,20 @@ _bool ImGuiResourceHandler::CreateTextureFormFile(const WCHAR* texturePath, _boo
         DirectX::ScratchImage mipChain;
 
         hr = ::GenerateMipMaps(scratchImage.GetImages(), scratchImage.GetImageCount(), scratchImage.GetMetadata(), TEX_FILTER_DEFAULT, 0, mipChain);
+
         assert(SUCCEEDED(hr) && "Error, Failed to generate mipmaps for TGA Texture file!");
+
     }
     else
         hr = ::CreateWICTextureFromFile(_device, _deviceContext, path.c_str(), nullptr, &_imguitextures[texturePath]);
 
     if (FAILED(hr))
     {
+
         ::OutputDebugString(L"Failed to Load : ");
         ::OutputDebugString(texturePath);
         ::OutputDebugString(L"'\n");
+
         path = rootTexturePath + L"Empty_Texture.jpg";
         hr = ::CreateWICTextureFromFile(_device, _deviceContext, path.c_str(), nullptr, &_imguitextures[texturePath]);
         couldLoad = false;
@@ -117,9 +125,12 @@ _bool ImGuiResourceHandler::CreateTextureFormFile(const WCHAR* texturePath, _boo
     }
     else
     {
+
+
         ::OutputDebugString(L"Texture loaded : ");
         ::OutputDebugString(texturePath);
         ::OutputDebugString(L"'\n");
+
     }
 
     return couldLoad;

@@ -1,10 +1,13 @@
 #include "pch.h"
 #include "EditScene.h"
 
-#include "ImGuiManager.h"
+
 #include "GameInstance.h"
 #include "PlayerCamera.h"
+
+#include "ImGuiManager.h"
 #include "ImguiResourceHandler.h"
+
 
 EditScene::EditScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : Level(device, deviceContext)

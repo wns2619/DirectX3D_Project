@@ -985,6 +985,7 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 			case aiTextureType_NONE:
 				break;
 			case aiTextureType_DIFFUSE:
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE]->SelfDelete((*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE]);
 				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE] = Texture::Create(_device, _deviceContext, path);
 				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.diffusePath = wstring(strPath.begin(), strPath.end());
@@ -994,6 +995,7 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 			case aiTextureType_AMBIENT:
 				break;
 			case aiTextureType_EMISSIVE:
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_EMISSIVE]->SelfDelete((*vectorMesh)[vectorIndex]._texture[aiTextureType_EMISSIVE]);
 				(*vectorMesh)[vectorIndex]._texture[aiTextureType_EMISSIVE] = Texture::Create(_device, _deviceContext, path);
 				(*vectorMesh)[vectorIndex]._texture[aiTextureType_EMISSIVE]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.emissivePath = wstring(strPath.begin(), strPath.end());
@@ -1001,12 +1003,20 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 			case aiTextureType_HEIGHT:
 				break;
 			case aiTextureType_NORMALS:
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_NORMALS]->SelfDelete((*vectorMesh)[vectorIndex]._texture[aiTextureType_NORMALS]);
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_NORMALS] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_NORMALS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+				_texturePath.normalPath = wstring(strPath.begin(), strPath.end());
 				break;
 			case aiTextureType_SHININESS:
 				break;
 			case aiTextureType_OPACITY:
 				break;
 			case aiTextureType_DISPLACEMENT:
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DISPLACEMENT]->SelfDelete((*vectorMesh)[vectorIndex]._texture[aiTextureType_DISPLACEMENT]);
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DISPLACEMENT] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DISPLACEMENT]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+				_texturePath.displacmentPath = wstring(strPath.begin(), strPath.end());
 				break;
 			case aiTextureType_LIGHTMAP:
 				break;
@@ -1019,10 +1029,22 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 			case aiTextureType_EMISSION_COLOR:
 				break;
 			case aiTextureType_METALNESS:
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_METALNESS]->SelfDelete((*vectorMesh)[vectorIndex]._texture[aiTextureType_METALNESS]);
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_METALNESS] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_METALNESS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+				_texturePath.metallicPath = wstring(strPath.begin(), strPath.end());
 				break;
 			case aiTextureType_DIFFUSE_ROUGHNESS:
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]->SelfDelete((*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]);
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+				_texturePath.roughnessPath = wstring(strPath.begin(), strPath.end());
 				break;
 			case aiTextureType_AMBIENT_OCCLUSION:
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]->SelfDelete((*vectorMesh)[vectorIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]);
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_AMBIENT_OCCLUSION] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+				_texturePath.ambientOcclusionPath = wstring(strPath.begin(), strPath.end());
 				break;
 			case aiTextureType_SHEEN:
 				break;

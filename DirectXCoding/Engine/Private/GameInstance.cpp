@@ -319,15 +319,15 @@ XMVECTOR GameInstance::GetCameraCaculator() const
 
 void GameInstance::Release_Engine()
 {
-    InputManager::GetInstance()->DestroyInstance();
-    Picking::GetInstance()->DestroyInstance();
-    CameraHelper::GetInstance()->DestroyInstance();
     GameInstance::GetInstance()->DestroyInstance();
-    ObjectManager::GetInstance()->DestroyInstance();
     LevelManager::GetInstance()->DestroyInstance();
-    LightManager::GetInstance()->DestroyInstance();
+    ObjectManager::GetInstance()->DestroyInstance();
     ComponentManager::GetInstance()->DestroyInstance();
     TimeManager::GetInstance()->DestroyInstance();
+    CameraHelper::GetInstance()->DestroyInstance();
+    LightManager::GetInstance()->DestroyInstance();
+    Picking::GetInstance()->DestroyInstance();
+    InputManager::GetInstance()->DestroyInstance();
     GraphicsManager::GetInstance()->DestroyInstance();
 }
 

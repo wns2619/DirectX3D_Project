@@ -1,10 +1,14 @@
 #include "pch.h"
 #include "Game.h"
 #include "GameInstance.h"
-#include "ImGuiManager.h"
 
 #include "LevelLoading.h"
+
+#include "ImGuiManager.h"
 #include "ImguiResourceHandler.h"
+
+
+
 
 Game::Game()
 	: _gameInstance(GameInstance::GetInstance())
@@ -34,6 +38,9 @@ HRESULT Game::Initialize(HWND hwnd)
 	ImGuiManager::GetInstance()->Initialize(_device, _devicecontext);
 	ImGuiResourceHandler::GetInstance()->Initialize(_device, _devicecontext);
 
+
+
+
 	if (FAILED(ReadyProtoTypeComponents()))
 		return E_FAIL;
 
@@ -61,8 +68,11 @@ HRESULT Game::Render()
 
 	_renderer->DrawRenderObjects();
 
-	if(_gameInstance->GetCurrentLevelIndex() == static_cast<uint32>(LEVEL::EDIT))
+
+	if (_gameInstance->GetCurrentLevelIndex() == static_cast<uint32>(LEVEL::EDIT))
 		ImGuiManager::GetInstance()->Render();
+
+
 
 	_gameInstance->Present();
 
@@ -141,6 +151,7 @@ void Game::Free()
 	Safe_Release<ID3D11DeviceContext*>(_devicecontext);
 
 	Safe_Release<GameInstance*>(_gameInstance);
+
 
 	ImGuiResourceHandler::GetInstance()->DestroyInstance();
 	ImGuiManager::GetInstance()->DestroyInstance();
