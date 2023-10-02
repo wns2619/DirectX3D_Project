@@ -13,6 +13,7 @@
 #include <d3d11shader.h>
 #include <wrl.h>
 #include <dinput.h>
+#include "comdef.h"
 
 #include <DirectXMath.h>
 #include <Include\d3dx11effect.h>
@@ -22,6 +23,7 @@
 #include <DirectXTex\DirectXTex.inl>
 
 #include "dirent.h"
+#include "StringUtilities.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;

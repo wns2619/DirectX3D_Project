@@ -1,17 +1,19 @@
 #include "pch.h"
 
-#include "imgui.h"  // IMGUI::SETUP
+#include "imgui.h"
+#include "imfilebrowser.h"
 #include "imgui_impl_win32.h"  // IMGUI::SETUP
 #include "imgui_impl_dx11.h"  // IMGUI::SETUP
 
 #include "ImGuiManager.h"
 #include "ImguiResourceHandler.h"
+
 #include "GameInstance.h"
 
 #include "GameObject.h"
 #include "EditorTerrain.h"
 
-
+ImGui::FileBrowser g_fileDialog;
 
 IMPLEMENT_SINGLETON(ImGuiManager)
 
@@ -24,6 +26,9 @@ HRESULT ImGuiManager::Initialize(ID3D11Device* device, ID3D11DeviceContext* devi
 {
 	_device = device;
 	_deviceContext = deviceContext;
+
+	g_fileDialog.SetTitle("Load Texture");
+	g_fileDialog.SetTypeFilters({ ".png",".jpg",".jpeg",".tga",".dds",".DDS",".bmp" });
 
 
 	Safe_AddRef<ID3D11Device*>(_device);
@@ -287,7 +292,7 @@ HRESULT ImGuiManager::Render()
 				ImGui::PopStyleVar();
 
 
-
+				GameObjectUpdate(i);
 			}
 
 			ImGui::PopID();
@@ -585,11 +590,458 @@ void ImGuiManager::GameObjectUpdate(int32 vectorIndex)
 			ImGui::PushID(gameObject->GetModelNameId().c_str());
 			string enabledLabel = "Enabled##" + to_string(gameObject->GetIdNumber());
 
-			if(ImGui::Checkbox(enabledLabel.c_str(), ))
+			_bool* enable = gameObject->GetEnabled();
+
+			if (ImGui::Checkbox(enabledLabel.c_str(), enable))
+			{
+
+			}
+
+			if (!*enable)
+			{
+
+				if (nullptr != gameObject->GetTransform())
+				{
+					Vec3 Scaled = gameObject->GetTransform()->GetScaled();
+					XMVECTOR worldScale = ::XMLoadFloat3(&Scaled);
+
+					XMMATRIX Position = gameObject->GetTransform()->GetWorldMatrix();
+					XMVECTOR worldPosition = Position.r[3];
+
+					XMVECTOR worldRotation = ::XMVectorSet(1.f, 1.f, 1.f, 1.f);
+
+					//Vec3 Rotation = gameObject->GetTransform()->
+
+
+					if (ImGui::CollapsingHeader("Movement"))
+					{
+						// TODO ratationÀº °í¹Î ÇØºÁ¾ß°ÚÀ½.
+						// 
+
+						ImGui::DragFloat3("Scale", &worldScale.m128_f32[0], 0.1f, 0.1f, 20.f);
+						ImGui::DragFloat3("Rotation", &worldRotation.m128_f32[0], 0.1f);
+						ImGui::DragFloat3("Position", &worldPosition.m128_f32[0], 0.1f);
+
+						::XMStoreFloat3(&Scaled, worldScale);
+						gameObject->GetTransform()->SetScaling(Scaled);
+						gameObject->GetTransform()->SetState(Transform::STATE::POSITION, worldPosition);
+						
+					}
+				}
+				
+
+				UpdateModelUI(vectorIndex);
+			}
+
+			ImGui::PopID();
 		}
 	}
 
 	
+	RELEASE_INSTANCE(GameInstance);
+}
+
+void ImGuiManager::UpdateModelUI(int32 vectorIndex)
+{
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+	vector<GameObject*>* gameObject = gameInstance->GetCurrentObjectList(_editlayerTag);
+
+	if (ImGui::CollapsingHeader("Mesh List"))
+	{
+		if (nullptr != gameObject)
+		{
+			ImGui::PushID(string(::to_string(vectorIndex) + (*gameObject)[vectorIndex]->GetModelName()).c_str());
+
+
+			if (nullptr != (*gameObject)[vectorIndex]->GetModelComponent())
+			{
+
+				if (ImGui::TreeNodeEx(string("PBR").c_str()))
+				{
+					UpdateMaterialUI(vectorIndex);
+
+					ImGui::TreePop();
+				}
+				
+			}
+			ImGui::PopID();
+		}
+	}
+
+	RELEASE_INSTANCE(GameInstance);
+}
+
+void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
+{
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+	vector<GameObject*>* gameObject = gameInstance->GetCurrentObjectList(_editlayerTag);
+
+	Model* modelComponent = (*gameObject)[vectorIndex]->GetModelComponent();
+
+	vector<MESH_MATERIAL>* vectorMesh = (*gameObject)[vectorIndex]->GetModelComponent()->GetMaterial();
+
+	// numMeshes = (*gameObject)[vectorIndex]->GetModelComponent()->GetNumMeshes();
+
+	if (ImGui::TreeNodeEx("Material", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		_bstr_t nameStr(_tempName);
+
+		// Diffuse
+		if (ImGui::TreeNodeEx((void*)"Diffuse", ImGuiTreeNodeFlags_DefaultOpen, "Diffuse"))
+		{
+			
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE])
+			{
+				ImGui::Image((*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE]->
+					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.diffusePath.c_str());
+				nameStr = _texturePath.diffusePath.c_str();
+			}
+			else
+			{
+				ImGui::Image(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\Empty_Texture.jpg"), ImVec2(_imageSize, _imageSize));
+				nameStr = "Add Texture";
+			}
+
+			ImGui::SameLine();
+			ImGui::Indent(_offset);
+			ImGui::BeginGroup();
+
+			static _bool tempBool = true;
+			if (ImGui::Checkbox(" ", &tempBool))
+			{
+
+			}
+			ImGui::SameLine();
+			ImGui::Indent(_checkBoxOffset);
+
+			if (ImGui::Button((const char*)nameStr))
+			{
+				g_fileDialog.Open();
+				g_fileDialog.SetPwd(filesystem::current_path() / _fileguipath);
+				_textureType = aiTextureType_DIFFUSE;
+			}
+
+			ImGui::Unindent(_checkBoxOffset);
+			ImGui::PushItemWidth(ImGui::GetWindowWidth() - _imageSize - _offset - 80.f);
+			static _float color[3] = { 1.f,1.f,1.f };
+			if (ImGui::ColorEdit3("Color##2", color))
+			{
+
+			}
+			ImGui::PopItemWidth();
+			ImGui::EndGroup();
+			ImGui::Unindent(60.f);
+			
+
+			ImGui::TreePop();
+		}
+
+
+		// Normal
+		if (ImGui::TreeNodeEx((void*)"Normal", ImGuiTreeNodeFlags_DefaultOpen, "Normal"))
+		{
+			
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[vectorIndex]._texture[aiTextureType_NORMALS])
+			{
+				ImGui::Image((*vectorMesh)[vectorIndex]._texture[aiTextureType_NORMALS]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_NORMALS]->
+					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.normalPath.c_str());
+				nameStr = _texturePath.normalPath.c_str();
+			}
+			else
+			{
+				ImGui::Image(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\Empty_Texture.jpg"), ImVec2(_imageSize, _imageSize));
+				nameStr = "Add Texture";
+			}
+
+			ImGui::SameLine();
+			ImGui::Indent(_offset);
+			if (ImGui::Button((const char*)nameStr))
+			{
+				g_fileDialog.Open();
+				g_fileDialog.SetPwd(filesystem::current_path() / _fileguipath);
+				_textureType = aiTextureType_NORMALS;
+			}
+			ImGui::Unindent(_offset);
+			
+			
+			ImGui::TreePop();
+		}
+
+		// Metallic
+		if (ImGui::TreeNodeEx((void*)"Metallic", ImGuiTreeNodeFlags_DefaultOpen, "Metallic"))
+		{
+			
+			
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[vectorIndex]._texture[aiTextureType_METALNESS])
+			{
+				ImGui::Image((*vectorMesh)[vectorIndex]._texture[aiTextureType_METALNESS]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_METALNESS]->
+					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.metallicPath.c_str());
+				nameStr = _texturePath.metallicPath.c_str();
+			}
+			else
+			{
+				ImGui::Image(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\Empty_Texture.jpg"), ImVec2(_imageSize, _imageSize));
+				nameStr = "Add Texture";
+			}
+
+			ImGui::SameLine();
+			ImGui::Indent(_offset);
+			ImGui::BeginGroup();
+			if (ImGui::Button((const char*)nameStr))
+			{
+				g_fileDialog.Open();
+				g_fileDialog.SetPwd(filesystem::current_path() / _fileguipath);
+				_textureType = aiTextureType_METALNESS;
+			}
+			ImGui::PushItemWidth(ImGui::GetWindowWidth() - _imageSize - _offset - 40.f);
+			static _float metallic = 0.f;
+			if (ImGui::DragFloat("##MetallicValue", &metallic, 0.01f, 0.f, 1.f))
+			{
+
+			}
+			ImGui::PopItemWidth();
+			ImGui::EndGroup();
+			ImGui::Unindent(_offset);
+			
+			ImGui::TreePop();
+		}
+
+		// Rougness
+		if (ImGui::TreeNodeEx((void*)"Rougness", ImGuiTreeNodeFlags_DefaultOpen, "Rougness"))
+		{
+			
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS])
+			{
+				ImGui::Image((*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]->
+					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.roughnessPath.c_str());
+				nameStr = _texturePath.roughnessPath.c_str();
+			}
+			else
+			{
+				ImGui::Image(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\Empty_Texture.jpg"), ImVec2(_imageSize, _imageSize));
+				nameStr = "Add Texture";
+			}
+
+			ImGui::SameLine();
+			ImGui::Indent(_offset);
+			ImGui::BeginGroup();
+			if (ImGui::Button((const char*)nameStr))
+			{
+				g_fileDialog.Open();
+				g_fileDialog.SetPwd(filesystem::current_path() / _fileguipath);
+				_textureType = aiTextureType_DIFFUSE_ROUGHNESS;
+			}
+			ImGui::PushItemWidth(ImGui::GetWindowWidth() - _imageSize - _offset - 40.f);
+			static _float Rougness = 0.f;
+			if (ImGui::DragFloat("##RougnessValue", &Rougness, 0.01f, 0.f, 1.f))
+			{
+
+			}
+			ImGui::PopItemWidth();
+			ImGui::EndGroup();
+			ImGui::Unindent(_offset);
+			
+			ImGui::TreePop();
+		}
+
+
+		// Emissive
+		if (ImGui::TreeNodeEx((void*)"Emissive", ImGuiTreeNodeFlags_DefaultOpen, "Emissive"))
+		{
+
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[vectorIndex]._texture[aiTextureType_EMISSIVE])
+			{
+				ImGui::Image((*vectorMesh)[vectorIndex]._texture[aiTextureType_EMISSIVE]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_EMISSIVE]->
+					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.emissivePath.c_str());
+				nameStr = _texturePath.emissivePath.c_str();
+			}
+			else
+			{
+				ImGui::Image(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\Empty_Texture.jpg"), ImVec2(_imageSize, _imageSize));
+				nameStr = "Add Texture";
+			}
+
+			ImGui::SameLine();
+			ImGui::Indent(_offset);
+			ImGui::BeginGroup();
+			static _bool tempBool = true;
+			if (ImGui::Checkbox(" ", &tempBool))
+			{
+
+			}
+			ImGui::SameLine();
+			ImGui::Indent(_checkBoxOffset);
+			if (ImGui::Button((const char*)nameStr))
+			{
+				g_fileDialog.Open();
+				g_fileDialog.SetPwd(filesystem::current_path() / _fileguipath);
+				_textureType = aiTextureType_EMISSIVE;
+			}
+			ImGui::Unindent(_checkBoxOffset);
+			ImGui::PushItemWidth(ImGui::GetWindowWidth() - _imageSize - _offset - 40.f);
+			static _float Emissive = 0.f;
+			if (ImGui::DragFloat("##EmissiveStrength", &Emissive, 0.01f, 0.f, 100.f))
+			{
+
+			}
+			ImGui::PopItemWidth();
+			ImGui::EndGroup();
+			ImGui::Unindent(_offset);
+
+			ImGui::TreePop();
+		}
+		
+
+		// Amibent Occlusion
+		if (ImGui::TreeNodeEx((void*)"Amibent Occlusion", ImGuiTreeNodeFlags_DefaultOpen, "Amibent Occlusion"))
+		{
+
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[vectorIndex]._texture[aiTextureType_AMBIENT_OCCLUSION])
+			{
+				ImGui::Image((*vectorMesh)[vectorIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]->
+					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.ambientOcclusionPath.c_str());
+				nameStr = _texturePath.ambientOcclusionPath.c_str();
+			}
+			else
+			{
+				ImGui::Image(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\Empty_Texture.jpg"), ImVec2(_imageSize, _imageSize));
+				nameStr = "Add Texture";
+			}
+
+			ImGui::SameLine();
+			ImGui::Indent(_offset);
+			if (ImGui::Button((const char*)nameStr))
+			{
+				g_fileDialog.Open();
+				g_fileDialog.SetPwd(filesystem::current_path() / _fileguipath);
+				_textureType = aiTextureType_AMBIENT_OCCLUSION;
+			}
+			ImGui::Unindent(_offset);
+			ImGui::TreePop();
+		}
+
+
+		// Displacement
+		if (ImGui::TreeNodeEx((void*)"Displacement", ImGuiTreeNodeFlags_DefaultOpen, "Displacement"))
+		{
+
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[vectorIndex]._texture[aiTextureType_DISPLACEMENT])
+			{
+				ImGui::Image((*vectorMesh)[vectorIndex]._texture[aiTextureType_DISPLACEMENT]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DISPLACEMENT]->
+					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.displacmentPath.c_str());
+				nameStr = _texturePath.displacmentPath.c_str();
+			}
+			else
+			{
+				ImGui::Image(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\Empty_Texture.jpg"), ImVec2(_imageSize, _imageSize));
+				nameStr = "Add Texture";
+			}
+
+			ImGui::SameLine();
+			ImGui::Indent(_offset);
+			if (ImGui::Button((const char*)nameStr))
+			{
+				g_fileDialog.Open();
+				g_fileDialog.SetPwd(filesystem::current_path() / _fileguipath);
+				_textureType = aiTextureType_DISPLACEMENT;
+			}
+			ImGui::Unindent(_offset);
+			ImGui::TreePop();
+		}
+
+		ImGui::TreePop();
+
+		g_fileDialog.Display();
+
+		if (g_fileDialog.HasSelected())
+		{
+			string strPath = g_fileDialog.GetSelected().string();
+			size_t pos = strPath.find("Textures");
+			if(pos != string::npos)
+				strPath.erase(0, pos);
+
+			pos = strPath.find_last_of("\\/");
+			if (pos != string::npos)
+				strPath = strPath.substr(pos + 1);
+
+			string fullpath = _rootTextureDirection + strPath;
+
+			wstring path = ::charToWchar(fullpath);
+
+			//wstring addpath = L".." + path;
+			
+
+			switch (_textureType)
+			{
+			case aiTextureType_NONE:
+				break;
+			case aiTextureType_DIFFUSE:
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_DIFFUSE]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+				_texturePath.diffusePath = wstring(strPath.begin(), strPath.end());
+				break;
+			case aiTextureType_SPECULAR:
+				break;
+			case aiTextureType_AMBIENT:
+				break;
+			case aiTextureType_EMISSIVE:
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_EMISSIVE] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[vectorIndex]._texture[aiTextureType_EMISSIVE]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+				_texturePath.emissivePath = wstring(strPath.begin(), strPath.end());
+				break;
+			case aiTextureType_HEIGHT:
+				break;
+			case aiTextureType_NORMALS:
+				break;
+			case aiTextureType_SHININESS:
+				break;
+			case aiTextureType_OPACITY:
+				break;
+			case aiTextureType_DISPLACEMENT:
+				break;
+			case aiTextureType_LIGHTMAP:
+				break;
+			case aiTextureType_REFLECTION:
+				break;
+			case aiTextureType_BASE_COLOR:
+				break;
+			case aiTextureType_NORMAL_CAMERA:
+				break;
+			case aiTextureType_EMISSION_COLOR:
+				break;
+			case aiTextureType_METALNESS:
+				break;
+			case aiTextureType_DIFFUSE_ROUGHNESS:
+				break;
+			case aiTextureType_AMBIENT_OCCLUSION:
+				break;
+			case aiTextureType_SHEEN:
+				break;
+			case aiTextureType_CLEARCOAT:
+				break;
+			case aiTextureType_TRANSMISSION:
+				break;
+			case aiTextureType_UNKNOWN:
+				break;
+			case _aiTextureType_Force32Bit:
+				break;
+			default:
+				break;
+			}
+		}
+
+		g_fileDialog.ClearSelected();
+	}
+
 	RELEASE_INSTANCE(GameInstance);
 }
 

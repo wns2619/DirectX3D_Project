@@ -33,7 +33,6 @@ private:
 	Shader* _shader				= nullptr;
 	Texture* _texture			= nullptr;
 	VIBufferRect* _viBuffer		= nullptr;
-	Transform* _transform		= nullptr;
 
 private:
 	_float _x = 0, _y = 0, _sizeX = 0, _sizeY = 0;

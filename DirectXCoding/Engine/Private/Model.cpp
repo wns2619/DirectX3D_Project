@@ -29,6 +29,7 @@ HRESULT Model::InitializePrototype(const string& pModelFilePath, FXMMATRIX pivot
 {
     _modelPath = pModelFilePath;
 
+
     m_pAIScene = m_Importer.ReadFile(pModelFilePath.c_str(), aiProcess_PreTransformVertices | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast);
     if (nullptr == m_pAIScene)
         return E_FAIL;

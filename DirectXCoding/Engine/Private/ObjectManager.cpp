@@ -50,6 +50,7 @@ HRESULT ObjectManager::AddGameObject(uint32 levelIndex, const wstring& layerTag,
 
 		layer->AddGameObject(gameObject);
 
+
 		_Layers[levelIndex].emplace(layerTag, layer);
 
 		_currenlevel = levelIndex;
@@ -103,6 +104,8 @@ GameObject* ObjectManager::GetLayerObject(const wstring& layertag, OBJECT_TYPE t
 uint32 ObjectManager::GetLayerObjectCount()
 {
 	_levelObjectCount = 0;
+	int32 i = 0;
+	size_t listsize = 0;
 
 	for (const auto& pair : _Layers[_currenlevel])
 	{
@@ -110,12 +113,19 @@ uint32 ObjectManager::GetLayerObjectCount()
 
 		if (layer)
 		{
-			int32 listsize = pair.second->GetGameObject()->size();
-			_levelObjectCount += listsize;
+			vector<GameObject*>* gameObject = pair.second->GetGameObject();
+
+			for (auto object : *gameObject)
+			{
+				(*gameObject)[_levelObjectCount++]->SetIdNumber(i);
+				++i;
+			}
+
+			listsize = pair.second->GetGameObject()->size();
 		}
 	}
 
-	return _levelObjectCount;
+	return listsize;
 }
 
 vector<GameObject*>* ObjectManager::GetCurrentObjectList(wstring& layerTag)

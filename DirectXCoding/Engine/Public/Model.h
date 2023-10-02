@@ -26,6 +26,8 @@ public: // IMGUI
 	void SetModelPath(const string& modelPath) { _modelPath = modelPath; }
 	const string& GetModelPath() { return _modelPath; }
 
+	vector<class Mesh*>* GetMeshes() { return &m_Meshes; }
+	vector<MESH_MATERIAL>* GetMaterial() { return &_materials; }
 private: /* .fbx파일을 열어서 읽어주는 역활 */
 	Assimp::Importer			m_Importer;
 
@@ -44,7 +46,6 @@ private:
 
 private: // IMGUI
 	string _modelPath = "";
-
 
 private:
 	HRESULT ReadyMeshes();

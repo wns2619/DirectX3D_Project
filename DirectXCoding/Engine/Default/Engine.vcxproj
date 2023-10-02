@@ -52,6 +52,7 @@
     <ClInclude Include="..\Public\Shader.h" />
     <ClInclude Include="..\Public\SimpleMath.h" />
     <ClInclude Include="..\Public\SphereCollider.h" />
+    <ClInclude Include="..\Public\StringUtilities.h" />
     <ClInclude Include="..\Public\Struct.h" />
     <ClInclude Include="..\Public\Texture.h" />
     <ClInclude Include="..\Public\TimeManager.h" />

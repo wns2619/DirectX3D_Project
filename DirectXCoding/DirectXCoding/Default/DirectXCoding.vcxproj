@@ -170,6 +170,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h" />
+    <ClInclude Include="..\Imgui\imfilebrowser.h" />
     <ClInclude Include="..\Imgui\imgui.h" />
     <ClInclude Include="..\Imgui\imgui_impl_dx11.h" />
     <ClInclude Include="..\Imgui\imgui_impl_win32.h" />

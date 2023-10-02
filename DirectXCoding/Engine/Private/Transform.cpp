@@ -144,9 +144,9 @@ void Transform::Turn(XMVECTOR axis, const _float& timeDelta)
 
     rotationQuaternion = ::XMQuaternionMultiply(rotationQuaternion, rotationMatrix);
 
-    right = ::XMVector3Rotate(right, rotationMatrix);
-    up = ::XMVector3Rotate(up, rotationMatrix);
-    look = ::XMVector3Rotate(look, rotationMatrix);
+    right = ::XMVector3Rotate(right, rotationQuaternion);
+    up = ::XMVector3Rotate(up, rotationQuaternion);
+    look = ::XMVector3Rotate(look, rotationQuaternion);
 
     SetState(STATE::RIGHT, right);
     SetState(STATE::UP, up);

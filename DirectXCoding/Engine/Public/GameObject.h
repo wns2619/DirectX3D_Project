@@ -6,7 +6,11 @@
 
 BEGIN(Engine)
 
+const int32 _id = 0;
+
 class Component;
+class Transform;
+class Model;
 
 enum class OBJECT_TYPE { PLAYER, TERRAIN, CAMERA, BACKGROUND, OBJECT_END };
 
@@ -33,15 +37,20 @@ public:
 	string GetModelName() const;
 	string GetModelNameId() const;
 	uint32 GetIdNumber() { return _id; }
+	_bool* GetEnabled() { return &_enabled; }
+	Transform* GetTransform() { return _transform; }
+	Model* GetModelComponent() { return _model; }
 
 	void SetEnabled(_bool enabled) { _enabled = enabled; }
-	_bool GetEnabled() { return _enabled; }
+	void SetIdNumber(uint32 id) { _id = id; }
 protected:
 	ID3D11Device* _device = nullptr;
 	ID3D11DeviceContext* _deviceContext = nullptr;
 	OBJECT_TYPE _objectType = OBJECT_TYPE::OBJECT_END;
 
 	Collider* _owner = nullptr;
+	Transform* _transform = nullptr;
+	Model* _model = nullptr;
 
 	// ID && IMGUI
 	uint32 _id = 0;

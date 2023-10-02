@@ -22,7 +22,7 @@ public:
 public:
 	ID3D11ShaderResourceView* GetResourceTexture(const WCHAR* texturePath, _bool isCubeMap = false);
 	HRESULT ComparisonPathwithObject(const string& filePath);
-
+	void LoadModelTexture(string path = "..\\Binaries\\Resources\\Textures\\");
 
 public:
 	_bool CreateTextureFormFile(const WCHAR* texturePath, _bool isCubeMap = false);
@@ -35,7 +35,7 @@ private:
 	map<const wstring, ID3D11ShaderResourceView*> _imguitextures;
 	map<const string, wstring> _prototypefilepath;
 
-	const wstring rootTexturePath = TEXT("../Binaries/Resources/Textures/");
+	const wstring rootTexturePath = TEXT("..\\Binaries\\Resources\\Textures\\");
 public:
 	virtual void Free() override;
 

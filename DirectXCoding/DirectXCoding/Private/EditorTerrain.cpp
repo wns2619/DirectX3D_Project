@@ -8,6 +8,7 @@ EditorTerrain::EditorTerrain(ID3D11Device* device, ID3D11DeviceContext* deviceCo
 	: GameObject(device, deviceContext, OBJECT_TYPE::TERRAIN)
 {
 	_objectType = OBJECT_TYPE::TERRAIN;
+	_modelName = "EditTerrain";
 }
 
 EditorTerrain::EditorTerrain(const EditorTerrain& rhs)
@@ -31,6 +32,10 @@ HRESULT EditorTerrain::Initialize(void* pArg)
 
 HRESULT EditorTerrain::Render()
 {
+	if (_enabled)
+		return S_OK;
+
+
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
@@ -55,15 +60,23 @@ HRESULT EditorTerrain::Render()
 
 void EditorTerrain::Tick(const _float& fTimeDelta)
 {
+	if (_enabled)
+		return;
+
 }
 
 void EditorTerrain::LateTick(const _float& fTimeDelta)
 {
-	_renderComponent->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+	if (!_enabled)
+		_renderComponent->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
 }
 
 _bool EditorTerrain::TerrainPick(Vec3& rPos, _float& distance)
 {
+	if (_enabled)
+		return false;
+
+
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
 	POINT pt;
@@ -156,9 +169,9 @@ void EditorTerrain::Free()
 {
 	__super::Free();
 
+	Safe_Release<Transform*>(_transform);
 	Safe_Release<Shader*>(_shader);
 	Safe_Release<Texture*>(_texture);
-	Safe_Release<Transform*>(_transform);
 	Safe_Release<VIBufferTerrain*>(_viBuffer);
 	Safe_Release<Renderer*>(_renderComponent);
 }

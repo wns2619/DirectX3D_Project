@@ -55,6 +55,7 @@ public:
 
 private:
 	Matrix _worldMatrix;
+	XMVECTOR _rotation = ::XMVectorSet(0.f, 0.f, 0.f, 1.f);
 
 	TRANSFORM_DESC _transformDesc = {};
 

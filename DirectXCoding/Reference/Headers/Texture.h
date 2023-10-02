@@ -21,6 +21,9 @@ public:
 	HRESULT	BindShaderResource(const Shader* shader, const _char* constantName, uint32 textureIndex);
 	HRESULT BindShaderReosurces(const Shader* shader, const _char* constantName);
 
+	// ImGuI
+	HRESULT ChangeShaderResourceView(ID3D11ShaderResourceView* changeResource, uint32 textureIndex, uint32 numTextures = 1);
+	ID3D11ShaderResourceView** GetShaderResourceViews() { return _shaderResourceViews; }
 private:
 	ID3D11ShaderResourceView** _shaderResourceViews = nullptr;
 	uint32 _numTextures = 0;

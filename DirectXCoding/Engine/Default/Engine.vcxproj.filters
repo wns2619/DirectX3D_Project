@@ -261,6 +261,9 @@
     <ClInclude Include="..\Public\dirent.h">
       <Filter>02.Defines\99.Headers\99.Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\StringUtilities.h">
+      <Filter>02.Defines\99.Headers\99.Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">

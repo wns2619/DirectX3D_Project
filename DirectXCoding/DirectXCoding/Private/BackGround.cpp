@@ -7,11 +7,13 @@ BackGround::BackGround(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: GameObject(device, deviceContext, OBJECT_TYPE::BACKGROUND)
 {
 	_objectType = OBJECT_TYPE::BACKGROUND;
+	_modelName = "BackGround";
 }
 
 BackGround::BackGround(const GameObject& rhs)
 	: GameObject(rhs)
 {
+	
 }
 
 HRESULT BackGround::InitializePrototype()
@@ -136,11 +138,11 @@ void BackGround::Free()
 {
 	__super::Free();
 
-	Safe_Release<Transform*>(_transform);
 	Safe_Release<Texture*>(_texture);
 	Safe_Release<Shader*>(_shader);
 	Safe_Release<VIBufferRect*>(_viBuffer);
 	Safe_Release<Renderer*>(_renderComponent);
+	Safe_Release<Transform*>(_transform);
 }
 
 BackGround* BackGround::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)

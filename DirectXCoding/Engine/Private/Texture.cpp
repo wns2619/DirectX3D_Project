@@ -55,6 +55,8 @@ HRESULT Texture::InitializePrototype(const wstring& textureFilePath, uint32 numT
 HRESULT Texture::Initialize(void* argument)
 {
 	return S_OK;
+
+	//Texture* changeTexture = (*vectorMesh)[vectorIndex]._texture[aiTextureType_EMISSIVE] = ImGuiResourceHandler::GetInstance()->GetResourceTexture(path.c_str());
 }
 
 HRESULT Texture::BindShaderResource(const Shader* shader, const _char* constantName, uint32 textureIndex)
@@ -67,9 +69,18 @@ HRESULT Texture::BindShaderReosurces(const Shader* shader, const _char* constant
 	return shader->BindTextures(constantName, _shaderResourceViews, _numTextures);
 }
 
+HRESULT Texture::ChangeShaderResourceView(ID3D11ShaderResourceView* changeResource, uint32 textureIndex, uint32 numTextures)
+{
+	if (nullptr == changeResource)
+		return E_FAIL;
+
+
+	return S_OK;
+}
+
 Texture* Texture::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wstring& textureFilePath, uint32 numTextures)
 {
-	Texture* texture = new Texture(device, deviceContext);
+ 	Texture* texture = new Texture(device, deviceContext);
 
 	if (FAILED(texture->InitializePrototype(textureFilePath, numTextures)))
 	{

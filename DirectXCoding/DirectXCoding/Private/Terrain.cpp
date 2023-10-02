@@ -7,11 +7,13 @@ Terrain::Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: GameObject(device, deviceContext, OBJECT_TYPE::TERRAIN)
 {
 	_objectType = OBJECT_TYPE::TERRAIN;
+	_modelName = "Terrain";
 }
 
 Terrain::Terrain(const Terrain& rhs)
 	: GameObject(rhs)
 {
+
 }
 
 HRESULT Terrain::InitializePrototype()
@@ -21,6 +23,8 @@ HRESULT Terrain::InitializePrototype()
 
 HRESULT Terrain::Initialize(void* pArg)
 {
+
+
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
@@ -29,6 +33,10 @@ HRESULT Terrain::Initialize(void* pArg)
 
 HRESULT Terrain::Render()
 {
+	if (_enabled)
+		return S_OK;
+
+
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
@@ -41,12 +49,14 @@ HRESULT Terrain::Render()
 
 void Terrain::Tick(const _float& fTimeDelta)
 {
-	
+	if (_enabled)
+		return;
 }
 
 void Terrain::LateTick(const _float& fTimeDelta)
 {
-	_renderComponent->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+	if (!_enabled)
+		_renderComponent->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
 }
 
 HRESULT Terrain::Ready_Components()
@@ -159,10 +169,10 @@ void Terrain::Free()
 {
 	__super::Free();
 
+	Safe_Release<Transform*>(_transform);
 	Safe_Release<Shader*>(_shader);
 	Safe_Release<Texture*>(_texture);
 	Safe_Release<Light*>(_light);
-	Safe_Release<Transform*>(_transform);
 	Safe_Release<VIBufferTerrain*>(_viBuffer);
 	Safe_Release<Renderer*>(_renderComponent);
 

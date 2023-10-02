@@ -154,6 +154,9 @@
     <ClInclude Include="..\Public\dirent.h">
       <Filter>소스 파일\99.Headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\Imgui\imfilebrowser.h">
+      <Filter>소스 파일\97.Imgui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">

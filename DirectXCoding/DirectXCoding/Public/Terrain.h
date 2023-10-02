@@ -36,7 +36,6 @@ private:
 	Shader* _shader				= nullptr;
 	Texture* _texture			= nullptr;
 	VIBufferTerrain* _viBuffer	= nullptr;
-	Transform* _transform		= nullptr;
 	Light* _light				= nullptr;
 
 private:

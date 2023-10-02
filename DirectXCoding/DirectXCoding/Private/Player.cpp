@@ -14,6 +14,7 @@ Player::Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 Player::Player(const Player& rhs)
 	: GameObject(rhs)
 {
+	
 }
 
 HRESULT Player::InitializePrototype()
@@ -31,16 +32,22 @@ HRESULT Player::Initialize(void* pArg)
 
 void Player::Tick(const _float& fTimeDelta)
 {
-
+	if (_enabled)
+		return;
 }
 
 void Player::LateTick(const _float& fTimeDelta)
 {
-	_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+	if(!_enabled)
+		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
 }
 
 HRESULT Player::Render()
 {
+	if (_enabled)
+		return S_OK;
+
+
 	if (FAILED(BindShaderResuorces()))
 		return E_FAIL;
 
@@ -83,7 +90,7 @@ HRESULT Player::ReadyComponents()
 		return E_FAIL;
 
 	/* Model Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelFiona"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelPlayer"),
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_model))))
 		return E_FAIL;
 

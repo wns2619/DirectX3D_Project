@@ -30,10 +30,8 @@ public:
 
 private:
 	Renderer* _render		= nullptr;
-	Transform* _transform	= nullptr;
 	Shader* _shader			= nullptr;
 	Light* _light			= nullptr;
-	Model* _model			= nullptr;
 
 private:
 	HRESULT ReadyComponents();

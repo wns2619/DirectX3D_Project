@@ -63,6 +63,12 @@ HRESULT ImGuiResourceHandler::ComparisonPathwithObject(const string& filePath)
     return S_OK;
 }
 
+void ImGuiResourceHandler::LoadModelTexture(string path)
+{
+    string name = "";
+
+}
+
 _bool ImGuiResourceHandler::CreateTextureFormFile(const WCHAR* texturePath, _bool isCubeMap)
 {
     HRESULT hr;

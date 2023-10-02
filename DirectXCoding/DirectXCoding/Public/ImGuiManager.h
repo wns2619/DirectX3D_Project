@@ -4,7 +4,21 @@
 #include "VIBufferTerrain.h"
 #include "Base.h"
 
+
+
 BEGIN(Client)
+
+struct TexturePathPBR
+{
+	wstring diffusePath = L"Diffuse";
+	wstring normalPath = L"Normal";
+	wstring metallicPath = L"Metallic";
+	wstring roughnessPath = L"Roughness";
+	wstring emissivePath = L"Emissive";
+	wstring ambientOcclusionPath = L"Ambient";
+	wstring displacmentPath = L"Displacement";
+};
+
 
 class ImGuiManager final : Base
 {
@@ -53,9 +67,22 @@ private:
 
 	int32  _selectedIndex = -1;
 
+	WCHAR	_tempName[64] = L"Collect";
+	uint32  _tempSize = 64;
+
+	
+	aiTextureType _textureType = aiTextureType::aiTextureType_TRANSMISSION;
+	_float _imageSize = 50.f;
+	_float _offset = 60.f;
+	_float _checkBoxOffset = 28.f;
+	string _fileguipath = "..\\Binaries\\Resources\\Textures\\";
+	const string _rootTextureDirection = "..\\Binaries\\Resources\\Textures\\";
+	TexturePathPBR _texturePath = {};
 
 	// GameObjects
 	void GameObjectUpdate(int32 vectorIndex);
+	void UpdateModelUI(int32 vectorIndex);
+	void UpdateMaterialUI(int32 vectorIndex);
 
 	// Camera
 

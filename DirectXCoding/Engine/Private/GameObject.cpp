@@ -10,10 +10,8 @@ GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 }
 
 GameObject::GameObject(const GameObject& rhs)
-	: _device(rhs._device), _deviceContext(rhs._deviceContext), _objectType(rhs._objectType), _id(rhs._id), _modelName(rhs._modelName)
+	: _device(rhs._device), _deviceContext(rhs._deviceContext), _objectType(rhs._objectType), _modelName(rhs._modelName), _id(rhs._id)
 {
-	++_id; // 게임 오브젝트의 아이디 번호 -> 복사할 떄마다 증가시킴 
-
 	Safe_AddRef<ID3D11Device*>(_device);
 	Safe_AddRef<ID3D11DeviceContext*>(_deviceContext);
 }
@@ -115,6 +113,8 @@ Component* GameObject::FindComponent(const wstring& componentTag)
 
 void GameObject::Free()
 {
+	--_id;
+
 	__super::Free();
 
 	for (auto& iter : _Components)
@@ -124,4 +124,5 @@ void GameObject::Free()
 
 	Safe_Release<ID3D11Device*>(_device);
 	Safe_Release<ID3D11DeviceContext*>(_deviceContext);
+
 }

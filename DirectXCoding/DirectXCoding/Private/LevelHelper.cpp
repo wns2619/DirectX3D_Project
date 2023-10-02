@@ -126,8 +126,8 @@ HRESULT LevelHelper::LodingforLevelGame()
     XMMATRIX modelInitializMatrix = ::XMMatrixIdentity();
     modelInitializMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
 
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelFiona"),
-        Model::Create(_device, _deviceContext, "../Binaries/Resources/Models/Fiona/Fiona.fbx", modelInitializMatrix))))
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelPlayer"),
+        Model::Create(_device, _deviceContext, "..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", modelInitializMatrix))))
         return E_FAIL;
 
     _title = TEXT("Shader Loading");
@@ -181,7 +181,7 @@ HRESULT LevelHelper::LodingforLevelEdit()
     Matrix modelInitializMatrix = ::XMMatrixIdentity();
     modelInitializMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
 
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelFiona"),
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelPlayer"),
         Model::Create(_device, _deviceContext, "..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", modelInitializMatrix))))
         return E_FAIL;
 

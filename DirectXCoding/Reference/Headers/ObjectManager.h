@@ -42,7 +42,6 @@ private:
 	typedef map<const wstring, Layer*>	LAYERS;
 
 	int32  _levelObjectCount = 0;
-
 private:
 	GameObject* FindPrototype(const wstring& prototypeTag);
 	Layer* FindLayer(int32 levelIndex, const wstring& layerTag);
