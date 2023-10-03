@@ -55,10 +55,7 @@ void Camera::Tick(const _float& timeDelta)
 	if (nullptr == _cameraHelper)
 		return;
 
-	XMMATRIX world = _transform->CustomGetWorldMatrix();
-	XMMATRIX worldInv = ::XMMatrixInverse(nullptr, world);
-
-	_cameraHelper->SetTransform(CameraHelper::TRANSFORMSTATE::D3DTS_VIEW, worldInv);
+	_cameraHelper->SetTransform(CameraHelper::TRANSFORMSTATE::D3DTS_VIEW, _transform->GetInverseWorldMatrix());
 	_cameraHelper->SetTransform(CameraHelper::TRANSFORMSTATE::D3DTS_PROJ,
 		::XMMatrixPerspectiveFovLH(_cameraDesc._fovy, _cameraDesc._aspect, _cameraDesc._near, _cameraDesc._far));
 }

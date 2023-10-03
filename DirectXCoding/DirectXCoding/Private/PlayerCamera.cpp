@@ -45,38 +45,21 @@ HRESULT PlayerCamera::Initialize(void* argument)
 
 void PlayerCamera::Tick(const _float& timeDelta)
 {
-	
-	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+	//CameraControls(timeDelta);
 
-	if (!gameInstance->GetInputHandler()->keyBufferIsEmpty())
-	{
-		if (gameInstance->GetInputHandler()->keyIsPressed(KeyCodes::F) || gameInstance->GetInputHandler()->isMouseRightDown())
-			_mouseCamerarotation = true;
-		if (gameInstance->GetInputHandler()->keyIsPressed(KeyCodes::G) || gameInstance->GetInputHandler()->isMouseLeftDown())
-		{
-			if (true == _mouseCamerarotation)
-			{
-				while (::ShowCursor(TRUE) < 0);
-
-			}
-
-			_mouseCamerarotation = false;
-		}
-	}
-
+	//GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
 	//if (gameInstance->Get_DIKeyState(DIK_A) & 0x80)
-	//	_physics->addForceDir(-_transform->GetState(Transform::STATE::RIGHT), _transform, timeDelta);
-	//	//_transform->Left(timeDelta);
+	//	addForce(Transform::Direction::LEFT, _transform, timeDelta);
 
 	//if (gameInstance->Get_DIKeyState(DIK_D) & 0x80)
-	//	_transform->Right(timeDelta);
+	//	addForce(Transform::Direction::RIGHT, _transform, timeDelta);
 
 	//if (gameInstance->Get_DIKeyState(DIK_W) & 0x80)
-	//	_transform->Forward(timeDelta);
+	//	addForce(Transform::Direction::FORWARD, _transform, timeDelta);
 
 	//if (gameInstance->Get_DIKeyState(DIK_S) & 0x80)
-	//	_transform->Backward(timeDelta);
+	//	addForce(Transform::Direction::BACKWARD, _transform, timeDelta);
 
 	//_long mouseMove = 0l;
 
@@ -87,7 +70,7 @@ void PlayerCamera::Tick(const _float& timeDelta)
 	//	_transform->Turn(_transform->GetState(Transform::STATE::RIGHT), mouseMove * _playerCameraDesc._mouseSensitive* timeDelta);
 
 
-	RELEASE_INSTANCE(GameInstance);
+	//RELEASE_INSTANCE(GameInstance);
 
 	__super::Tick(timeDelta);
 }
@@ -108,7 +91,7 @@ HRESULT PlayerCamera::ReadyComponents()
 	Physics::Physics_Desc desc;
 	::ZeroMemory(&desc, sizeof(desc));
 	{
-		desc._acceleration = Vec3(0.1f, 0.1f, 0.1f);
+		desc._acceleration = Vec3(1.f, 1.f, 1.f);
 		desc._deceleration = Vec3(0.001f, 0.001f, 0.001f);
 		desc._mass = 60.f;
 		desc._maxSpeed = 20.f;
@@ -153,6 +136,180 @@ void PlayerCamera::Rotate(int32 mouseX, int32 mouseY)
 
 	_transform->SetWorldRotation(::XMLoadFloat3(&rotationV3));
 	_transform->UpdateDirVectors();
+}
+
+void PlayerCamera::addForce(Transform::Direction direction, Transform* trans, const _float& timeDelta, _float multiplier)
+{
+	_physics->addForceDir(direction, trans, timeDelta, multiplier);
+}
+
+void PlayerCamera::CameraControls(const _float& timeDelta)
+{
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+	if (!gameInstance->GetInputHandler()->keyBufferIsEmpty())
+	{
+		//KeyBoardEvent keyboard = gameInstance->GetInputHandler()->readKey();
+
+		if (gameInstance->GetInputHandler()->keyIsPressed(KeyCodes::F) || gameInstance->GetInputHandler()->isMouseRightDown())
+			_mouseCamerarotation = true;
+		if (gameInstance->GetInputHandler()->keyIsPressed(KeyCodes::G) || gameInstance->GetInputHandler()->isMouseLeftDown())
+		{
+			if (_mouseCamerarotation)
+			{
+				while (::ShowCursor(TRUE) < 0);
+				//ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+				//Application::getInstance().setClipCursor(false);
+			}
+			_mouseCamerarotation = false;
+		}
+
+		while (!gameInstance->GetInputHandler()->mouseBufferIsEmpty())
+		{
+			MouseEvent mouseEvent = gameInstance->GetInputHandler()->readMouseEvent();
+			if (mouseEvent.type == MouseEventType::RawMove)
+			{
+				if (_mouseCamerarotation)
+				{
+					// Hide Cursor
+					while (::ShowCursor(FALSE) >= 0);
+					//ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
+					// Clip To Window
+					//Application::getInstance().setClipCursor(true);
+
+					// Camera Rotation
+					_transform->Rotate(mouseEvent.point.x, mouseEvent.point.y, _playerCameraDesc._mouseSensitive * timeDelta);
+				}
+			}
+			else if (mouseEvent.type == MouseEventType::LPress)
+			{
+				/*if (m_selectedIndex > -1)
+				{
+					if (!m_dragging)
+					{
+						float arrowHit = m_renderHandler->selectionArrowPicking((UINT)mouseEvent.point.x, (UINT)mouseEvent.point.y, 'x');
+						if (arrowHit)
+						{
+							m_dragging = true;
+							m_origin = (-arrowHit / 2.f) - 1.f;
+							m_draggingDimension = 'x';
+						}
+
+						arrowHit = m_renderHandler->selectionArrowPicking((UINT)mouseEvent.point.x, (UINT)mouseEvent.point.y, 'y');
+						if (arrowHit)
+						{
+							m_dragging = true;
+							m_origin = (-arrowHit / 2.f) - 1.f;
+							m_draggingDimension = 'y';
+						}
+
+						arrowHit = m_renderHandler->selectionArrowPicking((UINT)mouseEvent.point.x, (UINT)mouseEvent.point.y, 'z');
+						if (arrowHit)
+						{
+							m_dragging = true;
+							m_origin = (-arrowHit / 2.f) - 1.f;
+							m_draggingDimension = 'z';
+						}
+					}
+				}*/
+			}
+			else if (mouseEvent.type == MouseEventType::LRelease)
+			{
+				/*if (m_dragging)
+				{
+					m_dragging = false;
+					m_draggingDimension = 'n';
+				}*/
+			}
+			else if (mouseEvent.type == MouseEventType::Move)
+			{
+				//if (m_selectedIndex > -1 && m_dragging)
+				//{
+				//	// Dragging Logic
+				//	XMFLOAT3 objectPosition = m_gameObjects[m_selectedIndex]->getPositionF3();
+				//	XMFLOAT3 rayDirection = m_renderHandler->getRayWorldDirection(mouseEvent.point.x, mouseEvent.point.y);
+				//	XMFLOAT3 planeNormal;
+				//	switch (m_draggingDimension)
+				//	{
+				//	case 'x':
+				//		planeNormal = XMFLOAT3(0.f, -rayDirection.y, -rayDirection.z);
+				//		break;
+
+				//	case 'y':
+				//		planeNormal = XMFLOAT3(-rayDirection.x, 0.f, -rayDirection.z);
+				//		break;
+
+				//	case 'z':
+				//		planeNormal = XMFLOAT3(-rayDirection.x, -rayDirection.y, 0.f);
+				//		break;
+
+				//	default:
+				//		assert(!"Error, invalid dragging dimension!");
+				//		break;
+				//	}
+				//	SimpleMath::Plane plane(objectPosition, planeNormal);
+				//	SimpleMath::Ray ray(m_camera.getPositionF3(), rayDirection);
+
+				//	float distance = -1.f;
+				//	ray.Intersects(plane, distance);
+				//	SimpleMath::Vector3 rayDirectionNorm = ray.direction;
+				//	rayDirectionNorm.Normalize();
+
+				//	XMFLOAT3 endPosition = (rayDirectionNorm * distance) + ray.position;
+
+				//	switch (m_draggingDimension)
+				//	{
+				//	case 'x':
+				//		m_gameObjects[m_selectedIndex]->setPosition(XMVectorSet((m_origin + endPosition.x), objectPosition.y, objectPosition.z, 1.f));
+				//		break;
+
+				//	case 'y':
+				//		m_gameObjects[m_selectedIndex]->setPosition(XMVectorSet(objectPosition.x, (m_origin + endPosition.y), objectPosition.z, 1.f));
+				//		break;
+
+				//	case 'z':
+				//		m_gameObjects[m_selectedIndex]->setPosition(XMVectorSet(objectPosition.x, objectPosition.y, (m_origin + endPosition.z), 1.f));
+				//		break;
+
+				//	default:
+				//		assert(!"Error, invalid dragging dimension!");
+				//		break;
+				//	}
+				//	m_renderHandler->updateSelectedObject(m_gameObjects[m_selectedIndex]->getKey(), m_gameObjects[m_selectedIndex]->getPositionF3());
+				//}
+			}
+		}
+
+		// Camera Movement
+		_float speedUpMultiplier = ((float)gameInstance->GetInputHandler()->keyIsPressed(KeyCodes::LeftShift) * 3.f) + 1.f;
+		if (gameInstance->GetInputHandler()->keyIsPressed(KeyCodes::Home))
+		{
+
+		}
+
+		if (gameInstance->GetInputHandler()->keyIsPressed(KeyCodes::W))
+			addForce(Transform::Direction::FORWARD, _transform, timeDelta, speedUpMultiplier);
+		
+
+		if (gameInstance->GetInputHandler()->keyIsPressed(KeyCodes::S))
+			addForce(Transform::Direction::BACKWARD, _transform, timeDelta, speedUpMultiplier);
+
+		if (gameInstance->GetInputHandler()->keyIsPressed(KeyCodes::A))
+			addForce(Transform::Direction::LEFT, _transform, timeDelta, speedUpMultiplier);
+
+		if (gameInstance->GetInputHandler()->keyIsPressed(KeyCodes::D))
+			addForce(Transform::Direction::RIGHT, _transform, timeDelta, speedUpMultiplier);
+
+		if (gameInstance->GetInputHandler()->keyIsPressed(KeyCodes::E))
+			addForce(Transform::Direction::UP, _transform, timeDelta, speedUpMultiplier);
+
+		if (gameInstance->GetInputHandler()->keyIsPressed(KeyCodes::Q))
+			addForce(Transform::Direction::DOWN, _transform, timeDelta, speedUpMultiplier);
+	}
+
+	//KeyBoardEvent keyboardEvent = gameInstance->GetInputHandler()->readKey();
+
+	RELEASE_INSTANCE(GameInstance);
 }
 
 GameObject* PlayerCamera::Clone(void* argument)

@@ -9,5 +9,6 @@ InputHandler::InputHandler()
 
 void InputHandler::Free()
 {
+
 	__super::Free();
 }

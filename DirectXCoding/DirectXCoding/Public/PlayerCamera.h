@@ -27,12 +27,15 @@ public:
 private:
 	HRESULT ReadyComponents();
 	void Rotate(int32 mouseX, int32 mouseY);
+	void addForce(Transform::Direction direction, Transform* trans, const _float& timeDelta, _float multiplier = 1.f);
 
+
+	void CameraControls(const _float& timeDelta);
 private:
 	PLAYERCAMERA_DESC _playerCameraDesc;
 
 	Physics* _physics = nullptr;
-	_bool _mouseCamerarotation = false;
+	_bool _mouseCamerarotation = true;
 public:
 	virtual GameObject* Clone(void* argument)		override;
 	virtual void Free()								override;

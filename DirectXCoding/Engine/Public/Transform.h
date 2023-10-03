@@ -68,6 +68,7 @@ public:
 public: // custom Movement
 	void Move(XMVECTOR moveVector);
 	void Move(Direction direction);
+	void Rotate(int32 mouseX, int32 MouseY, const _float& timeDelta);
 	void UpdateDirVectors();
 
 	Vec3 CustomGetPositionV3() const;

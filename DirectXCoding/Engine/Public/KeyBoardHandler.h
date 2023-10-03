@@ -79,7 +79,7 @@ public:
 	}
 	void onKeyReleased(const _ubyte key)
 	{
-		_keyStates[key] = true;
+		_keyStates[key] = false;
 		_keyBuffer.push(KeyBoardEvent(KeyboardEventType::Release, key));
 	}
 	void onChar(const _ubyte key)
