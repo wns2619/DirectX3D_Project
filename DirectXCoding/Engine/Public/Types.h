@@ -11,6 +11,7 @@ namespace Engine
 	using _byte = signed char;
 	using _ubyte = unsigned char;
 
+
 	using _char = char;
 	using _tchar = wchar_t;
 

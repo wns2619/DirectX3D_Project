@@ -34,7 +34,10 @@
     <ClInclude Include="..\Public\GameInstance.h" />
     <ClInclude Include="..\Public\GameObject.h" />
     <ClInclude Include="..\Public\GraphicsManager.h" />
+    <ClInclude Include="..\Public\InputHandler.h" />
     <ClInclude Include="..\Public\InputManager.h" />
+    <ClInclude Include="..\Public\KeyBoardHandler.h" />
+    <ClInclude Include="..\Public\KeyCodes.h" />
     <ClInclude Include="..\Public\Layer.h" />
     <ClInclude Include="..\Public\Level.h" />
     <ClInclude Include="..\Public\LevelManager.h" />
@@ -42,10 +45,13 @@
     <ClInclude Include="..\Public\LightManager.h" />
     <ClInclude Include="..\Public\Macro.h" />
     <ClInclude Include="..\Public\MathHelper.h" />
+    <ClInclude Include="..\Public\MathUtilities.h" />
     <ClInclude Include="..\Public\Mesh.h" />
     <ClInclude Include="..\Public\Model.h" />
+    <ClInclude Include="..\Public\MouseHandler.h" />
     <ClInclude Include="..\Public\OBBBoxCollider.h" />
     <ClInclude Include="..\Public\ObjectManager.h" />
+    <ClInclude Include="..\Public\Physics.h" />
     <ClInclude Include="..\Public\Picking.h" />
     <ClInclude Include="..\Public\Renderer.h" />
     <ClInclude Include="..\Public\ResourceBase.h" />
@@ -83,6 +89,9 @@
     <ClCompile Include="..\Private\GameInstance.cpp" />
     <ClCompile Include="..\Private\GameObject.cpp" />
     <ClCompile Include="..\Private\GraphicsManager.cpp" />
+    <ClCompile Include="..\Private\InputHandler.cpp">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
+    </ClCompile>
     <ClCompile Include="..\Private\InputManager.cpp" />
     <ClCompile Include="..\Private\Layer.cpp" />
     <ClCompile Include="..\Private\Level.cpp" />
@@ -93,6 +102,7 @@
     <ClCompile Include="..\Private\Model.cpp" />
     <ClCompile Include="..\Private\OBBBoxCollider.cpp" />
     <ClCompile Include="..\Private\ObjectManager.cpp" />
+    <ClCompile Include="..\Private\Physics.cpp" />
     <ClCompile Include="..\Private\Picking.cpp" />
     <ClCompile Include="..\Private\Renderer.cpp" />
     <ClCompile Include="..\Private\ResourceBase.cpp" />

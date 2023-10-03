@@ -4,6 +4,7 @@
 
 BEGIN(Engine)
 
+class Physics;
 
 class PlayerCamera final : public Camera
 {
@@ -24,7 +25,14 @@ public:
 	virtual void LateTick(const _float& timeDelta)	override;
 
 private:
+	HRESULT ReadyComponents();
+	void Rotate(int32 mouseX, int32 mouseY);
+
+private:
 	PLAYERCAMERA_DESC _playerCameraDesc;
+
+	Physics* _physics = nullptr;
+	_bool _mouseCamerarotation = false;
 public:
 	virtual GameObject* Clone(void* argument)		override;
 	virtual void Free()								override;

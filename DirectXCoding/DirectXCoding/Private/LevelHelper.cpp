@@ -110,6 +110,10 @@ HRESULT LevelHelper::LodingforLevelGame()
     GameInstance* gameInstance = GameInstance::GetInstance();
     Safe_AddRef<GameInstance*>(gameInstance);
 
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentPhysics"),
+        Physics::Create(_device, _deviceContext))))
+        return E_FAIL;
+
 
     _title = TEXT("Texture Loading");
 

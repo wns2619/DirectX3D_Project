@@ -30,7 +30,6 @@ public:
 	virtual void LateTick(const _float& timeDelta) override;
 
 protected:
-	Transform* _transform = nullptr;
 	CameraHelper* _cameraHelper = nullptr;
 
 	CAMERA_DESC _cameraDesc = {};

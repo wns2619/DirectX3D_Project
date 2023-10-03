@@ -7,12 +7,22 @@ class ENGINE_DLL Transform final : public Component
 {
 public:
 	enum class STATE { RIGHT, UP, LOOK, POSITION, STATE_END };
-
+	enum class Direction { FORWARD, BACKWARD, LEFT, RIGHT, UP, DOWN };
 public:
 	struct TRANSFORM_DESC
 	{
 		_float	speedPerSec = 0;
 		_float	rotationRadianPerSec = 0;
+	};
+
+	struct DirectionVectors
+	{
+		XMVECTOR forward = ::XMVectorSet(0.f, 0.f, 1.f, 0.f);
+		XMVECTOR left = ::XMVectorSet(-1.f, 0.f, 0.f, 0.f);
+		XMVECTOR right = ::XMVectorSet(1.f, 0.f, 0.f, 0.f);
+		XMVECTOR backward = ::XMVectorSet(0.f, 0.f, -1.f, 0.f);
+		XMVECTOR up = ::XMVectorSet(0.f, 1.f, 0.f, 0.f);
+		XMVECTOR down = ::XMVectorSet(0.f, -1.f, 0.f, 0.f);
 	};
 
 private:
@@ -34,6 +44,7 @@ public:
 	}
 	XMMATRIX GetInverseMatrixCaculator() const { return ::XMMatrixInverse(nullptr, ::XMLoadFloat4x4(&_worldMatrix)); }
 
+
 	void SetState(STATE state, FXMVECTOR vectorState);
 	void SetScaling(const Vec3& vectorScale);
 public:
@@ -53,11 +64,32 @@ public:
 	void LookAt(FXMVECTOR point);
 	void Chase(FXMVECTOR point, _float const& timeDelta, _float distance = 0.1f);
 
+
+public: // custom Movement
+	void Move(XMVECTOR moveVector);
+	void Move(Direction direction);
+	void UpdateDirVectors();
+
+	Vec3 CustomGetPositionV3() const;
+	XMMATRIX CustomGetWorldMatrix() const;
+
+	void SetPosition(XMVECTOR position) { _position = position; }
+	XMVECTOR GetPosition() { return _position; }
+	void SetWorldRotation(XMVECTOR rotation) { _rotation = rotation; }
+	XMVECTOR GetWorldRotation() { return _rotation; }
+	const DirectionVectors& GetDirectionalVectors() { return _directionalVectors; }
 private:
 	Matrix _worldMatrix;
+
+	XMVECTOR _localrotation = ::XMVectorSet(0.f, 0.f, 0.f, 1.f);
 	XMVECTOR _rotation = ::XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	XMVECTOR _scale = ::XMVectorSet(1.f, 1.f, 1.f, 0.f);
+	XMVECTOR _position = ::XMVectorSet(0.f, 0.f, 0.f, 1.f);
+
+	_float speed = 0.1f;
 
 	TRANSFORM_DESC _transformDesc = {};
+	DirectionVectors _directionalVectors = {};
 
 public:
 	static Transform* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);

@@ -6,6 +6,7 @@
 #include "LightManager.h"
 #include "GameObject.h"
 #include "Viewport.h"
+#include "InputHandler.h"
 
 
 BEGIN(Engine)
@@ -36,6 +37,9 @@ public: // InputDevice
 	_byte	Get_DIKeyState(_ubyte byKeyID);
 	_byte	Get_DIMouseState(InputManager::MOUSEKEYSTATE eMouse);
 	_long	Get_DIMouseMove(InputManager::MOUSEMOVESTATE eMouseState);
+
+public: // Custom Input
+	class InputHandler* GetInputHandler();
 
 public: // LevelManager
 	HRESULT	OpenLevel(uint32 levelIndex, class Level* newLevel);
@@ -82,6 +86,7 @@ private:
 	class InputManager* _inputManager = nullptr;
 	class LightManager* _lightManager = nullptr;
 	class Picking* _picking = nullptr;
+	class InputHandler* _inputHandler = nullptr;
 
 public:
 	static void Release_Engine();

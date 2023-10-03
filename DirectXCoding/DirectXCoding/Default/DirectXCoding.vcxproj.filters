@@ -157,6 +157,9 @@
     <ClInclude Include="..\Imgui\imfilebrowser.h">
       <Filter>소스 파일\97.Imgui</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\App.h">
+      <Filter>소스 파일\00.Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -224,6 +227,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>소스 파일\02.GameObjects\03.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\App.cpp">
+      <Filter>소스 파일\00.Main</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

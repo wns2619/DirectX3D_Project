@@ -51,9 +51,10 @@ using namespace Microsoft::WRL;
 #include <string>
 #include <memory>
 #include <iostream>
+#include <queue>
 
 #include <Windows.h>
-
+#include <cmath>
 
 
 using namespace std;
@@ -66,6 +67,8 @@ using namespace std;
 #include "Values.h"
 #include "VertexData.h"
 #include "MathHelper.h"
+#include "MathUtilities.h"
+#include "KeyCodes.h"
 
 using namespace Engine;
 

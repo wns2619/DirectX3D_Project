@@ -73,13 +73,19 @@ _bool Player::Intersects(POINT pt)
 
 HRESULT Player::ReadyComponents()
 {
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+	uint32 level = static_cast<uint32>(LEVEL::GAME);
+
+	if (static_cast<uint32>(LEVEL::EDIT) == gameInstance->GetCurrentLevelIndex())
+		level = static_cast<uint32>(LEVEL::EDIT);
+
 	/* Renderer Component */
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentRenderer"),
 		TEXT("ComponentRenderer"), reinterpret_cast<Component**>(&_render))))
 		return E_FAIL;
 
 	/* Shader Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT),
+	if (FAILED(__super::AddComponent(level,
 		TEXT("ProtoTypeComponentDefaultMeshShader"),
 		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
@@ -90,7 +96,7 @@ HRESULT Player::ReadyComponents()
 		return E_FAIL;
 
 	/* Model Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelPlayer"),
+	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeModelPlayer"),
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_model))))
 		return E_FAIL;
 
@@ -109,9 +115,11 @@ HRESULT Player::ReadyComponents()
 		testlightinfo.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
 		testlightinfo.Pad = 0.f;
 	}
-	if (FAILED(__super::AddLightComponent(static_cast<uint32>(LEVEL::EDIT), Light::LightType::DIRECTIONAL,
+	if (FAILED(__super::AddLightComponent(level, Light::LightType::DIRECTIONAL,
 		TEXT("ProtoTypeComponentLight"), reinterpret_cast<Component**>(&_light), &testlightinfo)))
 		return E_FAIL;
+
+	RELEASE_INSTANCE(GameInstance);
 
 	return S_OK;
 }

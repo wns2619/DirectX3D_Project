@@ -179,6 +179,50 @@ void Transform::Chase(FXMVECTOR point, _float const& timeDelta, _float distance)
     SetState(STATE::POSITION, position);
 }
 
+void Transform::Move(XMVECTOR moveVector)
+{
+    _position = ::XMVectorAdd(moveVector, _position);
+}
+
+void Transform::Move(Direction direction)
+{
+    if (direction == Direction::FORWARD)
+        _position = ::XMVectorAdd(_directionalVectors.forward * speed, _position);
+    else if (direction == Direction::BACKWARD)
+        _position = ::XMVectorAdd(_directionalVectors.backward * speed, _position);
+    else if (direction == Direction::LEFT)
+        _position = ::XMVectorAdd(_directionalVectors.left * speed, _position);
+    else if (direction == Direction::RIGHT)
+        _position = ::XMVectorAdd(_directionalVectors.right * speed, _position);
+}
+
+void Transform::UpdateDirVectors()
+{
+    XMMATRIX rotationMatrix = ::XMMatrixRotationY(::XMVectorGetY(_rotation));
+    _directionalVectors.forward = ::XMVector4Normalize(::XMVector3TransformCoord(::XMVectorSet(0.f, 0.f, 1.f, 0.f), rotationMatrix));
+    _directionalVectors.left = ::XMVector4Normalize(::XMVector3TransformCoord(::XMVectorSet(-1.f, 0.f, 0.f, 0.f), rotationMatrix));
+    _directionalVectors.right = ::XMVector4Normalize(::XMVector3TransformCoord(::XMVectorSet(1.f, 0.f, 1.f, 0.f), rotationMatrix));
+    _directionalVectors.backward = ::XMVector4Normalize(::XMVector3TransformCoord(::XMVectorSet(0.f, 0.f, -1.f, 0.f), rotationMatrix));
+}
+
+Vec3 Transform::CustomGetPositionV3() const
+{
+    Vec3 positionV3;
+    ::XMStoreFloat3(&positionV3, _position);
+
+    return positionV3;
+}
+
+XMMATRIX Transform::CustomGetWorldMatrix() const
+{
+    return XMMATRIX(
+        ::XMMatrixScalingFromVector(_scale) *
+        ::XMMatrixRotationRollPitchYawFromVector(_localrotation) *
+        ::XMMatrixRotationRollPitchYawFromVector(_rotation) *
+        ::XMMatrixTranslationFromVector(_position)
+    );
+}
+
 Transform* Transform::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
     Transform* transform = new Transform(device, deviceContext);

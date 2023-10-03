@@ -13,8 +13,9 @@ GameInstance::GameInstance()
     _levelManager(LevelManager::GetInstance()), _objectManager(ObjectManager::GetInstance()),
     _componentManager(ComponentManager::GetInstance()), _cameraHelper(CameraHelper::GetInstance())
     , _inputManager(InputManager::GetInstance()), _lightManager(LightManager::GetInstance())
-    , _picking(Picking::GetInstance())
+    , _picking(Picking::GetInstance()), _inputHandler(InputHandler::GetInstance())
 {
+    Safe_AddRef<InputHandler*>(_inputHandler);
     Safe_AddRef<InputManager*>(_inputManager);
     Safe_AddRef<Picking*>(_picking);
     Safe_AddRef<CameraHelper*>(_cameraHelper);
@@ -130,6 +131,14 @@ _byte GameInstance::Get_DIMouseState(InputManager::MOUSEKEYSTATE eMouse)
 _long GameInstance::Get_DIMouseMove(InputManager::MOUSEMOVESTATE eMouseState)
 {
     return _inputManager->Get_DIMouseMove(eMouseState);
+}
+
+InputHandler* GameInstance::GetInputHandler()
+{
+    if (nullptr == _inputHandler)
+        return nullptr;
+
+    return _inputHandler->GetInstance();
 }
 
 HRESULT GameInstance::OpenLevel(uint32 levelIndex, Level* newLevel)
@@ -327,12 +336,14 @@ void GameInstance::Release_Engine()
     CameraHelper::GetInstance()->DestroyInstance();
     LightManager::GetInstance()->DestroyInstance();
     Picking::GetInstance()->DestroyInstance();
+    InputHandler::GetInstance()->DestroyInstance();
     InputManager::GetInstance()->DestroyInstance();
     GraphicsManager::GetInstance()->DestroyInstance();
 }
 
 void GameInstance::Free()
 {
+    Safe_Release<InputHandler*>(_inputHandler);
     Safe_Release<InputManager*>(_inputManager);
     Safe_Release<Picking*>(_picking);
     Safe_Release<CameraHelper*>(_cameraHelper);
