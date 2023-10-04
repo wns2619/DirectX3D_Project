@@ -133,6 +133,9 @@
     <Filter Include="01.Utility\04.Component\Model\Bone">
       <UniqueIdentifier>{8033f097-f9b4-4e31-935f-d27e5df677a6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Component\Light\diffrentLight">
+      <UniqueIdentifier>{a9362ee5-0e7e-45d1-a1b2-54d6ef97f2b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -294,6 +297,9 @@
     <ClInclude Include="..\Public\Bone.h">
       <Filter>01.Utility\04.Component\Model\Bone</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\OtherLight.h">
+      <Filter>01.Utility\04.Component\Light\diffrentLight</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -415,6 +421,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Bone.cpp">
       <Filter>01.Utility\04.Component\Model\Bone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\OtherLight.cpp">
+      <Filter>01.Utility\04.Component\Light\diffrentLight</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

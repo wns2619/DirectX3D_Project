@@ -78,7 +78,6 @@ HRESULT ImGuiManager::Render()
 	if (!_windowMoveFlag)
 		windowFlags |= ImGuiWindowFlags_None;
 
-	/* Main Space */
 	{
 		MouseMove();
 
@@ -315,8 +314,8 @@ HRESULT ImGuiManager::Render()
 	ImGui::Unindent(5.f);
 	ImGui::Dummy(ImVec2(0.f, _splitterButtonPadding / 2.f));
 
-	DrawSplitter(true, _sectionSeperatorHeight, &_lightSectionHeight, &_TerrainSectionHeight, 61.f, 61.f,
-		ImGui::GetWindowSize().x - 10.f, _splitterButtonPadding);
+	//DrawSplitter(true, _sectionSeperatorHeight, &_lightSectionHeight, &_TerrainSectionHeight, 61.f, 61.f,
+	//	ImGui::GetWindowSize().x - 10.f, _splitterButtonPadding);
 	ImGui::BeginChild("Lights", ImVec2(ImGui::GetWindowSize().x -
 		(imguiStyle.ScrollbarSize / 1.5f), _lightSectionHeight), true);
 
@@ -330,6 +329,7 @@ HRESULT ImGuiManager::Render()
 		if (ImGui::BeginCombo("##Add Light", "Add Light"))
 		{
 			// TODO Light Add
+			AddLightSection();
 
 			ImGui::EndCombo();
 		}
@@ -342,65 +342,157 @@ HRESULT ImGuiManager::Render()
 		static _float colWidth = 105.f;
 		ImGui::SetColumnWidth(0, colWidth);
 
-
-		//
-
 		// TODO Light 
-		const wstring example = L"PointLight";
-		const int i = 0;
-		ImGui::Dummy(ImVec2(0.f, 3.f));
-		ImGui::Text("Test");
-		ImGui::PushID(string("Light" + to_string(i)).c_str());
 
-		ImGui::NextColumn();
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
-		ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - colWidth - 46);
-		if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon/baseline_delete_white_18dp.png"), ImVec2(20, 20)))
+		vector<OtherLight*>* lightvector = gameInstance->getLightList();
+		uint32 lightsize = lightvector->size();
+
+		for (size_t i = 0; i < lightsize; i++)
 		{
-			// TODO : Light Delete
+			ImGui::Dummy(ImVec2(0.f, 3.f));
 
-			ImGui::PopStyleVar();
-		}
-		else
-		{
-			ImGui::PopStyleVar();
+			string lightname;
 
-			ImGui::Separator();
+			if ((*lightvector)[i]->GetLightDesc()->type == LIGHT_DESC::DIRECTION)
+				lightname = "Direction";
+			else if ((*lightvector)[i]->GetLightDesc()->type == LIGHT_DESC::POINT)
+				lightname = "Point";
+			else
+				lightname = "Spot";
+
+			ImGui::Text((to_string(i) + ", " + lightname).c_str());
+			ImGui::PushID(string("Light" + to_string(i)).c_str());
 
 			ImGui::NextColumn();
-			ImGui::Text("Color");
-			ImGui::NextColumn();
-
-			ImGui::PushItemWidth(0.f);
-			XMFLOAT3 testColor1 = XMFLOAT3(1.f, 1.f, 1.f);
-			if (ImGui::ColorEdit3(string("##Color" + to_string(i)).c_str(), &testColor1.x, ImGuiColorEditFlags_Float)) // 향 후 수정
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+			ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - colWidth - 46);
+			if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon/baseline_delete_white_18dp.png"), ImVec2(20, 20)))
 			{
-				// TODO 
-				// 빛의 update
+				// TODO : Light Delete
+		
+				//OtherLight* lightobject = (*lightvector)[i];
+				//Safe_Release<OtherLight*>(lightobject);
+				//lightvector->erase(lightvector->begin() + i);
+
+				ImGui::PopStyleVar();
 			}
-			ImGui::PopItemWidth();
-			ImGui::NextColumn();
-
-			ImGui::Text("Intensity");
-			ImGui::NextColumn();
-			ImGui::PushItemWidth(0.f);
-
-			_float testIntensity = 1.f;
-			if (ImGui::DragFloat(string("##Intensity" + to_string(i)).c_str(), &testIntensity, 0.01f, 0.f, 200.f))
+			else
 			{
+				ImGui::PopStyleVar();
 
+				ImGui::Separator();
+
+				ImGui::NextColumn();
+				ImGui::Text("Color");
+				ImGui::NextColumn();
+
+				ImGui::PushItemWidth(0.f);
+				if (ImGui::ColorEdit3(string("##Color" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->Diffuse.x, ImGuiColorEditFlags_Float)) // 향 후 수정
+				{
+
+				}
+
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+
+				ImGui::Text("Intensity");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(0.f);
+
+
+				if (ImGui::DragFloat(string("##Intensity" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->intensity, 0.01f, 0.025f, 2.f))
+				{
+
+				}
+				ImGui::PopItemWidth();
+
+
+				if ((*lightvector)[i]->GetLightDesc()->type != LIGHT_DESC::DIRECTION)
+				{
+					ImGui::NextColumn();
+					ImGui::Text("Position");
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(0.f);
+					if (ImGui::DragFloat3(string("##Position" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->Position.x, 0.1f))
+					{
+
+					}
+					ImGui::PopItemWidth();
+
+					ImGui::NextColumn();
+					ImGui::Text("Range");
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(0.f);
+					if (ImGui::DragFloat(string("##Range" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->range, 0.01f, 0.f, 100.f))
+					{
+
+					}
+					ImGui::PopItemWidth();
+				}
+
+				if ((*lightvector)[i]->GetLightDesc()->type == LIGHT_DESC::SPOT)
+				{
+					ImGui::NextColumn();
+					ImGui::Text("Direction");
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(0.f);
+					if (ImGui::DragFloat3(string("##Direction" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->rotationDeg.x, 1.f, -180.f, 180.f, "%.fdeg"))
+					{
+						XMVECTOR rotQuat = ::XMQuaternionRotationRollPitchYaw(
+							::XMConvertToRadians((*lightvector)[i]->GetLightDesc()->rotationDeg.x),
+							::XMConvertToRadians((*lightvector)[i]->GetLightDesc()->rotationDeg.y),
+							::XMConvertToRadians((*lightvector)[i]->GetLightDesc()->rotationDeg.z));
+
+						XMVECTOR rotQuatInverse = ::XMQuaternionInverse(rotQuat);
+						XMVECTOR lightDir = ::XMQuaternionMultiply(rotQuat, ::XMVectorSet(0.f, 0.f, 1.f, 0.f));
+						::XMStoreFloat3(&(*lightvector)[i]->GetLightDesc()->Direction, ::XMQuaternionMultiply(lightDir, rotQuatInverse));
+					}
+					ImGui::PopItemWidth();
+
+					// Spot Anlges
+					ImGui::NextColumn();
+					ImGui::Text("Spot Angles");
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(0.f);
+					if (ImGui::DragFloat2(string("##Spot Angles" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->spotAngles.x, 0.001f, 0.025f, 2.f))
+					{
+						if ((*lightvector)[i]->GetLightDesc()->spotAngles.x > (*lightvector)[i]->GetLightDesc()->spotAngles.y)
+							(*lightvector)[i]->GetLightDesc()->spotAngles.x = (*lightvector)[i]->GetLightDesc()->spotAngles.y;
+
+						(*lightvector)[i]->GetLightDesc()->spotAngles.x = 1.f / (::cosf((*lightvector)[i]->GetLightDesc()->spotAngles.x) - ::cosf((*lightvector)[i]->GetLightDesc()->spotAngles.y));
+						(*lightvector)[i]->GetLightDesc()->spotAngles.y = ::cosf((*lightvector)[i]->GetLightDesc()->spotAngles.y);
+					}
+					ImGui::PopItemWidth();
+				}
+
+
+
+				if ((*lightvector)[i]->GetLightDesc()->type == LIGHT_DESC::DIRECTION)
+				{
+					ImGui::NextColumn();
+					ImGui::Text("Direction");
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(0.f);
+					if (ImGui::DragFloat3(string("##Direction" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->rotationDeg.x, 1.f, -180.f, 180.f, "%.fdeg"))
+					{
+						XMVECTOR rotQuat = ::XMQuaternionRotationRollPitchYaw(
+							::XMConvertToRadians((*lightvector)[i]->GetLightDesc()->rotationDeg.x),
+							::XMConvertToRadians((*lightvector)[i]->GetLightDesc()->rotationDeg.y),
+							::XMConvertToRadians((*lightvector)[i]->GetLightDesc()->rotationDeg.z));
+
+						XMVECTOR rotQuatInverse = ::XMQuaternionInverse(rotQuat);
+						XMVECTOR lightDir = ::XMQuaternionMultiply(rotQuat, ::XMVectorSet(0.f, 0.f, 1.f, 0.f));
+						::XMStoreFloat3(&(*lightvector)[i]->GetLightDesc()->Direction, ::XMQuaternionMultiply(lightDir, rotQuatInverse));
+					}
+
+					ImGui::PopItemWidth();
+
+
+					//if() // Point
+					// kind of Light TODO
+				}
 			}
-			ImGui::PopItemWidth();
-
-			//if() // Directional
-
-			//if() // Spot
-			 
-			//if() // Point
-			// kind of Light TODO
-
-
-
+			ImGui::NextColumn();
 		}
 
 		//
@@ -581,6 +673,41 @@ void ImGuiManager::MouseMove()
 	RELEASE_INSTANCE(GameInstance);
 
 	ImGui::End();
+}
+
+void ImGuiManager::AddLightSection()
+{
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+
+	for (size_t i = 0; i < 3; i++)
+	{
+		if (ImGui::Selectable(LightTypeName[i], false))
+		{
+			// new Light
+			LIGHT_DESC lightDesc;
+			LightHelper newLightHelper;
+			::ZeroMemory(&lightDesc, sizeof(lightDesc));
+			{
+				lightDesc.Position = Vec4(0.f, 5.f, 0.f, 1.f);
+				lightDesc.Diffuse = Vec3(1.f, 1.f, 1.f);
+				lightDesc.intensity = 1.f;
+				lightDesc.range = 4.f;
+				lightDesc.type = LIGHT_DESC::DIRECTION;
+				lightDesc.enabled = true;
+
+				lightDesc.Direction = Vec3(1.f, -1.f, 1.f);
+				lightDesc.Ambient = Vec4(1.f, 1.f, 1.f, 1.f);
+				lightDesc.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
+			}
+
+
+
+			gameInstance->AddLight(lightDesc);
+		}
+	}
+
+	RELEASE_INSTANCE(GameInstance);
 }
 
 void ImGuiManager::GameObjectUpdate(int32 vectorIndex)

@@ -19,6 +19,8 @@ struct TexturePathPBR
 	wstring displacmentPath = L"Displacement";
 };
 
+static const char* LightTypeName[] = { "Point", "Spot", "Directional" };
+
 
 class ImGuiManager final : Base
 {
@@ -39,6 +41,9 @@ public:
 	void DrawSplitter(_bool split_vertically, _float thickness, _float* size0, _float* size1,
 		_float min_size0, _float min_size1, _float size = -1.f, _float buttonPadding = 0.f);
 	void MouseMove();
+
+public: // Section
+	void AddLightSection();
 
 private:
 	// Device && DeviceContext
@@ -88,7 +93,11 @@ private:
 
 
 	// Lights
-
+	Vec4 _lightposition = Vec4(1.f, 1.f, 1.f, 1.f);
+	Vec3 _LightColor = Vec3(1.f,1.f,1.f);
+	Vec3 _rotationDeg = Vec3(1.f,1.f,1.f);
+	_float _lightIntensity = 1.f;
+	_float _lightrange = 1.f;
 
 	// Load && Save
 	void LoadModelList(string path = "..\\Binaries\\Resources\\MyModels\\");

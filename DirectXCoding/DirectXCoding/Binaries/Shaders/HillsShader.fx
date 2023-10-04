@@ -8,7 +8,7 @@ cbuffer MatrixBuffer : register(b0)
 
 cbuffer LightBuffer : register(b1)
 {
-    DirectionalLight dirLight;
+    Light Lightinfo;
 }
 
 cbuffer Material : register(b2)
@@ -95,14 +95,14 @@ PS_OUT PS_MAIN(PS_IN In)
     
     vector mtldff = DiffuseTexture.Sample(LinearSampler, In.uv * 30.f);
     
-    vector shader = max(dot(normalize(-dirLight.Direction.xyz), normalize(In.noraml)), 0.f) + dirLight.Ambient * materialAmbient;
+    vector shader = max(dot(normalize(-Lightinfo.Direction.xyz), normalize(In.noraml)), 0.f) + Lightinfo.Ambient * materialAmbient;
     
-    float3 reflectDirection = reflect(normalize(dirLight.Direction.xyz), normalize(In.noraml));
+    float3 reflectDirection = reflect(normalize(Lightinfo.Direction.xyz), normalize(In.noraml));
     float3 look = In.worldPos - camPosition;
     
     float specular = pow(max(dot(normalize(-look), normalize(reflectDirection)), 0.f), 30.f);
     
-    Out.Color = (dirLight.Diffuse * mtldff) * saturate(shader) + (dirLight.Specular * materialSpecular) * specular;
+    Out.Color = (float4(Lightinfo.Diffuse, 1.f) * mtldff) * saturate(shader) + (Lightinfo.Specular * materialSpecular) * specular;
     
     return Out;
 }

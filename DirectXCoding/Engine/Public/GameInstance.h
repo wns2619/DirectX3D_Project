@@ -69,8 +69,11 @@ public: // Camera Helper
 	Vec4 GetCameraPosition()													const;
 
 public: // LightManager
-	HRESULT AddLightProtoType(uint32 levelIndex, Light::LightType type, const wstring& lighttag, Component* prototype);
-	Component* CloneLight(uint32 levelIndex, Light::LightType type, const wstring& lighttag, void* argument);
+	/*HRESULT AddLightProtoType(uint32 levelIndex, Light::LightType type, const wstring& lighttag, Component* prototype);
+	Component* CloneLight(uint32 levelIndex, Light::LightType type, const wstring& lighttag, void* argument);*/
+	const LIGHT_DESC* GetLightDesc(uint32 lightIndex);
+	HRESULT AddLight(const LIGHT_DESC& lightdesc);
+	vector<OtherLight*>* getLightList();
 
 public: // Picking
 	_bool TerrainPicking(POINT pt, Vec3& pickPos, _float& distance, Transform* trans, VIBufferTerrain* buffer);

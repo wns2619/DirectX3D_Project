@@ -90,18 +90,18 @@ HRESULT Terrain::Ready_Components()
 		return E_FAIL;
 
 	/* Light Component */
-	Light::DirectinoalLight testlightinfo;
-	::ZeroMemory(&testlightinfo, sizeof(testlightinfo));
-	{
-		testlightinfo.Direction = Vec3(1.f, -1.f, 1.f);
-		testlightinfo.Diffuse = Vec4(1.f, 1.f, 1.f, 1.f);
-		testlightinfo.Ambient = Vec4(1.f, 1.f, 1.f, 1.f);
-		testlightinfo.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
-		testlightinfo.Pad = 0.f;
-	}
-	if(FAILED(__super::AddLightComponent(static_cast<uint32>(LEVEL::GAME), Light::LightType::DIRECTIONAL,
-		TEXT("ProtoTypeComponentLight"),reinterpret_cast<Component**>(&_light), &testlightinfo)))
-		return E_FAIL;
+	//Light::DirectinoalLight testlightinfo;
+	//::ZeroMemory(&testlightinfo, sizeof(testlightinfo));
+	//{
+	//	testlightinfo.Direction = Vec3(1.f, -1.f, 1.f);
+	//	testlightinfo.Diffuse = Vec4(1.f, 1.f, 1.f, 1.f);
+	//	testlightinfo.Ambient = Vec4(1.f, 1.f, 1.f, 1.f);
+	//	testlightinfo.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
+	//	testlightinfo.Pad = 0.f;
+	//}
+	//if(FAILED(__super::AddLightComponent(static_cast<uint32>(LEVEL::GAME), Light::LightType::DIRECTIONAL,
+	//	TEXT("ProtoTypeComponentLight"),reinterpret_cast<Component**>(&_light), &testlightinfo)))
+	//	return E_FAIL;
 
 	
 
@@ -123,8 +123,14 @@ HRESULT Terrain::Bind_ShaderResources()
 	if (FAILED(gameInstance->BindCameraPosition(_shader, "camPosition", sizeof(Vec4))))
 		return E_FAIL;
 
-	if (FAILED(_light->BindingLightToShader(_shader, "dirLight", Light::LightType::DIRECTIONAL, sizeof(Light::DirectinoalLight))))
+
+	const LIGHT_DESC* lightdesc = gameInstance->GetLightDesc(0);
+
+	if (FAILED(_shader->BindRawValue("Lightinfo", lightdesc, sizeof(LIGHT_DESC))))
 		return E_FAIL;
+
+	//if (FAILED(_light->BindingLightToShader(_shader, "dirLight", Light::LightType::DIRECTIONAL, sizeof(Light::DirectinoalLight))))
+	//	return E_FAIL;
 
 	Safe_Release<GameInstance*>(gameInstance);
 
@@ -172,7 +178,7 @@ void Terrain::Free()
 	Safe_Release<Transform*>(_transform);
 	Safe_Release<Shader*>(_shader);
 	Safe_Release<Texture*>(_texture);
-	Safe_Release<Light*>(_light);
+	//Safe_Release<Light*>(_light);
 	Safe_Release<VIBufferTerrain*>(_viBuffer);
 	Safe_Release<Renderer*>(_renderComponent);
 

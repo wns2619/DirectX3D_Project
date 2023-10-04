@@ -24,7 +24,8 @@ HRESULT EditScene::Initialize()
     if (FAILED(ReadyLayerEditCamera(TEXT("LayerCameraObject"))))
         return E_FAIL;
 
-
+    if (FAILED(ReadyLight()))
+        return E_FAIL;
 
 
     //Im
@@ -72,6 +73,33 @@ HRESULT EditScene::ReadyLayerEditCamera(const wstring& layerTag)
 HRESULT EditScene::ReadyLayerEntire(const wstring& layerTage)
 {
     return S_OK;
+}
+
+HRESULT EditScene::ReadyLight()
+{
+    GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+
+    LIGHT_DESC lightDesc;
+    ZeroMemory(&lightDesc, sizeof(lightDesc));
+    {
+        lightDesc.Position = Vec4(0.f, 5.f, 0.f, 1.f);
+        lightDesc.Diffuse = Vec3(1.f, 1.f, 1.f);
+        lightDesc.intensity = 1.f;
+        lightDesc.range = 4.f;
+        lightDesc.type = LIGHT_DESC::DIRECTION;
+        lightDesc.enabled = true;
+
+        lightDesc.Direction = Vec3(1.f, -1.f, 1.f);
+        lightDesc.Ambient = Vec4(1.f, 1.f, 1.f, 1.f);
+        lightDesc.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
+    }
+
+    if (FAILED(gameInstance->AddLight(lightDesc)))
+        return E_FAIL;
+
+    RELEASE_INSTANCE(GameInstance);
+
 }
 
 EditScene* EditScene::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)

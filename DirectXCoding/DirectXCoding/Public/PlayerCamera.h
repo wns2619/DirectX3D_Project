@@ -34,6 +34,7 @@ private:
 
 	Physics* _physics = nullptr;
 	_bool _mouseCamerarotation = false;
+	_bool _mousePause = true;
 public:
 	virtual GameObject* Clone(void* argument)		override;
 	virtual void Free()								override;

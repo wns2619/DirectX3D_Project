@@ -3,9 +3,6 @@
 
 #pragma warning(disable : 26495)
 
-enum class LayoutType { POS_NOR_TEX_TAN, POS_NOR_TEX, POS_TEX_FINDEX, POS_TEX, POS_COL, POS, PARTICLE, NONE };
-
-
 namespace Engine
 {
 	typedef struct tagGraphicDesc
@@ -124,6 +121,34 @@ namespace Engine
 		wstring displacementPath = L"";
 	};
 
+	struct LIGHT_DESC
+	{
+		enum TYPE { DIRECTION, POINT, SPOT, LIGHT_END };
+
+		Vec4 Position;
+		
+		Vec3 Direction;
+		_float intensity = 1.f;
+
+		Vec3 Diffuse; // Color
+		_float range = 1.f;
+		
+		Vec4 Ambient;
+		Vec4 Specular;
+
+		Vec2 spotAngles = Vec2(1.f, 1.f);
+		int32 type = LIGHT_END;
+		_bool enabled = true;
+
+		Vec3 rotationDeg;
+		_bool pad;
+	};
+
+	struct LightHelper
+	{
+		Vec3 rotationDeg;
+		Vec2 spotAngles;
+	};
 };
 
 

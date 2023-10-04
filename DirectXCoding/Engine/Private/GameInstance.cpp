@@ -41,8 +41,8 @@ HRESULT GameInstance::Initialize_Engine(uint32 levelNumbers, HINSTANCE instance,
     if (FAILED(_componentManager->ReserveManager(levelNumbers)))
         return E_FAIL;
 
-    if (FAILED(_lightManager->ReserveManager(levelNumbers)))
-        return E_FAIL;
+ /*   if (FAILED(_lightManager->ReserveManager(levelNumbers)))
+        return E_FAIL;*/
 
     return S_OK;
 }
@@ -64,7 +64,7 @@ void GameInstance::Clear(uint32 levelIndex)
 {
     _objectManager->Clear(levelIndex);
     //_componentManager->Clear(levelIndex);
-    _lightManager->Clear(levelIndex);
+    //_lightManager->Clear(levelIndex);
 }
 
 _float GameInstance::ComputeTimeDelta(const wstring& timerTag)
@@ -284,23 +284,44 @@ Vec4 GameInstance::GetCameraPosition() const
     return _cameraHelper->GetCameraPosition();
 }
 
-HRESULT GameInstance::AddLightProtoType(uint32 levelIndex, Light::LightType type, const wstring& lighttag, Component* prototype)
+const LIGHT_DESC* GameInstance::GetLightDesc(uint32 lightIndex)
+{
+    if (nullptr == _lightManager)
+        return nullptr;
+
+    return _lightManager->getLightDesc(lightIndex);
+}
+
+HRESULT GameInstance::AddLight(const LIGHT_DESC& lightdesc)
 {
     if (nullptr == _lightManager)
         return E_FAIL;
 
-    _lightManager->AddLightProtoType(levelIndex, type, lighttag, prototype);
-
-    return S_OK;
+    return _lightManager->AddLight(lightdesc);
 }
 
-Component* GameInstance::CloneLight(uint32 levelIndex, Light::LightType type, const wstring& lighttag, void* argument)
+vector<OtherLight*>* GameInstance::getLightList()
 {
-    if(nullptr == _lightManager)
-        return nullptr;
-
-    return _lightManager->CloneLight(levelIndex, type, lighttag, argument);
+    return _lightManager->getLightList();
 }
+
+//HRESULT GameInstance::AddLightProtoType(uint32 levelIndex, Light::LightType type, const wstring& lighttag, Component* prototype)
+//{
+//    if (nullptr == _lightManager)
+//        return E_FAIL;
+//
+//    _lightManager->AddLightProtoType(levelIndex, type, lighttag, prototype);
+//
+//    return S_OK;
+//}
+
+//Component* GameInstance::CloneLight(uint32 levelIndex, Light::LightType type, const wstring& lighttag, void* argument)
+//{
+//    if(nullptr == _lightManager)
+//        return nullptr;
+//
+//    return _lightManager->CloneLight(levelIndex, type, lighttag, argument);
+//}
 
 _bool GameInstance::TerrainPicking(POINT pt, Vec3& pickPos, _float& distance, Transform* trans, VIBufferTerrain* buffer)
 {

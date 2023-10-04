@@ -100,24 +100,26 @@ HRESULT Player::ReadyComponents()
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_model))))
 		return E_FAIL;
 
+
+
 	/* Collider Component */
 	//if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentCollider"),
 	//	TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_owner))))
 	//	return E_FAIL;
 
 	/* Light Component */
-	Light::DirectinoalLight testlightinfo;
-	::ZeroMemory(&testlightinfo, sizeof(testlightinfo));
-	{
-		testlightinfo.Direction = Vec3(1.f, -1.f, 1.f);
-		testlightinfo.Diffuse = Vec4(1.f, 1.f, 1.f, 1.f);
-		testlightinfo.Ambient = Vec4(1.f, 1.f, 1.f, 1.f);
-		testlightinfo.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
-		testlightinfo.Pad = 0.f;
-	}
-	if (FAILED(__super::AddLightComponent(level, Light::LightType::DIRECTIONAL,
-		TEXT("ProtoTypeComponentLight"), reinterpret_cast<Component**>(&_light), &testlightinfo)))
-		return E_FAIL;
+	//Light::DirectinoalLight testlightinfo;
+	//::ZeroMemory(&testlightinfo, sizeof(testlightinfo));
+	//{
+	//	testlightinfo.Direction = Vec3(1.f, -1.f, 1.f);
+	//	testlightinfo.Diffuse = Vec4(1.f, 1.f, 1.f, 1.f);
+	//	testlightinfo.Ambient = Vec4(1.f, 1.f, 1.f, 1.f);
+	//	testlightinfo.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
+	//	testlightinfo.Pad = 0.f;
+	//}
+	//if (FAILED(__super::AddLightComponent(level, Light::LightType::DIRECTIONAL,
+	//	TEXT("ProtoTypeComponentLight"), reinterpret_cast<Component**>(&_light), &testlightinfo)))
+	//	return E_FAIL;
 
 	RELEASE_INSTANCE(GameInstance);
 
@@ -139,8 +141,13 @@ HRESULT Player::BindShaderResuorces()
 	if (FAILED(gameInstance->BindCameraPosition(_shader, "cameraPosition", sizeof(Vec4))))
 		return E_FAIL;
 
-	if (FAILED(_light->BindingLightToShader(_shader, "dirLight", Light::LightType::DIRECTIONAL, sizeof(Light::DirectinoalLight))))
+	const LIGHT_DESC* lightdesc = gameInstance->GetLightDesc(0);
+
+	if (FAILED(_shader->BindRawValue("Lightinfo", lightdesc, sizeof(LIGHT_DESC))))
 		return E_FAIL;
+
+	//if (FAILED(_light->BindingLightToShader(_shader, "dirLight", Light::LightType::DIRECTIONAL, sizeof(Light::DirectinoalLight))))
+	//	return E_FAIL;
 
 
 	Safe_Release<GameInstance*>(gameInstance);
@@ -183,5 +190,5 @@ void Player::Free()
 	Safe_Release<Shader*>(_shader);
 	Safe_Release<Model*>(_model);
 	Safe_Release<Renderer*>(_render);
-	Safe_Release<Light*>(_light);
+	//Safe_Release<Light*>(_light);
 }

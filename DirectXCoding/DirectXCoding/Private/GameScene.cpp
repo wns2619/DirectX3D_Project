@@ -26,6 +26,9 @@ HRESULT GameScene::Initialize()
     if (FAILED(ReadyLayerPlayer(TEXT("LayerPlayer"))))
         return E_FAIL;
 
+    if (FAILED(ReadyLight()))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -94,6 +97,35 @@ HRESULT GameScene::ReadyLayerPlayer(const wstring& layerTag)
         return E_FAIL;
    
     Safe_Release<GameInstance*>(gameInstance);
+
+
+    return S_OK;
+}
+
+HRESULT GameScene::ReadyLight()
+{
+    GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+
+    LIGHT_DESC lightDesc;
+    ZeroMemory(&lightDesc, sizeof(lightDesc));
+    {
+        lightDesc.Position = Vec4(0.f, 5.f, 0.f, 1.f);
+        lightDesc.Diffuse = Vec3(1.f, 1.f, 1.f);
+        lightDesc.intensity = 1.f;
+        lightDesc.range = 4.f;
+        lightDesc.type = LIGHT_DESC::DIRECTION;
+        lightDesc.enabled = true;
+
+        lightDesc.Direction = Vec3(1.f, -1.f, 1.f);
+        lightDesc.Ambient = Vec4(1.f, 1.f, 1.f, 1.f);
+        lightDesc.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
+    }
+
+    if (FAILED(gameInstance->AddLight(lightDesc)))
+        return E_FAIL;
+
+    RELEASE_INSTANCE(GameInstance);
 
 
     return S_OK;

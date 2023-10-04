@@ -53,6 +53,7 @@ HRESULT Model::InitializePrototype(MODEL_TYPE type, const string& pModelFilePath
     if (FAILED(ReadyMaterial(pModelFilePath)))
         return E_FAIL;
 
+    // 재귀적으로 함수 호출한다. 처음에 루트를 시작할 node.
     if (FAILED(ReadyBones(m_pAIScene->mRootNode, -1)))
         return E_FAIL;
 
@@ -107,7 +108,6 @@ HRESULT Model::ReadyMeshes(MODEL_TYPE type)
 
 HRESULT Model::ReadyMaterial(const string& modelFilePath)
 {
-
     _numMaterial = m_pAIScene->mNumMaterials;
 
     string name = "";
@@ -165,14 +165,20 @@ HRESULT Model::ReadyMaterial(const string& modelFilePath)
 
 HRESULT Model::ReadyBones(const aiNode* node, int32 parentNodeIndex)
 {
+    // 맨 처음 root Node를 생성하고 인덱스를 넣는다.
     Bone* bone = Bone::Create(node, parentNodeIndex);
     if (nullptr == bone)
         return E_FAIL;
 
+    // 생성된 뼈를 push
     _bones.push_back(bone);
 
+    // 부모의 뼈가 있다면 push된 사이즈에서 - 1 인덱스의 번호를 갖는다.
+    // ex -> 0 1 4 5 2 . . . 
+    // -> 0번 뼈는 -1 인덱스(부모가 없을 때), 1번뼈가 부모로라면 4, 5번은 size() - 1로 1번 인덱스를 부모로 갖는다.
     int32 parentindex = _bones.size() - 1;
 
+    // 재귀적으로 호출.
     for (size_t i = 0; i < node->mNumChildren; i++)
         ReadyBones(node->mChildren[i], parentindex);
 

@@ -145,9 +145,9 @@ HRESULT LevelHelper::LodingforLevelGame()
         Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/DefaultMeshShader.fx"), VTXMESH::Elements, VTXMESH::iNumElements))))
         return E_FAIL;
 
-    if (FAILED(gameInstance->AddLightProtoType(static_cast<uint32>(LEVEL::GAME), Light::LightType::DIRECTIONAL, TEXT("ProtoTypeComponentLight"),
+  /*  if (FAILED(gameInstance->AddLightProtoType(static_cast<uint32>(LEVEL::GAME), Light::LightType::DIRECTIONAL, TEXT("ProtoTypeComponentLight"),
         Light::Create(_device, _deviceContext))))
-        return E_FAIL;
+        return E_FAIL;*/
 
     _title = TEXT("Object Loading");
 
@@ -211,9 +211,9 @@ HRESULT LevelHelper::LodingforLevelEdit()
 
     // Light
 
-    if (FAILED(gameInstance->AddLightProtoType(static_cast<uint32>(LEVEL::EDIT), Light::LightType::DIRECTIONAL, TEXT("ProtoTypeComponentLight"),
-        Light::Create(_device, _deviceContext))))
-        return E_FAIL;
+    //if (FAILED(gameInstance->AddLightProtoType(static_cast<uint32>(LEVEL::EDIT), Light::LightType::DIRECTIONAL, TEXT("ProtoTypeComponentLight"),
+    //    Light::Create(_device, _deviceContext))))
+    //    return E_FAIL;
 
     // Collider
 

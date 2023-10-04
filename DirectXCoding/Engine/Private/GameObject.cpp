@@ -79,28 +79,28 @@ HRESULT GameObject::AddComponent(uint32 levelIndex, const wstring& prototypeTag,
 	return S_OK;
 }
 
-HRESULT GameObject::AddLightComponent(uint32 levelIndex, const Light::LightType type, const wstring& ComponentTag, _Inout_ Component** componentout, void* argument)
-{
-	if (nullptr != FindComponent(ComponentTag))
-		return E_FAIL;
-
-	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
-
-	Component* component = gameInstance->CloneLight(levelIndex, type, ComponentTag, argument);
-
-	if (nullptr == component)
-		return E_FAIL;
-
-	_Components.emplace(ComponentTag, component);
-
-	*componentout = component;
-
-	Safe_AddRef<Component*>(component);
-
-	RELEASE_INSTANCE(GameInstance);
-
-	return S_OK;
-}
+//HRESULT GameObject::AddLightComponent(uint32 levelIndex, const Light::LightType type, const wstring& ComponentTag, _Inout_ Component** componentout, void* argument)
+//{
+//	if (nullptr != FindComponent(ComponentTag))
+//		return E_FAIL;
+//
+//	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+//
+//	Component* component = gameInstance->CloneLight(levelIndex, type, ComponentTag, argument);
+//
+//	if (nullptr == component)
+//		return E_FAIL;
+//
+//	_Components.emplace(ComponentTag, component);
+//
+//	*componentout = component;
+//
+//	Safe_AddRef<Component*>(component);
+//
+//	RELEASE_INSTANCE(GameInstance);
+//
+//	return S_OK;
+//}
 
 Component* GameObject::FindComponent(const wstring& componentTag)
 {

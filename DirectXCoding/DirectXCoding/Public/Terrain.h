@@ -9,7 +9,7 @@ class Texture;
 class Renderer;
 class Transform;
 class VIBufferTerrain;
-class Light;
+//class Light;
 
 END
 
@@ -36,7 +36,7 @@ private:
 	Shader* _shader				= nullptr;
 	Texture* _texture			= nullptr;
 	VIBufferTerrain* _viBuffer	= nullptr;
-	Light* _light				= nullptr;
+	//Light* _light				= nullptr;
 
 private:
 	HRESULT	Ready_Components();

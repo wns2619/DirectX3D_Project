@@ -22,13 +22,13 @@ App::~App()
 
 _bool App::InitRawMouseDevice()
 {
-	RAWINPUTDEVICE rawDevice;
-	rawDevice.usUsagePage = 0x01;
-	rawDevice.usUsage = 0x02;
-	rawDevice.dwFlags = 0;
-	rawDevice.hwndTarget = NULL;
-	if (RegisterRawInputDevices(&rawDevice, 1, sizeof(rawDevice)) == FALSE)
-		return false;
+	//RAWINPUTDEVICE rawDevice;
+	//rawDevice.usUsagePage = 0x01;
+	//rawDevice.usUsage = 0x02;
+	//rawDevice.dwFlags = 0;
+	//rawDevice.hwndTarget = NULL;
+	//if (RegisterRawInputDevices(&rawDevice, 1, sizeof(rawDevice)) == FALSE)
+	//	return false;
 
 
 	return true;

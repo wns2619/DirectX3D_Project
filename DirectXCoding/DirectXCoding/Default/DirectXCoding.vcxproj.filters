@@ -251,5 +251,8 @@
     <FxCompile Include="..\Binaries\Shaders\DefaultMeshShader.fx">
       <Filter>소스 파일\98.Shaders\ObjectShader</Filter>
     </FxCompile>
+    <FxCompile Include="..\Binaries\Shaders\AnimMesh.fx">
+      <Filter>소스 파일\98.Shaders\ObjectShader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

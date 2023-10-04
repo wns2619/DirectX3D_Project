@@ -31,7 +31,7 @@ public:
 private:
 	Renderer* _render		= nullptr;
 	Shader* _shader			= nullptr;
-	Light* _light			= nullptr;
+	//Light* _light			= nullptr;
 
 private:
 	HRESULT ReadyComponents();

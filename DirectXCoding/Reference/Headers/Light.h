@@ -4,31 +4,6 @@
 
 BEGIN(Engine)
 
-/* constant buffer ambient */
-#pragma pack(push, 1)
-struct ENGINE_DLL CB_AMBIENT
-{
-	Vec3 ambientLower;
-	_float pad;
-	Vec3 AmbientRange;
-	_float pad2;
-};
-#pragma pack(pop)
-
-#pragma pack(push, 1)
-struct ENGINE_DLL CB_DIRECTIONAL
-{
-	Vec3 ambientLower;
-	_float pad;
-	Vec3 ambientRange;
-	_float pad2;
-	Vec3 directionToLight;
-	_float pad3;
-	Vec3 DirectionalColor;
-	_float pad4;
-};
-#pragma pack(pop)
-
 class Shader;
 
 class ENGINE_DLL Light final : public Component

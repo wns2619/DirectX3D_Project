@@ -41,8 +41,8 @@ void Physics::updatePosition(Transform* trans, const _float& timeDelta)
 	_physicsDesc._velocity.y = _physicsDesc._velocity.y - (5.f * _physicsDesc._velocity.y * timeDelta);
 	_physicsDesc._velocity.z = _physicsDesc._velocity.z - (5.f * _physicsDesc._velocity.z * timeDelta);
 
-	trans->SetPosition(::XMVectorAdd(trans->GetPosition(), ::XMLoadFloat3(&_physicsDesc._velocity) * timeDelta));
-	trans->UpdateDirVectors();
+	trans->SetState(Transform::STATE::POSITION, ::XMVectorAdd(trans->GetState(Transform::STATE::POSITION), ::XMLoadFloat3(&_physicsDesc._velocity) * timeDelta));
+	//trans->UpdateDirVectors();
 }
 
 void Physics::addForce(Vec3 force, Transform* trans, const _float& timeDelta)
@@ -60,22 +60,22 @@ void Physics::addForceDir(Transform::Direction dir, Transform* trans, const _flo
 	switch (dir)
 	{
 	case Engine::Transform::Direction::FORWARD:
-		finalForce = ::XMVectorScale(trans->GetDirectionalVectors().forward, _physicsDesc._acceleration.z * _physicsDesc._accelMultiplier * multiplier) * timeDelta;
+		finalForce = ::XMVectorScale(trans->GetState(Transform::STATE::LOOK), _physicsDesc._acceleration.z * _physicsDesc._accelMultiplier * multiplier);
 		break;
 	case Engine::Transform::Direction::BACKWARD:
-		finalForce = ::XMVectorScale(trans->GetDirectionalVectors().backward, _physicsDesc._acceleration.z * _physicsDesc._accelMultiplier * multiplier) * timeDelta;
+		finalForce -= ::XMVectorScale(trans->GetState(Transform::STATE::LOOK), _physicsDesc._acceleration.z * _physicsDesc._accelMultiplier * multiplier);
 		break;
 	case Engine::Transform::Direction::LEFT:
-		finalForce = ::XMVectorScale(trans->GetDirectionalVectors().left, _physicsDesc._acceleration.x * _physicsDesc._accelMultiplier * multiplier) * timeDelta;
+		finalForce -= ::XMVectorScale(trans->GetState(Transform::STATE::RIGHT), _physicsDesc._acceleration.x * _physicsDesc._accelMultiplier * multiplier);
 		break;
 	case Engine::Transform::Direction::RIGHT:
-		finalForce = ::XMVectorScale(trans->GetDirectionalVectors().right, _physicsDesc._acceleration.x * _physicsDesc._accelMultiplier * multiplier) * timeDelta;
+		finalForce = ::XMVectorScale(trans->GetState(Transform::STATE::RIGHT), _physicsDesc._acceleration.x * _physicsDesc._accelMultiplier * multiplier);
 		break;
 	case Engine::Transform::Direction::UP:
-		finalForce = ::XMVectorScale(trans->GetDirectionalVectors().up, _physicsDesc._acceleration.y * _physicsDesc._accelMultiplier * multiplier) * timeDelta;
+		finalForce -= ::XMVectorScale(trans->GetState(Transform::STATE::UP), _physicsDesc._acceleration.y * _physicsDesc._accelMultiplier * multiplier);
 		break;
 	case Engine::Transform::Direction::DOWN:
-		finalForce = ::XMVectorScale(trans->GetDirectionalVectors().down, _physicsDesc._acceleration.y * _physicsDesc._accelMultiplier * multiplier) * timeDelta;
+		finalForce = ::XMVectorScale(trans->GetState(Transform::STATE::UP), _physicsDesc._acceleration.y * _physicsDesc._accelMultiplier * multiplier);
 		break;
 	default:
 		MSG_BOX("Direction not Found");

@@ -130,12 +130,16 @@ HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, FXMMATRIX pivotMat)
         memcpy(&pVertices[i].bitangent, &mesh->mBitangents[i], sizeof(Vec3));
     }
 
+    // TODO 
+    
+    // 메시에 영향을 주는 뼈들의 개수는 aIMesh의 mNumBones가 들고있음.
+    // 해당 뼈가 메시를 이루고있는 정점 몇 개에게 영향을 주는 지는 aIMesh의 mBones 배열에 mNumWeights가 갖고있다.
+
     ZeroMemory(&_subResourceData, sizeof _subResourceData);
     _subResourceData.pSysMem = pVertices;
 
     if (FAILED(__super::CreateBuffer(&_vertexBuffer)))
         return E_FAIL;
-
     Safe_Delete_Array(pVertices);
 
     return S_OK;

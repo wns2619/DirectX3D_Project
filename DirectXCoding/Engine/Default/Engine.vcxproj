@@ -52,6 +52,7 @@
     <ClInclude Include="..\Public\MouseHandler.h" />
     <ClInclude Include="..\Public\OBBBoxCollider.h" />
     <ClInclude Include="..\Public\ObjectManager.h" />
+    <ClInclude Include="..\Public\OtherLight.h" />
     <ClInclude Include="..\Public\Physics.h" />
     <ClInclude Include="..\Public\Picking.h" />
     <ClInclude Include="..\Public\Renderer.h" />
@@ -112,6 +113,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\OBBBoxCollider.cpp" />
     <ClCompile Include="..\Private\ObjectManager.cpp" />
+    <ClCompile Include="..\Private\OtherLight.cpp" />
     <ClCompile Include="..\Private\Physics.cpp" />
     <ClCompile Include="..\Private\Picking.cpp" />
     <ClCompile Include="..\Private\Renderer.cpp" />

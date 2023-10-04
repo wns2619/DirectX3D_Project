@@ -36,6 +36,23 @@ struct SpotLight
     float pad;
 };
 
+struct Light
+{
+    float4 Position   ; // 16
+    float3 Direction  ; 
+    float intensity   ; // 32
+    float3 Diffuse    ;
+    float range       ; // 48
+    float4 Ambient    ; // 64
+    float4 Specular   ; // 80
+    float2 spotAngles ; // 88
+    int type          ; // 92
+    bool enabled;
+    
+    float3 rotationDeg;
+    bool pad;
+};
+
 struct Material
 {
     float4 Ambient;
