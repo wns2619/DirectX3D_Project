@@ -13,12 +13,12 @@ Mesh::Mesh(const Mesh& rhs)
 
 }
 
-HRESULT Mesh::InitializePrototype(const aiMesh* pAIMesh, FXMMATRIX pivotMat)
+HRESULT Mesh::InitializePrototype(Model::MODEL_TYPE type, const aiMesh* pAIMesh, FXMMATRIX pivotMat)
 {
+    _stride = Model::MODEL_TYPE::NONE == type ? sizeof(VTXMESH) : sizeof(VTXANIMMESH);
+    
+    // 마테리얼의 인덱스 숫자를 저장한다. 이 인덱스의 마테리얼 정보를 이용
     _materialIndex = pAIMesh->mMaterialIndex;
-    // 마테리얼의 인덱스 숫자를 저장한다.
-
-    _stride = sizeof(VTXMESH); /* 정점하나의 크기 .*/
     _numvertices = pAIMesh->mNumVertices;
     _indexStride = 4; /* 인덱스 하나의 크기. 2 or 4 */
     _numIndices = pAIMesh->mNumFaces * 3;
@@ -39,29 +39,7 @@ HRESULT Mesh::InitializePrototype(const aiMesh* pAIMesh, FXMMATRIX pivotMat)
     _bufferDesc.MiscFlags = 0;
     _bufferDesc.StructureByteStride = _stride;
 
-    VTXMESH* pVertices = new VTXMESH[_numvertices];
-    ZeroMemory(pVertices, sizeof(VTXMESH) * _numvertices);
-
-    for (size_t i = 0; i < _numvertices; i++)
-    {
-        memcpy(&pVertices[i].position, &pAIMesh->mVertices[i], sizeof(Vec3));
-        XMStoreFloat3(&pVertices[i].position, XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].position), pivotMat));
-
-        memcpy(&pVertices[i].normal, &pAIMesh->mNormals[i], sizeof(Vec3));
-        XMStoreFloat3(&pVertices[i].normal, XMVector3TransformNormal(XMLoadFloat3(&pVertices[i].normal), pivotMat));
-
-        memcpy(&pVertices[i].texcoord, &pAIMesh->mTextureCoords[0][i], sizeof(Vec2));
-        memcpy(&pVertices[i].tangent, &pAIMesh->mTangents[i], sizeof(Vec3));
-        memcpy(&pVertices[i].bitangent, &pAIMesh->mBitangents[i], sizeof(Vec3));
-    }
-
-    ZeroMemory(&_subResourceData, sizeof _subResourceData);
-    _subResourceData.pSysMem = pVertices;
-
-    if (FAILED(__super::CreateBuffer(&_vertexBuffer)))
-        return E_FAIL;
-
-    Safe_Delete_Array(pVertices);
+    HRESULT hr = Model::MODEL_TYPE::NONE == type ? ReadyVertexBufferNoneAnim(pAIMesh, pivotMat) : ReadyVertexBufferAnim(pAIMesh, pivotMat);
 
 #pragma endregion
 
@@ -105,11 +83,69 @@ HRESULT Mesh::Initialize(void* pArg)
     return S_OK  ;
 }
 
-Mesh* Mesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const aiMesh* pAIMesh, FXMMATRIX pivotMat)
+HRESULT Mesh::ReadyVertexBufferNoneAnim(const aiMesh* mesh, FXMMATRIX pivotMat)
+{
+    VTXMESH* pVertices = new VTXMESH[_numvertices];
+    ZeroMemory(pVertices, sizeof(VTXMESH) * _numvertices);
+
+    for (size_t i = 0; i < _numvertices; i++)
+    {
+        memcpy(&pVertices[i].position, &mesh->mVertices[i], sizeof(Vec3));
+        XMStoreFloat3(&pVertices[i].position, XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].position), pivotMat));
+
+        memcpy(&pVertices[i].normal, &mesh->mNormals[i], sizeof(Vec3));
+        XMStoreFloat3(&pVertices[i].normal, XMVector3TransformNormal(XMLoadFloat3(&pVertices[i].normal), pivotMat));
+
+        memcpy(&pVertices[i].texcoord, &mesh->mTextureCoords[0][i], sizeof(Vec2));
+        memcpy(&pVertices[i].tangent, &mesh->mTangents[i], sizeof(Vec3));
+        memcpy(&pVertices[i].bitangent, &mesh->mBitangents[i], sizeof(Vec3));
+    }
+
+    ZeroMemory(&_subResourceData, sizeof _subResourceData);
+    _subResourceData.pSysMem = pVertices;
+
+    if (FAILED(__super::CreateBuffer(&_vertexBuffer)))
+        return E_FAIL;
+
+    Safe_Delete_Array(pVertices);
+
+    return S_OK;
+}
+
+HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, FXMMATRIX pivotMat)
+{
+    VTXANIMMESH* pVertices = new VTXANIMMESH[_numvertices];
+    ZeroMemory(pVertices, sizeof(VTXANIMMESH) * _numvertices);
+
+    for (size_t i = 0; i < _numvertices; i++)
+    {
+        memcpy(&pVertices[i].position, &mesh->mVertices[i], sizeof(Vec3));
+        XMStoreFloat3(&pVertices[i].position, XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].position), pivotMat));
+
+        memcpy(&pVertices[i].normal, &mesh->mNormals[i], sizeof(Vec3));
+        XMStoreFloat3(&pVertices[i].normal, XMVector3TransformNormal(XMLoadFloat3(&pVertices[i].normal), pivotMat));
+
+        memcpy(&pVertices[i].texcoord, &mesh->mTextureCoords[0][i], sizeof(Vec2));
+        memcpy(&pVertices[i].tangent, &mesh->mTangents[i], sizeof(Vec3));
+        memcpy(&pVertices[i].bitangent, &mesh->mBitangents[i], sizeof(Vec3));
+    }
+
+    ZeroMemory(&_subResourceData, sizeof _subResourceData);
+    _subResourceData.pSysMem = pVertices;
+
+    if (FAILED(__super::CreateBuffer(&_vertexBuffer)))
+        return E_FAIL;
+
+    Safe_Delete_Array(pVertices);
+
+    return S_OK;
+}
+
+Mesh* Mesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, Model::MODEL_TYPE type, const aiMesh* pAIMesh, FXMMATRIX pivotMat)
 {
     Mesh* pInstance = new Mesh(pDevice, pContext);
 
-    if (FAILED(pInstance->InitializePrototype(pAIMesh, pivotMat)))
+    if (FAILED(pInstance->InitializePrototype(type, pAIMesh, pivotMat)))
     {
         MSG_BOX("Failed to Created : CMesh");
         Safe_Release<Mesh*>(pInstance);

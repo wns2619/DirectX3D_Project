@@ -210,12 +210,6 @@ HRESULT ImGuiManager::Render()
 
 					if(FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), _editlayerTag, findPrototypename)))
 						return E_FAIL;
-
-					
-
-					//if(FAILED())
-
-
 				}
 				else
 				{
@@ -363,7 +357,7 @@ HRESULT ImGuiManager::Render()
 		ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - colWidth - 46);
 		if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon/baseline_delete_white_18dp.png"), ImVec2(20, 20)))
 		{
-			// TODO
+			// TODO : Light Delete
 
 			ImGui::PopStyleVar();
 		}

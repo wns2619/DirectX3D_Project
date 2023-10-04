@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="..\Public\AABBBoxCollider.h" />
     <ClInclude Include="..\Public\Base.h" />
+    <ClInclude Include="..\Public\Bone.h" />
     <ClInclude Include="..\Public\Camera.h" />
     <ClInclude Include="..\Public\CameraHelper.h" />
     <ClInclude Include="..\Public\Collider.h" />
@@ -78,8 +79,11 @@
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
     </ClCompile>
     <ClCompile Include="..\Private\Base.cpp" />
+    <ClCompile Include="..\Private\Bone.cpp" />
     <ClCompile Include="..\Private\Camera.cpp" />
-    <ClCompile Include="..\Private\CameraHelper.cpp" />
+    <ClCompile Include="..\Private\CameraHelper.cpp">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
+    </ClCompile>
     <ClCompile Include="..\Private\Collider.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IncludeInUnityFile>
     </ClCompile>
@@ -98,15 +102,21 @@
     <ClCompile Include="..\Private\LevelManager.cpp" />
     <ClCompile Include="..\Private\Light.cpp" />
     <ClCompile Include="..\Private\LightManager.cpp" />
-    <ClCompile Include="..\Private\Mesh.cpp" />
-    <ClCompile Include="..\Private\Model.cpp" />
+    <ClCompile Include="..\Private\Mesh.cpp">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IncludeInUnityFile>
+    </ClCompile>
+    <ClCompile Include="..\Private\Model.cpp">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IncludeInUnityFile>
+    </ClCompile>
     <ClCompile Include="..\Private\OBBBoxCollider.cpp" />
     <ClCompile Include="..\Private\ObjectManager.cpp" />
     <ClCompile Include="..\Private\Physics.cpp" />
     <ClCompile Include="..\Private\Picking.cpp" />
     <ClCompile Include="..\Private\Renderer.cpp" />
     <ClCompile Include="..\Private\ResourceBase.cpp" />
-    <ClCompile Include="..\Private\Shader.cpp" />
+    <ClCompile Include="..\Private\Shader.cpp">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IncludeInUnityFile>
+    </ClCompile>
     <ClCompile Include="..\Private\SimpleMath.cpp" />
     <ClCompile Include="..\Private\SphereCollider.cpp" />
     <ClCompile Include="..\Private\Struct.cpp" />
@@ -227,6 +237,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -8,8 +8,6 @@
 #include "ImguiResourceHandler.h"
 
 
-
-
 Game::Game()
 	: _gameInstance(GameInstance::GetInstance())
 {

@@ -16,11 +16,11 @@ HINSTANCE g_hInstance;                                // 현재 인스턴스입�
 HWND      g_hWnd;
 extern IMGUI_IMPL_API   LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lParam);
 
-#ifdef UNICODE
-#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
-#else
-#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
-#endif
+//#ifdef UNICODE
+//#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+//#else
+//#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+//#endif
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);

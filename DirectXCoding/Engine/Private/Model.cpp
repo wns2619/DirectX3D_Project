@@ -2,6 +2,7 @@
 #include "Model.h"
 #include "Mesh.h"
 #include "Texture.h"
+#include "Bone.h"
 
 Model::Model(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : Component(pDevice, pContext, COMPONENT_TYPE::MODEL)
@@ -30,22 +31,29 @@ Model::Model(const Model& rhs)
         Safe_AddRef<Mesh*>(mesh);
 }
 
-HRESULT Model::InitializePrototype(const string& pModelFilePath, FXMMATRIX pivotMat)
+HRESULT Model::InitializePrototype(MODEL_TYPE type, const string& pModelFilePath, FXMMATRIX pivotMat)
 {
     _modelPath = pModelFilePath;
 
+    uint32 flag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
 
-    m_pAIScene = m_Importer.ReadFile(pModelFilePath.c_str(), aiProcess_PreTransformVertices | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast);
+    if (MODEL_TYPE::NONE == type)
+        flag |= aiProcess_PreTransformVertices;
+
+    m_pAIScene = m_Importer.ReadFile(pModelFilePath.c_str(), flag);
     if (nullptr == m_pAIScene)
         return E_FAIL;
 
     ::XMStoreFloat4x4(&_pivotMatrix, pivotMat);
 
 
-    if (FAILED(ReadyMeshes()))
+    if (FAILED(ReadyMeshes(type)))
         return E_FAIL;
 
     if (FAILED(ReadyMaterial(pModelFilePath)))
+        return E_FAIL;
+
+    if (FAILED(ReadyBones(m_pAIScene->mRootNode, -1)))
         return E_FAIL;
 
     return S_OK;
@@ -79,7 +87,7 @@ HRESULT Model::Render(uint32 meshIndex)
     return S_OK;
 }
 
-HRESULT Model::ReadyMeshes()
+HRESULT Model::ReadyMeshes(MODEL_TYPE type)
 {
     m_iNumMeshes = m_pAIScene->mNumMeshes;
 
@@ -87,7 +95,7 @@ HRESULT Model::ReadyMeshes()
 
     for (size_t i = 0; i < m_iNumMeshes; i++)
     {
-        Mesh* mesh = Mesh::Create(_device, _deviceContext, m_pAIScene->mMeshes[i], ::XMLoadFloat4x4(&_pivotMatrix));
+        Mesh* mesh = Mesh::Create(_device, _deviceContext, type, m_pAIScene->mMeshes[i], ::XMLoadFloat4x4(&_pivotMatrix));
         if (nullptr == mesh)
             return E_FAIL;
 
@@ -155,11 +163,27 @@ HRESULT Model::ReadyMaterial(const string& modelFilePath)
     return S_OK;
 }
 
-Model* Model::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const string& pModelFilePath, FXMMATRIX pivotMat)
+HRESULT Model::ReadyBones(const aiNode* node, int32 parentNodeIndex)
+{
+    Bone* bone = Bone::Create(node, parentNodeIndex);
+    if (nullptr == bone)
+        return E_FAIL;
+
+    _bones.push_back(bone);
+
+    int32 parentindex = _bones.size() - 1;
+
+    for (size_t i = 0; i < node->mNumChildren; i++)
+        ReadyBones(node->mChildren[i], parentindex);
+
+    return S_OK;
+}
+
+Model* Model::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL_TYPE type, const string& pModelFilePath, FXMMATRIX pivotMat)
 {
     Model* pInstance = new Model(pDevice, pContext);
 
-    if (FAILED(pInstance->InitializePrototype(pModelFilePath, pivotMat)))
+    if (FAILED(pInstance->InitializePrototype(type, pModelFilePath, pivotMat)))
     {
         MSG_BOX("Failed to Created : Model");
         Safe_Release<Model*>(pInstance);
@@ -197,4 +221,9 @@ void Model::Free()
         Safe_Release(pMesh);
     }
     m_Importer.FreeScene();
+
+    for (auto& bone : _bones)
+        Safe_Release<Bone*>(bone);
+
+    _bones.clear();
 }

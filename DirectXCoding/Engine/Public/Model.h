@@ -6,6 +6,8 @@ BEGIN(Engine)
 
 class ENGINE_DLL Model final : public Component
 {
+public:
+	enum class MODEL_TYPE { NONE, ANIM, TYPE_END };
 private:
 	Model(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	Model(const Model& rhs);
@@ -15,7 +17,7 @@ public:
 	uint32 GetNumMeshes() const { return m_iNumMeshes; }
 
 public:
-	virtual HRESULT InitializePrototype(const string& pModelFilePath, FXMMATRIX pivotMat);
+	virtual HRESULT InitializePrototype(MODEL_TYPE type, const string& pModelFilePath, FXMMATRIX pivotMat);
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
@@ -44,15 +46,19 @@ private:
 	
 	Matrix					_pivotMatrix;
 
+private:
+	vector<class Bone*>		_bones;
+
 private: // IMGUI
 	string _modelPath = "";
 
 private:
-	HRESULT ReadyMeshes();
+	HRESULT ReadyMeshes(MODEL_TYPE type);
 	HRESULT ReadyMaterial(const string& modelFilePath);
+	HRESULT ReadyBones(const aiNode* node, int32 parentNodeIndex);
 
 public:
-	static Model* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const string& pModelFilePath, FXMMATRIX pivotMat = ::XMMatrixIdentity());
+	static Model* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL_TYPE type, const string& pModelFilePath, FXMMATRIX pivotMat = ::XMMatrixIdentity());
 	virtual Component* Clone(void* pArg) override;
 	virtual void Free() override;
 };

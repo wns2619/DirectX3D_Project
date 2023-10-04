@@ -130,6 +130,9 @@
     <Filter Include="01.Utility\04.Component\Physics">
       <UniqueIdentifier>{ac53fcf0-fb12-4275-b0f2-f008c4d089f8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Component\Model\Bone">
+      <UniqueIdentifier>{8033f097-f9b4-4e31-935f-d27e5df677a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -288,6 +291,9 @@
     <ClInclude Include="..\Public\MathUtilities.h">
       <Filter>02.Defines\99.Headers\99.Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Bone.h">
+      <Filter>01.Utility\04.Component\Model\Bone</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -406,6 +412,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Physics.cpp">
       <Filter>01.Utility\04.Component\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bone.cpp">
+      <Filter>01.Utility\04.Component\Model\Bone</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

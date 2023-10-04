@@ -90,16 +90,31 @@ namespace Engine
 
 	struct ENGINE_DLL VTXMESH
 	{
-		XMFLOAT3		position;
-		XMFLOAT3		normal;
-		XMFLOAT2		texcoord;
-		XMFLOAT3		tangent;
-		XMFLOAT3		bitangent;
+		Vec3		position;
+		Vec3		normal;
+		Vec2		texcoord;
+		Vec3		tangent;
+		Vec3		bitangent;
 
 		static const unsigned int				iNumElements = 5;
 		static const D3D11_INPUT_ELEMENT_DESC	Elements[iNumElements];
 	};
 
+	struct ENGINE_DLL VTXANIMMESH
+	{
+		Vec3		position;
+		Vec3		normal;
+		Vec2		texcoord;
+		Vec3		tangent;
+		Vec3		bitangent;
+
+		/* 정점이 상태를 받아야할 뼈들의 인덱스 */
+		XMUINT4		blendIndices;
+		Vec4		blendWeights;
+
+		static const unsigned int				iNumElements = 7;
+		static const D3D11_INPUT_ELEMENT_DESC	Elements[iNumElements];
+	};
 
 	struct ENGINE_DLL TexturePaths
 	{

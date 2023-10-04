@@ -131,7 +131,7 @@ HRESULT LevelHelper::LodingforLevelGame()
     modelInitializMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelPlayer"),
-        Model::Create(_device, _deviceContext, "..\\Binaries\\Resources\\Models\\Fiona\\Fiona.fbx", modelInitializMatrix))))
+        Model::Create(_device, _deviceContext, Model::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\Models\\Fiona\\Fiona.fbx", modelInitializMatrix))))
         return E_FAIL;
 
     _title = TEXT("Shader Loading");
@@ -177,6 +177,13 @@ HRESULT LevelHelper::LodingforLevelEdit()
 
     _title = TEXT("Mesh Loading");
 
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentPhysics"),
+        Physics::Create(_device, _deviceContext))))
+        return E_FAIL;
+
+
+
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentEditVIBufferTerrain"),
         VIBufferTerrain::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Terrain/Height1.bmp")))))
         return E_FAIL;
@@ -186,7 +193,7 @@ HRESULT LevelHelper::LodingforLevelEdit()
     modelInitializMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelPlayer"),
-        Model::Create(_device, _deviceContext, "..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", modelInitializMatrix))))
+        Model::Create(_device, _deviceContext, Model::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", modelInitializMatrix))))
         return E_FAIL;
 
     _title = TEXT("Shader Loading");

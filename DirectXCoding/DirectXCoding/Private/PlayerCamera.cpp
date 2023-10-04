@@ -45,32 +45,32 @@ HRESULT PlayerCamera::Initialize(void* argument)
 
 void PlayerCamera::Tick(const _float& timeDelta)
 {
-	//CameraControls(timeDelta);
+	CameraControls(timeDelta);
 
-	//GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-	//if (gameInstance->Get_DIKeyState(DIK_A) & 0x80)
-	//	addForce(Transform::Direction::LEFT, _transform, timeDelta);
+	if (gameInstance->Get_DIKeyState(DIK_A) & 0x80)
+		addForce(Transform::Direction::LEFT, _transform, timeDelta);
 
-	//if (gameInstance->Get_DIKeyState(DIK_D) & 0x80)
-	//	addForce(Transform::Direction::RIGHT, _transform, timeDelta);
+	if (gameInstance->Get_DIKeyState(DIK_D) & 0x80)
+		addForce(Transform::Direction::RIGHT, _transform, timeDelta);
 
-	//if (gameInstance->Get_DIKeyState(DIK_W) & 0x80)
-	//	addForce(Transform::Direction::FORWARD, _transform, timeDelta);
+	if (gameInstance->Get_DIKeyState(DIK_W) & 0x80)
+		addForce(Transform::Direction::FORWARD, _transform, timeDelta);
 
-	//if (gameInstance->Get_DIKeyState(DIK_S) & 0x80)
-	//	addForce(Transform::Direction::BACKWARD, _transform, timeDelta);
+	if (gameInstance->Get_DIKeyState(DIK_S) & 0x80)
+		addForce(Transform::Direction::BACKWARD, _transform, timeDelta);
 
-	//_long mouseMove = 0l;
+	_long mouseMove = 0l;
 
-	//if (mouseMove = gameInstance->Get_DIMouseMove(InputManager::MMS_X))
-	//	_transform->Turn(::XMVectorSet(0.f, 1.f, 0.f, 0.f), mouseMove * _playerCameraDesc._mouseSensitive * timeDelta);
+	if (mouseMove = gameInstance->Get_DIMouseMove(InputManager::MMS_X))
+		_transform->Turn(::XMVectorSet(0.f, 1.f, 0.f, 0.f), mouseMove * _playerCameraDesc._mouseSensitive * timeDelta);
 
-	//if(mouseMove = gameInstance->Get_DIMouseMove(InputManager::MMS_Y))
-	//	_transform->Turn(_transform->GetState(Transform::STATE::RIGHT), mouseMove * _playerCameraDesc._mouseSensitive* timeDelta);
+	if(mouseMove = gameInstance->Get_DIMouseMove(InputManager::MMS_Y))
+		_transform->Turn(_transform->GetState(Transform::STATE::RIGHT), mouseMove * _playerCameraDesc._mouseSensitive* timeDelta);
 
 
-	//RELEASE_INSTANCE(GameInstance);
+	RELEASE_INSTANCE(GameInstance);
 
 	__super::Tick(timeDelta);
 }
@@ -85,7 +85,7 @@ HRESULT PlayerCamera::ReadyComponents()
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 	uint32 level = static_cast<uint32>(LEVEL::GAME);
 
-	if (static_cast<uint32>(LEVEL::EDIT) == gameInstance->GetCurrentLevelIndex())
+	if (static_cast<uint32>(LEVEL::EDIT) == gameInstance->GetCurrentLevelIndex() - 1)
 		level = static_cast<uint32>(LEVEL::EDIT);
 
 	Physics::Physics_Desc desc;
