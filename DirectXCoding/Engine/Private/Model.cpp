@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "Model.h"
 #include "Mesh.h"
-#include "Texture.h"
 #include "Bone.h"
+#include "Texture.h"
 
 Model::Model(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : Component(pDevice, pContext, COMPONENT_TYPE::MODEL)

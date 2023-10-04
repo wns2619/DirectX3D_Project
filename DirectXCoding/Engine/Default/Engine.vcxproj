@@ -79,10 +79,12 @@
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
     </ClCompile>
     <ClCompile Include="..\Private\Base.cpp" />
-    <ClCompile Include="..\Private\Bone.cpp" />
+    <ClCompile Include="..\Private\Bone.cpp">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
+    </ClCompile>
     <ClCompile Include="..\Private\Camera.cpp" />
     <ClCompile Include="..\Private\CameraHelper.cpp">
-      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IncludeInUnityFile>
     </ClCompile>
     <ClCompile Include="..\Private\Collider.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IncludeInUnityFile>

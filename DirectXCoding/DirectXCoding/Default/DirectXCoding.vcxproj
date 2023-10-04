@@ -178,6 +178,7 @@
     <ClInclude Include="..\Imgui\imstb_rectpack.h" />
     <ClInclude Include="..\Imgui\imstb_textedit.h" />
     <ClInclude Include="..\Imgui\imstb_truetype.h" />
+    <ClInclude Include="..\Public\App.h" />
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\Public\Client_Define.h" />
     <ClInclude Include="..\Public\dirent.h" />
@@ -228,6 +229,7 @@
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
+    <ClCompile Include="..\Private\App.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\Private\EditorTerrain.cpp" />
     <ClCompile Include="..\Private\EditScene.cpp" />

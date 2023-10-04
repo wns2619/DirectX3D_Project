@@ -9,9 +9,7 @@ Transform::Transform(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 }
 
 Transform::Transform(const Transform& rhs)
-    : Component(rhs), _worldMatrix(rhs._worldMatrix), _transformDesc(rhs._transformDesc), 
-    _directionalVectors(rhs._directionalVectors), speed(rhs.speed), _localrotation(rhs._localrotation)
-    , _rotation(rhs._rotation), _scale(rhs._scale), _position(rhs._position)
+    : Component(rhs), _worldMatrix(rhs._worldMatrix), _transformDesc(rhs._transformDesc)
 {
 }
 
@@ -142,13 +140,13 @@ void Transform::Turn(XMVECTOR axis, const _float& timeDelta)
     XMVECTOR look = GetState(STATE::LOOK);
 
     XMVECTOR rotationMatrix = ::XMQuaternionRotationAxis(axis, _transformDesc.rotationRadianPerSec * timeDelta);
-    _rotation = ::XMQuaternionIdentity();
+    XMVECTOR rotationQuaternion = ::XMQuaternionIdentity();
 
-    _rotation = ::XMQuaternionMultiply(_rotation, rotationMatrix);
+    rotationQuaternion = ::XMQuaternionMultiply(rotationQuaternion, rotationMatrix);
 
-    right = ::XMVector3Rotate(right, _rotation);
-    up = ::XMVector3Rotate(up, _rotation);
-    look = ::XMVector3Rotate(look, _rotation);
+    right = ::XMVector3Rotate(right, rotationQuaternion);
+    up = ::XMVector3Rotate(up, rotationQuaternion);
+    look = ::XMVector3Rotate(look, rotationQuaternion);
 
     SetState(STATE::RIGHT, right);
     SetState(STATE::UP, up);
@@ -196,50 +194,6 @@ void Transform::Move(Direction direction)
         _position = ::XMVectorAdd(_directionalVectors.left * speed, _position);
     else if (direction == Direction::RIGHT)
         _position = ::XMVectorAdd(_directionalVectors.right * speed, _position);
-}
-
-void Transform::Rotate(int32 mouseX, int32 mouseY, const _float& timeDelta)
-{
-    XMVECTOR right = GetState(STATE::RIGHT);
-    XMVECTOR up = GetState(STATE::UP);
-    XMVECTOR look = GetState(STATE::LOOK);
-
-    XMVECTOR rotationMatrix = ::XMQuaternionRotationRollPitchYaw(mouseX, mouseY, 0.0f);
-    _rotation = ::XMQuaternionIdentity();
-    _rotation = ::XMQuaternionMultiply(_rotation, rotationMatrix);
-
-    right = ::XMVector3Rotate(right, _rotation);
-    up = ::XMVector3Rotate(up, _rotation);
-    look = ::XMVector3Rotate(look, _rotation);
-
-    SetState(STATE::RIGHT, right);
-    SetState(STATE::UP, up);
-    SetState(STATE::LOOK, look);
-
-
-    //Vec2 mouseDelta = Vec2((_float)mouseX, (_float)mouseY);
-
-    //Vec3 rotationV3;
-    //_rotation = ::XMQuaternionIdentity();
-    //rotationV3.x += mouseDelta.y * _transformDesc.rotationRadianPerSec * timeDelta;
-
-    //// Limit
-    //_float limit = XM_PI / 2.0f - 0.01f;
-    //rotationV3.x = max(-limit, rotationV3.x);
-    //rotationV3.x = min(limit, rotationV3.x);
-
-    //// set yaw
-    //rotationV3.y += mouseDelta.x * _transformDesc.rotationRadianPerSec * timeDelta;
-
-    //if (rotationV3.x > XM_PI)
-    //    rotationV3.y -= XM_PI * 2.0f;
-    //else if (rotationV3.x < -XM_PI)
-    //    rotationV3.y += XM_PI * 2.0f;
-
-    //_rotation = ::XMLoadFloat3(&rotationV3);
-
-    //XMMATRIX rotationMatrix = XMMatrixRotationY(XMVectorGetY(_rotation));
-
 }
 
 void Transform::UpdateDirVectors()

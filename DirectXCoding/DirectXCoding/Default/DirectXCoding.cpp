@@ -52,14 +52,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     game = Game::Create(g_hWnd);
 
-   // RAWINPUTDEVICE rawIDevice;
-   // rawIDevice.usUsagePage = 0x01;
-   // rawIDevice.usUsage = 0x02;
-   // rawIDevice.dwFlags = 0;
-   // rawIDevice.hwndTarget = NULL;
-   // if (::RegisterRawInputDevices(&rawIDevice, 1, sizeof(rawIDevice)) == FALSE)
-   //     return FALSE;
-
     if (nullptr == game)
         return FALSE;
 
@@ -182,187 +174,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
         return true;
 
-    //GameInstance* gameInstnace = GET_INSTANCE(GameInstance);
-  
 
     switch (message)
     {
-        case WM_COMMAND:
-            {
-                int wmId = LOWORD(wParam);
-                // 메뉴 선택을 구문 분석합니다:
-                switch (wmId)
-                {
-                case IDM_EXIT:
-                    ::DestroyWindow(hWnd);
-                    break;
-                default:
-                    RELEASE_INSTANCE(GameInstance);
-                    return DefWindowProc(hWnd, message, wParam, lParam);
-                }
-            }
-            break;
-        case WM_PAINT:
-            {
-                PAINTSTRUCT ps;
-                HDC hdc = ::BeginPaint(hWnd, &ps);
-                // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-                ::FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
-
-                ::EndPaint(hWnd, &ps);
-            }
-            break;
-        case WM_DESTROY:
-            ::PostQuitMessage(0);
-            break;
-        case WM_ACTIVATE:
+    case WM_COMMAND:
         {
-            if (wParam & WA_ACTIVE || wParam & WA_CLICKACTIVE)
+            int wmId = LOWORD(wParam);
+            // 메뉴 선택을 구문 분석합니다:
+            switch (wmId)
             {
-
+            case IDM_EXIT:
+                DestroyWindow(hWnd);
+                break;
+            default:
+                return DefWindowProc(hWnd, message, wParam, lParam);
             }
-
-            break;
         }
-        case WM_SIZE:
+        break;
+    case WM_PAINT:
         {
-            break;
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hWnd, &ps);
+            // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+            EndPaint(hWnd, &ps);
         }
-        //case WM_LBUTTONDOWN:
-        //{
-        //    int32 x = LOWORD(lParam);
-        //    int32 y = HIWORD(lParam);
-        //    gameInstnace->GetInputHandler()->onLeftPressed(x, y);
-
-        //    RELEASE_INSTANCE(GameInstance);
-        //    return 0;
-        //}
-        //case WM_RBUTTONDOWN:
-        //{
-        //    int32 x = LOWORD(lParam);
-        //    int32 y = HIWORD(lParam);
-        //    gameInstnace->GetInputHandler()->onRightPressed(x, y);
-
-        //    RELEASE_INSTANCE(GameInstance);
-        //    return 0;
-        //}
-        //case WM_MBUTTONDOWN:
-        //{
-        //    int32 x = LOWORD(lParam);
-        //    int32 y = HIWORD(lParam);
-        //    gameInstnace->GetInputHandler()->onMiddlePressed(x, y);
-
-        //    RELEASE_INSTANCE(GameInstance);
-        //    return 0;
-        //}
-        //case WM_LBUTTONUP:
-        //{
-        //    int32 x = LOWORD(lParam);
-        //    int32 y = HIWORD(lParam);
-        //    gameInstnace->GetInputHandler()->onLeftReleased(x, y);
-
-        //    RELEASE_INSTANCE(GameInstance);
-        //    return 0;
-        //}
-        //case WM_RBUTTONUP:
-        //{
-        //    int32 x = LOWORD(lParam);
-        //    int32 y = HIWORD(lParam);
-        //    gameInstnace->GetInputHandler()->onRightReleased(x, y);
-
-        //    RELEASE_INSTANCE(GameInstance);
-        //    return 0;
-        //}
-        //case WM_MBUTTONUP:
-        //{
-        //    int32 x = LOWORD(lParam);
-        //    int32 y = HIWORD(lParam);
-        //    gameInstnace->GetInputHandler()->onMiddlePressed(x, y);
-
-        //    RELEASE_INSTANCE(GameInstance);
-        //    return 0;
-        //}
-        //case WM_MOUSEMOVE:
-        //{
-        //    int32 x = LOWORD(lParam);
-        //    int32 y = HIWORD(lParam);
-        //    gameInstnace->GetInputHandler()->onMouseMove(x, y);
-
-        //    RELEASE_INSTANCE(GameInstance);
-        //    return 0;
-        //}
-        //case WM_INPUT:
-        //{
-        //    UINT dataSize;
-        //    ::GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, NULL, &dataSize, sizeof(RAWINPUTHEADER));
-        //    if (dataSize > 0)
-        //    {
-        //        BYTE* rawByteData = new BYTE[dataSize];
-        //        if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, rawByteData, &dataSize, sizeof(RAWINPUTHEADER)) == dataSize)
-        //        {
-        //            RAWINPUT* rawInput = reinterpret_cast<RAWINPUT*>(rawByteData);
-        //            if (rawInput->header.dwType == RIM_TYPEMOUSE)
-        //                gameInstnace->GetInputHandler()->onMouseRawMove(rawInput->data.mouse.lLastX, rawInput->data.mouse.lLastY);
-        //        }
-
-        //        Safe_Delete_Array<BYTE*>(rawByteData);
-        //    }
-
-        //    RELEASE_INSTANCE(GameInstance);
-        //    return DefWindowProc(hWnd, message, wParam, lParam);
-        //}
-        //case WM_MOUSEWHEEL:
-        //{
-        //    int32 x = LOWORD(lParam);
-        //    int32 y = HIWORD(lParam);
-        //    if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
-        //        gameInstnace->GetInputHandler()->onWheelUp(x, y);
-        //    else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0)
-        //        gameInstnace->GetInputHandler()->onWheelDown(x, y);
-
-        //    RELEASE_INSTANCE(GameInstance);
-        //    return 0;
-        //}
-        //case WM_KEYDOWN:
-        //{
-        //    _ubyte keyCode = static_cast<_ubyte>(wParam);
-        //    if (gameInstnace->GetInputHandler()->isAutoRepeatingChars())
-        //        gameInstnace->GetInputHandler()->onKeyPressed(keyCode);
-        //    else
-        //    {
-        //        const _bool wasPressed = lParam & 0x40000000; // Checks if previous key is the same as current key
-        //        if (!wasPressed)
-        //            gameInstnace->GetInputHandler()->onKeyPressed(keyCode);
-        //    }
-        //    RELEASE_INSTANCE(GameInstance);
-        //    return 0;
-        //}
-        //case WM_KEYUP:
-        //{
-        //    _ubyte keyCode = static_cast<_ubyte>(wParam);
-        //    gameInstnace->GetInputHandler()->onKeyReleased(keyCode);
-
-        //    RELEASE_INSTANCE(GameInstance);
-        //    return 0;
-        //}
-        //case WM_CHAR:
-        //{
-        //    _ubyte keyChar = static_cast<_ubyte>(wParam);
-        //    if (gameInstnace->GetInputHandler()->isAutoRepeatingChars())
-        //        gameInstnace->GetInputHandler()->onChar(keyChar);
-        //    else
-        //    {
-        //        const _bool wasPressed = lParam & 0x40000000; // Checks if previous key is the same as current key
-        //        if (!wasPressed)
-        //            gameInstnace->GetInputHandler()->onChar(keyChar);
-        //    }
-        //    break;
-        //}
-        default:
-            //RELEASE_INSTANCE(GameInstance);
-            return DefWindowProc(hWnd, message, wParam, lParam);
+        break;
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        break;
+    default:
+        return DefWindowProc(hWnd, message, wParam, lParam);
     }
-
-   // RELEASE_INSTANCE(GameInstance);
     return 0;
 }
