@@ -11,6 +11,11 @@ private:
 	virtual ~Bone() = default;
 
 public:
+	const char* GetBoneName() const { return _szName; }
+	const Matrix GetCombinedTransformMatrix() const { return _combinedTransformationMatrix; }
+	const XMMATRIX GetCombinedTransformCaculator() const { return ::XMLoadFloat4x4(&_combinedTransformationMatrix); }
+
+public:
 	HRESULT Initialize(const aiNode* node, int32 parentBoneIndex);
 	HRESULT UpdateCombinedTransformMatrix(const vector<class Bone*>& bones);
 

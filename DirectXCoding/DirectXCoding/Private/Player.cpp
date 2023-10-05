@@ -34,6 +34,8 @@ void Player::Tick(const _float& fTimeDelta)
 {
 	if (_enabled)
 		return;
+
+	_model->PlayAnimation(fTimeDelta);
 }
 
 void Player::LateTick(const _float& fTimeDelta)
@@ -55,11 +57,18 @@ HRESULT Player::Render()
 
 	for (size_t i = 0; i < numMeshes; i++)
 	{
-		_model->BindMaterialTexture(_shader, "DiffuseTexture", i, aiTextureType_DIFFUSE);
 
-		_shader->Begin(0);
+		if (FAILED(_model->BindBoneMatrices(_shader, i, "BoneMatrices")))
+			return E_FAIL;
 
-		_model->Render(i);
+		if(FAILED(_model->BindMaterialTexture(_shader, "DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		if (FAILED(_shader->Begin(0)))
+			return E_FAIL;
+
+		if (FAILED(_model->Render(i)))
+			return E_FAIL;
 	}
 	
 
@@ -86,7 +95,7 @@ HRESULT Player::ReadyComponents()
 
 	/* Shader Component */
 	if (FAILED(__super::AddComponent(level,
-		TEXT("ProtoTypeComponentDefaultMeshShader"),
+		TEXT("ProtoTypeComponentAnimMesh"),
 		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
 

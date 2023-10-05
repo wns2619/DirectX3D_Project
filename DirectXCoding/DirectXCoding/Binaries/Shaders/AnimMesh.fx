@@ -1,18 +1,19 @@
 #include "LightHelper.fx"
 
-// 내 현재 모델의 전체 뼈가 아니라, 이 메시가 사용하는 뼈의 정보만 불러온다.
-matrix g_BoneMatrices[256];
+
 
 cbuffer MatrixBuffer : register(b0)
 {
     matrix worldMatrix  : packoffset(c0);
     matrix viewMatrix   : packoffset(c4);
     matrix projMatrix   : packoffset(c8);
+    // 내 현재 모델의 전체 뼈가 아니라, 이 메시가 사용하는 뼈의 정보만 불러온다.
+    matrix BoneMatrices[256] : packoffset(c12);
 };
 
 cbuffer LightBuffer : register(b0)
 {
-    DirectionalLight dirLight : packoffset(c0);
+    Light Lightinfo : packoffset(c0);
 };
 
 cbuffer Material : register(b1)
@@ -46,7 +47,8 @@ struct VS_IN
     float3 position : POSITION;
     float3 normal : NORMAL;
     float2 texcoord : TEXCOORD0;
-    float3 vTangent : TANGENT;
+    float3 tangent : TANGENT;
+    float3 bitTangent : BITTANGENT;
     
     uint4   blendIndices : BLENDINDEX;
     float4  blendWeights : BLENDWEIGHT;
@@ -64,14 +66,21 @@ VS_OUT VS_MAIN(VS_IN input)
 {
     VS_OUT Out = (VS_OUT) 0;
     
-    matrix BoneMatrix = g_BoneMatrices[input.blendIndices.x][0][0] * input.blendWeights.x +
-    g_BoneMatrices[input.blendIndices.y][0][0] * input.blendWeights.y +
-    g_BoneMatrices[input.blendIndices.z][0][0] * input.blendWeights.z +
-    g_BoneMatrices[input.blendIndices.w][0][0] * input.blendWeights.w;
+    matrix BoneMatrix = BoneMatrices[input.blendIndices.x] * input.blendWeights.x +
+     BoneMatrices[input.blendIndices.y] * input.blendWeights.y +
+     BoneMatrices[input.blendIndices.z] * input.blendWeights.z +
+     BoneMatrices[input.blendIndices.w] * input.blendWeights.w;
+    
+    //matrix BoneMatrix = BoneMatrices[input.blendIndices.x][0][0] * input.blendWeights.x +
+    //BoneMatrices[input.blendIndices.y][0][0] * input.blendWeights.y +
+    //BoneMatrices[input.blendIndices.z][0][0] * input.blendWeights.z +
+    //BoneMatrices[input.blendIndices.w][0][0] * input.blendWeights.w;
+    
+    vector bonePosition = mul(float4(input.position, 1.f), BoneMatrix);
     
     matrix WVP = ComputeTransformMatrix(worldMatrix, viewMatrix, projMatrix);
     
-    Out.position = mul(float4(input.position, 1.f), WVP);
+    Out.position = mul(bonePosition, WVP);
     Out.texcoord = input.texcoord;
     Out.normal = mul(float4(input.normal, 0.f), worldMatrix);
     Out.worldPos = mul(float4(input.position, 1.f), worldMatrix);
@@ -104,16 +113,16 @@ PS_OUT PS_MAIN(PS_IN input)
     if (vMaterialdiffuse.a < 0.3f)
         discard;
     
-    vector shade = max(dot(normalize(-dirLight.Direction), normalize(input.normal)), 0.f) +
-    dirLight.Ambient * materialAmbient;
+    vector shade = max(dot(normalize(float4(-Lightinfo.Direction, 1.f)), normalize(input.normal)), 0.f) +
+    Lightinfo.Ambient * materialAmbient;
     
-    vector _reflect = reflect(normalize(dirLight.Direction), normalize(input.normal));
+    vector _reflect = reflect(normalize(float4(Lightinfo.Direction, 1.f)), normalize(input.normal));
     vector _look = input.worldPos - cameraPosition;
     
     float _specular = pow(max(dot(normalize(-_look), normalize(_reflect)), 0.f), 30.f);
     
-    Out.color = (dirLight.Diffuse * vMaterialdiffuse) * saturate(shade) +
-    (dirLight.Specular * materialSpecular) * _specular;
+    Out.color = (float4(Lightinfo.Diffuse, 1.f) * vMaterialdiffuse) * saturate(shade) +
+    (Lightinfo.Specular * materialSpecular) * _specular;
     
     return Out;
 }

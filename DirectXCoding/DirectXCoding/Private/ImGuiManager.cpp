@@ -89,13 +89,13 @@ HRESULT ImGuiManager::Render()
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
 		ImGui::SameLine(ImGui::GetWindowWidth() - 28);
 
-		if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"/Icon/save_white_18dp.png"), ImVec2(20, 20)))
+		if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"\\Icon\\save_white_18dp.png"), ImVec2(20, 20)))
 		{
 
 		}
 
 		ImGui::SameLine(ImGui::GetWindowWidth() - 56);
-		if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon/outline_refresh_white_18dp.png"), ImVec2(20, 20)))
+		if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\outline_refresh_white_18dp.png"), ImVec2(20, 20)))
 		{
 
 		}
@@ -158,12 +158,12 @@ HRESULT ImGuiManager::Render()
 			{
 
 				if (_modelNames[i].first == "..")
-					ImGui::Image(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon/previous_folder_icon.png"), ImVec2(100, 100));
+					ImGui::Image(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\previous_folder_icon.png"), ImVec2(100, 100));
 				else
-					ImGui::Image(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon/folder_icon.png"), ImVec2(100, 100));
+					ImGui::Image(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\folder_icon.png"), ImVec2(100, 100));
 			}
 			else
-				ImGui::Image(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon/model_icon.png"), ImVec2(100, 100));
+				ImGui::Image(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\model_icon.png"), ImVec2(100, 100));
 
 
 			// Name
@@ -275,7 +275,7 @@ HRESULT ImGuiManager::Render()
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
 			ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 24);
 
-			if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon/baseline_delete_white_18dp.png"), ImVec2(20, 20)))
+			if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\baseline_delete_white_18dp.png"), ImVec2(20, 20)))
 			{
 				if (_selectedIndex = (int32)i)
 				{
@@ -366,7 +366,7 @@ HRESULT ImGuiManager::Render()
 			ImGui::NextColumn();
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
 			ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - colWidth - 46);
-			if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon/baseline_delete_white_18dp.png"), ImVec2(20, 20)))
+			if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\baseline_delete_white_18dp.png"), ImVec2(20, 20)))
 			{
 				// TODO : Light Delete
 		

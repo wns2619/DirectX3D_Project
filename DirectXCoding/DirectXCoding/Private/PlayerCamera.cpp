@@ -92,7 +92,7 @@ void PlayerCamera::LateTick(const _float& timeDelta)
 HRESULT PlayerCamera::ReadyComponents()
 {
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
-	uint32 level = static_cast<uint32>(LEVEL::EDIT);
+	uint32 level = static_cast<uint32>(LEVEL::GAME);
 
 	//if (static_cast<uint32>(LEVEL::EDIT) == gameInstance->GetCurrentLevelIndex() - 1)
 	//	level = static_cast<uint32>(LEVEL::EDIT);

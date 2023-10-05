@@ -118,31 +118,36 @@ HRESULT LevelHelper::LodingforLevelGame()
     _title = TEXT("Texture Loading");
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentTextureTerrain"),
-        Texture::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Terrain/Tile0.jpg")))))
+        Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\Terrain\\Tile0.jpg")))))
         return E_FAIL;
 
     _title = TEXT("Mesh Loading");
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentVIBufferTerrain"),
-        VIBufferTerrain::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Terrain/Height1.bmp")))))
+        VIBufferTerrain::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\Terrain\\Height1.bmp")))))
         return E_FAIL;
 
     XMMATRIX modelInitializMatrix = ::XMMatrixIdentity();
     modelInitializMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelPlayer"),
-        Model::Create(_device, _deviceContext, Model::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\Models\\Fiona\\Fiona.fbx", modelInitializMatrix))))
+        Model::Create(_device, _deviceContext, Model::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\Models\\Fiona\\Fiona.fbx", modelInitializMatrix))))
         return E_FAIL;
 
     _title = TEXT("Shader Loading");
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentHillsShader"),
-        Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/HillsShader.fx"),
+        Shader::Create(_device, _deviceContext, TEXT("..\\Binaries\\Shaders\\HillsShader.fx"),
             VertexTextureNormalData::Elements, VertexTextureNormalData::numElements))))
         return E_FAIL;
 
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentAnimMesh"),
+        Shader::Create(_device, _deviceContext, TEXT("..\\Binaries\\Shaders\\AnimMesh.fx"),
+            VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
+        return E_FAIL;
+
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentDefaultMeshShader"),
-        Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/DefaultMeshShader.fx"), VTXMESH::Elements, VTXMESH::iNumElements))))
+        Shader::Create(_device, _deviceContext, TEXT("..\\Binaries\\Shaders\\DefaultMeshShader.fx"), VTXMESH::Elements, VTXMESH::iNumElements))))
         return E_FAIL;
 
   /*  if (FAILED(gameInstance->AddLightProtoType(static_cast<uint32>(LEVEL::GAME), Light::LightType::DIRECTIONAL, TEXT("ProtoTypeComponentLight"),

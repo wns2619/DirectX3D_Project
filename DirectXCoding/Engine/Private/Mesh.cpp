@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Mesh.h"
+#include "Bone.h"
+#include "Shader.h"
 
 Mesh::Mesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : VIBuffer(pDevice, pContext)
@@ -13,7 +15,7 @@ Mesh::Mesh(const Mesh& rhs)
 
 }
 
-HRESULT Mesh::InitializePrototype(Model::MODEL_TYPE type, const aiMesh* pAIMesh, FXMMATRIX pivotMat)
+HRESULT Mesh::InitializePrototype(Model::MODEL_TYPE type, const Model* model, const aiMesh* pAIMesh, FXMMATRIX pivotMat)
 {
     _stride = Model::MODEL_TYPE::NONE == type ? sizeof(VTXMESH) : sizeof(VTXANIMMESH);
     
@@ -39,7 +41,7 @@ HRESULT Mesh::InitializePrototype(Model::MODEL_TYPE type, const aiMesh* pAIMesh,
     _bufferDesc.MiscFlags = 0;
     _bufferDesc.StructureByteStride = _stride;
 
-    HRESULT hr = Model::MODEL_TYPE::NONE == type ? ReadyVertexBufferNoneAnim(pAIMesh, pivotMat) : ReadyVertexBufferAnim(pAIMesh, pivotMat);
+    HRESULT hr = Model::MODEL_TYPE::NONE == type ? ReadyVertexBufferNoneAnim(pAIMesh, pivotMat) : ReadyVertexBufferAnim(pAIMesh, model);
 
 #pragma endregion
 
@@ -83,6 +85,24 @@ HRESULT Mesh::Initialize(void* pArg)
     return S_OK  ;
 }
 
+HRESULT Mesh::BindBoneMatrices(Shader* shader, const vector<class Bone*>& bones, const char* constantName)
+{
+    Matrix boneMatrices[256];
+    ::ZeroMemory(boneMatrices, sizeof(Matrix) * 256);
+
+    uint32 index = 0;
+
+    for (auto& boneIndex : _bones)
+    {
+        ::XMStoreFloat4x4(&boneMatrices[index++],
+            ::XMLoadFloat4x4(&_offsetMatrices[index]) * bones[index]->GetCombinedTransformCaculator());
+    }
+       
+    // 쉐이더에 넘길 본 매트릭스에 오프셋 매트릭스와 * 부모행렬이 곱해진 최종 변환행렬의 곱을 저장한다.
+
+    return shader->BindMatrices(constantName, boneMatrices, _numBones);
+}
+
 HRESULT Mesh::ReadyVertexBufferNoneAnim(const aiMesh* mesh, FXMMATRIX pivotMat)
 {
     VTXMESH* pVertices = new VTXMESH[_numvertices];
@@ -112,7 +132,7 @@ HRESULT Mesh::ReadyVertexBufferNoneAnim(const aiMesh* mesh, FXMMATRIX pivotMat)
     return S_OK;
 }
 
-HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, FXMMATRIX pivotMat)
+HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, const Model* model)
 {
     VTXANIMMESH* pVertices = new VTXANIMMESH[_numvertices];
     ZeroMemory(pVertices, sizeof(VTXANIMMESH) * _numvertices);
@@ -120,14 +140,60 @@ HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, FXMMATRIX pivotMat)
     for (size_t i = 0; i < _numvertices; i++)
     {
         memcpy(&pVertices[i].position, &mesh->mVertices[i], sizeof(Vec3));
-        XMStoreFloat3(&pVertices[i].position, XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].position), pivotMat));
-
         memcpy(&pVertices[i].normal, &mesh->mNormals[i], sizeof(Vec3));
-        XMStoreFloat3(&pVertices[i].normal, XMVector3TransformNormal(XMLoadFloat3(&pVertices[i].normal), pivotMat));
-
         memcpy(&pVertices[i].texcoord, &mesh->mTextureCoords[0][i], sizeof(Vec2));
         memcpy(&pVertices[i].tangent, &mesh->mTangents[i], sizeof(Vec3));
         memcpy(&pVertices[i].bitangent, &mesh->mBitangents[i], sizeof(Vec3));
+    }
+    
+    // 메쉬를 이루고 있는 정점에 영향을 주는 뼈의 개수.
+    _numBones = mesh->mNumBones;
+    
+    for (size_t i = 0; i < _numBones; i++)
+    {
+        // i 번째 뼈에 접근.
+        aiBone* bone = mesh->mBones[i];
+
+        // 공통으로 사용되는 뼈대들을 각기 다른 형태의 메시에 적용하기 위해서는 보정이 필요하다.
+        Matrix offSetMatrix;
+        ::memcpy(&offSetMatrix, &bone->mOffsetMatrix, sizeof(Matrix));
+        ::XMStoreFloat4x4(&offSetMatrix, ::XMMatrixTranspose(::XMLoadFloat4x4(&offSetMatrix)));
+        // 전치 되어서 저장되어있으므로 다시 전치해준다.
+
+        _offsetMatrices.push_back(offSetMatrix);
+
+        // 뼈의 이름정보를 토대로 모든 뼈를 순회한 뒤에 몇 번 뼈의 인덱스인지 확인한다.
+        int32 boneIndex = model->GetBoneIndex(bone->mName.data);
+        if (-1 == boneIndex)
+            return E_FAIL;
+        
+        // 뼈의 인덱스를 찾았으면 푸쉬해준다
+        _bones.push_back(boneIndex);
+
+        // 이 뼈가 몇 개의 정점에게 영향을 주는 지 포문을 돈다.
+        for (size_t j = 0; j < bone->mNumWeights; j++)
+        {
+            if (0.f == pVertices[bone->mWeights[j].mVertexId].blendWeights.x)
+            {
+                pVertices[bone->mWeights[j].mVertexId].blendIndices.x = i;
+                pVertices[bone->mWeights[j].mVertexId].blendWeights.x = bone->mWeights[j].mWeight;
+            }
+            else if (0.f == pVertices[bone->mWeights[j].mVertexId].blendWeights.y)
+            {
+                pVertices[bone->mWeights[j].mVertexId].blendIndices.y = i;
+                pVertices[bone->mWeights[j].mVertexId].blendWeights.y = bone->mWeights[j].mWeight;
+            }
+            else if (0.f == pVertices[bone->mWeights[j].mVertexId].blendWeights.z)
+            {
+                pVertices[bone->mWeights[j].mVertexId].blendIndices.z = i;
+                pVertices[bone->mWeights[j].mVertexId].blendWeights.z = bone->mWeights[j].mWeight;
+            }
+            else if (0.f == pVertices[bone->mWeights[j].mVertexId].blendWeights.w)
+            {
+                pVertices[bone->mWeights[j].mVertexId].blendIndices.w = i;
+                pVertices[bone->mWeights[j].mVertexId].blendWeights.w = bone->mWeights[j].mWeight;
+            }
+        }
     }
 
     // TODO 
@@ -145,11 +211,11 @@ HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, FXMMATRIX pivotMat)
     return S_OK;
 }
 
-Mesh* Mesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, Model::MODEL_TYPE type, const aiMesh* pAIMesh, FXMMATRIX pivotMat)
+Mesh* Mesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, Model::MODEL_TYPE type, const Model* model, const aiMesh* pAIMesh, FXMMATRIX pivotMat)
 {
     Mesh* pInstance = new Mesh(pDevice, pContext);
 
-    if (FAILED(pInstance->InitializePrototype(type, pAIMesh, pivotMat)))
+    if (FAILED(pInstance->InitializePrototype(type, model, pAIMesh, pivotMat)))
     {
         MSG_BOX("Failed to Created : CMesh");
         Safe_Release<Mesh*>(pInstance);

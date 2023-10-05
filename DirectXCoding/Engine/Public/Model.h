@@ -15,13 +15,16 @@ private:
 
 public:
 	uint32 GetNumMeshes() const { return m_iNumMeshes; }
+	int32 GetBoneIndex(const char* boneName) const;
 
 public:
 	virtual HRESULT InitializePrototype(MODEL_TYPE type, const string& pModelFilePath, FXMMATRIX pivotMat);
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
+	HRESULT BindBoneMatrices(class Shader* shader, uint32 meshIndex, const char* constantName);
 	HRESULT BindMaterialTexture(class Shader* shader, const char* constantName, uint32 meshIndex, aiTextureType type);
+	HRESULT PlayAnimation(const _float& timeDelta);
 	HRESULT Render(uint32 meshIndex);
 
 public: // IMGUI

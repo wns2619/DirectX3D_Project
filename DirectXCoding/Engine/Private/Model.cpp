@@ -18,17 +18,38 @@ Model::Model(const Model& rhs)
     , _materials(rhs._materials)
     , _modelPath(rhs._modelPath)
     , m_pAIScene(rhs.m_pAIScene)
+    , _bones(rhs._bones)
 {
+    for (auto& boneiter : _bones)
+        Safe_AddRef<Bone*>(boneiter);
+
     for (auto& material : _materials)
         for (size_t i = 0; i < AI_TEXTURE_TYPE_MAX; i++)
-        {
             Safe_AddRef<Texture*>(material._texture[i]);
-        }
-
-
 
     for (auto& mesh : m_Meshes)
         Safe_AddRef<Mesh*>(mesh);
+}
+
+int32 Model::GetBoneIndex(const char* boneName) const
+{
+    uint32 boneIndex = 0;
+
+    auto iter = find_if(_bones.begin(), _bones.end(), [&](Bone* bone)
+        {
+            if (false == ::strcmp(bone->GetBoneName(), boneName))
+                return true;
+
+            ++boneIndex;
+
+            return false;
+        });
+
+    if (iter == _bones.end())
+        return -1;
+
+    return boneIndex;
+
 }
 
 HRESULT Model::InitializePrototype(MODEL_TYPE type, const string& pModelFilePath, FXMMATRIX pivotMat)
@@ -47,15 +68,18 @@ HRESULT Model::InitializePrototype(MODEL_TYPE type, const string& pModelFilePath
     ::XMStoreFloat4x4(&_pivotMatrix, pivotMat);
 
 
+
+    // 재귀적으로 함수 호출한다. 처음에 루트를 시작할 node.
+    if (FAILED(ReadyBones(m_pAIScene->mRootNode, -1)))
+        return E_FAIL;
+
     if (FAILED(ReadyMeshes(type)))
         return E_FAIL;
 
     if (FAILED(ReadyMaterial(pModelFilePath)))
         return E_FAIL;
 
-    // 재귀적으로 함수 호출한다. 처음에 루트를 시작할 node.
-    if (FAILED(ReadyBones(m_pAIScene->mRootNode, -1)))
-        return E_FAIL;
+
 
     return S_OK;
 }
@@ -65,6 +89,11 @@ HRESULT Model::Initialize(void* pArg)
 
 
     return S_OK;
+}
+
+HRESULT Model::BindBoneMatrices(Shader* shader, uint32 meshIndex, const char* constantName)
+{
+    return m_Meshes[meshIndex]->BindBoneMatrices(shader, _bones, constantName);
 }
 
 HRESULT Model::BindMaterialTexture(Shader* shader, const char* constantName, uint32 meshIndex, aiTextureType type)
@@ -79,6 +108,17 @@ HRESULT Model::BindMaterialTexture(Shader* shader, const char* constantName, uin
 
    
     return _materials[iMaterialIndex]._texture[type]->BindShaderResource(shader, constantName, 0);
+}
+
+HRESULT Model::PlayAnimation(const _float& timeDelta)
+{
+    // 뼈들의 트랜스폼 매트릭스를 애니메이션 상태에 맞도록 바꿔준다 deletatime.
+
+
+    for (auto& bone : _bones)
+        bone->UpdateCombinedTransformMatrix(_bones);
+
+    return S_OK;
 }
 
 HRESULT Model::Render(uint32 meshIndex)
@@ -96,7 +136,7 @@ HRESULT Model::ReadyMeshes(MODEL_TYPE type)
 
     for (size_t i = 0; i < m_iNumMeshes; i++)
     {
-        Mesh* mesh = Mesh::Create(_device, _deviceContext, type, m_pAIScene->mMeshes[i], ::XMLoadFloat4x4(&_pivotMatrix));
+        Mesh* mesh = Mesh::Create(_device, _deviceContext, type, this, m_pAIScene->mMeshes[i], ::XMLoadFloat4x4(&_pivotMatrix));
         if (nullptr == mesh)
             return E_FAIL;
 
