@@ -95,7 +95,7 @@ HRESULT Mesh::BindBoneMatrices(Shader* shader, const vector<class Bone*>& bones,
     for (auto& boneIndex : _bones)
     {
         ::XMStoreFloat4x4(&boneMatrices[index++],
-            ::XMLoadFloat4x4(&_offsetMatrices[index]) * bones[index]->GetCombinedTransformCaculator());
+            ::XMLoadFloat4x4(&_offsetMatrices[index]) * bones[boneIndex]->GetCombinedTransformCaculator());
     }
        
     // 쉐이더에 넘길 본 매트릭스에 오프셋 매트릭스와 * 부모행렬이 곱해진 최종 변환행렬의 곱을 저장한다.

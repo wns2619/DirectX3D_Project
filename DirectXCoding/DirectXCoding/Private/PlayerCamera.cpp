@@ -16,7 +16,7 @@ PlayerCamera::PlayerCamera(const PlayerCamera& rhs)
 	, _playerCameraDesc(rhs._playerCameraDesc)
 	, _physics(rhs._physics)
 {
-
+	Safe_AddRef<Physics*>(_physics);
 }
 
 PlayerCamera::~PlayerCamera()
@@ -92,7 +92,7 @@ void PlayerCamera::LateTick(const _float& timeDelta)
 HRESULT PlayerCamera::ReadyComponents()
 {
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
-	uint32 level = static_cast<uint32>(LEVEL::GAME);
+	uint32 level = static_cast<uint32>(LEVEL::EDIT);
 
 	//if (static_cast<uint32>(LEVEL::EDIT) == gameInstance->GetCurrentLevelIndex() - 1)
 	//	level = static_cast<uint32>(LEVEL::EDIT);

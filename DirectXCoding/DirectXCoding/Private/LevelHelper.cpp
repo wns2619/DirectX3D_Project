@@ -214,6 +214,11 @@ HRESULT LevelHelper::LodingforLevelEdit()
         return E_FAIL;
 
 
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentAnimMesh"),
+        Shader::Create(_device, _deviceContext, TEXT("..\\Binaries\\Shaders\\AnimMesh.fx"),
+            VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
+        return E_FAIL;
+
     // Light
 
     //if (FAILED(gameInstance->AddLightProtoType(static_cast<uint32>(LEVEL::EDIT), Light::LightType::DIRECTIONAL, TEXT("ProtoTypeComponentLight"),
