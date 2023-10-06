@@ -3,7 +3,7 @@
 #include "Client_Define.h"
 #include "VIBufferTerrain.h"
 #include "Base.h"
-
+#include "GameObject.h"
 
 
 BEGIN(Client)
@@ -43,7 +43,11 @@ public:
 	void MouseMove();
 
 public: // Section
+	void MainSection();
 	void AddLightSection();
+	HRESULT MainLightSection();
+	HRESULT ModelNameCardSection();
+	HRESULT ObjectsSection();
 
 private:
 	// Device && DeviceContext
@@ -85,6 +89,8 @@ private:
 	TexturePathPBR _texturePath = {};
 
 	// GameObjects
+	GameObject* _SelectGameObject = nullptr;
+
 	void GameObjectUpdate(int32 vectorIndex);
 	void UpdateModelUI(int32 vectorIndex);
 	void UpdateMaterialUI(int32 vectorIndex);

@@ -14,7 +14,6 @@ GameObject::GameObject(const GameObject& rhs)
 {
 	Safe_AddRef<ID3D11Device*>(_device);
 	Safe_AddRef<ID3D11DeviceContext*>(_deviceContext);
-
 }
 
 HRESULT GameObject::InitializePrototype()
@@ -121,6 +120,9 @@ void GameObject::Free()
 
 	_Components.clear();
 
+	Safe_Release<Collider*>(_owner);
+	Safe_Release<Model*>(_model);
+	Safe_Release<Transform*>(_transform);
 	Safe_Release<ID3D11Device*>(_device);
 	Safe_Release<ID3D11DeviceContext*>(_deviceContext);
 

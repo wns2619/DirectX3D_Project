@@ -50,11 +50,16 @@ public:
 	LIGHT_DESC* getLightDesc(uint32 lightIndex);
 	vector<OtherLight*>* getLightList() { return &_lights; }
 
+	uint32 GetLightCount() { return _iLightCount; }
+	void SetLightCount(uint32 lightCount) { _iLightCount = lightCount; }
+	void GetLighsNumber();
 public:
 	HRESULT	AddLight(const LIGHT_DESC& lightDesc);
+	HRESULT DeleteLight(uint32 lightIndex, const string& lightName);
 
 private:
 	vector<OtherLight*> _lights;
+	uint32 _iLightCount = 0;
 
 public:
 	virtual void Free() override;

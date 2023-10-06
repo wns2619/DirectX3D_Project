@@ -172,6 +172,15 @@ HRESULT ObjectManager::ComparisonAddObject(int32 levelIndex, const string& addOb
 	return S_OK;
 }
 
+HRESULT ObjectManager::DeleteObject(uint32 levelIndex, const wstring& layertag, const uint32 objectNumber, const string& modelnames)
+{
+	auto iter = FindLayer(levelIndex, layertag);
+	if (nullptr == iter)
+		return E_FAIL;
+
+	return iter->DeleteLayerObject(objectNumber, modelnames);
+}
+
 GameObject* ObjectManager::FindPrototype(const wstring& prototypeTag)
 {
 	auto iter = _protoTypes.find(prototypeTag);

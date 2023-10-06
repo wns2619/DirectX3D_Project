@@ -59,6 +59,7 @@ HRESULT LevelLoading::LateTick(const _float& timeDelta)
 				break;
 			case LEVEL::EDIT:
 				newLevel = EditScene::Create(_device, _deviceContext);
+				break;
 			}
 
 			if (nullptr == newLevel)

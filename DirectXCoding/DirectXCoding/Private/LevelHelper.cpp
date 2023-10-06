@@ -10,6 +10,7 @@
 #include "OBBBoxCollider.h"
 #include "AABBboxCollider.h"
 #include "SphereCollider.h"
+#include "ToolCamera.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -69,35 +70,30 @@ int32 LevelHelper::Loading()
     }
 
 
-    LeaveCriticalSection(&_criticalSection);
-    
     if (FAILED(hr))
+    {
+        LeaveCriticalSection(&_criticalSection);
         return -1;
-
+    }
+ 
+    LeaveCriticalSection(&_criticalSection);
     return 0;
 }
 
 HRESULT LevelHelper::LodingforLevelLogo()
 {
-    GameInstance* gameInstance = GameInstance::GetInstance();
-    Safe_AddRef<GameInstance*>(gameInstance);
-
     _title = TEXT("Texture Loading");
-
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::LOGO), TEXT("ProtoTypeComponentTextureBackGround"),
-        Texture::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Default%d.jpg"), 2))))
-        return E_FAIL;
+    LoadingTexture();
 
     _title = TEXT("Mesh Loading");
-    _title = TEXT("Shader Loading");
+    LoadingMesh();
 
+    _title = TEXT("Shader Loading");
+    LoadingShader();
 
     _title = TEXT("Object Loading");
-    
-    if (FAILED(gameInstance->AddProtoType(TEXT("PrototypeBackGround"), BackGround::Create(_device, _deviceContext))))
-        return E_FAIL;
+    LoadingObject();
 
-    Safe_Release<GameInstance*>(gameInstance);
 
     _title = TEXT("Loading Successed");
     _IsFinished = true;
@@ -107,69 +103,23 @@ HRESULT LevelHelper::LodingforLevelLogo()
 
 HRESULT LevelHelper::LodingforLevelGame()
 {
-    GameInstance* gameInstance = GameInstance::GetInstance();
-    Safe_AddRef<GameInstance*>(gameInstance);
-
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentPhysics"),
-        Physics::Create(_device, _deviceContext))))
-        return E_FAIL;
+    //if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentPhysics"),
+    //    Physics::Create(_device, _deviceContext))))
+    //    return E_FAIL;
 
 
     _title = TEXT("Texture Loading");
-
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentTextureTerrain"),
-        Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\Terrain\\Tile0.jpg")))))
-        return E_FAIL;
+    LoadingTexture();
 
     _title = TEXT("Mesh Loading");
-
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentVIBufferTerrain"),
-        VIBufferTerrain::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\Terrain\\Height1.bmp")))))
-        return E_FAIL;
-
-    XMMATRIX modelInitializMatrix = ::XMMatrixIdentity();
-    modelInitializMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
-
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelPlayer"),
-        Model::Create(_device, _deviceContext, Model::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\Models\\Fiona\\Fiona.fbx", modelInitializMatrix))))
-        return E_FAIL;
+    LoadingMesh();
 
     _title = TEXT("Shader Loading");
-
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentHillsShader"),
-        Shader::Create(_device, _deviceContext, TEXT("..\\Binaries\\Shaders\\HillsShader.fx"),
-            VertexTextureNormalData::Elements, VertexTextureNormalData::numElements))))
-        return E_FAIL;
-
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentAnimMesh"),
-        Shader::Create(_device, _deviceContext, TEXT("..\\Binaries\\Shaders\\AnimMesh.fx"),
-            VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
-        return E_FAIL;
-
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentDefaultMeshShader"),
-        Shader::Create(_device, _deviceContext, TEXT("..\\Binaries\\Shaders\\DefaultMeshShader.fx"), VTXMESH::Elements, VTXMESH::iNumElements))))
-        return E_FAIL;
-
-  /*  if (FAILED(gameInstance->AddLightProtoType(static_cast<uint32>(LEVEL::GAME), Light::LightType::DIRECTIONAL, TEXT("ProtoTypeComponentLight"),
-        Light::Create(_device, _deviceContext))))
-        return E_FAIL;*/
+    LoadingShader();
 
     _title = TEXT("Object Loading");
+    LoadingObject();
 
-    if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectTerrain"), 
-        Terrain::Create(_device, _deviceContext))))
-        return E_FAIL;
-
-    if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectCamera"),
-        PlayerCamera::Create(_device, _deviceContext))))
-        return E_FAIL;
-
-    if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectPlayer"),
-        Player::Create(_device, _deviceContext))))
-        return E_FAIL;
-
-
-    Safe_Release<GameInstance*>(gameInstance);
     _title = TEXT("Loading Successed");
     _IsFinished = true;
 
@@ -180,74 +130,20 @@ HRESULT LevelHelper::LodingforLevelEdit()
 {
     GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
+    _title = TEXT("Texture Loading");
+    LoadingTexture();
+
     _title = TEXT("Mesh Loading");
-
-
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentPhysics"),
-        Physics::Create(_device, _deviceContext))))
-        return E_FAIL;
-
-
-
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentEditVIBufferTerrain"),
-        VIBufferTerrain::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Terrain/Height1.bmp")))))
-        return E_FAIL;
-
-
-    Matrix modelInitializMatrix = ::XMMatrixIdentity();
-    modelInitializMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
-
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelPlayer"),
-        Model::Create(_device, _deviceContext, Model::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", modelInitializMatrix))))
-        return E_FAIL;
+    LoadingMesh();
 
     _title = TEXT("Shader Loading");
-
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentEditHillsShader"),
-        Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/WireFrameHills.fx"),
-            VertexTextureNormalData::Elements, VertexTextureNormalData::numElements))))
-        return E_FAIL;
-
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentDefaultMeshShader"),
-        Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/DefaultMeshShader.fx"),
-            VTXMESH::Elements, VTXMESH::iNumElements))))
-        return E_FAIL;
-
-
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentAnimMesh"),
-        Shader::Create(_device, _deviceContext, TEXT("..\\Binaries\\Shaders\\AnimMesh.fx"),
-            VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
-        return E_FAIL;
-
-    // Light
-
-    //if (FAILED(gameInstance->AddLightProtoType(static_cast<uint32>(LEVEL::EDIT), Light::LightType::DIRECTIONAL, TEXT("ProtoTypeComponentLight"),
-    //    Light::Create(_device, _deviceContext))))
-    //    return E_FAIL;
-
-    // Collider
-
-    if(FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentCollider"),
-        OBBBoxCollider::Create(_device,_deviceContext))))
-        return E_FAIL;
+    LoadingShader();
 
     _title = TEXT("Object Loading");
-
-    if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectEditTerrain"),
-        EditorTerrain::Create(_device, _deviceContext))))
-        return E_FAIL;
-
-    if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectEditCamera"),
-        PlayerCamera::Create(_device, _deviceContext))))
-        return E_FAIL;
-
-    if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectPlayer"),
-        Player::Create(_device, _deviceContext))))
-        return E_FAIL;
+    LoadingObject();
 
 
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", TEXT("ProtoTypeGameObjectPlayer"));
-
 
 
     _title = TEXT("Loading Successed");
@@ -255,6 +151,249 @@ HRESULT LevelHelper::LodingforLevelEdit()
 
 
     RELEASE_INSTANCE(GameInstance);
+    return S_OK;
+}
+
+HRESULT LevelHelper::LoadingTexture()
+{
+    GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+
+    if (_nextLevel >= LEVEL::LEVEL_END)
+        return E_FAIL;
+
+    switch (_nextLevel)
+    {
+    case Client::LEVEL::LOGO:
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::LOGO), TEXT("ProtoTypeComponentTextureBackGround"),
+            Texture::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Default%d.jpg"), 2))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+        break;
+    case Client::LEVEL::GAME:
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentTextureTerrain"),
+            Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\Terrain\\Tile0.jpg")))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+        break;
+    case Client::LEVEL::EDIT:
+        break;
+    default:
+        break;
+    }
+
+    RELEASE_INSTANCE(GameInstance);
+
+    return S_OK;
+}
+
+HRESULT LevelHelper::LoadingMesh()
+{
+    GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+
+    if (_nextLevel >= LEVEL::LEVEL_END)
+        return E_FAIL;
+
+    switch (_nextLevel)
+    {
+    case Client::LEVEL::LOGO:
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::LOGO), TEXT("ProtoTypeComponentTextureBackGround"),
+            Texture::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Default%d.jpg"), 2))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+        break;
+    case Client::LEVEL::GAME:
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentVIBufferTerrain"),
+            VIBufferTerrain::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\Terrain\\Height1.bmp")))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        XMMATRIX modelInitializMatrix = ::XMMatrixIdentity();
+        modelInitializMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelPlayer"),
+            Model::Create(_device, _deviceContext, Model::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\Models\\Fiona\\Fiona.fbx", modelInitializMatrix))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+        break;
+    case Client::LEVEL::EDIT:
+    {
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentEditVIBufferTerrain"),
+            VIBufferTerrain::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        Matrix modelInitializMatrix = ::XMMatrixIdentity();
+        modelInitializMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelPlayer"),
+            Model::Create(_device, _deviceContext, Model::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", modelInitializMatrix))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+    }
+        break;
+    default:
+        break;
+    }
+
+    RELEASE_INSTANCE(GameInstance);
+
+    return S_OK;
+}
+
+HRESULT LevelHelper::LoadingShader()
+{
+    GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+    if (_nextLevel >= LEVEL::LEVEL_END)
+        return E_FAIL;
+
+    switch (_nextLevel)
+    {
+    case Client::LEVEL::LOGO:
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::LOGO), TEXT("ProtoTypeComponentTextureBackGround"),
+            Texture::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Default%d.jpg"), 2))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+        break;
+    case Client::LEVEL::GAME:
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentHillsShader"),
+            Shader::Create(_device, _deviceContext, TEXT("..\\Binaries\\Shaders\\HillsShader.fx"),
+                VertexTextureNormalData::Elements, VertexTextureNormalData::numElements))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentAnimMesh"),
+            Shader::Create(_device, _deviceContext, TEXT("..\\Binaries\\Shaders\\AnimMesh.fx"),
+                VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentDefaultMeshShader"),
+            Shader::Create(_device, _deviceContext, TEXT("..\\Binaries\\Shaders\\DefaultMeshShader.fx"), VTXMESH::Elements, VTXMESH::iNumElements))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        break;
+    case Client::LEVEL::EDIT:
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentEditHillsShader"),
+            Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/WireFrameHills.fx"),
+                VertexTextureNormalData::Elements, VertexTextureNormalData::numElements))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentDefaultMeshShader"),
+            Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/DefaultMeshShader.fx"),
+                VTXMESH::Elements, VTXMESH::iNumElements))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentAnimMesh"),
+            Shader::Create(_device, _deviceContext, TEXT("..\\Binaries\\Shaders\\AnimMesh.fx"),
+                VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+        break;
+    default:
+        break;
+    }
+
+    RELEASE_INSTANCE(GameInstance);
+
+    return S_OK;
+}
+
+HRESULT LevelHelper::LoadingObject()
+{
+    GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+    if (_nextLevel >= LEVEL::LEVEL_END)
+        return E_FAIL;
+
+    switch (_nextLevel)
+    {
+    case Client::LEVEL::LOGO:
+        if (FAILED(gameInstance->AddProtoType(TEXT("PrototypeBackGround"), BackGround::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+        break;
+    case Client::LEVEL::GAME:
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectTerrain"),
+            Terrain::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectCamera"),
+            PlayerCamera::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectPlayer"),
+            Player::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+        break;
+    case Client::LEVEL::EDIT:
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectEditTerrain"),
+            EditorTerrain::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectEditCamera"),
+            ToolCamera::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectPlayer"),
+            Player::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+        break;
+    default:
+        break;
+    }
+
+    RELEASE_INSTANCE(GameInstance);
+
     return S_OK;
 }
 

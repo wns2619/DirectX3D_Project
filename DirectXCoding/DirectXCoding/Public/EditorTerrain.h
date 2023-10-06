@@ -5,7 +5,6 @@
 BEGIN(Engine)
 
 class Shader;
-class Texture;
 class Renderer;
 class Transform;
 class VIBufferTerrain;
@@ -28,16 +27,19 @@ public:
 	virtual void Tick(const _float& fTimeDelta)		override;
 	virtual void LateTick(const _float& fTimeDelta) override;
 
-	_bool TerrainPick(Vec3& rPos, _float& distance);
+	Vec4 TerrainPick();
 
 private:
 	Renderer* _renderComponent = nullptr;
 	Shader* _shader = nullptr;
-	Texture* _texture = nullptr;
 	VIBufferTerrain* _viBuffer = nullptr;
 
 private:
-	HRESULT	Ready_Components(void* argument);
+	uint32 _NumVerticesX = 0;
+	uint32 _NumVerticesZ = 0;
+
+private:
+	HRESULT	Ready_Components();
 	HRESULT Bind_ShaderResources();
 
 public:

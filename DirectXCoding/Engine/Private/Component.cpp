@@ -27,6 +27,8 @@ HRESULT Component::Initialize(void* argument)
 
 void Component::Free()
 {
+	__super::Free();
+
 	Safe_Release<ID3D11Device*>(_device);
 	Safe_Release<ID3D11DeviceContext*>(_deviceContext);
 }

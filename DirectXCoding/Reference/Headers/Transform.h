@@ -60,6 +60,7 @@ public:
 	void Left(const _float& timeDelta);
 	void Right(const _float& timeDelta);
 	void FixRotation(XMVECTOR axis, const _float radian);
+	void FixRotation(_float x, _float y, _float z);
 	void Turn(XMVECTOR axis, const _float& timeDelta);
 	void LookAt(FXMVECTOR point);
 	void Chase(FXMVECTOR point, _float const& timeDelta, _float distance = 0.1f);
@@ -80,9 +81,10 @@ public: // custom Movement
 	const DirectionVectors& GetDirectionalVectors() { return _directionalVectors; }
 private:
 	Matrix _worldMatrix;
+	Matrix _fixRotation;
 
 	XMVECTOR _localrotation = ::XMVectorSet(0.f, 0.f, 0.f, 1.f);
-	XMVECTOR _rotation = ::XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	XMVECTOR _rotation = ::XMVectorSet(0.f, 1.f, 0.f, 1.f);
 	XMVECTOR _scale = ::XMVectorSet(1.f, 1.f, 1.f, 0.f);
 	XMVECTOR _position = ::XMVectorSet(0.f, 0.f, 0.f, 1.f);
 

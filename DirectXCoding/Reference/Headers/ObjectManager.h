@@ -30,6 +30,7 @@ public:
 
 public: // IMGUI ¿ëµµ
 	HRESULT ComparisonAddObject(int32 levelIndex, const string& addObjectfile = "", const wstring& layertag = L"", void* argument = nullptr);
+	HRESULT DeleteObject(uint32 levelIndex, const wstring& layertag, const uint32 objectNumber, const string& modelnames);
 
 private:
 	map<const wstring, GameObject*> _protoTypes;

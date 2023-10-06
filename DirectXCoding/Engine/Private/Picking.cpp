@@ -44,7 +44,7 @@ _bool Picking::PickObject(POINT pt)
 	return false;
 }
 
-_bool Picking::TerrainPicking(POINT pt, Vec3& pickPos, _float& distance, Transform* trans, VIBufferTerrain* buffer)
+Vec4 Picking::TerrainPicking(POINT pt, Transform* trans, VIBufferTerrain* buffer)
 {
 	Matrix W = trans->GetWorldMatrix();
 	Matrix V = CameraHelper::GetInstance()->GetTransform(CameraHelper::TRANSFORMSTATE::D3DTS_VIEW);
@@ -52,7 +52,7 @@ _bool Picking::TerrainPicking(POINT pt, Vec3& pickPos, _float& distance, Transfo
 
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-	SimpleMath::Viewport vp(RECT{ 0,0,1280,720 });
+	SimpleMath::Viewport vp(RECT{ 0,0,1600,900 });
 
 	Vec3 Mousepos = Vec3(pt.x, pt.y, 0.f);
 
@@ -74,7 +74,7 @@ _bool Picking::TerrainPicking(POINT pt, Vec3& pickPos, _float& distance, Transfo
 
 	_ulong		dwVtxIdx[3]{};
 
-	//_float	fDist = 0.f;
+	_float	fDist = 0.f;
 
 	for (_ulong i = 0; i < tTerrainDesc.numVerticesZ - 1; ++i)
 	{
@@ -87,13 +87,11 @@ _bool Picking::TerrainPicking(POINT pt, Vec3& pickPos, _float& distance, Transfo
 			dwVtxIdx[1] = dwIndex + tTerrainDesc.numVerticesX + 1;
 			dwVtxIdx[2] = dwIndex + 1;
 
-			if (true == ray.Intersects(pBufferPos[dwVtxIdx[1]], pBufferPos[dwVtxIdx[0]], pBufferPos[dwVtxIdx[2]], distance))
+			if (true == ray.Intersects(pBufferPos[dwVtxIdx[1]], pBufferPos[dwVtxIdx[0]], pBufferPos[dwVtxIdx[2]], fDist))
 			{
+				Vec4 pickPos = Vec4(ray.position.x + ray.direction.x * fDist, ray.position.y + ray.direction.y * fDist, ray.position.z + ray.direction.z * fDist, 1.f);
 				RELEASE_INSTANCE(GameInstance);
-
-				pickPos = ray.position + ray.direction * distance;
-
-				return true;
+				return pickPos;
 			}
 
 			// ¿ÞÂÊ ¾Æ·¡
@@ -101,19 +99,17 @@ _bool Picking::TerrainPicking(POINT pt, Vec3& pickPos, _float& distance, Transfo
 			dwVtxIdx[1] = dwIndex + 1;
 			dwVtxIdx[2] = dwIndex;
 
-			if (true == ray.Intersects(pBufferPos[dwVtxIdx[1]], pBufferPos[dwVtxIdx[0]], pBufferPos[dwVtxIdx[2]], distance))
+			if (true == ray.Intersects(pBufferPos[dwVtxIdx[1]], pBufferPos[dwVtxIdx[0]], pBufferPos[dwVtxIdx[2]], fDist))
 			{
+				Vec4 pickPos = Vec4(ray.position.x + ray.direction.x * fDist, ray.position.y + ray.direction.y * fDist, ray.position.z + ray.direction.z * fDist, 1.f);
 				RELEASE_INSTANCE(GameInstance);
-
-				pickPos = ray.position + ray.direction * distance;
-
-				return true;
+				return pickPos;
 			}
 		}
 	}
 
 	RELEASE_INSTANCE(GameInstance);
-	return false;
+	return Vec4();
 }
 
 void Picking::Free()

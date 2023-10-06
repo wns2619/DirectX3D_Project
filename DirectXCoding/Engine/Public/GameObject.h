@@ -38,6 +38,7 @@ public:
 	string GetModelNameId() const;
 	uint32 GetIdNumber() { return _id; }
 	_bool* GetEnabled() { return &_enabled; }
+	_bool* GetObjectSelect() { return &_selectObject; }
 	Transform* GetTransform() { return _transform; }
 	Model* GetModelComponent() { return _model; }
 
@@ -57,6 +58,7 @@ protected:
 	string _modelName = "";
 
 	_bool  _enabled = false;
+	_bool  _selectObject = false;
 
 protected:
 	map<const wstring, Component*> _Components;

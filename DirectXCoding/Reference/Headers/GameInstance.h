@@ -52,6 +52,7 @@ public: // ObjectManager
 	HRESULT ComparisonAddObject(int32 levelIndex, const string& addObjectfile = "", const wstring& layertag = L"", void* argument = nullptr);
 	int32	GetLayerObjectCount();
 	vector<GameObject*>* GetCurrentObjectList(wstring& layerTag);
+	HRESULT DeleteGameObject(uint32 levelIndex, const wstring& layertag, const uint32 objectNumber, const string& modelNames);
 
 public: // Component Manager
 	HRESULT	AddProtoType(uint32 levelIndex, const wstring& PrototypeTag, class Component* protoType);
@@ -74,9 +75,10 @@ public: // LightManager
 	const LIGHT_DESC* GetLightDesc(uint32 lightIndex);
 	HRESULT AddLight(const LIGHT_DESC& lightdesc);
 	vector<OtherLight*>* getLightList();
+	HRESULT DeleteLight(uint32 lightIndex, const string& lightName);
 
 public: // Picking
-	_bool TerrainPicking(POINT pt, Vec3& pickPos, _float& distance, Transform* trans, VIBufferTerrain* buffer);
+	Vec4 TerrainPicking(POINT pt, Transform* trans, VIBufferTerrain* buffer);
 	_bool PickObject(POINT pt);
 
 private:

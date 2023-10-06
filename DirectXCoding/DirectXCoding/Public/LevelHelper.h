@@ -33,6 +33,12 @@ private:
 	HRESULT LodingforLevelGame();
 	HRESULT LodingforLevelEdit();
 
+	// Loading
+	HRESULT LoadingTexture();
+	HRESULT LoadingMesh();
+	HRESULT LoadingShader();
+	HRESULT LoadingObject();
+
 public:
 	static LevelHelper* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, LEVEL nextLevel);
 	virtual void Free() override;

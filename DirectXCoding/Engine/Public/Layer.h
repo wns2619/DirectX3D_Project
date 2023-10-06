@@ -20,6 +20,9 @@ public:
 	void LateTick(const _float& timeDelta);
 
 public:
+	HRESULT DeleteLayerObject(uint32 objectNumber, const string& modelName);
+
+public:
 	vector<GameObject*>* GetGameObject() { return &_gameObjects; }
 
 private:

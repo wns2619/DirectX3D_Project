@@ -117,6 +117,7 @@ void Transform::FixRotation(XMVECTOR axis, const _float radian)
 {
     Vec3 scale = GetScaled();
 
+
     XMVECTOR right = ::XMVectorSet(1.f, 0.f, 0.f, 0.f) * scale.x;
     XMVECTOR up = ::XMVectorSet(0.f, 1.f, 0.f, 0.f) * scale.y;
     XMVECTOR look = ::XMVectorSet(0.f, 0.f, 1.f, 0.f) * scale.z;
@@ -133,8 +134,53 @@ void Transform::FixRotation(XMVECTOR axis, const _float radian)
 
 }
 
+void Transform::FixRotation(_float x, _float y, _float z)
+{
+    Vec3 scale = GetScaled();
+
+
+    XMVECTOR right = ::XMVectorSet(1.f, 0.f, 0.f, 0.f) * scale.x;
+    XMVECTOR up = ::XMVectorSet(0.f, 1.f, 0.f, 0.f) * scale.y;
+    XMVECTOR look = ::XMVectorSet(0.f, 0.f, 1.f, 0.f) * scale.z;
+
+    Matrix rotationMatrix = ::XMMatrixIdentity();
+
+    _rotation.m128_f32[0] = x;
+    _rotation.m128_f32[1] = y;
+    _rotation.m128_f32[2] = z;
+
+    rotationMatrix *= ::XMMatrixRotationX(::XMConvertToRadians(_rotation.m128_f32[0]));
+    rotationMatrix *= ::XMMatrixRotationY(::XMConvertToRadians(_rotation.m128_f32[1]));
+    rotationMatrix *= ::XMMatrixRotationZ(::XMConvertToRadians(_rotation.m128_f32[2]));
+
+    right = ::XMVector4Transform(right, rotationMatrix);
+    up = ::XMVector4Transform(up, rotationMatrix);
+    look = ::XMVector4Transform(look, rotationMatrix);
+
+    SetState(STATE::RIGHT, right);
+    SetState(STATE::UP, up);
+    SetState(STATE::LOOK, look);
+}
+
 void Transform::Turn(XMVECTOR axis, const _float& timeDelta)
 {
+
+    //Vec4		vRight = GetState(STATE::RIGHT);
+    //Vec4		vUp = GetState(STATE::UP);
+    //Vec4		vLook = GetState(STATE::LOOK);
+
+    //Matrix		RotationMatrix = XMMatrixRotationAxis(axis, _transformDesc.rotationRadianPerSec * timeDelta);
+    //Vec4		vQuaternionData = XMQuaternionRotationMatrix(RotationMatrix);
+    //Matrix		QuaternionMatrix = XMMatrixRotationQuaternion(vQuaternionData);
+
+    //vRight = XMVector4Transform(vRight, QuaternionMatrix);
+    //vUp = XMVector4Transform(vUp, QuaternionMatrix);
+    //vLook = XMVector4Transform(vLook, QuaternionMatrix);
+
+    //SetState(STATE::RIGHT, vRight);
+    //SetState(STATE::UP, vUp);
+    //SetState(STATE::LOOK, vLook);
+    // 
     XMVECTOR right = GetState(STATE::RIGHT);
     XMVECTOR up = GetState(STATE::UP);
     XMVECTOR look = GetState(STATE::LOOK);

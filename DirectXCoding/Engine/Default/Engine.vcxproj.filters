@@ -300,6 +300,9 @@
     <ClInclude Include="..\Public\OtherLight.h">
       <Filter>01.Utility\04.Component\Light\diffrentLight</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Utils.h">
+      <Filter>02.Defines\99.Headers\99.Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -424,6 +427,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\OtherLight.cpp">
       <Filter>01.Utility\04.Component\Light\diffrentLight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Utils.cpp">
+      <Filter>02.Defines\99.Headers\99.Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,5 @@
 #include "pch.h"
 #include "VIBuffer.h"
-#include "GameInstance.h"
-#include "Transform.h"
 
 VIBuffer::VIBuffer(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: Component(device, deviceContext, COMPONENT_TYPE::BUFFER)
@@ -57,11 +55,11 @@ HRESULT VIBuffer::Render()
 		0,
 	};
 
-	_deviceContext->IASetPrimitiveTopology(_topology);
+
 
 	_deviceContext->IASetVertexBuffers(0, _numVBs, vertexBuffer, Strides, offSet);
 	_deviceContext->IASetIndexBuffer(_indexBuffer, _indexFormat, 0);
-
+	_deviceContext->IASetPrimitiveTopology(_topology);
 	// 1
 	// 2 shader code 
 

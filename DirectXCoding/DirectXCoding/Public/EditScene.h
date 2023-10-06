@@ -18,6 +18,7 @@ public:
 public:
 	HRESULT ReadyLayerEditCamera(const wstring& layerTag);
 	HRESULT ReadyLayerEntire(const wstring& layerTage);
+	HRESULT ReadyTerrain(const wstring& layerTag);
 	HRESULT ReadyLight();
 
 public:

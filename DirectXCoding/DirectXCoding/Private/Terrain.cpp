@@ -113,14 +113,14 @@ HRESULT Terrain::Bind_ShaderResources()
 	GameInstance* gameInstance = GameInstance::GetInstance();
 	Safe_AddRef<GameInstance*>(gameInstance);
 
-	if (FAILED(_transform->BindShaderResources(_shader, "worldMatrix")))
+	if (FAILED(_transform->BindShaderResources(_shader, "W")))
 		return E_FAIL;
-	if (FAILED(gameInstance->BindTransformToShader(_shader, "viewMatrix", CameraHelper::TRANSFORMSTATE::D3DTS_VIEW)))
+	if (FAILED(gameInstance->BindTransformToShader(_shader, "V", CameraHelper::TRANSFORMSTATE::D3DTS_VIEW)))
 		return E_FAIL;
-	if (FAILED(gameInstance->BindTransformToShader(_shader, "projMatrix", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
+	if (FAILED(gameInstance->BindTransformToShader(_shader, "P", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
 		return E_FAIL;
 
-	if (FAILED(gameInstance->BindCameraPosition(_shader, "camPosition", sizeof(Vec4))))
+	if (FAILED(gameInstance->BindCameraPosition(_shader, "cameraPosition", sizeof(Vec4))))
 		return E_FAIL;
 
 

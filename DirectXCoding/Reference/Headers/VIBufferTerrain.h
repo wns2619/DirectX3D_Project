@@ -34,7 +34,7 @@ private:
 	Vec3* _vertices							 = nullptr;
 
 public:
-	static VIBufferTerrain* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wstring& heightMapPath);
+	static VIBufferTerrain* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wstring& heightMapPath = L"");
 	virtual Component* Clone(void* argument) override;
 	virtual void Free() override;
 };

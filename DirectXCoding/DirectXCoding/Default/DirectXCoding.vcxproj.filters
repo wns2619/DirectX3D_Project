@@ -68,6 +68,12 @@
     <Filter Include="소스 파일\98.Shaders\ObjectShader">
       <UniqueIdentifier>{8f037d34-86d0-4dc2-b479-2243d614366d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\98.Shaders\Common">
+      <UniqueIdentifier>{43e2c4eb-ebb8-4568-a516-ca6f4c85a1ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\02.Camera\ToolCamera">
+      <UniqueIdentifier>{635e1a80-e02b-4d71-a09b-cd08b63fa8ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -160,6 +166,9 @@
     <ClInclude Include="..\Public\App.h">
       <Filter>소스 파일\00.Main</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ToolCamera.h">
+      <Filter>소스 파일\02.GameObjects\02.Camera\ToolCamera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -231,6 +240,9 @@
     <ClCompile Include="..\Private\App.cpp">
       <Filter>소스 파일\00.Main</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\ToolCamera.cpp">
+      <Filter>소스 파일\02.GameObjects\02.Camera\ToolCamera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Binaries\Shaders\Shader_VtxPosTex.fx">
@@ -253,6 +265,9 @@
     </FxCompile>
     <FxCompile Include="..\Binaries\Shaders\AnimMesh.fx">
       <Filter>소스 파일\98.Shaders\ObjectShader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Binaries\Shaders\GlobalShader.fx">
+      <Filter>소스 파일\98.Shaders\Common</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

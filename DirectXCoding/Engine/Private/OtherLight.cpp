@@ -9,6 +9,12 @@ HRESULT OtherLight::Initialize(const LIGHT_DESC& lightdesc)
 {
 	::memmove(&_lightDesc, &lightdesc, sizeof(lightdesc));
 
+	if (_lightDesc.type == LIGHT_DESC::TYPE::DIRECTION)
+		_strlightName = "Direction";
+	else if (_lightDesc.type == LIGHT_DESC::TYPE::POINT)
+		_strlightName = "Point";
+	else
+		_strlightName = "Spot";
 
 	return S_OK;
 }

@@ -12,8 +12,8 @@ Logo::Logo(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 
 HRESULT Logo::Initialize()
 {
-	if (FAILED(ReadyLayerBackGround(TEXT("LayerBackGround"))))
-		return E_FAIL;
+/*	if (FAILED(ReadyLayerBackGround(TEXT("LayerBackGround"))))
+		return E_FAIL*/;
 
 	return S_OK;
 }

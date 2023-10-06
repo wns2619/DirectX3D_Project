@@ -39,10 +39,13 @@ public:
 public: // Light Bind
 	HRESULT BindingLightToShader(Shader* shader, const _char* constantName, LightType type, uint32 legnth, uint32 offset = 0);
 
+public:
+
 private:
 	DirectinoalLight _dirLight;
-
 	Vec3 DirectionalDir = ::XMVectorSet(1.f, 1.f, 1.f, 1.f);
+
+	uint32 _ownLightNumber = 0;
 
 public:
 	static Light* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);

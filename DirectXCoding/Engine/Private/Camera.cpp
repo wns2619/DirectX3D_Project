@@ -55,8 +55,8 @@ void Camera::Tick(const _float& timeDelta)
 	if (nullptr == _cameraHelper)
 		return;
 
-	XMMATRIX world = _transform->CustomGetWorldMatrix();
-	XMMATRIX worldInv = ::XMMatrixInverse(nullptr, world);
+	//XMMATRIX world = _transform->CustomGetWorldMatrix();
+	//XMMATRIX worldInv = ::XMMatrixInverse(nullptr, world);
 
 	_cameraHelper->SetTransform(CameraHelper::TRANSFORMSTATE::D3DTS_VIEW, _transform->GetInverseMatrixCaculator());
 	_cameraHelper->SetTransform(CameraHelper::TRANSFORMSTATE::D3DTS_PROJ,

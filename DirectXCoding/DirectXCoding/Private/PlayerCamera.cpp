@@ -14,9 +14,7 @@ PlayerCamera::PlayerCamera(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 PlayerCamera::PlayerCamera(const PlayerCamera& rhs)
 	: Camera(rhs)
 	, _playerCameraDesc(rhs._playerCameraDesc)
-	, _physics(rhs._physics)
 {
-	Safe_AddRef<Physics*>(_physics);
 }
 
 PlayerCamera::~PlayerCamera()
@@ -25,8 +23,8 @@ PlayerCamera::~PlayerCamera()
 
 HRESULT PlayerCamera::InitializePrototype()
 {
-	if (FAILED(ReadyComponents()))
-		return E_FAIL;
+	//if (FAILED(ReadyComponents()))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -48,35 +46,39 @@ void PlayerCamera::Tick(const _float& timeDelta)
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
 	if (gameInstance->Get_DIKeyState(DIK_A) & 0x80)
-		addForce(Transform::Direction::LEFT, _transform, timeDelta);
+		_transform->Left(timeDelta);
+		//addForce(Transform::Direction::LEFT, _transform, timeDelta);
 
 	if (gameInstance->Get_DIKeyState(DIK_D) & 0x80)
-		addForce(Transform::Direction::RIGHT, _transform, timeDelta);
+		_transform->Right(timeDelta);
+		//addForce(Transform::Direction::RIGHT, _transform, timeDelta);
 
 	if (gameInstance->Get_DIKeyState(DIK_W) & 0x80)
-		addForce(Transform::Direction::FORWARD, _transform, timeDelta);
+		_transform->Forward(timeDelta);
+		// addForce(Transform::Direction::FORWARD, _transform, timeDelta);
 
 	if (gameInstance->Get_DIKeyState(DIK_S) & 0x80)
-		addForce(Transform::Direction::BACKWARD, _transform, timeDelta);
+		_transform->Backward(timeDelta);
+		//addForce(Transform::Direction::BACKWARD, _transform, timeDelta);
 
 
 	_long mouseMove = 0l;
 
 	
-	if (gameInstance->Get_DIKeyState(DIK_TAB) & 0x80)
-		_mousePause = true;
-	if (gameInstance->Get_DIKeyState(DIK_R) & 0x80)
-		_mousePause = false;
+	//if (gameInstance->Get_DIKeyState(DIK_TAB) & 0x80)
+	//	_mousePause = true;
+	//if (gameInstance->Get_DIKeyState(DIK_R) & 0x80)
+	//	_mousePause = false;
 
-	if (false == _mousePause)
-	{
+	//if (false == _mousePause)
+	//{
 		if (mouseMove = gameInstance->Get_DIMouseMove(InputManager::MMS_X))
 			_transform->Turn(::XMVectorSet(0.f, 1.f, 0.f, 0.f), mouseMove * _playerCameraDesc._mouseSensitive * timeDelta);
 
 		if (mouseMove = gameInstance->Get_DIMouseMove(InputManager::MMS_Y))
 			_transform->Turn(_transform->GetState(Transform::STATE::RIGHT), mouseMove * _playerCameraDesc._mouseSensitive * timeDelta);
-
-	}
+//
+	//}
 
 
 	RELEASE_INSTANCE(GameInstance);
@@ -92,27 +94,27 @@ void PlayerCamera::LateTick(const _float& timeDelta)
 HRESULT PlayerCamera::ReadyComponents()
 {
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
-	uint32 level = static_cast<uint32>(LEVEL::EDIT);
+	uint32 level = static_cast<uint32>(LEVEL::GAME);
 
 	//if (static_cast<uint32>(LEVEL::EDIT) == gameInstance->GetCurrentLevelIndex() - 1)
 	//	level = static_cast<uint32>(LEVEL::EDIT);
 
-	Physics::Physics_Desc desc;
-	::ZeroMemory(&desc, sizeof(desc));
-	{
-		desc._acceleration = Vec3(0.1f, 0.1f, 0.1f);
-		desc._deceleration = Vec3(0.001f, 0.001f, 0.001f);
-		desc._mass = 60.f;
-		desc._maxSpeed = 20.f;
-		desc._accelMultiplier = 10.f;
-		desc._accelSpeedUpMultiplier = 1.f;
-		desc._decelMultiplier = 1.f;
-	}
+	//Physics::Physics_Desc desc;
+	//::ZeroMemory(&desc, sizeof(desc));
+	//{
+	//	desc._acceleration = Vec3(0.1f, 0.1f, 0.1f);
+	//	desc._deceleration = Vec3(0.001f, 0.001f, 0.001f);
+	//	desc._mass = 60.f;
+	//	desc._maxSpeed = 20.f;
+	//	desc._accelMultiplier = 10.f;
+	//	desc._accelSpeedUpMultiplier = 1.f;
+	//	desc._decelMultiplier = 1.f;
+	//}
 
 
-	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeComponentPhysics"),
-		TEXT("ComponentPhysics"), reinterpret_cast<Component**>(&_physics), &desc)))
-		return E_FAIL;
+	//if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeComponentPhysics"),
+	//	TEXT("ComponentPhysics"), reinterpret_cast<Component**>(&_physics), &desc)))
+	//	return E_FAIL;
 
 
 	RELEASE_INSTANCE(GameInstance);
@@ -169,8 +171,6 @@ GameObject* PlayerCamera::Clone(void* argument)
 void PlayerCamera::Free()
 {
 	__super::Free();
-
-	Safe_Release<Physics*>(_physics);
 }
 
 PlayerCamera* PlayerCamera::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)

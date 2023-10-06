@@ -32,7 +32,6 @@ protected:
 	uint32						_numIndices			= 0;
 	uint32						_numVBs				= 0;
 
-
 protected:
 	HRESULT	CreateBuffer(_Inout_ ID3D11Buffer** bufferOut);
 

@@ -3,7 +3,7 @@
 
 
 #include "GameInstance.h"
-#include "PlayerCamera.h"
+#include "ToolCamera.h"
 
 #include "ImGuiManager.h"
 #include "ImguiResourceHandler.h"
@@ -24,11 +24,12 @@ HRESULT EditScene::Initialize()
     if (FAILED(ReadyLayerEditCamera(TEXT("LayerCameraObject"))))
         return E_FAIL;
 
+    //if (FAILED(ReadyTerrain(TEXT("LayerTerrain"))))
+    //    return E_FAIL;
+
     if (FAILED(ReadyLight()))
         return E_FAIL;
 
-
-    //Im
     return S_OK;
 }
 
@@ -46,18 +47,18 @@ HRESULT EditScene::ReadyLayerEditCamera(const wstring& layerTag)
 {
     GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-    PlayerCamera::PLAYERCAMERA_DESC cameraDesc;
+    ToolCamera::CAMERATOOL_DESC cameraDesc;
     ZeroMemory(&cameraDesc, sizeof(cameraDesc));
     {
-        cameraDesc._mouseSensitive = 0.1f;
-        cameraDesc._eye = Vec4(0.f, 10.f, -8.f, 1.f);
+        cameraDesc.fMouseSensitive = 0.3f;
+        cameraDesc._eye = Vec4(0.f, 0.f, -1.f, 1.f);
         cameraDesc._at = Vec4(0.f, 0.f, 0.f, 1.f);
-        cameraDesc._fovy = ::XMConvertToRadians(60.f);
+        cameraDesc._fovy = ::XMConvertToRadians(90.f);
         cameraDesc._aspect = g_iWinSizeX / static_cast<_float>(g_iWinSizeY);
         cameraDesc._near = 0.2f;
-        cameraDesc._far = 300.f;
-        cameraDesc.speedPerSec = 10.f;
-        cameraDesc.rotationRadianPerSec = ::XMConvertToRadians(90.f);
+        cameraDesc._far = 1000.f;
+        cameraDesc.speedPerSec = 50.f;
+        cameraDesc.rotationRadianPerSec = ::XMConvertToRadians(30.f);
     }
 
     if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), layerTag, TEXT("ProtoTypeGameObjectEditCamera"),
@@ -73,6 +74,16 @@ HRESULT EditScene::ReadyLayerEditCamera(const wstring& layerTag)
 HRESULT EditScene::ReadyLayerEntire(const wstring& layerTage)
 {
     return S_OK;
+}
+
+HRESULT EditScene::ReadyTerrain(const wstring& layerTag)
+{
+    GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+    if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), layerTag, TEXT("ProtoTypeGameObjectEditTerrain"))))
+        return E_FAIL;
+
+    RELEASE_INSTANCE(GameInstance);
 }
 
 HRESULT EditScene::ReadyLight()

@@ -63,7 +63,7 @@ void GameInstance::Tick(_float fTimeDelta)
 void GameInstance::Clear(uint32 levelIndex)
 {
     _objectManager->Clear(levelIndex);
-    //_componentManager->Clear(levelIndex);
+    _componentManager->Clear(levelIndex);
     //_lightManager->Clear(levelIndex);
 }
 
@@ -202,6 +202,14 @@ vector<GameObject*>* GameInstance::GetCurrentObjectList(wstring& layerTag)
     return _objectManager->GetCurrentObjectList(layerTag);
 }
 
+HRESULT GameInstance::DeleteGameObject(uint32 levelIndex, const wstring& layertag, const uint32 objectNumber, const string& modelNames)
+{
+    if (nullptr == _objectManager)
+        return E_FAIL;
+
+    return _objectManager->DeleteObject(levelIndex, layertag, objectNumber, modelNames);
+}
+
 HRESULT GameInstance::AddProtoType(uint32 levelIndex, const wstring& PrototypeTag, Component* protoType)
 {
     if (nullptr == _componentManager)
@@ -305,6 +313,14 @@ vector<OtherLight*>* GameInstance::getLightList()
     return _lightManager->getLightList();
 }
 
+HRESULT GameInstance::DeleteLight(uint32 lightIndex, const string& lightName)
+{
+    if (nullptr == _lightManager)
+        return E_FAIL;
+
+    return _lightManager->DeleteLight(lightIndex, lightName);
+}
+
 //HRESULT GameInstance::AddLightProtoType(uint32 levelIndex, Light::LightType type, const wstring& lighttag, Component* prototype)
 //{
 //    if (nullptr == _lightManager)
@@ -323,12 +339,12 @@ vector<OtherLight*>* GameInstance::getLightList()
 //    return _lightManager->CloneLight(levelIndex, type, lighttag, argument);
 //}
 
-_bool GameInstance::TerrainPicking(POINT pt, Vec3& pickPos, _float& distance, Transform* trans, VIBufferTerrain* buffer)
+Vec4 GameInstance::TerrainPicking(POINT pt, Transform* trans, VIBufferTerrain* buffer)
 {
     if (nullptr == _picking)
-        return false;
+        return Vec4();
 
-    return _picking->GetInstance()->TerrainPicking(pt, pickPos, distance, trans, buffer);
+    return _picking->GetInstance()->TerrainPicking(pt, trans, buffer);
 }
 
 _bool GameInstance::PickObject(POINT pt)
@@ -364,14 +380,16 @@ void GameInstance::Release_Engine()
 
 void GameInstance::Free()
 {
-    Safe_Release<InputHandler*>(_inputHandler);
-    Safe_Release<InputManager*>(_inputManager);
-    Safe_Release<Picking*>(_picking);
+    __super::Free();
+
     Safe_Release<CameraHelper*>(_cameraHelper);
-    Safe_Release<LightManager*>(_lightManager);
     Safe_Release<ComponentManager*>(_componentManager);
     Safe_Release<ObjectManager*>(_objectManager);
     Safe_Release<LevelManager*>(_levelManager);
-    Safe_Release<GraphicsManager*>(_graphicManager);
     Safe_Release<TimeManager*>(_timeManager);
+    Safe_Release<InputHandler*>(_inputHandler);
+    Safe_Release<InputManager*>(_inputManager);
+    Safe_Release<LightManager*>(_lightManager);
+    Safe_Release<Picking*>(_picking);
+    Safe_Release<GraphicsManager*>(_graphicManager);
 }

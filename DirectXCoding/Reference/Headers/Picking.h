@@ -16,7 +16,7 @@ private:
 
 public:
 	_bool PickObject(POINT pt);
-	_bool TerrainPicking(POINT pt, Vec3& pickPos, _float& distance, Transform* trans, VIBufferTerrain* buffer);
+	Vec4 TerrainPicking(POINT pt, Transform* trans, VIBufferTerrain* buffer);
 	
 public:
 	virtual void Free() override;
