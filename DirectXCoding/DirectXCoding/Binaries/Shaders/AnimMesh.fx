@@ -1,30 +1,15 @@
 #include "LightHelper.fx"
 #include "GlobalShader.fx"
 
+//cbuffer Material
+//{
+//    vector materialAmbient = vector(0.4f, 0.4f, 0.4f, 0.4f);
+//    vector materialSpecular = vector(1.f, 1.f, 1.f, 1.f);
+//};
 
-cbuffer LightBuffer
+MeshOut VS_MAIN(VertexAnimMesh input)
 {
-    Light Lightinfo;
-};
-
-cbuffer Material
-{
-    vector materialAmbient = vector(0.4f, 0.4f, 0.4f, 0.4f);
-    vector materialSpecular = vector(1.f, 1.f, 1.f, 1.f);
-};
-
-
-struct VS_OUT
-{
-    float4 position : SV_POSITION;
-    float4 normal : NORMAL;
-    float2 texcoord : TEXCOORD0;
-    float4 worldPos : TEXCOORD1;
-};
-
-VS_OUT VS_MAIN(VertexAnimMesh input)
-{
-    VS_OUT Out = (VS_OUT) 0;
+    MeshOut Out = (MeshOut) 0;
     
     matrix BoneMatrix = BoneMatrices[input.blendIndices.x] * input.blendWeights.x +
      BoneMatrices[input.blendIndices.y] * input.blendWeights.y +
@@ -36,53 +21,44 @@ VS_OUT VS_MAIN(VertexAnimMesh input)
     matrix WVP = ComputeTransformMatrix(W, V, P);
     
     Out.position = mul(bonePosition, WVP);
-    Out.texcoord = input.uv;
+    Out.uv = input.uv;
     Out.normal = mul(float4(input.normal, 0.f), W);
-    Out.worldPos = mul(float4(input.position, 1.f), W);
+    Out.worldPosition = mul(float4(input.position, 1.f), W);
     
     return Out;
 }
 
 
-struct PS_IN
+PixelOut PS_MAIN(MeshOut input)
 {
-    float4 position : SV_POSITION;
-    float4 normal : NORMAL;
-    float2 texcoord : TEXCOORD0;
-    float4 worldPos : TEXCOORD1;
-};
+    PixelOut Out = (PixelOut) 0;
 
-struct PS_OUT
-{
-    float4 color : SV_TARGET0;
-};
+    //vector vMaterialdiffuse = DiffuseMap.Sample(LinearSampler, input.uv);
 
-Texture2D DiffuseTexture : register(t0);
-
-PS_OUT PS_MAIN(PS_IN input)
-{
-    PS_OUT Out = (PS_OUT) 0;
-
-    vector vMaterialdiffuse = DiffuseTexture.Sample(LinearSampler, input.texcoord);
+    //if (vMaterialdiffuse.a < 0.3f)
+    //    discard;
     
-    if (vMaterialdiffuse.a < 0.3f)
-        discard;
+    //vector shade = max(dot(normalize(-GlobalLight.Direction), normalize(input.normal)), 0.f) +
+    //GlobalLight.Ambient * Material.Ambient;
     
-    vector shade = max(dot(normalize(float4(-Lightinfo.Direction, 1.f)), normalize(input.normal)), 0.f) +
-    Lightinfo.Ambient * materialAmbient;
+    //float3 _reflect = float4(reflect(normalize(GlobalLight.Direction), normalize(input.normal)), 0.f);
+    //float3 _look = input.worldPosition.xyz - CameraPosition();
     
-    vector _reflect = reflect(normalize(float4(Lightinfo.Direction, 1.f)), normalize(input.normal));
-    vector _look = input.worldPos - cameraPosition;
+    //float _specular = pow(max(dot(normalize(-_look), normalize(_reflect)), 0.f), 30.f);
     
-    float _specular = pow(max(dot(normalize(-_look), normalize(_reflect)), 0.f), 30.f);
+    //Out.Color = (GlobalLight.Diffuse * vMaterialdiffuse) * saturate(shade) +
+    //(GlobalLight.Specular * Material.Specular) * _specular;
     
-    Out.color = (float4(Lightinfo.Diffuse, 1.f) * vMaterialdiffuse) * saturate(shade) +
-    (Lightinfo.Specular * materialSpecular) * _specular;
+    
+    ComputeNormalMapping(input.normal, input.tangent, input.uv);
+    Out.Color = ComputeLight(input.normal, input.uv, input.worldPosition.xyz);
+    
+    //Out.Color = ComputeTeacherLight(input.normal, input.uv, input.worldPosition.xyz);
     
     return Out;
 }
 
 technique11 MeshTechnique
 {
-    SOLID_PASS_VP(name, VS_MAIN, PS_MAIN)
+    SOLID_PASS_VP(AnimMesh, VS_MAIN, PS_MAIN)
 }

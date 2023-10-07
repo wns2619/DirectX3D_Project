@@ -49,6 +49,10 @@ public: // Section
 	HRESULT ModelNameCardSection();
 	HRESULT ObjectsSection();
 
+public: // Save && Load
+	void FileSave();
+	void FileLoad();
+
 private:
 	// Device && DeviceContext
 	ID3D11Device* _device				= nullptr;

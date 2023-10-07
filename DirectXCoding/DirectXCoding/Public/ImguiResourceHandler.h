@@ -28,6 +28,8 @@ public:
 	_bool CreateTextureFormFile(const WCHAR* texturePath, _bool isCubeMap = false);
 	const wstring& FindProtoFilePath(const string& filePathKey);
 	HRESULT AddProtoFilePath(const string& filePathKey, const wstring& filePathValue);
+
+
 private:
 	ID3D11Device* _device				= nullptr;
 	ID3D11DeviceContext* _deviceContext = nullptr;

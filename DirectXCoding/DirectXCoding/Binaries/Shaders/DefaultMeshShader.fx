@@ -9,7 +9,7 @@ cbuffer MatrixBuffer : register(b0)
 
 cbuffer LightBuffer : register(b0)
 {
-    Light Lightinfo : packoffset(c0);
+    LightDesc Lightinfo : packoffset(c0);
 };
 
 cbuffer Material : register(b1)
@@ -18,26 +18,6 @@ cbuffer Material : register(b1)
     vector materialSpecular = vector(1.f, 1.f, 1.f, 1.f);
 };
 
-cbuffer camera : register(b2)
-{
-    vector cameraPosition : packoffset(c0);
-};
-
-SamplerState LinearSampler : register(s0)
-{
-    Filter = MIN_MAG_MIP_LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-
-};
-
-SamplerState PointSampler : register(s1)
-{
-    Filter = MIN_MAG_MIP_POINT;
-    AddressU = wrap;
-    AddressV = wrap;
-   
-};
 struct VS_IN
 {
     float3 position : POSITION;
@@ -97,11 +77,11 @@ PS_OUT PS_MAIN(PS_IN input)
     Lightinfo.Ambient * materialAmbient;
     
     vector _reflect = reflect(normalize(float4(Lightinfo.Direction, 1.f)), normalize(input.normal));
-    vector _look = input.worldPos - cameraPosition;
+    vector _look = input.worldPos - float4(CameraPosition(), 1.f);
     
     float _specular = pow(max(dot(normalize(-_look), normalize(_reflect)), 0.f), 30.f);
     
-    Out.color = (float4(Lightinfo.Diffuse, 1.f) * vMaterialdiffuse) * saturate(shade) +
+    Out.color = (Lightinfo.Diffuse * vMaterialdiffuse) * saturate(shade) +
     (Lightinfo.Specular * materialSpecular) * _specular;
     
     return Out;

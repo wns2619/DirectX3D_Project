@@ -28,6 +28,12 @@ public:
 	HRESULT Render(uint32 meshIndex);
 
 public: // IMGUI
+	void ReadAssetFile(const wstring& filePath, const wstring& fileName);
+	void ExportAssetData();
+
+
+
+
 	void SetModelPath(const string& modelPath) { _modelPath = modelPath; }
 	const string& GetModelPath() { return _modelPath; }
 
@@ -54,6 +60,10 @@ private:
 
 private: // IMGUI
 	string _modelPath = "";
+	shared_ptr<class Converter> _converter;
+
+	wstring _modelRootfilePath = L"..\\Binaries\\Resources\\MyModels\\";
+	wstring _modelName;
 
 private:
 	HRESULT ReadyMeshes(MODEL_TYPE type);

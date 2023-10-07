@@ -3,11 +3,11 @@
 #include "Mesh.h"
 #include "Bone.h"
 #include "Texture.h"
+#include "Converter.h"
 
 Model::Model(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : Component(pDevice, pContext, COMPONENT_TYPE::MODEL)
 {
-
 }
 
 Model::Model(const Model& rhs)
@@ -128,6 +128,24 @@ HRESULT Model::Render(uint32 meshIndex)
     return S_OK;
 }
 
+void Model::ReadAssetFile(const wstring& filePath, const wstring& fileName)
+{
+    _modelName = fileName;
+
+    _converter = make_shared<Converter>(fileName);
+
+    wstring fullPath = _modelRootfilePath + filePath + fileName + L".fbx";
+    _converter->ReadAssetFile(fullPath);
+}
+
+void Model::ExportAssetData()
+{
+    wstring strFilePath;
+
+    _converter->ExportModelData(strFilePath);
+    _converter->ExportMaterialData(strFilePath);
+}
+
 HRESULT Model::ReadyMeshes(MODEL_TYPE type)
 {
     m_iNumMeshes = m_pAIScene->mNumMeshes;
@@ -178,6 +196,8 @@ HRESULT Model::ReadyMaterial(const string& modelFilePath)
 
                 if (FAILED(materials->GetTexture(static_cast<aiTextureType>(j), 0, &strTexturePath)))
                     continue;
+
+
 
                 string textureFileName = strTexturePath.C_Str();
                 string fullPath = pathName + "/" + textureFileName;

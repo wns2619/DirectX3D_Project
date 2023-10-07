@@ -29,6 +29,7 @@
 
 //dirent
 #include "dirent.h"
+#include "tinyxml2.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;

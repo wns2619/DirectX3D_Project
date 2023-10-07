@@ -5,6 +5,8 @@
 
 namespace Engine
 {
+
+
 	typedef struct tagGraphicDesc
 	{
 		enum WINMODE { WINMODE_FULL, WINMODE_WIN, WINMODE_END };
@@ -79,12 +81,6 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC Elements[numElements];
 	};
 
-	struct MESH_MATERIAL
-	{
-		class Texture* _texture[AI_TEXTURE_TYPE_MAX];
-	};
-
-
 	struct ENGINE_DLL VTXMESH
 	{
 		Vec3		position;
@@ -126,22 +122,31 @@ namespace Engine
 		enum TYPE { DIRECTION, POINT, SPOT, LIGHT_END };
 
 		Vec4 Position;
-		
-		Vec3 Direction;
-		_float intensity = 1.f;
-
-		Vec3 Diffuse; // Color
-		_float range = 1.f;
-		
+		Vec4 Emissive;
+		Vec4 Diffuse; // Color
 		Vec4 Ambient;
 		Vec4 Specular;
 
+		Vec3 Direction;
+		_float intensity = 1.f;
+
+
 		Vec2 spotAngles = Vec2(1.f, 1.f);
 		int32 type = LIGHT_END;
-		_bool enabled = true;
+		_float range = 1.f;
 
 		Vec3 rotationDeg;
-		_bool pad;
+		_bool enabled = true;
+	};
+
+	struct MESH_MATERIAL
+	{
+		Color ambient = Color(0.f, 0.f, 0.f, 1.f);
+		Color diffuse = Color(1.f, 1.f, 1.f, 1.f);
+		Color specular = Color(0.f, 0.f, 0.f, 1.f);
+		Color emssive = Color(0.f, 0.f, 0.f, 1.f);
+
+		class Texture* _texture[AI_TEXTURE_TYPE_MAX];
 	};
 
 	struct LightHelper
@@ -149,6 +154,8 @@ namespace Engine
 		Vec3 rotationDeg;
 		Vec2 spotAngles;
 	};
+
+
 };
 
 

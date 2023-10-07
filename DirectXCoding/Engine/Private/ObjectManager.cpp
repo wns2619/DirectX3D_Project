@@ -101,6 +101,23 @@ GameObject* ObjectManager::GetLayerObject(const wstring& layertag, OBJECT_TYPE t
 	return nullptr;
 }
 
+GameObject* ObjectManager::GetLayerObjectTag(const wstring& layerag, const string& modelname)
+{
+	Layer* CurrentLayer = FindLayer(_currenlevel, layerag);
+	if (CurrentLayer == nullptr)
+		return nullptr;
+
+	vector<GameObject*>* objectlist = CurrentLayer->GetGameObject();
+
+	for (GameObject* gameObject : *objectlist)
+	{
+		if (gameObject->GetModelName() == modelname)
+			return gameObject;
+	}
+
+	return nullptr;
+}
+
 uint32 ObjectManager::GetLayerObjectCount()
 {
 	_levelObjectCount = 0;

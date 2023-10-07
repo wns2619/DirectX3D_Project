@@ -136,6 +136,9 @@
     <Filter Include="01.Utility\04.Component\Light\diffrentLight">
       <UniqueIdentifier>{a9362ee5-0e7e-45d1-a1b2-54d6ef97f2b2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Component\Model\ToolUtils">
+      <UniqueIdentifier>{4c580931-02d2-4811-b48f-4bf296e5f0e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -300,8 +303,14 @@
     <ClInclude Include="..\Public\OtherLight.h">
       <Filter>01.Utility\04.Component\Light\diffrentLight</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Converter.h">
+      <Filter>01.Utility\04.Component\Model\ToolUtils</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Utils.h">
-      <Filter>02.Defines\99.Headers\99.Utils</Filter>
+      <Filter>01.Utility\04.Component\Model\ToolUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AsTypes.h">
+      <Filter>01.Utility\04.Component\Model\ToolUtils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -428,8 +437,11 @@
     <ClCompile Include="..\Private\OtherLight.cpp">
       <Filter>01.Utility\04.Component\Light\diffrentLight</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Converter.cpp">
+      <Filter>01.Utility\04.Component\Model\ToolUtils</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Utils.cpp">
-      <Filter>02.Defines\99.Headers\99.Utils</Filter>
+      <Filter>01.Utility\04.Component\Model\ToolUtils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

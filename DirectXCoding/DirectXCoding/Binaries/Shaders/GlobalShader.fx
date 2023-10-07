@@ -17,12 +17,6 @@ cbuffer BoneMatricesBuffer
     matrix BoneMatrices[256];
 };
 
-cbuffer CameraBuffer
-{
-    float4 cameraPosition;
-};
-
-
 struct Vertex
 {
     float3 position : POSITION;
@@ -73,6 +67,20 @@ struct VertexOut
     float4 position : SV_POSITION;
     float3 normal : NORMAL;
     float2 uv : TEXCOORD0;
+    float4 worldPosition : TEXCOORD1;
+};
+
+struct MeshOut
+{
+    float4 position : SV_POSITION;
+    float3 normal : NORMAL;
+    float2 uv : TEXCOORD;
+    float3 tangent : TANGENT;
+    float3 bittangent : BITTANGENT;
+    
+    uint4 blendIndices : BLENDINDEX;
+    float4 blendWeights : BLENDWEIGHT;
+    
     float4 worldPosition : TEXCOORD1;
 };
 
@@ -131,7 +139,10 @@ pass name                                           \
     SetPixelShader(CompileShader(ps_5_0, ps()));    \
 }
 
-
+float3 CameraPosition()
+{
+    return -V._41_42_43;
+}
 
 
 #endif

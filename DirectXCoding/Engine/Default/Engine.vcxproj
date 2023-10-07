@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\AABBBoxCollider.h" />
+    <ClInclude Include="..\Public\AsTypes.h" />
     <ClInclude Include="..\Public\Base.h" />
     <ClInclude Include="..\Public\Bone.h" />
     <ClInclude Include="..\Public\Camera.h" />
@@ -28,6 +29,7 @@
     <ClInclude Include="..\Public\Component.h" />
     <ClInclude Include="..\Public\ComponentManager.h" />
     <ClInclude Include="..\Public\ConstantBuffer.h" />
+    <ClInclude Include="..\Public\Converter.h" />
     <ClInclude Include="..\Public\Defines.h" />
     <ClInclude Include="..\Public\dirent.h" />
     <ClInclude Include="..\Public\Function.h" />
@@ -95,6 +97,7 @@
     <ClCompile Include="..\Private\Component.cpp" />
     <ClCompile Include="..\Private\ComponentManager.cpp" />
     <ClCompile Include="..\Private\ConstantBuffer.cpp" />
+    <ClCompile Include="..\Private\Converter.cpp" />
     <ClCompile Include="..\Private\GameInstance.cpp" />
     <ClCompile Include="..\Private\GameObject.cpp" />
     <ClCompile Include="..\Private\GraphicsManager.cpp" />
@@ -240,7 +243,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>../Public/;./;</AdditionalIncludeDirectories>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -249,8 +252,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../lib/FX11/;../lib/DirectXTK/;../lib/DirectXTex/;../lib/Assimp\;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>d3d11.lib;Effects11d.lib;DirectXTKd.lib;DirectXTex_Debug.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../lib/FX11/;../lib/DirectXTK/;../lib/DirectXTex/;../lib/Assimp\;../lib/tiny\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;Effects11d.lib;DirectXTKd.lib;DirectXTex_Debug.lib;dinput8.lib;tinyxml2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <NoEntryPoint>false</NoEntryPoint>
     </Link>
     <PostBuildEvent>
@@ -282,8 +285,8 @@ call Copy.bat</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;Effects11.lib;DirectXTK.lib;dinput8.lib;$(CoreLibraryDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../lib/FX11/;../lib/DirectXTK/;../lib/Assimp\;../lib/DirectXTex/\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;Effects11.lib;DirectXTK.lib;dinput8.lib;tinyxml2.lib;$(CoreLibraryDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../lib/FX11/;../lib/DirectXTK/;../lib/Assimp\;../lib/DirectXTex/\;../lib/tiny\</AdditionalLibraryDirectories>
       <NoEntryPoint>false</NoEntryPoint>
     </Link>
     <PostBuildEvent>

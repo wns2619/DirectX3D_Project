@@ -296,7 +296,7 @@ void ImGuiManager::MainSection()
 
 		if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"\\Icon\\save_white_18dp.png"), ImVec2(20, 20)))
 		{
-
+			
 		}
 
 		ImGui::SameLine(ImGui::GetWindowWidth() - 56);
@@ -424,6 +424,7 @@ HRESULT ImGuiManager::ModelNameCardSection()
 
 					wstring findPrototypename = ImGuiResourceHandler::GetInstance()->FindProtoFilePath(modelPath);
 
+
 					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), _editlayerTag, findPrototypename)))
 					{
 						RELEASE_INSTANCE(GameInstance);
@@ -548,6 +549,14 @@ HRESULT ImGuiManager::ObjectsSection()
 	RELEASE_INSTANCE(GameInstance);
 
 	return S_OK;
+}
+
+void ImGuiManager::FileSave()
+{
+}
+
+void ImGuiManager::FileLoad()
+{
 }
 
 void ImGuiManager::AddLightSection()

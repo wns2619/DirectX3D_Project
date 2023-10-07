@@ -3,7 +3,7 @@
 
 cbuffer LightBuffer
 {
-    Light Lightinfo;
+    LightDesc Lightinfo;
 }
 
 cbuffer Material : register(b2)
@@ -41,11 +41,11 @@ PixelOut PS_MAIN(PixelIn In)
     vector shader = max(dot(normalize(-Lightinfo.Direction.xyz), normalize(In.normal)), 0.f) + Lightinfo.Ambient * materialAmbient;
     
     float3 reflectDirection = reflect(normalize(Lightinfo.Direction.xyz), normalize(In.normal));
-    float3 look = In.worldPosition - cameraPosition;
+    float3 look = In.worldPosition - float4(CameraPosition(), 1.f);
     
     float specular = pow(max(dot(normalize(-look), normalize(reflectDirection)), 0.f), 30.f);
     
-    Out.Color = (float4(Lightinfo.Diffuse, 1.f) * mtldff) * saturate(shader) + (Lightinfo.Specular * materialSpecular) * specular;
+    Out.Color = (Lightinfo.Diffuse * mtldff) * saturate(shader) + (Lightinfo.Specular * materialSpecular) * specular;
     
     return Out;
 }

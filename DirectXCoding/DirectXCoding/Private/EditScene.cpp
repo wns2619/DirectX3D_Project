@@ -95,7 +95,7 @@ HRESULT EditScene::ReadyLight()
     ZeroMemory(&lightDesc, sizeof(lightDesc));
     {
         lightDesc.Position = Vec4(0.f, 5.f, 0.f, 1.f);
-        lightDesc.Diffuse = Vec3(1.f, 1.f, 1.f);
+        lightDesc.Diffuse = Vec4(1.f, 1.f, 1.f, 1.f);
         lightDesc.intensity = 1.f;
         lightDesc.range = 4.f;
         lightDesc.type = LIGHT_DESC::DIRECTION;

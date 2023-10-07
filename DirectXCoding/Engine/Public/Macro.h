@@ -1,6 +1,11 @@
 #ifndef Engine_Macro_h__
 #define Engine_Macro_h__
 
+// Bone
+#define MAX_MODEL_TRANSFORMS 800
+#define MAX_MODEL_KEYFRAMES 1200
+
+
 #define GET_INSTANCE(CLASSNAME)	[](){											\
 	CLASSNAME*	pInstance = CLASSNAME::GetInstance();							\
 	if(nullptr == pInstance) {													\

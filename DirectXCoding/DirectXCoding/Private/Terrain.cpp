@@ -120,8 +120,8 @@ HRESULT Terrain::Bind_ShaderResources()
 	if (FAILED(gameInstance->BindTransformToShader(_shader, "P", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
 		return E_FAIL;
 
-	if (FAILED(gameInstance->BindCameraPosition(_shader, "cameraPosition", sizeof(Vec4))))
-		return E_FAIL;
+	//if (FAILED(gameInstance->BindCameraPosition(_shader, "cameraPosition", sizeof(Vec4))))
+	//	return E_FAIL;
 
 
 	const LIGHT_DESC* lightdesc = gameInstance->GetLightDesc(0);

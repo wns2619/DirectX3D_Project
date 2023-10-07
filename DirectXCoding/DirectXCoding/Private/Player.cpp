@@ -61,7 +61,7 @@ HRESULT Player::Render()
 		if (FAILED(_model->BindBoneMatrices(_shader, i, "BoneMatrices")))
 			return E_FAIL;
 
-		if(FAILED(_model->BindMaterialTexture(_shader, "DiffuseTexture", i, aiTextureType_DIFFUSE)))
+		if(FAILED(_model->BindMaterialTexture(_shader, "DiffuseMap", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
 		if (FAILED(_shader->Begin(0)))
@@ -147,19 +147,29 @@ HRESULT Player::BindShaderResuorces()
 	if (FAILED(gameInstance->BindTransformToShader(_shader, "P", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
 		return E_FAIL;
 
-	if (FAILED(gameInstance->BindCameraPosition(_shader, "cameraPosition", sizeof(Vec4))))
-		return E_FAIL;
+	//if (FAILED(gameInstance->BindCameraPosition(_shader, "CameraPostiion", sizeof(Vec4))))
+	//	return E_FAIL;
 
 	const LIGHT_DESC* lightdesc = gameInstance->GetLightDesc(0);
 
-	if (FAILED(_shader->BindRawValue("Lightinfo", lightdesc, sizeof(LIGHT_DESC))))
+	if (FAILED(_shader->BindRawValue("GlobalLight", lightdesc, sizeof(LIGHT_DESC))))
+		return E_FAIL;
+
+	MESH_MATERIAL materialDesc;
+	::ZeroMemory(&materialDesc, sizeof(materialDesc));
+	materialDesc.ambient = Vec4(0.8);
+	materialDesc.diffuse = Vec4(1.f);
+	materialDesc.specular = Vec4(1.f);
+
+	if (FAILED(_shader->BindRawValue("Material", &materialDesc, 80)))
 		return E_FAIL;
 
 	//if (FAILED(_light->BindingLightToShader(_shader, "dirLight", Light::LightType::DIRECTIONAL, sizeof(Light::DirectinoalLight))))
 	//	return E_FAIL;
 
-
 	Safe_Release<GameInstance*>(gameInstance);
+
+	return S_OK;
 
 }
 
