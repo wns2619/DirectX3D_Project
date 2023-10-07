@@ -32,6 +32,7 @@
     <ClInclude Include="..\Public\Converter.h" />
     <ClInclude Include="..\Public\Defines.h" />
     <ClInclude Include="..\Public\dirent.h" />
+    <ClInclude Include="..\Public\FileUtils.h" />
     <ClInclude Include="..\Public\Function.h" />
     <ClInclude Include="..\Public\Functor.h" />
     <ClInclude Include="..\Public\GameInstance.h" />
@@ -98,6 +99,7 @@
     <ClCompile Include="..\Private\ComponentManager.cpp" />
     <ClCompile Include="..\Private\ConstantBuffer.cpp" />
     <ClCompile Include="..\Private\Converter.cpp" />
+    <ClCompile Include="..\Private\FileUtils.cpp" />
     <ClCompile Include="..\Private\GameInstance.cpp" />
     <ClCompile Include="..\Private\GameObject.cpp" />
     <ClCompile Include="..\Private\GraphicsManager.cpp" />

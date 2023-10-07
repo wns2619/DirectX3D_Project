@@ -312,6 +312,9 @@
     <ClInclude Include="..\Public\AsTypes.h">
       <Filter>01.Utility\04.Component\Model\ToolUtils</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\FileUtils.h">
+      <Filter>01.Utility\04.Component\Model\ToolUtils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -441,6 +444,9 @@
       <Filter>01.Utility\04.Component\Model\ToolUtils</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Utils.cpp">
+      <Filter>01.Utility\04.Component\Model\ToolUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FileUtils.cpp">
       <Filter>01.Utility\04.Component\Model\ToolUtils</Filter>
     </ClCompile>
   </ItemGroup>

@@ -181,6 +181,14 @@ GameObject* GameInstance::GetLayerObject(const wstring& layertag, OBJECT_TYPE ty
     return _objectManager->GetLayerObject(layertag, type);
 }
 
+GameObject* GameInstance::GetLayerObjectTag(const wstring& layerag, const string& modelname)
+{
+    if (nullptr == _objectManager)
+        return nullptr;
+
+    return _objectManager->GetLayerObjectTag(layerag, modelname);
+}
+
 HRESULT GameInstance::ComparisonAddObject(int32 levelIndex, const string& addObjectfile, const wstring& layertag, void* argument)
 {
     if (nullptr == _objectManager)

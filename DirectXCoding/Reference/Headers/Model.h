@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "AsTypes.h"
 
 BEGIN(Engine)
 
@@ -59,8 +60,22 @@ private:
 	vector<class Bone*>		_bones;
 
 private: // IMGUI
-	string _modelPath = "";
+
+
+
+	// Converter
 	shared_ptr<class Converter> _converter;
+	string _modelPath = "";
+	string _texturePath = "";
+	
+	shared_ptr<ModelBone> _rootBone;
+	vector<shared_ptr<ModelBone>> _modelBones;
+
+
+
+
+
+
 
 	wstring _modelRootfilePath = L"..\\Binaries\\Resources\\MyModels\\";
 	wstring _modelName;

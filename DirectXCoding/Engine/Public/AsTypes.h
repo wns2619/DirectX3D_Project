@@ -4,6 +4,8 @@
 using VertexType = VTXANIMMESH;
 
 
+// Assimp Struct
+
 struct asBone
 {
 	string name;
@@ -34,4 +36,17 @@ struct asMaterial
 	string diffuseFile;
 	string specularFile;
 	string normalFile;
+};
+
+
+// Load Struct
+struct ModelBone
+{
+	wstring name;
+	int32 index;
+	int32 parentIndex;
+	shared_ptr<ModelBone> parent; // Cache
+
+	Matrix transform;
+	vector<shared_ptr<ModelBone>> childern; // Cache
 };
