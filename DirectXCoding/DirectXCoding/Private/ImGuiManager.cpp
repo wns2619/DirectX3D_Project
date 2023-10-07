@@ -12,6 +12,7 @@
 
 #include "GameObject.h"
 #include "EditorTerrain.h"
+#include "Utils.h"
 
 ImGui::FileBrowser g_fileDialog;
 
@@ -430,6 +431,9 @@ HRESULT ImGuiManager::ModelNameCardSection()
 						RELEASE_INSTANCE(GameInstance);
 						return E_FAIL;
 					}
+
+					GameObject* temp = gameInstance->GetLayerObjectTag(_editlayerTag, _modelNames[i].first);
+					temp->GetModelComponent()->LoadFBXFile(Utils::ToWString(modelPath));
 		
 				}
 				else

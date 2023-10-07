@@ -8,7 +8,7 @@ Player::Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: GameObject(device, deviceContext, OBJECT_TYPE::PLAYER)
 {
 	_objectType = OBJECT_TYPE::PLAYER;
-	_modelName = "Player";
+	_modelName = "Player.fbx";
 }
 
 Player::Player(const Player& rhs)
@@ -95,7 +95,7 @@ HRESULT Player::ReadyComponents()
 
 	/* Shader Component */
 	if (FAILED(__super::AddComponent(level,
-		TEXT("ProtoTypeComponentAnimMesh"),
+		TEXT("ProtoTypeComponentDefaultMeshShader"),
 		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
 

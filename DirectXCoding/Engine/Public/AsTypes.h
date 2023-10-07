@@ -23,6 +23,7 @@ struct asMesh
 
 	int32 boneIndex; // 계층 구조에서 누구와 연관이 있는 지 본 인덱스로 관리한다.
 	string materialName; 
+	int32 materialIndex;
 };
 
 struct asMaterial

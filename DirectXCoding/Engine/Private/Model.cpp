@@ -4,10 +4,14 @@
 #include "Bone.h"
 #include "Texture.h"
 #include "Converter.h"
+#include "Utils.h"
+#include "FileUtils.h"
+#include <filesystem>
 
 Model::Model(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : Component(pDevice, pContext, COMPONENT_TYPE::MODEL)
 {
+  
 }
 
 Model::Model(const Model& rhs)
@@ -29,6 +33,8 @@ Model::Model(const Model& rhs)
 
     for (auto& mesh : m_Meshes)
         Safe_AddRef<Mesh*>(mesh);
+
+
 }
 
 int32 Model::GetBoneIndex(const char* boneName) const
@@ -128,22 +134,146 @@ HRESULT Model::Render(uint32 meshIndex)
     return S_OK;
 }
 
-void Model::ReadAssetFile(const wstring& filePath, const wstring& fileName)
+void Model::ReadMaterial(wstring fileName)
 {
-    _modelName = fileName;
+    wstring fullPath = Utils::ToWString(_texturePath) + fileName + L".xml";
+    auto parentPath = filesystem::path(fullPath).parent_path();
 
-    _converter = make_shared<Converter>(fileName);
+    tinyxml2::XMLDocument* document = new tinyxml2::XMLDocument();
+    tinyxml2::XMLError error = document->LoadFile(Utils::ToString(fullPath).c_str());
+    assert(error == tinyxml2::XML_SUCCESS);
 
-    wstring fullPath = _modelRootfilePath + filePath + fileName + L".fbx";
-    _converter->ReadAssetFile(fullPath);
+    tinyxml2::XMLElement* root = document->FirstChildElement();
+    tinyxml2::XMLElement* materialNode = root->FirstChildElement();
+
+    while (materialNode)
+    {
+        shared_ptr<asMaterial> material = make_shared<asMaterial>();
+
+        tinyxml2::XMLElement* node = nullptr;
+
+        node = materialNode->FirstChildElement();
+        material->name = node->GetText();
+
+        // Diffuse Texture
+        node = node->NextSiblingElement();
+
+        if (node->GetText())
+        {
+            wstring DiffusetextureStr = Utils::ToWString(node->GetText());
+            if (DiffusetextureStr.length() > 0)
+            {
+                // TODO
+                
+                //auto texture = 
+                // 읽어왔으면 텍스쳐를 찾아서 마테리얼의 디퓨즈에 넣는다.
+                // 모델 자체가 Material을 들고 있으니까 여기다가 푸쉬해서 넣어주면 될 듯.
+            }
+        }
+
+        // Specular Texture
+        node = node->NextSiblingElement();
+        if (node->GetText())
+        {
+            wstring SpecularTextureStr = Utils::ToWString(node->GetText());
+            if (SpecularTextureStr.length() > 0)
+            {
+                // specular texture add 
+
+            }
+        }
+
+        // NormalTexture 
+        node = node->NextSiblingElement();
+        if (node->GetText())
+        {
+            wstring normalTextureStr = Utils::ToWString(node->GetText());
+            if (normalTextureStr.length() > 0)
+            {
+                // TODO
+                // normalTexture Add
+
+            }
+        }
+    }
+
 }
 
-void Model::ExportAssetData()
+void Model::ReadModel(wstring fileName)
 {
-    wstring strFilePath;
+    wstring fullPath = Utils::ToWString(_modelPath) + fileName + L".mesh";
 
-    _converter->ExportModelData(strFilePath);
-    _converter->ExportMaterialData(strFilePath);
+    shared_ptr<FileUtils> file = make_shared<FileUtils>();
+    file->Open(fullPath, FileMode::Read);
+
+    // Bones
+    {
+        const uint32 count = file->Read<uint32>();
+
+        for (uint32 i = 0; i < count; ++i)
+        {
+            shared_ptr<ModelBone> bone = make_shared<ModelBone>();
+            bone->index = file->Read<int32>();
+            bone->name = Utils::ToWString(file->Read<string>());
+            bone->parentIndex = file->Read<int32>();
+            bone->transform = file->Read<Matrix>();
+
+            // _bones.push_back(bone);
+        }
+    }
+
+    // Mesh
+    {
+        const uint32 count = file->Read<uint32>();
+
+        for (uint32 i = 0; i < count; ++i)
+        {
+           // shared_ptr<Mesh> mesh = make_shared<Mesh>();
+
+           //mesh->name = Utils::ToWString(file->Read<string>());
+           //mesh->boneindex = file->Read<int32>();
+           //
+           //mesh->mateiralname = Utils::ToWString(file->Read<string>());
+
+            // VertexData
+            {
+                const uint32 count = file->Read<uint32>();
+                vector<VertexType> vertices;
+                vertices.resize(count);
+
+                void* data = vertices.data();
+                file->Read(&data, sizeof(VertexType) * count);
+                // mesh add geometry;
+            }
+
+            // indexData
+            {
+                const uint32 count = file->Read<uint32>();
+
+                vector<uint32> indices;
+                indices.resize(count);
+
+                void* data = indices.data();
+                file->Read(&data, sizeof(uint32) * count);
+                // mesh add indices
+            }
+
+            // mesh create buffer
+
+            // mesh pushback
+        }
+    }
+
+}
+
+void Model::LoadFBXFile(const wstring& fileName)
+{
+    _converter = new Converter();
+
+    _converter->ReadAssetFile(fileName);
+    
+    _converter->ImportModelData();
+    _converter->ImportMaterialData();
 }
 
 HRESULT Model::ReadyMeshes(MODEL_TYPE type)
@@ -286,10 +416,16 @@ void Model::Free()
     {
         Safe_Release(pMesh);
     }
+
+    m_Meshes.clear();
+
     m_Importer.FreeScene();
 
     for (auto& bone : _bones)
         Safe_Release<Bone*>(bone);
 
     _bones.clear();
+
+    if(_converter != nullptr)
+        Safe_Delete<Converter*>(_converter);
 }

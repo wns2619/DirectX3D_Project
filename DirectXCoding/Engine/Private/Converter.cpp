@@ -46,8 +46,40 @@ void Converter::ExportModelData(wstring savePath)
 	// _scene에 있는 정보를 불러와서 우리만에 모델 데이터로 치환.
 
 	wstring finalPath = _modelPath + savePath + L".mesh";
-	ReadModelData(_scene->mRootNode, -1, -1); // 재귀적 호출
+	{
+		FILE* file;
+		::fopen_s(&file, "../Vertices.csv", "w");
 
+		for (shared_ptr<asBone>& bone : _bones)
+		{
+			string name = bone->name;
+			::fprintf(file, "%d,%s\n", bone->index, bone->name.c_str());
+		}
+
+		::fprintf(file, "\n");
+
+		for (shared_ptr<asMesh>& mesh : _meshes)
+		{
+			string name = mesh->name;
+			::printf("%s\n", name.c_str());
+
+			for (uint32 i = 0; i < mesh->vertices.size(); i++)
+			{
+				Vec3 p = mesh->vertices[i].position;
+				XMUINT4 indices = mesh->vertices[i].blendIndices;
+				Vec4 weights = mesh->vertices[i].blendWeights;
+
+				::fprintf(file, "%f,%f,%f", p.x, p.y, p.z);
+				::fprintf(file, "%f,%f,%f,%f", indices.x, indices.y, indices.z, indices.w);
+				::fprintf(file, "%f,%f,%f,%f\n", weights.x, weights.y, weights.z, weights.w);
+			}
+		}
+
+		::fclose(file);
+	}
+
+
+	//ReadModelData(_scene->mRootNode, -1, -1); // 재귀적 호출
 	WriteModelFile(finalPath);
 	// 우리가 메모리에 들고 있던 것을 최종 파일 형태로 만든다.
 
@@ -59,7 +91,18 @@ void Converter::ExportMaterialData(wstring savePath)
 	// xml 파일로 뽑아내면 fbx안에 있던 내용들을 한 번에 확인할 수 있음 jason을 사용해도 괜찮음
 	ReadMaterialData();
 	WriteMaterialData(finalPath); // 우리가 원하는 디렉토리에 저장 
+}
 
+void Converter::ImportModelData()
+{
+	ReadModelData(_scene->mRootNode, -1, -1);
+	// TODO
+
+}
+
+void Converter::ImportMaterialData()
+{
+	ReadMaterialData();
 }
 
 void Converter::ReadModelData(aiNode* node, int32 index, int32 parent)
@@ -175,6 +218,7 @@ void Converter::WriteModelFile(wstring finalPath)
 		file->Write<string>(meshData->name);
 		file->Write<int32>(meshData->boneIndex);
 		file->Write<string>(meshData->materialName);
+		file->Write<int32>(meshData->materialIndex);
 
 		// VertexData
 		file->Write<uint32>(meshData->vertices.size());

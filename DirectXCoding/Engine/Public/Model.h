@@ -29,9 +29,9 @@ public:
 	HRESULT Render(uint32 meshIndex);
 
 public: // IMGUI
-	void ReadAssetFile(const wstring& filePath, const wstring& fileName);
-	void ExportAssetData();
-
+	void ReadMaterial(wstring fileName);
+	void ReadModel(wstring fileName);
+	void LoadFBXFile(const wstring& fileName);
 
 
 
@@ -64,7 +64,7 @@ private: // IMGUI
 
 
 	// Converter
-	shared_ptr<class Converter> _converter;
+	class Converter* _converter = nullptr;
 	string _modelPath = "";
 	string _texturePath = "";
 	
