@@ -12,7 +12,7 @@ class Component;
 class Transform;
 class Model;
 
-enum class OBJECT_TYPE { PLAYER, TERRAIN, CAMERA, BACKGROUND, OBJECT_END };
+enum class OBJECT_TYPE { PLAYER, TERRAIN, EMPTYOBJECT, CAMERA, BACKGROUND, OBJECT_END };
 
 class ENGINE_DLL GameObject abstract : public Base
 {
@@ -29,6 +29,7 @@ public:
 	virtual HRESULT Render();
 
 public:
+	void SetObjectType(OBJECT_TYPE type) { _objectType = type; }
 	OBJECT_TYPE GetObjectType() { return _objectType; }
 	Collider* GetCollider() { return _owner; }
 
@@ -41,6 +42,7 @@ public:
 	_bool* GetObjectSelect() { return &_selectObject; }
 	Transform* GetTransform() { return _transform; }
 	Model* GetModelComponent() { return _model; }
+	const wstring GetModelPath() const { return _modelPath; }
 
 	void SetEnabled(_bool enabled) { _enabled = enabled; }
 	void SetIdNumber(uint32 id) { _id = id; }
@@ -56,6 +58,7 @@ protected:
 	// ID && IMGUI
 	uint32 _id = 0;
 	string _modelName = "";
+	wstring _modelPath = L"";
 
 	_bool  _enabled = false;
 	_bool  _selectObject = false;

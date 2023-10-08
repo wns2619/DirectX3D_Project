@@ -74,6 +74,9 @@
     <Filter Include="소스 파일\02.GameObjects\02.Camera\ToolCamera">
       <UniqueIdentifier>{635e1a80-e02b-4d71-a09b-cd08b63fa8ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\EmptyObject">
+      <UniqueIdentifier>{2342d57f-c4d6-4592-b445-be8b3b83840d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -169,6 +172,9 @@
     <ClInclude Include="..\Public\ToolCamera.h">
       <Filter>소스 파일\02.GameObjects\02.Camera\ToolCamera</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\EmptyObject.h">
+      <Filter>소스 파일\02.GameObjects\EmptyObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -242,6 +248,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ToolCamera.cpp">
       <Filter>소스 파일\02.GameObjects\02.Camera\ToolCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EmptyObject.cpp">
+      <Filter>소스 파일\02.GameObjects\EmptyObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

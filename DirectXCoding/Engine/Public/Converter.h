@@ -8,14 +8,14 @@ class Converter
 {
 public:
 	Converter();
-	explicit Converter(const wstring& strFileName);
+	explicit Converter(ID3D11Device* devivce, ID3D11DeviceContext* deviceContext);
 	~Converter();
 
 	// 개별적으로 추출하거나 전부 추출하고 싶으면 마음대로 골라서 custom
 public:
 	void ReadAssetFile(wstring file); // 에셋(FBX) 파일을 불러오는 것.
-	void ExportModelData(wstring savePath);
-	void ExportMaterialData(wstring savePath);
+	void ExportModelData(wstring savePath, uint32 modelNumber);
+	void ExportMaterialData(wstring savePath, uint32 modelNumber);
 
 
 	void ImportModelData();
@@ -52,6 +52,10 @@ private:
 	vector<shared_ptr<asBone>> _bones;
 	vector<shared_ptr<asMesh>> _meshes;
 	vector<shared_ptr<asMaterial>> _materials;
+
+
+	ID3D11Device* _device = nullptr;
+	ID3D11DeviceContext* _deviceConetext = nullptr;
 };
 
 END

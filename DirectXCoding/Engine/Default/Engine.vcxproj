@@ -287,8 +287,8 @@ call Copy.bat</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;Effects11.lib;DirectXTK.lib;dinput8.lib;tinyxml2.lib;$(CoreLibraryDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../lib/FX11/;../lib/DirectXTK/;../lib/Assimp\;../lib/DirectXTex/\;../lib/tiny\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;Effects11.lib;DirectXTK.lib;DirectXTex.lib;dinput8.lib;tinyxml2.lib;$(CoreLibraryDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../lib/FX11/;../lib/DirectXTK/;../lib/DirectXTex/\;../lib/Assimp\;../lib/tiny\</AdditionalLibraryDirectories>
       <NoEntryPoint>false</NoEntryPoint>
     </Link>
     <PostBuildEvent>

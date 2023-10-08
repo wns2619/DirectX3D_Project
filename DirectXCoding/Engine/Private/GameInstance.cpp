@@ -218,6 +218,14 @@ HRESULT GameInstance::DeleteGameObject(uint32 levelIndex, const wstring& layerta
     return _objectManager->DeleteObject(levelIndex, layertag, objectNumber, modelNames);
 }
 
+HRESULT GameInstance::GameObjectSave()
+{
+    if (nullptr == _objectManager)
+        return E_FAIL;
+
+    return _objectManager->GameObjectSave();
+}
+
 HRESULT GameInstance::AddProtoType(uint32 levelIndex, const wstring& PrototypeTag, Component* protoType)
 {
     if (nullptr == _componentManager)

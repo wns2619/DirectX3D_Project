@@ -29,9 +29,13 @@ public:
 	HRESULT Render(uint32 meshIndex);
 
 public: // IMGUI
-	void ReadMaterial(wstring fileName);
-	void ReadModel(wstring fileName);
-	void LoadFBXFile(const wstring& fileName);
+	HRESULT ExportDeviceInitialize();
+	HRESULT ExportModelData(wstring modelPath, uint32 modelNumber);
+	HRESULT ExportMaterialData(wstring modelPath, uint32 modelNumber);
+
+
+	void ReadMaterial(wstring fileName, uint32 modelNumber);
+	void ReadModel(wstring fileName, uint32 modelNumber);
 
 
 

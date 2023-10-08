@@ -11,6 +11,7 @@ GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 
 GameObject::GameObject(const GameObject& rhs)
 	: _device(rhs._device), _deviceContext(rhs._deviceContext), _objectType(rhs._objectType), _modelName(rhs._modelName), _id(rhs._id)
+	, _modelPath(rhs._modelPath)
 {
 	Safe_AddRef<ID3D11Device*>(_device);
 	Safe_AddRef<ID3D11DeviceContext*>(_deviceContext);

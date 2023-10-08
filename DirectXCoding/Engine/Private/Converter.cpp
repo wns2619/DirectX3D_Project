@@ -10,12 +10,21 @@ Converter::Converter()
 	_importer = make_shared<Assimp::Importer>();
 }
 
-Converter::Converter(const wstring& strFileName)
+Converter::Converter(ID3D11Device* devivce, ID3D11DeviceContext* deviceContext)
 {
 	_importer = make_shared<Assimp::Importer>();
 
-	_strTest = strFileName;
+	_device = devivce;
+	_deviceConetext = deviceContext;
+
 }
+
+//Converter::Converter(const wstring& strFileName)
+//{
+//	_importer = make_shared<Assimp::Importer>();
+//
+//	_strTest = strFileName;
+//}
 
 Converter::~Converter()
 {
@@ -41,54 +50,27 @@ void Converter::ReadAssetFile(wstring file)
 
 }
 
-void Converter::ExportModelData(wstring savePath)
+void Converter::ExportModelData(wstring savePath, uint32 modelNumber)
 {
-	// _scene에 있는 정보를 불러와서 우리만에 모델 데이터로 치환.
-
-	wstring finalPath = _modelPath + savePath + L".mesh";
-	{
-		FILE* file;
-		::fopen_s(&file, "../Vertices.csv", "w");
-
-		for (shared_ptr<asBone>& bone : _bones)
-		{
-			string name = bone->name;
-			::fprintf(file, "%d,%s\n", bone->index, bone->name.c_str());
-		}
-
-		::fprintf(file, "\n");
-
-		for (shared_ptr<asMesh>& mesh : _meshes)
-		{
-			string name = mesh->name;
-			::printf("%s\n", name.c_str());
-
-			for (uint32 i = 0; i < mesh->vertices.size(); i++)
-			{
-				Vec3 p = mesh->vertices[i].position;
-				XMUINT4 indices = mesh->vertices[i].blendIndices;
-				Vec4 weights = mesh->vertices[i].blendWeights;
-
-				::fprintf(file, "%f,%f,%f", p.x, p.y, p.z);
-				::fprintf(file, "%f,%f,%f,%f", indices.x, indices.y, indices.z, indices.w);
-				::fprintf(file, "%f,%f,%f,%f\n", weights.x, weights.y, weights.z, weights.w);
-			}
-		}
-
-		::fclose(file);
-	}
-
-
-	//ReadModelData(_scene->mRootNode, -1, -1); // 재귀적 호출
+	// savepath느 유도리있게 
+	
+	wstring finalPath = savePath + std::to_wstring(modelNumber) + L".mesh";
+	
+	//ReadAssetFile(savePath);
+	ReadModelData(_scene->mRootNode, -1, -1);
 	WriteModelFile(finalPath);
 	// 우리가 메모리에 들고 있던 것을 최종 파일 형태로 만든다.
 
 }
 
-void Converter::ExportMaterialData(wstring savePath)
+void Converter::ExportMaterialData(wstring savePath, uint32 modelNumber)
 {
-	wstring finalPath = _texturePath + L"Test" + L".xml";
+	// 이것도 유도리 있게 만든다.
+	wstring finalPath = savePath + std::to_wstring(modelNumber) + L".xml";
+	wstring readassetfile = savePath + L".fbx";
+
 	// xml 파일로 뽑아내면 fbx안에 있던 내용들을 한 번에 확인할 수 있음 jason을 사용해도 괜찮음
+	ReadAssetFile(readassetfile);
 	ReadMaterialData();
 	WriteMaterialData(finalPath); // 우리가 원하는 디렉토리에 저장 
 }
@@ -380,7 +362,30 @@ string Converter::WriteTexture(string saveFolder, string file)
 		}
 		else // 아니면 다른 함수를 이용해서 만든다.
 		{
-			
+			D3D11_TEXTURE2D_DESC desc;
+			ZeroMemory(&desc, sizeof(D3D11_TEXTURE2D_DESC));
+			desc.Width = srcTexture->mWidth;
+			desc.Height = srcTexture->mHeight;
+			desc.MipLevels = 1;
+			desc.ArraySize = 1;
+			desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+			desc.SampleDesc.Count = 1;
+			desc.SampleDesc.Quality = 0;
+			desc.Usage = D3D11_USAGE_IMMUTABLE;
+
+			D3D11_SUBRESOURCE_DATA subResource = { 0 };
+			subResource.pSysMem = srcTexture->pcData;
+
+			ComPtr<ID3D11Texture2D> texture;
+			HRESULT hr = _device->CreateTexture2D(&desc, &subResource, texture.GetAddressOf());
+			assert(hr);
+
+			DirectX::ScratchImage img;
+			::CaptureTexture(_device, _deviceConetext, texture.Get(), img);
+
+			// Save To File
+			hr = DirectX::SaveToDDSFile(*img.GetImages(), DirectX::DDS_FLAGS_NONE, Utils::ToWString(fileName).c_str());
+			assert(hr);
 		}
 	}
 	else

@@ -54,6 +54,7 @@ public: // ObjectManager
 	int32	GetLayerObjectCount();
 	vector<GameObject*>* GetCurrentObjectList(wstring& layerTag);
 	HRESULT DeleteGameObject(uint32 levelIndex, const wstring& layertag, const uint32 objectNumber, const string& modelNames);
+	HRESULT GameObjectSave();
 
 public: // Component Manager
 	HRESULT	AddProtoType(uint32 levelIndex, const wstring& PrototypeTag, class Component* protoType);

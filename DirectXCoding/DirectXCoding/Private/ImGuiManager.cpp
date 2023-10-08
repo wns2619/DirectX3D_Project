@@ -297,11 +297,22 @@ void ImGuiManager::MainSection()
 
 		if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"\\Icon\\save_white_18dp.png"), ImVec2(20, 20)))
 		{
+			// 한 Layer에 포함시켜서 전부 관리함.
+			//vector<GameObject*>* currentLayerOwnObject = gameInstance->GetCurrentObjectList(_editlayerTag);
+			//uint32 layerSize = gameInstance->GetLayerObjectCount();
+	
+			// 이 레이어를 전부 돌면서 파일 Save
+			gameInstance->GameObjectSave();
 			
 		}
 
 		ImGui::SameLine(ImGui::GetWindowWidth() - 56);
 		if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\outline_refresh_white_18dp.png"), ImVec2(20, 20)))
+		{
+
+		}
+		ImGui::SameLine(ImGui::GetWindowWidth() - 84);
+		if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\free-icon-loading-6356659.png"), ImVec2(20, 20)))
 		{
 
 		}
@@ -432,8 +443,8 @@ HRESULT ImGuiManager::ModelNameCardSection()
 						return E_FAIL;
 					}
 
-					GameObject* temp = gameInstance->GetLayerObjectTag(_editlayerTag, _modelNames[i].first);
-					temp->GetModelComponent()->LoadFBXFile(Utils::ToWString(modelPath));
+					//GameObject* temp = gameInstance->GetLayerObjectTag(_editlayerTag, _modelNames[i].first);
+					
 		
 				}
 				else

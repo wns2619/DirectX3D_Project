@@ -11,6 +11,7 @@
 #include "AABBboxCollider.h"
 #include "SphereCollider.h"
 #include "ToolCamera.h"
+#include "EmptyObject.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -239,6 +240,7 @@ HRESULT LevelHelper::LoadingMesh()
         Matrix modelInitializMatrix = ::XMMatrixIdentity();
         modelInitializMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
 
+
         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelPlayer"),
             Model::Create(_device, _deviceContext, Model::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", modelInitializMatrix))))
         {
@@ -382,7 +384,7 @@ HRESULT LevelHelper::LoadingObject()
         }
 
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectPlayer"),
-            Player::Create(_device, _deviceContext))))
+            EmptyObject::Create(_device, _deviceContext))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

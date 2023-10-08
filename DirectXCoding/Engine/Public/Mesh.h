@@ -2,6 +2,7 @@
 
 #include "VIBuffer.h"
 #include "Model.h"
+#include "FileUtils.h"
 
 BEGIN(Engine)
 
@@ -20,6 +21,21 @@ public:
 
 public:
 	HRESULT BindBoneMatrices(class Shader* shader, const vector<class Bone*>& bones, const char* constantName);
+
+
+public:
+	// Ω√¿€
+	HRESULT LoadDataMeshFile(Model::MODEL_TYPE modelType, FileUtils* pFileUtils, FXMMATRIX pivotMatrix);
+	HRESULT LoadDataConverter(Model::MODEL_TYPE modelType, shared_ptr<asMesh> mesh, FXMMATRIX pivotMatrix);
+
+
+private:
+	vector<class Bone*> _Loadbones;
+
+	uint32 _boneIndex;
+	wstring _szName;
+	wstring _szMaterialName;
+
 
 private:
 	uint32 _materialIndex = 0;

@@ -2,6 +2,7 @@
 #include "Mesh.h"
 #include "Bone.h"
 #include "Shader.h"
+#include "Utils.h"
 
 Mesh::Mesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : VIBuffer(pDevice, pContext)
@@ -101,6 +102,48 @@ HRESULT Mesh::BindBoneMatrices(Shader* shader, const vector<class Bone*>& bones,
     // 쉐이더에 넘길 본 매트릭스에 오프셋 매트릭스와 * 부모행렬이 곱해진 최종 변환행렬의 곱을 저장한다.
 
     return shader->BindMatrices(constantName, boneMatrices, _numBones);
+}
+
+HRESULT Mesh::LoadDataMeshFile(Model::MODEL_TYPE modelType, FileUtils* pFileUtils, FXMMATRIX pivotMatrix)
+{
+    _szName = Utils::ToWString(pFileUtils->Read<string>());
+    _boneIndex = pFileUtils->Read<int32>();
+
+    // Material
+    _szMaterialName = Utils::ToWString(pFileUtils->Read<string>());
+    _materialIndex = pFileUtils->Read<int32>();
+
+    // VertexData
+    {
+        const uint32 iVTXCount = pFileUtils->Read<uint32>();
+
+        _numvertices = iVTXCount;
+        _stride = sizeof(VTXANIMMESH);
+
+        ::ZeroMemory(&_bufferDesc, sizeof(D3D11_BUFFER_DESC));
+        _bufferDesc.ByteWidth = _numvertices * _stride;
+        _bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+        _bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+        _bufferDesc.CPUAccessFlags = 0;
+        _bufferDesc.MiscFlags = 0;
+        _bufferDesc.StructureByteStride = _stride;
+
+        VTXANIMMESH* pVertices = new VTXANIMMESH[iVTXCount];
+        ::ZeroMemory(pVertices, sizeof(VTXANIMMESH) * iVTXCount);
+
+        void* pData = pVertices;
+        pFileUtils->Read(&pData, sizeof(VTXANIMMESH) * iVTXCount);
+
+        //if(modelType == Model::MODEL_TYPE::NONE)
+            //ReadyVertexBufferNoneAnim()
+    }
+
+    return S_OK;
+}
+
+HRESULT Mesh::LoadDataConverter(Model::MODEL_TYPE modelType, shared_ptr<asMesh> mesh, FXMMATRIX pivotMatrix)
+{
+    return E_NOTIMPL;
 }
 
 HRESULT Mesh::ReadyVertexBufferNoneAnim(const aiMesh* mesh, FXMMATRIX pivotMat)

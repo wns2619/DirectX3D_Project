@@ -72,7 +72,7 @@ HRESULT Model::InitializePrototype(MODEL_TYPE type, const string& pModelFilePath
         return E_FAIL;
 
     ::XMStoreFloat4x4(&_pivotMatrix, pivotMat);
-
+    
 
 
     // 재귀적으로 함수 호출한다. 처음에 루트를 시작할 node.
@@ -134,7 +134,43 @@ HRESULT Model::Render(uint32 meshIndex)
     return S_OK;
 }
 
-void Model::ReadMaterial(wstring fileName)
+HRESULT Model::ExportDeviceInitialize()
+{
+    // 이미 들고 있을 수 있으니까 Safe_Delete.
+    if(nullptr != _converter)
+        Safe_Delete<Converter*>(_converter);
+
+    // 참조하고 있지만 별도로 AddRef 안해도 될 듯. 어차피 게임 구동에는 지장을 안 줌.
+    _converter = new Converter(_device, _deviceContext);
+
+
+    return S_OK;
+}
+
+HRESULT Model::ExportModelData(wstring modelPath, uint32 modelNumber)
+{
+    // 
+    wstring fullpath = _modelRootfilePath + modelPath;
+
+    _converter->ExportModelData(fullpath, modelNumber);
+
+
+    return S_OK;
+}
+
+HRESULT Model::ExportMaterialData(wstring modelPath, uint32 modelNumber)
+{
+    //
+    wstring fullpath = _modelRootfilePath + modelPath;
+
+    _converter->ExportMaterialData(fullpath, modelNumber);
+
+
+
+    return S_OK;
+}
+
+void Model::ReadMaterial(wstring fileName, uint32 modelNumber)
 {
     wstring fullPath = Utils::ToWString(_texturePath) + fileName + L".xml";
     auto parentPath = filesystem::path(fullPath).parent_path();
@@ -145,6 +181,9 @@ void Model::ReadMaterial(wstring fileName)
 
     tinyxml2::XMLElement* root = document->FirstChildElement();
     tinyxml2::XMLElement* materialNode = root->FirstChildElement();
+
+    MESH_MATERIAL meshMaterial;
+    ::ZeroMemory(&meshMaterial, sizeof(MESH_MATERIAL));
 
     while (materialNode)
     {
@@ -168,6 +207,8 @@ void Model::ReadMaterial(wstring fileName)
                 //auto texture = 
                 // 읽어왔으면 텍스쳐를 찾아서 마테리얼의 디퓨즈에 넣는다.
                 // 모델 자체가 Material을 들고 있으니까 여기다가 푸쉬해서 넣어주면 될 듯.
+                Texture* loadDiffuseTexture = Texture::Create(_device, _deviceContext, DiffusetextureStr);
+                meshMaterial._texture[aiTextureType_DIFFUSE] = loadDiffuseTexture;
             }
         }
 
@@ -179,7 +220,8 @@ void Model::ReadMaterial(wstring fileName)
             if (SpecularTextureStr.length() > 0)
             {
                 // specular texture add 
-
+                Texture* loadSpecularTexture = Texture::Create(_device, _deviceContext, SpecularTextureStr);
+                meshMaterial._texture[aiTextureType_SPECULAR] = loadSpecularTexture;
             }
         }
 
@@ -192,14 +234,18 @@ void Model::ReadMaterial(wstring fileName)
             {
                 // TODO
                 // normalTexture Add
+                Texture* loadNormalTexture = Texture::Create(_device, _deviceContext, normalTextureStr);
+                meshMaterial._texture[aiTextureType_NORMALS] = loadNormalTexture;
 
             }
         }
+
+        _materials.push_back(meshMaterial);
     }
 
 }
 
-void Model::ReadModel(wstring fileName)
+void Model::ReadModel(wstring fileName, uint32 modelNumber)
 {
     wstring fullPath = Utils::ToWString(_modelPath) + fileName + L".mesh";
 
@@ -218,10 +264,23 @@ void Model::ReadModel(wstring fileName)
             bone->parentIndex = file->Read<int32>();
             bone->transform = file->Read<Matrix>();
 
-            // _bones.push_back(bone);
+            _modelBones.push_back(bone);
         }
     }
 
+
+    //m_iNumMeshes = m_pAIScene->mNumMeshes;
+
+    //m_Meshes.reserve(m_iNumMeshes);
+
+    //for (size_t i = 0; i < m_iNumMeshes; i++)
+    //{
+    //    Mesh* mesh = Mesh::Create(_device, _deviceContext, type, this, m_pAIScene->mMeshes[i], ::XMLoadFloat4x4(&_pivotMatrix));
+    //    if (nullptr == mesh)
+    //        return E_FAIL;
+
+    //    m_Meshes.push_back(mesh);
+    //}
     // Mesh
     {
         const uint32 count = file->Read<uint32>();
@@ -244,6 +303,7 @@ void Model::ReadModel(wstring fileName)
                 void* data = vertices.data();
                 file->Read(&data, sizeof(VertexType) * count);
                 // mesh add geometry;
+                //Mesh* mesh = Mesh::Create(_device, _deviceContext, MODEL_TYPE::NONE, this, )
             }
 
             // indexData
@@ -264,16 +324,6 @@ void Model::ReadModel(wstring fileName)
         }
     }
 
-}
-
-void Model::LoadFBXFile(const wstring& fileName)
-{
-    _converter = new Converter();
-
-    _converter->ReadAssetFile(fileName);
-    
-    _converter->ImportModelData();
-    _converter->ImportMaterialData();
 }
 
 HRESULT Model::ReadyMeshes(MODEL_TYPE type)

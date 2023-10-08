@@ -184,6 +184,7 @@
     <ClInclude Include="..\Public\dirent.h" />
     <ClInclude Include="..\Public\EditorTerrain.h" />
     <ClInclude Include="..\Public\EditScene.h" />
+    <ClInclude Include="..\Public\EmptyObject.h" />
     <ClInclude Include="..\Public\Game.h" />
     <ClInclude Include="..\Public\GameScene.h" />
     <ClInclude Include="..\Public\ImGuiManager.h" />
@@ -234,6 +235,7 @@
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\Private\EditorTerrain.cpp" />
     <ClCompile Include="..\Private\EditScene.cpp" />
+    <ClCompile Include="..\Private\EmptyObject.cpp" />
     <ClCompile Include="..\Private\Game.cpp" />
     <ClCompile Include="..\Private\GameScene.cpp" />
     <ClCompile Include="..\Private\ImGuiManager.cpp">

@@ -2,6 +2,8 @@
 #include "ObjectManager.h"
 #include "Layer.h"
 #include "GameObject.h"
+#include "Model.h"
+#include "Utils.h"
 
 IMPLEMENT_SINGLETON(ObjectManager)
 
@@ -196,6 +198,36 @@ HRESULT ObjectManager::DeleteObject(uint32 levelIndex, const wstring& layertag, 
 		return E_FAIL;
 
 	return iter->DeleteLayerObject(objectNumber, modelnames);
+}
+
+HRESULT ObjectManager::GameObjectSave()
+{
+	for (const auto& layeriter : _Layers[_currenlevel])
+	{
+		vector<GameObject*>* gameObjectlist = layeriter.second->GetGameObject();
+
+		for (GameObject* gameObjects : *gameObjectlist)
+		{
+			wstring modelpath = gameObjects->GetModelPath() + Utils::ToWString(gameObjects->GetModelName());
+			uint32 modelNumber = gameObjects->GetIdNumber();
+
+			if (gameObjects->GetModelComponent() != nullptr)
+			{
+				gameObjects->GetModelComponent()->ExportDeviceInitialize();
+				gameObjects->GetModelComponent()->ExportMaterialData(modelpath, modelNumber);
+				gameObjects->GetModelComponent()->ExportModelData(modelpath, modelNumber);
+			}
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT ObjectManager::GameObjectLoad()
+{
+	
+
+	return S_OK;
 }
 
 GameObject* ObjectManager::FindPrototype(const wstring& prototypeTag)
