@@ -13,6 +13,8 @@
 #include "GameObject.h"
 #include "EditorTerrain.h"
 #include "Utils.h"
+#include "FileUtils.h"
+#include "Mesh.h"
 
 ImGui::FileBrowser g_fileDialog;
 
@@ -572,6 +574,77 @@ void ImGuiManager::FileSave()
 
 void ImGuiManager::FileLoad()
 {
+}
+
+void ImGuiManager::BinaryModel(const string& fpxPath, const wstring& binaryDirectory)
+{
+	Matrix ModelInitailizeMatrix = Matrix::Identity;
+	ModelInitailizeMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
+	Model* pBinaryModel = Model::Create(_device, _deviceContext, Model::MODEL_TYPE::NONE, fpxPath, ModelInitailizeMatrix);
+
+	if (nullptr != pBinaryModel)
+	{
+		auto path = filesystem::path(binaryDirectory);
+		
+		filesystem::create_directory(path.parent_path());
+
+		shared_ptr<FileUtils> file = make_shared<FileUtils>();
+		file->Open(binaryDirectory, FileMode::Write);
+
+		uint32 iType = static_cast<uint32>(pBinaryModel->GetModelType());
+		file->Write<uint32>(iType);
+		// 모델 타입 저장.
+
+		Matrix pivotMatrix = pBinaryModel->GetPivotMatrix();
+		file->Write<Matrix>(pivotMatrix);
+		// 모텔 사전 행렬 저장
+
+		uint32 NumMeshes = pBinaryModel->GetNumMeshes();
+		file->Write<uint32>(NumMeshes);
+		// 메쉬 개수 -> 나중에 이 메쉬만큼 돌아야함.
+
+		vector<Mesh*>* vecMesh = pBinaryModel->GetMeshes();
+		for (auto& Meshiter : *vecMesh)
+		{
+			// 메쉬를 구성하고있는 버퍼를 어떤 형식으로 읽을건지 메인 BufferDesc
+			VIBuffer::BUFFER_DESC viBufferDesc = *Meshiter->GetBufferDesc();
+			file->Write<VIBuffer::BUFFER_DESC>(viBufferDesc);
+
+			// 그리고 그 형식으로 이루어진 Mesh Desc
+			Mesh::MESH_BUFFER_DESC meshBufferDesc = *Meshiter->GetMeshBufferDesc();
+			file->Write<Mesh::MESH_BUFFER_DESC>(meshBufferDesc);
+
+			// 그 정보로 구성된 버텍스 
+			VTXMESH* pVertcies = Meshiter->GetVertexMeshBuffer();
+			file->Write<VTXMESH*>(pVertcies);
+
+			// 그 정보로 구성된 버텍스로 이루어진 인덱스 
+			_ulong* pIndices = Meshiter->GetIndicesMeshBuffer();
+			file->Write<_ulong*>(pIndices);
+		}
+
+		// 마테리얼 개수 
+		uint32 NumMaterialCount = pBinaryModel->GetMaterialCount();
+		file->Write<uint32>(NumMaterialCount);
+
+		// 이제 개수만큼 마테리얼 돌면서 텍스쳐 입히면 됨.
+		vector<MESH_MATERIAL>* vecMaterial = pBinaryModel->GetMaterial();
+		for (auto& Materialiter : *vecMaterial)
+		{
+			for (uint32 i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
+			{
+				if (Materialiter._texture[i] == nullptr)
+					continue;
+
+				// 텍스쳐의 타입
+				uint32 textureType = i;
+				file->Write<uint32>(textureType);
+				
+				wstring texturePath = Materialiter._texture[i]->GetTexturePath();
+				file->Write<string>(Utils::ToString(texturePath));
+			}
+		}
+	}
 }
 
 void ImGuiManager::AddLightSection()

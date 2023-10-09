@@ -23,6 +23,7 @@ Model::Model(const Model& rhs)
     , _modelPath(rhs._modelPath)
     , m_pAIScene(rhs.m_pAIScene)
     , _bones(rhs._bones)
+    , _ModelType(rhs._ModelType)
 {
     for (auto& boneiter : _bones)
         Safe_AddRef<Bone*>(boneiter);
@@ -61,6 +62,7 @@ int32 Model::GetBoneIndex(const char* boneName) const
 HRESULT Model::InitializePrototype(MODEL_TYPE type, const string& pModelFilePath, FXMMATRIX pivotMat)
 {
     _modelPath = pModelFilePath;
+    _ModelType = type;
 
     uint32 flag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
 
@@ -130,6 +132,13 @@ HRESULT Model::PlayAnimation(const _float& timeDelta)
 HRESULT Model::Render(uint32 meshIndex)
 {
     m_Meshes[meshIndex]->Render();
+
+    return S_OK;
+}
+
+HRESULT Model::BinaryModel(const wstring& fbxpath, const wstring& filePath)
+{
+
 
     return S_OK;
 }
@@ -391,6 +400,8 @@ HRESULT Model::ReadyMaterial(const string& modelFilePath)
                     ::closedir(dir);
                     return E_FAIL;
                 }
+
+                ++MeshMaterial.textureCount;
             }
 
             _materials.push_back(MeshMaterial);

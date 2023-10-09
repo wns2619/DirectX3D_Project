@@ -40,19 +40,19 @@ HRESULT VIBufferTerrain::InitializePrototype(const wstring& heightMapPath)
 
     _terrainDesc.numVerticesX = ih.biWidth;
     _terrainDesc.numVerticesZ = ih.biHeight;
-    _stride = sizeof(VertexTextureNormalData);
-    _numvertices = _terrainDesc.numVerticesX * _terrainDesc.numVerticesZ;
+    _BufferDesc._stride = sizeof(VertexTextureNormalData);
+    _BufferDesc._numvertices = _terrainDesc.numVerticesX * _terrainDesc.numVerticesZ;
 
-    _indexStride = 4;
-    _numIndices = (_terrainDesc.numVerticesX - 1) * (_terrainDesc.numVerticesZ - 1) * 2 * 3;
-    _indexFormat = _indexStride == 2 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT;
-    _topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    _numVBs = 1;
+    _BufferDesc._indexStride = 4;
+    _BufferDesc._numIndices = (_terrainDesc.numVerticesX - 1) * (_terrainDesc.numVerticesZ - 1) * 2 * 3;
+    _BufferDesc._indexFormat = _BufferDesc._indexStride == 2 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT;
+    _BufferDesc._topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    _BufferDesc._numVBs = 1;
 
-    VertexTextureNormalData* vertices = new VertexTextureNormalData[_numvertices];
-    ::ZeroMemory(vertices, sizeof(VertexTextureNormalData) * _numvertices);
+    VertexTextureNormalData* vertices = new VertexTextureNormalData[_BufferDesc._numvertices];
+    ::ZeroMemory(vertices, sizeof(VertexTextureNormalData) * _BufferDesc._numvertices);
 
-    _vertices = new Vec3[_numvertices];
+    _vertices = new Vec3[_BufferDesc._numvertices];
 
     for(_ulong i = 0; i < _terrainDesc.numVerticesZ; ++i)
         for (_ulong j = 0; j < _terrainDesc.numVerticesZ; ++j)
@@ -69,8 +69,8 @@ HRESULT VIBufferTerrain::InitializePrototype(const wstring& heightMapPath)
     Safe_Delete_Array<_ulong*>(pixel);
 
 
-    uint32* indices = new uint32[_numIndices];
-    ::ZeroMemory(indices, sizeof(uint32) * _numIndices);
+    uint32* indices = new uint32[_BufferDesc._numIndices];
+    ::ZeroMemory(indices, sizeof(uint32) * _BufferDesc._numIndices);
 
     uint32 tricount = 0;
 
@@ -120,37 +120,37 @@ HRESULT VIBufferTerrain::InitializePrototype(const wstring& heightMapPath)
 
     // Vertex
 
-    ::ZeroMemory(&_bufferDesc, sizeof(_bufferDesc));
+    ::ZeroMemory(&_BufferDesc._bufferDesc, sizeof(_BufferDesc._bufferDesc));
     {
-        _bufferDesc.ByteWidth = _stride * _numvertices;
-        _bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-        _bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-        _bufferDesc.CPUAccessFlags = 0;
-        _bufferDesc.MiscFlags = 0;
-        _bufferDesc.StructureByteStride = _stride;
+        _BufferDesc._bufferDesc.ByteWidth = _BufferDesc._stride * _BufferDesc._numvertices;
+        _BufferDesc._bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+        _BufferDesc._bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+        _BufferDesc._bufferDesc.CPUAccessFlags = 0;
+        _BufferDesc._bufferDesc.MiscFlags = 0;
+        _BufferDesc._bufferDesc.StructureByteStride = _BufferDesc._stride;
     }
 
-    ::ZeroMemory(&_subResourceData, sizeof(_subResourceData));
-    _subResourceData.pSysMem = vertices;
+    ::ZeroMemory(&_BufferDesc._subResourceData, sizeof(_BufferDesc._subResourceData));
+    _BufferDesc._subResourceData.pSysMem = vertices;
 
     if (FAILED(__super::CreateBuffer(&_vertexBuffer)))
         return E_FAIL;
 
     // Index
 
-    ::ZeroMemory(&_bufferDesc, sizeof(_bufferDesc));
+    ::ZeroMemory(&_BufferDesc._bufferDesc, sizeof(_BufferDesc._bufferDesc));
     {
-        _bufferDesc.ByteWidth = _indexStride * _numIndices;
-        _bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-        _bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-        _bufferDesc.CPUAccessFlags = 0;
-        _bufferDesc.MiscFlags = 0;
-        _bufferDesc.StructureByteStride = 0;
+        _BufferDesc._bufferDesc.ByteWidth = _BufferDesc._indexStride * _BufferDesc._numIndices;
+        _BufferDesc._bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+        _BufferDesc._bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+        _BufferDesc._bufferDesc.CPUAccessFlags = 0;
+        _BufferDesc._bufferDesc.MiscFlags = 0;
+        _BufferDesc._bufferDesc.StructureByteStride = 0;
     }
     //D3D11_RASTERIZER_DESC
 
-    ::ZeroMemory(&_subResourceData, sizeof(_subResourceData));
-    _subResourceData.pSysMem = indices;
+    ::ZeroMemory(&_BufferDesc._subResourceData, sizeof(_BufferDesc._subResourceData));
+    _BufferDesc._subResourceData.pSysMem = indices;
 
     if (FAILED(__super::CreateBuffer(&_indexBuffer)))
         return E_FAIL;
@@ -172,19 +172,19 @@ HRESULT VIBufferTerrain::Initialize(void* argument)
         _terrainDesc.numVerticesX = terraininfo->numVerticesX;
         _terrainDesc.numVerticesZ = terraininfo->numVerticesZ;
 
-        _stride = sizeof(VertexTextureNormalData);
-        _numvertices = _terrainDesc.numVerticesX * _terrainDesc.numVerticesZ;
+        _BufferDesc._stride = sizeof(VertexTextureNormalData);
+        _BufferDesc._numvertices = _terrainDesc.numVerticesX * _terrainDesc.numVerticesZ;
 
-        _indexStride = 4;
-        _numIndices = (_terrainDesc.numVerticesX - 1) * (_terrainDesc.numVerticesZ - 1) * 2 * 3;
-        _indexFormat = _indexStride == 2 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT;
-        _topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-        _numVBs = 1;
+        _BufferDesc._indexStride = 4;
+        _BufferDesc._numIndices = (_terrainDesc.numVerticesX - 1) * (_terrainDesc.numVerticesZ - 1) * 2 * 3;
+        _BufferDesc._indexFormat = _BufferDesc._indexStride == 2 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT;
+        _BufferDesc._topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+        _BufferDesc._numVBs = 1;
 
-        VertexTextureNormalData* vertices = new VertexTextureNormalData[_numvertices];
-        ::ZeroMemory(vertices, sizeof(VertexTextureNormalData) * _numvertices);
+        VertexTextureNormalData* vertices = new VertexTextureNormalData[_BufferDesc._numvertices];
+        ::ZeroMemory(vertices, sizeof(VertexTextureNormalData) * _BufferDesc._numvertices);
 
-        _vertices = new Vec3[_numvertices];
+        _vertices = new Vec3[_BufferDesc._numvertices];
 
         for (_ulong i = 0; i < _terrainDesc.numVerticesZ; ++i)
             for (_ulong j = 0; j < _terrainDesc.numVerticesX; ++j)
@@ -199,8 +199,8 @@ HRESULT VIBufferTerrain::Initialize(void* argument)
                 _vertices[index] = vertices[index].position;
             }
 
-        uint32* indices = new uint32[_numIndices];
-        ::ZeroMemory(indices, sizeof(uint32) * _numIndices);
+        uint32* indices = new uint32[_BufferDesc._numIndices];
+        ::ZeroMemory(indices, sizeof(uint32) * _BufferDesc._numIndices);
 
         uint32 tricount = 0;
 
@@ -250,37 +250,37 @@ HRESULT VIBufferTerrain::Initialize(void* argument)
 
         // Vertex
 
-        ::ZeroMemory(&_bufferDesc, sizeof(_bufferDesc));
+        ::ZeroMemory(&_BufferDesc._bufferDesc, sizeof(_BufferDesc._bufferDesc));
         {
-            _bufferDesc.ByteWidth = _stride * _numvertices;
-            _bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-            _bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-            _bufferDesc.CPUAccessFlags = 0;
-            _bufferDesc.MiscFlags = 0;
-            _bufferDesc.StructureByteStride = _stride;
+            _BufferDesc._bufferDesc.ByteWidth = _BufferDesc._stride * _BufferDesc._numvertices;
+            _BufferDesc._bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+            _BufferDesc._bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+            _BufferDesc._bufferDesc.CPUAccessFlags = 0;
+            _BufferDesc._bufferDesc.MiscFlags = 0;
+            _BufferDesc._bufferDesc.StructureByteStride = _BufferDesc._stride;
         }
 
-        ::ZeroMemory(&_subResourceData, sizeof(_subResourceData));
-        _subResourceData.pSysMem = vertices;
+        ::ZeroMemory(&_BufferDesc._subResourceData, sizeof(_BufferDesc._subResourceData));
+        _BufferDesc._subResourceData.pSysMem = vertices;
 
         if (FAILED(__super::CreateBuffer(&_vertexBuffer)))
             return E_FAIL;
 
         // Index
 
-        ::ZeroMemory(&_bufferDesc, sizeof(_bufferDesc));
+        ::ZeroMemory(&_BufferDesc._bufferDesc, sizeof(_BufferDesc._bufferDesc));
         {
-            _bufferDesc.ByteWidth = _indexStride * _numIndices;
-            _bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-            _bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-            _bufferDesc.CPUAccessFlags = 0;
-            _bufferDesc.MiscFlags = 0;
-            _bufferDesc.StructureByteStride = 0;
+            _BufferDesc._bufferDesc.ByteWidth = _BufferDesc._indexStride * _BufferDesc._numIndices;
+            _BufferDesc._bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+            _BufferDesc._bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+            _BufferDesc._bufferDesc.CPUAccessFlags = 0;
+            _BufferDesc._bufferDesc.MiscFlags = 0;
+            _BufferDesc._bufferDesc.StructureByteStride = 0;
         }
         //D3D11_RASTERIZER_DESC
 
-        ::ZeroMemory(&_subResourceData, sizeof(_subResourceData));
-        _subResourceData.pSysMem = indices;
+        ::ZeroMemory(&_BufferDesc._subResourceData, sizeof(_BufferDesc._subResourceData));
+        _BufferDesc._subResourceData.pSysMem = indices;
 
         if (FAILED(__super::CreateBuffer(&_indexBuffer)))
             return E_FAIL;

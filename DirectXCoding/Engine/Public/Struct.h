@@ -146,6 +146,7 @@ namespace Engine
 		Color specular = Color(0.f, 0.f, 0.f, 1.f);
 		Color emssive = Color(0.f, 0.f, 0.f, 1.f);
 
+		_ulong textureCount = 0;
 
 		_char strName[MAX_PATH];
 		class Texture* _texture[AI_TEXTURE_TYPE_MAX];

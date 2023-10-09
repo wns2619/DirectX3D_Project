@@ -384,7 +384,7 @@ HRESULT LevelHelper::LoadingObject()
         }
 
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectPlayer"),
-            EmptyObject::Create(_device, _deviceContext))))
+            Player::Create(_device, _deviceContext))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

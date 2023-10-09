@@ -32,6 +32,8 @@ HRESULT Texture::InitializePrototype(const wstring& textureFilePath, uint32 numT
 
 		_wsplitpath_s(ltextureFilePath, nullptr, 0, nullptr, 0, nullptr, 0, lext, MAX_PATH);
 
+		_texturePath = ltextureFilePath;
+
 		HRESULT hr = 0;
 		ID3D11ShaderResourceView* resourceView = nullptr;
 

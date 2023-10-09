@@ -139,6 +139,9 @@
     <Filter Include="01.Utility\04.Component\Model\ToolUtils">
       <UniqueIdentifier>{4c580931-02d2-4811-b48f-4bf296e5f0e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Component\Model\BinaryModel">
+      <UniqueIdentifier>{5f6c0a11-2f97-419f-a334-f484d2cccf4e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -315,6 +318,9 @@
     <ClInclude Include="..\Public\FileUtils.h">
       <Filter>01.Utility\04.Component\Model\ToolUtils</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BinaryModel.h">
+      <Filter>01.Utility\04.Component\Model\BinaryModel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -448,6 +454,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\FileUtils.cpp">
       <Filter>01.Utility\04.Component\Model\ToolUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BinaryModel.cpp">
+      <Filter>01.Utility\04.Component\Model\BinaryModel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

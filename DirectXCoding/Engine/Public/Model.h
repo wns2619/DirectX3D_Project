@@ -28,6 +28,11 @@ public:
 	HRESULT PlayAnimation(const _float& timeDelta);
 	HRESULT Render(uint32 meshIndex);
 
+
+public:
+	HRESULT BinaryModel(const wstring& fbxpath, const wstring& filePath);
+
+
 public: // IMGUI
 	HRESULT ExportDeviceInitialize();
 	HRESULT ExportModelData(wstring modelPath, uint32 modelNumber);
@@ -44,6 +49,9 @@ public: // IMGUI
 
 	vector<class Mesh*>* GetMeshes() { return &m_Meshes; }
 	vector<MESH_MATERIAL>* GetMaterial() { return &_materials; }
+	MODEL_TYPE GetModelType() { return _ModelType; }
+	Matrix GetPivotMatrix() { return _pivotMatrix; }
+	uint32 GetMaterialCount() { return _numMaterial; }
 private: /* .fbx파일을 열어서 읽어주는 역활 */
 	Assimp::Importer			m_Importer;
 
@@ -64,7 +72,7 @@ private:
 	vector<class Bone*>		_bones;
 
 private: // IMGUI
-
+	MODEL_TYPE _ModelType = MODEL_TYPE::TYPE_END;
 
 
 	// Converter

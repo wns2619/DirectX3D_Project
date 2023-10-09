@@ -53,6 +53,10 @@ public: // Save && Load
 	void FileSave();
 	void FileLoad();
 
+
+public: // Binary
+	void BinaryModel(const string& fpxPath, const wstring& binaryDirectory);
+
 private:
 	// Device && DeviceContext
 	ID3D11Device* _device				= nullptr;

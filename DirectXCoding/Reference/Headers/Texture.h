@@ -25,9 +25,12 @@ public:
 	HRESULT ChangeShaderResourceView(ID3D11ShaderResourceView* changeResource, uint32 textureIndex, uint32 numTextures = 1);
 	ID3D11ShaderResourceView** GetShaderResourceViews() { return _shaderResourceViews; }
 	void SelfDelete(Texture* self);
+	wstring& GetTexturePath() { return _texturePath; }
 private:
 	ID3D11ShaderResourceView** _shaderResourceViews = nullptr;
 	uint32 _numTextures = 0;
+
+	wstring _texturePath = L"";
 
 public:
 	static Texture* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext,

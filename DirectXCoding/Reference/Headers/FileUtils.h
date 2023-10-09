@@ -8,7 +8,7 @@ enum FileMode : uint8
 };
 
 
-class FileUtils
+class ENGINE_DLL FileUtils
 {
 public:
 	FileUtils();

@@ -8,6 +8,13 @@ BEGIN(Engine)
 
 class ENGINE_DLL Mesh final : public VIBuffer
 {
+public:
+	struct MESH_BUFFER_DESC
+	{
+		D3D11_BUFFER_DESC _vertexBufferDesc;
+		D3D11_BUFFER_DESC _indexBufferDesc;
+	};
+private:
 	explicit Mesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit Mesh(const Mesh& rhs);
 	virtual ~Mesh() = default;
@@ -24,6 +31,11 @@ public:
 
 
 public:
+	MESH_BUFFER_DESC* GetMeshBufferDesc() { return &_MeshBufferDesc; }
+	VTXMESH* GetVertexMeshBuffer() { return _pVertices; }
+	_ulong* GetIndicesMeshBuffer() { return _pIndices; }
+
+public:
 	// Ω√¿€
 	HRESULT LoadDataMeshFile(Model::MODEL_TYPE modelType, FileUtils* pFileUtils, FXMMATRIX pivotMatrix);
 	HRESULT LoadDataConverter(Model::MODEL_TYPE modelType, shared_ptr<asMesh> mesh, FXMMATRIX pivotMatrix);
@@ -36,6 +48,10 @@ private:
 	wstring _szName;
 	wstring _szMaterialName;
 
+	MESH_BUFFER_DESC _MeshBufferDesc;
+
+	VTXMESH* _pVertices = nullptr;
+	_ulong* _pIndices = nullptr;
 
 private:
 	uint32 _materialIndex = 0;
