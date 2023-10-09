@@ -123,6 +123,7 @@ void GameObject::Free()
 
 	Safe_Release<Collider*>(_owner);
 	Safe_Release<Model*>(_model);
+	Safe_Release<BinaryModel*>(_binaryModel);
 	Safe_Release<Transform*>(_transform);
 	Safe_Release<ID3D11Device*>(_device);
 	Safe_Release<ID3D11DeviceContext*>(_deviceContext);

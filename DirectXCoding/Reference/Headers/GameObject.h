@@ -11,6 +11,7 @@ const int32 _id = 0;
 class Component;
 class Transform;
 class Model;
+class BinaryModel;
 
 enum class OBJECT_TYPE { PLAYER, TERRAIN, EMPTYOBJECT, CAMERA, BACKGROUND, OBJECT_END };
 
@@ -42,6 +43,7 @@ public:
 	_bool* GetObjectSelect() { return &_selectObject; }
 	Transform* GetTransform() { return _transform; }
 	Model* GetModelComponent() { return _model; }
+	BinaryModel* GetBinaryModelComponent() { return _binaryModel; }
 	const wstring GetModelPath() const { return _modelPath; }
 
 	void SetEnabled(_bool enabled) { _enabled = enabled; }
@@ -54,6 +56,7 @@ protected:
 	Collider* _owner = nullptr;
 	Transform* _transform = nullptr;
 	Model* _model = nullptr;
+	BinaryModel* _binaryModel = nullptr;
 
 	// ID && IMGUI
 	uint32 _id = 0;

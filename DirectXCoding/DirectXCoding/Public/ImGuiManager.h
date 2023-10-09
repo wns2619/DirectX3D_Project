@@ -55,7 +55,7 @@ public: // Save && Load
 
 
 public: // Binary
-	void BinaryModel(const string& fpxPath, const wstring& binaryDirectory);
+	void BinaryModelSave(const string& fpxPath, const wstring& binaryDirectory);
 
 private:
 	// Device && DeviceContext

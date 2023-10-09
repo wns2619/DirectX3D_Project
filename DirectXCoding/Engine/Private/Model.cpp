@@ -387,9 +387,8 @@ HRESULT Model::ReadyMaterial(const string& modelFilePath)
                     continue;
 
 
-
                 string textureFileName = strTexturePath.C_Str();
-                string fullPath = pathName + "/" + textureFileName;
+                string fullPath = pathName + "\\" + textureFileName;
 
                 wstring convert = wstring(fullPath.begin(), fullPath.end());
 

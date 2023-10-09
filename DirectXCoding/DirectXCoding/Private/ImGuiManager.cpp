@@ -439,14 +439,23 @@ HRESULT ImGuiManager::ModelNameCardSection()
 					wstring findPrototypename = ImGuiResourceHandler::GetInstance()->FindProtoFilePath(modelPath);
 
 
-					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), _editlayerTag, findPrototypename)))
+					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), _editlayerTag, TEXT("ProtoTypeGameObjectPlayer"))))
 					{
 						RELEASE_INSTANCE(GameInstance);
 						return E_FAIL;
 					}
 
 					//GameObject* temp = gameInstance->GetLayerObjectTag(_editlayerTag, _modelNames[i].first);
+
+
+					size_t dotPosition = modelPath.find_last_of(".");
+					string fileExtension = "";
+
+					if (dotPosition != std::string::npos && dotPosition > 0) 
+						fileExtension = modelPath.substr(0, dotPosition);
 					
+
+					//BinaryModel(modelPath, Utils::ToWString(fileExtension));
 		
 				}
 				else
@@ -476,6 +485,7 @@ HRESULT ImGuiManager::ModelNameCardSection()
 	}
 
 	RELEASE_INSTANCE(GameInstance);
+	return S_OK;
 }
 
 HRESULT ImGuiManager::ObjectsSection()
@@ -576,7 +586,7 @@ void ImGuiManager::FileLoad()
 {
 }
 
-void ImGuiManager::BinaryModel(const string& fpxPath, const wstring& binaryDirectory)
+void ImGuiManager::BinaryModelSave(const string& fpxPath, const wstring& binaryDirectory)
 {
 	Matrix ModelInitailizeMatrix = Matrix::Identity;
 	ModelInitailizeMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
@@ -589,7 +599,10 @@ void ImGuiManager::BinaryModel(const string& fpxPath, const wstring& binaryDirec
 		filesystem::create_directory(path.parent_path());
 
 		shared_ptr<FileUtils> file = make_shared<FileUtils>();
-		file->Open(binaryDirectory, FileMode::Write);
+
+		wstring finalPath = binaryDirectory + L".dat";
+
+		file->Open(finalPath, FileMode::Write);
 
 		uint32 iType = static_cast<uint32>(pBinaryModel->GetModelType());
 		file->Write<uint32>(iType);
@@ -614,13 +627,38 @@ void ImGuiManager::BinaryModel(const string& fpxPath, const wstring& binaryDirec
 			Mesh::MESH_BUFFER_DESC meshBufferDesc = *Meshiter->GetMeshBufferDesc();
 			file->Write<Mesh::MESH_BUFFER_DESC>(meshBufferDesc);
 
-			// 그 정보로 구성된 버텍스 
-			VTXMESH* pVertcies = Meshiter->GetVertexMeshBuffer();
-			file->Write<VTXMESH*>(pVertcies);
+			uint32 meshIndex = Meshiter->GetMaterialIndex();
+			file->Write<uint32>(meshIndex);
 
+			
+			uint32 Numvertices = Meshiter->GetBufferDesc()->_numvertices;
+			file->Write<uint32>(Numvertices);
+
+			VTXMESH* pVertices = Meshiter->GetVertexMeshBuffer();
+
+			for (uint32 i = 0; i < Numvertices; i++)
+			{
+				file->Write<Vec3>(pVertices[i].position);
+				file->Write<Vec3>(pVertices[i].normal);
+				file->Write<Vec2>(pVertices[i].texcoord);
+				file->Write<Vec3>(pVertices[i].tangent);
+				file->Write<Vec3>(pVertices[i].bitangent);
+			}
 			// 그 정보로 구성된 버텍스로 이루어진 인덱스 
 			_ulong* pIndices = Meshiter->GetIndicesMeshBuffer();
-			file->Write<_ulong*>(pIndices);
+
+			const uint32 IndicesCount = Meshiter->GetBufferDesc()->_numIndices / 3;
+			file->Write<uint32>(IndicesCount);
+
+			uint32 numIndices = 0;
+
+			for (uint32 i = 0; i < IndicesCount; ++i)
+			{
+				file->Write<_ulong>(pIndices[numIndices++]);
+				file->Write<_ulong>(pIndices[numIndices++]);
+				file->Write<_ulong>(pIndices[numIndices++]);
+			}
+
 		}
 
 		// 마테리얼 개수 
@@ -629,8 +667,12 @@ void ImGuiManager::BinaryModel(const string& fpxPath, const wstring& binaryDirec
 
 		// 이제 개수만큼 마테리얼 돌면서 텍스쳐 입히면 됨.
 		vector<MESH_MATERIAL>* vecMaterial = pBinaryModel->GetMaterial();
+
 		for (auto& Materialiter : *vecMaterial)
 		{
+			uint32 textureCount = Materialiter.textureCount;
+			file->Write<uint32>(textureCount);
+
 			for (uint32 i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
 			{
 				if (Materialiter._texture[i] == nullptr)
@@ -645,6 +687,9 @@ void ImGuiManager::BinaryModel(const string& fpxPath, const wstring& binaryDirec
 			}
 		}
 	}
+
+	Safe_Release<Model*>(pBinaryModel);
+
 }
 
 void ImGuiManager::AddLightSection()
@@ -996,7 +1041,7 @@ void ImGuiManager::UpdateModelUI(int32 vectorIndex)
 			ImGui::PushID(string(::to_string(vectorIndex) + (*gameObject)[vectorIndex]->GetModelName()).c_str());
 
 
-			if (nullptr != (*gameObject)[vectorIndex]->GetModelComponent())
+			if (nullptr != (*gameObject)[vectorIndex]->GetBinaryModelComponent())
 			{
 
 				if (ImGui::TreeNodeEx(string("PBR").c_str()))
@@ -1024,11 +1069,11 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 
 	vector<GameObject*>* gameObject = gameInstance->GetCurrentObjectList(_editlayerTag);
 
-	Model* modelComponent = (*gameObject)[vectorIndex]->GetModelComponent();
+	BinaryModel* modelComponent = (*gameObject)[vectorIndex]->GetBinaryModelComponent();
 
-	vector<MESH_MATERIAL>* vectorMesh = (*gameObject)[vectorIndex]->GetModelComponent()->GetMaterial();
+	vector<MESH_MATERIAL>* vectorMesh = (*gameObject)[vectorIndex]->GetBinaryModelComponent()->GetMaterial();
 
-	uint32 MeshIndex = (*gameObject)[vectorIndex]->GetModelComponent()->GetNumMeshes();
+	uint32 MeshIndex = (*gameObject)[vectorIndex]->GetBinaryModelComponent()->GetNumMeshes();
 
 	// 이 밑에 부터는 메쉬가 따로 돌아야함. 그니까 vectorIndex는 여기까지만 사용하고 메쉬 인덱스를 다시 돌아야함.
 	// 콤보박스에서 인덱스 지정해주고 그 인덱스번호에 있는 메쉬 텍스쳐 불러와서 텍스쳐 변경하면 될 듯.

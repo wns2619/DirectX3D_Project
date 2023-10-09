@@ -199,7 +199,7 @@ void GraphicsManager::Free()
 	Safe_Release<ID3D11DepthStencilView*>(_depthStencilView);
 	Safe_Release<ID3D11RenderTargetView*>(_renderTargetView);
 	Safe_Release<ID3D11DeviceContext*>(_deviceContext);
-//
+
 //	#if defined(DEBUG) || defined(_DEBUG)
 //	ID3D11Debug* d3dDebug;
 //	HRESULT hr = _device->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&d3dDebug));

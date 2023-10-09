@@ -11,6 +11,8 @@
 #include "Light.h"
 #include "Collider.h"
 #include "Physics.h"
+#include "BinaryModel.h"
+
 //#include "OBBBoxCollider.h"
 //#include "AABBBoxCollider.h"
 //#include "SphereCollider.h"

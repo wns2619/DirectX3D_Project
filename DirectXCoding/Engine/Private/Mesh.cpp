@@ -12,7 +12,8 @@ Mesh::Mesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 Mesh::Mesh(const Mesh& rhs)
     : VIBuffer(rhs)
     , _MeshBufferDesc(rhs._MeshBufferDesc)
-
+    , _materialIndex(rhs._materialIndex)
+    , _numBones(rhs._numBones)
 {
 
 }
@@ -287,7 +288,6 @@ void Mesh::Free()
 {
     Safe_Delete_Array<VTXMESH*>(_pVertices);
     Safe_Delete_Array<_ulong*>(_pIndices);
-
 
     __super::Free();
 }

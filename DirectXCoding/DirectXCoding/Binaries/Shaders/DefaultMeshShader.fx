@@ -50,6 +50,7 @@ PS_OUT PS_MAIN(PS_IN input)
     PS_OUT Out = (PS_OUT) 0;
 
     vector vMaterialdiffuse = DiffuseMap.Sample(LinearSampler, input.texcoord);
+    //vector vMaterialdiffuse = vector(1.f, 1.f, 1.f, 1.f);
     
     if (vMaterialdiffuse.a < 0.3f)
         discard;

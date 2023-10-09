@@ -11,7 +11,6 @@
 #include "AABBboxCollider.h"
 #include "SphereCollider.h"
 #include "ToolCamera.h"
-#include "EmptyObject.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -144,7 +143,7 @@ HRESULT LevelHelper::LodingforLevelEdit()
     LoadingObject();
 
 
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", TEXT("ProtoTypeGameObjectPlayer"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\Player.dat", TEXT("ProtoTypeGameObjectPlayer"));
 
 
     _title = TEXT("Loading Successed");
@@ -242,11 +241,12 @@ HRESULT LevelHelper::LoadingMesh()
 
 
         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelPlayer"),
-            Model::Create(_device, _deviceContext, Model::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", modelInitializMatrix))))
+            BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Player\\Player.dat", modelInitializMatrix))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
         }
+
     }
         break;
     default:

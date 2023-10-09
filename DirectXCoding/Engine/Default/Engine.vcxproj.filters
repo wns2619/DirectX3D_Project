@@ -142,6 +142,9 @@
     <Filter Include="01.Utility\04.Component\Model\BinaryModel">
       <UniqueIdentifier>{5f6c0a11-2f97-419f-a334-f484d2cccf4e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Component\Model\Mesh\BinaryMesh">
+      <UniqueIdentifier>{23566593-d5cb-4090-affa-5a040c175c0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -321,6 +324,9 @@
     <ClInclude Include="..\Public\BinaryModel.h">
       <Filter>01.Utility\04.Component\Model\BinaryModel</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BinaryMesh.h">
+      <Filter>01.Utility\04.Component\Model\Mesh\BinaryMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -457,6 +463,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\BinaryModel.cpp">
       <Filter>01.Utility\04.Component\Model\BinaryModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BinaryMesh.cpp">
+      <Filter>01.Utility\04.Component\Model\Mesh\BinaryMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
