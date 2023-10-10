@@ -8,12 +8,9 @@ Animation::Animation()
 }
 
 Animation::Animation(const Animation& rhs)
-	: _duration(rhs._duration)
-	, _tickPerSecond(rhs._tickPerSecond)
-	, _trackPosition(rhs._trackPosition)
+	: _animationDesc(rhs._animationDesc)
 	, _isFinished(rhs._isFinished)
 	, _isLoop(rhs._isLoop)
-	, _numChannels(rhs._numChannels)
 	, _channels(rhs._channels)
 	, _CurrentKeyFrame(rhs._CurrentKeyFrame)
 {
@@ -32,18 +29,18 @@ HRESULT Animation::Initialize(const class Model* pModel, const aiAnimation* pAIA
 	strcpy_s(_szName, pAIAnimation->mName.data);
 
 	// 애니메이션 길이.
-	_duration = static_cast<_float>(pAIAnimation->mDuration);
+	_animationDesc._duration = static_cast<_float>(pAIAnimation->mDuration);
 
 	// 애니메이션 초당 속도.
-	_tickPerSecond = static_cast<_float>(pAIAnimation->mTicksPerSecond);
+	_animationDesc._tickPerSecond = static_cast<_float>(pAIAnimation->mTicksPerSecond);
 
 	// 애니메이션이 사용하는 뼈의 개수.
-	_numChannels = pAIAnimation->mNumChannels;
+	_animationDesc._numChannels = pAIAnimation->mNumChannels;
 
-	_CurrentKeyFrame.resize(_numChannels);
+	_CurrentKeyFrame.resize(_animationDesc._numChannels);
 	// 애니메이션이 사용하는 뼈의 개수만큼 프레임 크기를 미리 할당.
 
-	for (uint32 i = 0; i < _numChannels; ++i)
+	for (uint32 i = 0; i < _animationDesc._numChannels; ++i)
 	{
 		// 각 뼈들을 돌면서 정보를 생성.
 		// 이 뼈가 이 애니메이션 안에서 몇ㅊ 개의 동작을 가지는가를 미리 저장해놓으려고 한다.
@@ -62,12 +59,12 @@ void Animation::UpdateTransformationMatrix(vector<class Bone*>& Bones, const _fl
 	if (true == _isFinished)
 		return;
 
-	_trackPosition += _tickPerSecond * timeDelta;
+	_animationDesc._trackPosition += _animationDesc._tickPerSecond * timeDelta;
 
-	if (_trackPosition >= _duration)
+	if (_animationDesc._trackPosition >= _animationDesc._duration)
 	{
 		if (true == _isLoop)
-			_trackPosition = 0.f;
+			_animationDesc._trackPosition = 0.f;
 		else
 			_isFinished = true;
 	}
@@ -75,14 +72,14 @@ void Animation::UpdateTransformationMatrix(vector<class Bone*>& Bones, const _fl
 	uint32 iNumChannel = 0;
 
 	for (auto& pChannel : _channels)
-		pChannel->UpdateTransformationMatrix(&_CurrentKeyFrame[iNumChannel++], Bones, _trackPosition);
+		pChannel->UpdateTransformationMatrix(&_CurrentKeyFrame[iNumChannel++], Bones, _animationDesc._trackPosition);
 
 	// 채널을 키 프레임을 애니메이션에서 관리한다. 
 }
 
 void Animation::Reset()
 {
-	_trackPosition = 0.f;
+	_animationDesc._trackPosition = 0.f;
 	_isFinished = false;
 	_isLoop = false;
 

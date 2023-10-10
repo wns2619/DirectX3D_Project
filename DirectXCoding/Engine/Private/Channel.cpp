@@ -11,18 +11,26 @@ HRESULT Channel::Initialize(const class Model* pModel, const aiNodeAnim* pAIChan
 {
     ::strcpy_s(_szName, pAIChannel->mNodeName.data);
 
-    _boneIndex = pModel->GetBoneIndex(_szName);
+    _channelDesc._boneIndex = pModel->GetBoneIndex(_szName);
 
+    // IMGUI SAVE && LOAD
+    {
+        _channelDesc.mNumScalingKeys = pAIChannel->mNumScalingKeys;
+        _channelDesc.mNumRotationKeys = pAIChannel->mNumRotationKeys;
+        _channelDesc.mNumPositionKeys = pAIChannel->mNumPositionKeys;
+    }
+
+   
     // 어떤 유형의 애니메이션이 노드에 더 많은 영향을 끼칠 지 판단.
-    _numKeyFrames = max(pAIChannel->mNumScalingKeys, pAIChannel->mNumRotationKeys);
-    _numKeyFrames = max(_numKeyFrames, pAIChannel->mNumPositionKeys);
+    _channelDesc._numKeyFrames = max(pAIChannel->mNumScalingKeys, pAIChannel->mNumRotationKeys);
+    _channelDesc._numKeyFrames = max(_channelDesc._numKeyFrames, pAIChannel->mNumPositionKeys);
 
     Vec3 scale;
     Vec4 rotation;
     Vec4 translation;
 
     /* m_iNumKeyFrames : 특정 애니메이션 내에서 Channel에 해당하는 뼈가 몇개의 상태변환을 가져가는가?!  */
-    for (uint32 i = 0; i < _numKeyFrames; ++i)
+    for (uint32 i = 0; i < _channelDesc._numKeyFrames; ++i)
     {
         KEYFRAME keyFrame;
         ZeroMemory(&keyFrame, sizeof(keyFrame));
@@ -112,7 +120,7 @@ void Channel::UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<class 
         ::XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&rotation), ::XMLoadFloat4(&translation));
 
     // 모델이 들고 있는 뼈한테 Affine Matrix 세팅.
-    Bones[_boneIndex]->SetTransformationMatrix(TransformationMatrix);
+    Bones[_channelDesc._boneIndex]->SetTransformationMatrix(TransformationMatrix);
 }
 
 Channel* Channel::Create(const class Model* pModel, const aiNodeAnim* pAIChannel)

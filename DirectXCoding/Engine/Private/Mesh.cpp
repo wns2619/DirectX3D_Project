@@ -15,6 +15,7 @@ Mesh::Mesh(const Mesh& rhs)
     , _materialIndex(rhs._materialIndex)
     , _numBones(rhs._numBones)
     , _szBoneName(rhs._szBoneName)
+    , _blendWeightDesc(rhs._blendWeightDesc)
 {
 
 }
@@ -159,7 +160,7 @@ HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, const Model* model)
         aiBone* bone = mesh->mBones[i];
 
         // 공통으로 사용되는 뼈대들을 각기 다른 형태의 메시에 적용하기 위해서는 보정이 필요하다.
-        Matrix offSetMatrix;
+         Matrix offSetMatrix;
         ::memcpy(&offSetMatrix, &bone->mOffsetMatrix, sizeof(Matrix));
         ::XMStoreFloat4x4(&offSetMatrix, ::XMMatrixTranspose(::XMLoadFloat4x4(&offSetMatrix)));
         // 전치 되어서 저장되어있으므로 다시 전치해준다.
@@ -167,7 +168,7 @@ HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, const Model* model)
         _offsetMatrices.push_back(offSetMatrix);
 
         // 뼈의 이름정보를 토대로 모든 뼈를 순회한 뒤에 몇 번 뼈의 인덱스인지 확인한다.
-        _szBoneName = bone->mName.data;
+        _szBoneName.push_back(bone->mName.data);
         int32 boneIndex = model->GetBoneIndex(bone->mName.data);
         if (-1 == boneIndex)
             return E_FAIL;
@@ -176,28 +177,58 @@ HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, const Model* model)
         _bones.push_back(boneIndex);
 
         // 이 뼈가 몇 개의 정점에게 영향을 주는 지 포문을 돈다.
-        _blendWeights = bone->mNumWeights;
+        _blendWeights.push_back(bone->mNumWeights);
         for (size_t j = 0; j < bone->mNumWeights; j++)
         {
-            if (0.f == _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.x)
+             BLEND_WEIGHT_DESC blendWeightDesc;
+            ::ZeroMemory(&blendWeightDesc, sizeof(blendWeightDesc));
+
+             if (0.f == _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.x)
             {
+                 blendWeightDesc.blendOriginWeights = _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights;
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendIndices.x = i;
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.x = bone->mWeights[j].mWeight;
+
+                blendWeightDesc.vertexID = bone->mWeights[j].mVertexId;
+                blendWeightDesc.blendWeights = bone->mWeights[j].mWeight;
+
+                _blendWeightDesc.push_back(blendWeightDesc);
             }
             else if (0.f == _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.y)
             {
+                 blendWeightDesc.blendOriginWeights = _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights;
+
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendIndices.y = i;
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.y = bone->mWeights[j].mWeight;
+
+                blendWeightDesc.vertexID = bone->mWeights[j].mVertexId;
+                blendWeightDesc.blendWeights = bone->mWeights[j].mWeight;
+
+                _blendWeightDesc.push_back(blendWeightDesc);
             }
             else if (0.f == _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.z)
             {
+                 blendWeightDesc.blendOriginWeights = _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights;
+
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendIndices.z = i;
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.z = bone->mWeights[j].mWeight;
+
+                blendWeightDesc.vertexID = bone->mWeights[j].mVertexId;
+                blendWeightDesc.blendWeights = bone->mWeights[j].mWeight;
+
+                _blendWeightDesc.push_back(blendWeightDesc);
             }
             else if (0.f == _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.w)
             {
+                 blendWeightDesc.blendOriginWeights = _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights;
+
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendIndices.w = i;
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.w = bone->mWeights[j].mWeight;
+
+                blendWeightDesc.vertexID = bone->mWeights[j].mVertexId;
+                blendWeightDesc.blendWeights = bone->mWeights[j].mWeight;
+
+                _blendWeightDesc.push_back(blendWeightDesc);
             }
         }
     }
@@ -247,9 +278,13 @@ Component* Mesh::Clone(void* pArg)
 
 void Mesh::Free()
 {
+    __super::Free();
+
+    _blendWeightDesc.clear();
+    _szBoneName.clear();
+   
     Safe_Delete_Array<VTXMESH*>(_pVertices);
     Safe_Delete_Array<_ulong*>(_pIndices);
     Safe_Delete_Array<VTXANIMMESH*>(_pAnimVertex);
 
-    __super::Free();
 }

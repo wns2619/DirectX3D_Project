@@ -9,6 +9,18 @@ BEGIN(Engine)
 
 class ENGINE_DLL Channel final : public Base
 {
+public:
+	struct CHANNEL_DESC
+	{
+		uint32 mNumScalingKeys = 0;
+		uint32 mNumRotationKeys = 0;
+		uint32 mNumPositionKeys = 0;
+
+		uint32 _numKeyFrames = 0; // 최종 키 개수.
+		uint32 _boneIndex = 0;
+	};
+
+
 private:
 	Channel();
 	virtual ~Channel() = default;
@@ -17,11 +29,15 @@ public:
 	HRESULT Initialize(const class Model* pModel, const aiNodeAnim* pAIChannel);
 	void UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<class Bone*>& Bones, _float trackPosition);
 
-private:
-	_char _szName[MAX_PATH] = ""; // 뼈의 이름.
-	uint32 _numKeyFrames = 0;
+public:
+	_char* GetChannelName() { return _szName; }
+	vector<KEYFRAME>& GetKeyFrame() { return _keyFrames; }
+	CHANNEL_DESC& GetChannelDesc() { return _channelDesc; }
 
-	uint32 _boneIndex = 0;
+private:
+	CHANNEL_DESC _channelDesc = {};
+
+	_char _szName[MAX_PATH] = ""; // 뼈의 이름.
 
 	vector<KEYFRAME> _keyFrames;
 

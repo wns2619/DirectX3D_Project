@@ -16,6 +16,8 @@
 #include "FileUtils.h"
 #include "Mesh.h"
 #include "Bone.h"
+#include "Animation.h"
+#include "Channel.h"
 
 ImGui::FileBrowser g_fileDialog;
 
@@ -439,11 +441,11 @@ HRESULT ImGuiManager::ModelNameCardSection()
 					wstring findPrototypename = ImGuiResourceHandler::GetInstance()->FindProtoFilePath(modelPath);
 
 
-					//if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), _editlayerTag, findPrototypename)))
-					//{
-					//	RELEASE_INSTANCE(GameInstance);
-					//	return E_FAIL;
-					//}
+					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), _editlayerTag, findPrototypename)))
+					{
+						RELEASE_INSTANCE(GameInstance);
+						return E_FAIL;
+					}
 
 					//GameObject* temp = gameInstance->GetLayerObjectTag(_editlayerTag, _modelNames[i].first);
 
@@ -456,6 +458,7 @@ HRESULT ImGuiManager::ModelNameCardSection()
 					
 
 					//BinaryModelSave(modelPath, Utils::ToWString(fileExtension));
+					BinaryAnimModelSave(modelPath, Utils::ToWString(fileExtension));
 		
 				}
 				else
@@ -776,6 +779,12 @@ void ImGuiManager::BinaryAnimModelSave(const string& fpxPath, const wstring& bin
 			// 공통으로 사용되는 뼈대들을 보정하기 위한 매트릭스.
 			vector<Matrix> vectorOffsetMatrix = Meshiter->vecGetOffsetMatrices();
 
+			// 본 뼈 이름를 갖고있는 벡터를 가지고 온다.
+			vector<string> boneNames = Meshiter->vecGetBoneName();
+
+			// 이 뼈가 몇 개의 정점에 영향을 주는 지 담아놓은 벡터.
+			vector<uint32> blendWeights = Meshiter->vecGetBlendWeights();
+
 			// 메쉬의 영향을 주는 뼈의 개수만틈 오프셋과 몇 번 뼈의 인덱스인 지 확인.
 			for (uint32 i = 0; i < effectBones; ++i)
 			{
@@ -784,16 +793,48 @@ void ImGuiManager::BinaryAnimModelSave(const string& fpxPath, const wstring& bin
 				file->Write<Matrix>(BonesOffsetMatrix);
 
 				// 뼈 이름 정보를 저장해서 본 인덱스 몇 번 뼈의 인덱스를 확인한다.
-				string szBoneName = Meshiter->GetBoneName();
+				string szBoneName = boneNames[i];
 				file->Write<string>(szBoneName);
 
 				// 저장한 이름으로 뼈의 인덱스를 저장함.
 				int32 boneIndex = pBinaryModel->GetBoneIndex(szBoneName.c_str());
 				file->Write<int32>(boneIndex);
 
-				uint32 blentWeights = pBinaryModel->GetBl
+				// 뼈가 몇 개의 메쉬정점에 영향을 주는 지 포문을 돈다.
+				file->Write<uint32>(blendWeights[i]);
 
+				vector<Mesh::BLEND_WEIGHT_DESC> blendDesc = Meshiter->vecBlendDesc();
+
+				for (uint32 j = 0; j < blendWeights[i]; ++j)
+				{
+					uint32 VertexID = blendDesc[j].vertexID;
+					file->Write<uint32>(VertexID);
+
+					if (0.f == blendDesc[j].blendOriginWeights.x)
+					{
+						// uint32 짜리 vertexID가 있고. -> 이게 배열에 들어가고
+						// float짜리 mWeight가 있다. -> 이게 값임.
+						file->Write<uint32>(i);
+						file->Write<_float>(blendDesc[j].blendWeights);
+					}
+					else if (0.f == blendDesc[j].blendOriginWeights.y)
+					{
+						file->Write<uint32>(i);
+						file->Write<_float>(blendDesc[j].blendWeights);
+					}
+					else if (0.f == blendDesc[j].blendOriginWeights.z)
+					{
+						file->Write<uint32>(i);
+						file->Write<_float>(blendDesc[j].blendWeights);
+					}
+					else if (0.f == blendDesc[j].blendOriginWeights.w)
+					{
+						file->Write<uint32>(i);
+						file->Write<_float>(blendDesc[j].blendWeights);
+					}
+				}
 			}
+
 
 
 			// 그 정보로 구성된 버텍스로 이루어진 인덱스 
@@ -838,7 +879,56 @@ void ImGuiManager::BinaryAnimModelSave(const string& fpxPath, const wstring& bin
 				file->Write<string>(Utils::ToString(texturePath));
 			}
 		}
+
+
+		// Model Animation
+		vector<Animation*> modelAnimation = pBinaryModel->GetAnimation();
+		for (auto& animiter : modelAnimation)
+		{
+			// pAIAniamtion이 담고있는 정보를 들고 있는 구조체.
+			Animation::ANIMATION_DESC animDuration = animiter->GetAnimationDesc();
+			file->Write<Animation::ANIMATION_DESC>(animDuration);
+			// CurrenKeyFrame 사이즈는 어차피 디스크립션의 NumChannels임.
+
+			vector<Channel*> animationChannel = animiter->GetChannels();
+			// 이 애니메이션 당 들고있는 채널 개수.
+			for (auto& pChannel : animationChannel)
+			{
+				// 그 채널이 사용하는 뼈의 이름.
+				string szName = pChannel->GetChannelName();
+				file->Write<string>(szName);
+
+
+				// 이 채널의 pAIChannel한테 넘겨받은 정보를 담은 구조체 
+				// 돌 때는 numChannel 만큼 순회.
+				Channel::CHANNEL_DESC channelDesc = pChannel->GetChannelDesc();
+				file->Write<Channel::CHANNEL_DESC>(channelDesc);
+
+				vector<KEYFRAME> keyFrame = pChannel->GetKeyFrame();
+				for (auto& pKeyFrame : keyFrame)
+				{
+
+					// 벡터에 들어가있는 사이즈만큼 읽어 들인다.
+					Vec3 Scale = pKeyFrame.scale;
+					file->Write<Vec3>(Scale);
+
+					Vec4 Rotation = pKeyFrame.rotation;
+					file->Write<Vec4>(Rotation);
+
+					Vec4 Translation = pKeyFrame.translation;
+					file->Write<Vec4>(Translation);
+
+					_float time = pKeyFrame.time;
+					file->Write<_float>(time);
+				}
+
+			}
+		}
+		
 	}
+
+
+
 	Safe_Release<Model*>(pBinaryModel);
 }
 

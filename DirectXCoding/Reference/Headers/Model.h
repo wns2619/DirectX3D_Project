@@ -38,9 +38,11 @@ public: // IMGUI
 	vector<class Bone*>& GetBones() { return _bones; }
 	vector<class Mesh*>* GetMeshes() { return &m_Meshes; }
 	vector<MESH_MATERIAL>* GetMaterial() { return &_materials; }
+	vector<class Animation*>& GetAnimation() { return _animations; }
 	MODEL_TYPE GetModelType() { return _ModelType; }
 	Matrix GetPivotMatrix() { return _pivotMatrix; }
 	uint32 GetMaterialCount() { return _numMaterial; }
+	uint32 GetNumAnimations() { return _numAnimations; }
 private: /* .fbx파일을 열어서 읽어주는 역활 */
 	Assimp::Importer			m_Importer;
 
