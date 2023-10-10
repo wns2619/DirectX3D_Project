@@ -55,9 +55,9 @@ HRESULT EditScene::ReadyLayerEditCamera(const wstring& layerTag)
         cameraDesc._at = Vec4(0.f, 0.f, 0.f, 1.f);
         cameraDesc._fovy = ::XMConvertToRadians(90.f);
         cameraDesc._aspect = g_iWinSizeX / static_cast<_float>(g_iWinSizeY);
-        cameraDesc._near = 0.2f;
+        cameraDesc._near = 0.01f;
         cameraDesc._far = 1000.f;
-        cameraDesc.speedPerSec = 50.f;
+        cameraDesc.speedPerSec = 10.f;
         cameraDesc.rotationRadianPerSec = ::XMConvertToRadians(30.f);
     }
 

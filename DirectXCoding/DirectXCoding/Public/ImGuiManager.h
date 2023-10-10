@@ -49,13 +49,9 @@ public: // Section
 	HRESULT ModelNameCardSection();
 	HRESULT ObjectsSection();
 
-public: // Save && Load
-	void FileSave();
-	void FileLoad();
-
-
 public: // Binary
 	void BinaryModelSave(const string& fpxPath, const wstring& binaryDirectory);
+	void BinaryAnimModelSave(const string& fpxPath, const wstring& binaryDirectory);
 
 private:
 	// Device && DeviceContext

@@ -14,6 +14,7 @@ Mesh::Mesh(const Mesh& rhs)
     , _MeshBufferDesc(rhs._MeshBufferDesc)
     , _materialIndex(rhs._materialIndex)
     , _numBones(rhs._numBones)
+    , _szBoneName(rhs._szBoneName)
 {
 
 }
@@ -106,48 +107,6 @@ HRESULT Mesh::BindBoneMatrices(Shader* shader, const vector<class Bone*>& bones,
     return shader->BindMatrices(constantName, boneMatrices, _numBones);
 }
 
-HRESULT Mesh::LoadDataMeshFile(Model::MODEL_TYPE modelType, FileUtils* pFileUtils, FXMMATRIX pivotMatrix)
-{
-    //_szName = Utils::ToWString(pFileUtils->Read<string>());
-    //_boneIndex = pFileUtils->Read<int32>();
-
-    //// Material
-    //_szMaterialName = Utils::ToWString(pFileUtils->Read<string>());
-    //_materialIndex = pFileUtils->Read<int32>();
-
-    //// VertexData
-    //{
-    //    const uint32 iVTXCount = pFileUtils->Read<uint32>();
-
-    //    _BufferDesc._numvertices = iVTXCount;
-    //    _BufferDesc._stride = sizeof(VTXANIMMESH);
-
-    //    ::ZeroMemory(&_bufferDesc, sizeof(D3D11_BUFFER_DESC));
-    //    _BufferDesc._bufferDesc.ByteWidth = _BufferDesc._numvertices * _BufferDesc._stride;
-    //    _BufferDesc._bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    //    _BufferDesc._bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    //    _BufferDesc._bufferDesc.CPUAccessFlags = 0;
-    //    _BufferDesc._bufferDesc.MiscFlags = 0;
-    //    _BufferDesc._bufferDesc.StructureByteStride = _BufferDesc._stride;
-
-    //    VTXANIMMESH* pVertices = new VTXANIMMESH[iVTXCount];
-    //    ::ZeroMemory(pVertices, sizeof(VTXANIMMESH) * iVTXCount);
-
-    //    void* pData = pVertices;
-    //    pFileUtils->Read(&pData, sizeof(VTXANIMMESH) * iVTXCount);
-
-    //    //if(modelType == Model::MODEL_TYPE::NONE)
-    //        //ReadyVertexBufferNoneAnim()
-    //}
-
-    return S_OK;
-}
-
-HRESULT Mesh::LoadDataConverter(Model::MODEL_TYPE modelType, shared_ptr<asMesh> mesh, FXMMATRIX pivotMatrix)
-{
-    return E_NOTIMPL;
-}
-
 HRESULT Mesh::ReadyVertexBufferNoneAnim(const aiMesh* mesh, FXMMATRIX pivotMat)
 {
     _pVertices = new VTXMESH[_BufferDesc._numvertices];
@@ -179,16 +138,16 @@ HRESULT Mesh::ReadyVertexBufferNoneAnim(const aiMesh* mesh, FXMMATRIX pivotMat)
 
 HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, const Model* model)
 {
-    VTXANIMMESH* pVertices = new VTXANIMMESH[_BufferDesc._numvertices];
-    ZeroMemory(pVertices, sizeof(VTXANIMMESH) * _BufferDesc._numvertices);
+    _pAnimVertex = new VTXANIMMESH[_BufferDesc._numvertices];
+    ZeroMemory(_pAnimVertex, sizeof(VTXANIMMESH) * _BufferDesc._numvertices);
 
     for (size_t i = 0; i < _BufferDesc._numvertices; i++)
     {
-        memcpy(&pVertices[i].position, &mesh->mVertices[i], sizeof(Vec3));
-        memcpy(&pVertices[i].normal, &mesh->mNormals[i], sizeof(Vec3));
-        memcpy(&pVertices[i].texcoord, &mesh->mTextureCoords[0][i], sizeof(Vec2));
-        memcpy(&pVertices[i].tangent, &mesh->mTangents[i], sizeof(Vec3));
-        memcpy(&pVertices[i].bitangent, &mesh->mBitangents[i], sizeof(Vec3));
+        memcpy(&_pAnimVertex[i].position, &mesh->mVertices[i], sizeof(Vec3));
+        memcpy(&_pAnimVertex[i].normal, &mesh->mNormals[i], sizeof(Vec3));
+        memcpy(&_pAnimVertex[i].texcoord, &mesh->mTextureCoords[0][i], sizeof(Vec2));
+        memcpy(&_pAnimVertex[i].tangent, &mesh->mTangents[i], sizeof(Vec3));
+        memcpy(&_pAnimVertex[i].bitangent, &mesh->mBitangents[i], sizeof(Vec3));
     }
     
     // 메쉬를 이루고 있는 정점에 영향을 주는 뼈의 개수.
@@ -208,6 +167,7 @@ HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, const Model* model)
         _offsetMatrices.push_back(offSetMatrix);
 
         // 뼈의 이름정보를 토대로 모든 뼈를 순회한 뒤에 몇 번 뼈의 인덱스인지 확인한다.
+        _szBoneName = bone->mName.data;
         int32 boneIndex = model->GetBoneIndex(bone->mName.data);
         if (-1 == boneIndex)
             return E_FAIL;
@@ -216,27 +176,28 @@ HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, const Model* model)
         _bones.push_back(boneIndex);
 
         // 이 뼈가 몇 개의 정점에게 영향을 주는 지 포문을 돈다.
+        _blendWeights = bone->mNumWeights;
         for (size_t j = 0; j < bone->mNumWeights; j++)
         {
-            if (0.f == pVertices[bone->mWeights[j].mVertexId].blendWeights.x)
+            if (0.f == _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.x)
             {
-                pVertices[bone->mWeights[j].mVertexId].blendIndices.x = i;
-                pVertices[bone->mWeights[j].mVertexId].blendWeights.x = bone->mWeights[j].mWeight;
+                _pAnimVertex[bone->mWeights[j].mVertexId].blendIndices.x = i;
+                _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.x = bone->mWeights[j].mWeight;
             }
-            else if (0.f == pVertices[bone->mWeights[j].mVertexId].blendWeights.y)
+            else if (0.f == _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.y)
             {
-                pVertices[bone->mWeights[j].mVertexId].blendIndices.y = i;
-                pVertices[bone->mWeights[j].mVertexId].blendWeights.y = bone->mWeights[j].mWeight;
+                _pAnimVertex[bone->mWeights[j].mVertexId].blendIndices.y = i;
+                _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.y = bone->mWeights[j].mWeight;
             }
-            else if (0.f == pVertices[bone->mWeights[j].mVertexId].blendWeights.z)
+            else if (0.f == _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.z)
             {
-                pVertices[bone->mWeights[j].mVertexId].blendIndices.z = i;
-                pVertices[bone->mWeights[j].mVertexId].blendWeights.z = bone->mWeights[j].mWeight;
+                _pAnimVertex[bone->mWeights[j].mVertexId].blendIndices.z = i;
+                _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.z = bone->mWeights[j].mWeight;
             }
-            else if (0.f == pVertices[bone->mWeights[j].mVertexId].blendWeights.w)
+            else if (0.f == _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.w)
             {
-                pVertices[bone->mWeights[j].mVertexId].blendIndices.w = i;
-                pVertices[bone->mWeights[j].mVertexId].blendWeights.w = bone->mWeights[j].mWeight;
+                _pAnimVertex[bone->mWeights[j].mVertexId].blendIndices.w = i;
+                _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.w = bone->mWeights[j].mWeight;
             }
         }
     }
@@ -247,11 +208,11 @@ HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, const Model* model)
     // 해당 뼈가 메시를 이루고있는 정점 몇 개에게 영향을 주는 지는 aIMesh의 mBones 배열에 mNumWeights가 갖고있다.
 
     ZeroMemory(&_BufferDesc._subResourceData, sizeof _BufferDesc._subResourceData);
-    _BufferDesc._subResourceData.pSysMem = pVertices;
+    _BufferDesc._subResourceData.pSysMem = _pAnimVertex;
 
     if (FAILED(__super::CreateBuffer(&_vertexBuffer)))
         return E_FAIL;
-    Safe_Delete_Array(pVertices);
+   
 
     return S_OK;
 }
@@ -288,6 +249,7 @@ void Mesh::Free()
 {
     Safe_Delete_Array<VTXMESH*>(_pVertices);
     Safe_Delete_Array<_ulong*>(_pIndices);
+    Safe_Delete_Array<VTXANIMMESH*>(_pAnimVertex);
 
     __super::Free();
 }

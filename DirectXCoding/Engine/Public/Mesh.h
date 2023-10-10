@@ -22,6 +22,7 @@ private:
 public:
 	uint32 GetMaterialIndex() const { return _materialIndex; }
 
+
 public:
 	virtual HRESULT InitializePrototype(Model::MODEL_TYPE type, const Model* model, const aiMesh* pAIMesh, FXMMATRIX pivotMat);
 	virtual HRESULT Initialize(void* pArg) override;
@@ -33,25 +34,25 @@ public:
 public:
 	MESH_BUFFER_DESC* GetMeshBufferDesc() { return &_MeshBufferDesc; }
 	VTXMESH* GetVertexMeshBuffer() { return _pVertices; }
+	VTXANIMMESH* GetVertexAnimBuffer() { return _pAnimVertex; }
 	_ulong* GetIndicesMeshBuffer() { return _pIndices; }
 
-public:
-	// Ω√¿€
-	HRESULT LoadDataMeshFile(Model::MODEL_TYPE modelType, FileUtils* pFileUtils, FXMMATRIX pivotMatrix);
-	HRESULT LoadDataConverter(Model::MODEL_TYPE modelType, shared_ptr<asMesh> mesh, FXMMATRIX pivotMatrix);
+	uint32 GetBlendWeights() { return _blendWeights; }
+	uint32 GetMeshEffectBones() { return _numBones; }
+	string& GetBoneName() { return _szBoneName; }
 
+	vector<uint32>& vecGetMeshEffectBones() { return _bones; }
+	vector<Matrix>& vecGetOffsetMatrices() { return _offsetMatrices; }
 
-private:
-	vector<class Bone*> _Loadbones;
-
-	uint32 _boneIndex;
-	wstring _szName;
-	wstring _szMaterialName;
-
+private: // IMGUI LOAD && SAVE
 	MESH_BUFFER_DESC _MeshBufferDesc;
-
+	VTXANIMMESH* _pAnimVertex = nullptr;
 	VTXMESH* _pVertices = nullptr;
 	_ulong* _pIndices = nullptr;
+
+
+	string _szBoneName;
+	uint32 _blendWeights = 0;
 
 private:
 	uint32 _materialIndex = 0;

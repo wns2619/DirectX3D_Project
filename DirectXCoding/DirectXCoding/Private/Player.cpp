@@ -28,6 +28,8 @@ HRESULT Player::Initialize(void* pArg)
 	if (FAILED(ReadyComponents()))
 		return E_FAIL;
 
+ 	_model->SetUp_Animation(true, 2);
+
 	return S_OK;
 }
 
@@ -36,7 +38,7 @@ void Player::Tick(const _float& fTimeDelta)
 	if (_enabled)
 		return;
 
-	//_model->PlayAnimation(fTimeDelta);
+	_model->PlayAnimation(fTimeDelta);
 }
 
 void Player::LateTick(const _float& fTimeDelta)
@@ -54,21 +56,21 @@ HRESULT Player::Render()
 	if (FAILED(BindShaderResuorces()))
 		return E_FAIL;
 
-	uint32 numMeshes = _binaryModel->GetNumMeshes();
+	uint32 numMeshes = _model->GetNumMeshes();
 
 	for (size_t i = 0; i < numMeshes; i++)
 	{
 
-		//if (FAILED(_binaryModel->BindBoneMatrices(_shader, i, "BoneMatrices")))
-		//	return E_FAIL;
+		if (FAILED(_model->BindBoneMatrices(_shader, i, "BoneMatrices")))
+			return E_FAIL;
 
-		if(FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, aiTextureType_DIFFUSE)))
+		if(FAILED(_model->BindMaterialTexture(_shader, "DiffuseMap", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
 		if (FAILED(_shader->Begin(0)))
 			return E_FAIL;
 
-		if (FAILED(_binaryModel->Render(i)))
+		if (FAILED(_model->Render(i)))
 			return E_FAIL;
 	}
 	
@@ -96,7 +98,7 @@ HRESULT Player::ReadyComponents()
 
 	/* Shader Component */
 	if (FAILED(__super::AddComponent(level,
-		TEXT("ProtoTypeComponentDefaultMeshShader"),
+		TEXT("ProtoTypeComponentAnimMesh"),
 		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
 
@@ -107,7 +109,7 @@ HRESULT Player::ReadyComponents()
 
 	/* Model Component */
 	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeModelPlayer"),
-		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
+		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_model))))
 		return E_FAIL;
 
 

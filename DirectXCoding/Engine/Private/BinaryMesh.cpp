@@ -108,5 +108,6 @@ Component* BinaryMesh::Clone(void* pArg)
 
 void BinaryMesh::Free()
 {
+	__super::Free();
 
 }

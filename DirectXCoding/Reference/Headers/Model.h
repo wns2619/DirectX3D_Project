@@ -23,30 +23,19 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
+	HRESULT SetUp_Animation(_bool isLoop, uint32 animationIndex);
 	HRESULT BindBoneMatrices(class Shader* shader, uint32 meshIndex, const char* constantName);
 	HRESULT BindMaterialTexture(class Shader* shader, const char* constantName, uint32 meshIndex, aiTextureType type);
 	HRESULT PlayAnimation(const _float& timeDelta);
 	HRESULT Render(uint32 meshIndex);
 
 
-public:
-	HRESULT BinaryModel(const wstring& fbxpath, const wstring& filePath);
-
-
 public: // IMGUI
-	HRESULT ExportDeviceInitialize();
-	HRESULT ExportModelData(wstring modelPath, uint32 modelNumber);
-	HRESULT ExportMaterialData(wstring modelPath, uint32 modelNumber);
-
-
-	void ReadMaterial(wstring fileName, uint32 modelNumber);
-	void ReadModel(wstring fileName, uint32 modelNumber);
-
-
 
 	void SetModelPath(const string& modelPath) { _modelPath = modelPath; }
 	const string& GetModelPath() { return _modelPath; }
 
+	vector<class Bone*>& GetBones() { return _bones; }
 	vector<class Mesh*>* GetMeshes() { return &m_Meshes; }
 	vector<MESH_MATERIAL>* GetMaterial() { return &_materials; }
 	MODEL_TYPE GetModelType() { return _ModelType; }
@@ -58,18 +47,23 @@ private: /* .fbx파일을 열어서 읽어주는 역활 */
 	/* m_Importer가 읽어준 데이터들을 보관한다. */
 	const aiScene* m_pAIScene = { nullptr };
 
-private:
+private: // Mesh
 	uint32					m_iNumMeshes = { 0 };
 	vector<class Mesh*>		m_Meshes; // 메쉬정보를 들고있으니까 여기다가 넣어야함.
 
-private:
-	uint32					_numMaterial = 0;
-	vector<MESH_MATERIAL>	_materials;
-	
 	Matrix					_pivotMatrix;
 
-private:
+private: // Material
+	uint32					_numMaterial = 0;
+	vector<MESH_MATERIAL>	_materials;
+
+private: // Bone
 	vector<class Bone*>		_bones;
+
+private: // Animation
+	uint32 _currenAnimIndex = 0;
+	uint32 _numAnimations = 0;
+	vector<class Animation*> _animations;
 
 private: // IMGUI
 	MODEL_TYPE _ModelType = MODEL_TYPE::TYPE_END;
@@ -96,6 +90,7 @@ private:
 	HRESULT ReadyMeshes(MODEL_TYPE type);
 	HRESULT ReadyMaterial(const string& modelFilePath);
 	HRESULT ReadyBones(const aiNode* node, int32 parentNodeIndex);
+	HRESULT ReadyAnimations();
 
 public:
 	static Model* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL_TYPE type, const string& pModelFilePath, FXMMATRIX pivotMat = ::XMMatrixIdentity());

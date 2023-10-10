@@ -36,9 +36,6 @@ private:
 
 	MESH_BUFFER_DESC _MeshBufferDesc;
 
-	VTXMESH* _pVertices = nullptr;
-	_ulong* _pIndices = nullptr;
-
 private:
 	uint32 _materialIndex = 0;
 

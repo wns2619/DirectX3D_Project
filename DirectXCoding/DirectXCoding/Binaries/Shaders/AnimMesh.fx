@@ -50,10 +50,10 @@ PixelOut PS_MAIN(MeshOut input)
     //(GlobalLight.Specular * Material.Specular) * _specular;
     
     
-    ComputeNormalMapping(input.normal, input.tangent, input.uv);
-    Out.Color = ComputeLight(input.normal, input.uv, input.worldPosition.xyz);
+   //ComputeNormalMapping(input.normal, input.tangent, input.uv);
+   //Out.Color = ComputeLight(input.normal, input.uv, input.worldPosition.xyz);
     
-    //Out.Color = ComputeTeacherLight(input.normal, input.uv, input.worldPosition.xyz);
+    Out.Color = ComputeTeacherLight(input.normal, input.uv, input.worldPosition.xyz);
     
     return Out;
 }

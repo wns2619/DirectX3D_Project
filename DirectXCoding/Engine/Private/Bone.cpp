@@ -5,6 +5,14 @@ Bone::Bone()
 {
 }
 
+Bone::Bone(const Bone& rhs)
+    : _transformationMatrix(rhs._transformationMatrix)
+    , _combinedTransformationMatrix(rhs._combinedTransformationMatrix)
+    , _parentBoneIndex(rhs._parentBoneIndex)
+{
+    ::strcpy_s(_szName, rhs._szName);
+}
+
 HRESULT Bone::Initialize(const aiNode* node, int32 parentBoneIndex)
 {
     // 부모의 인덱스를 인자로 받는다.
@@ -50,6 +58,11 @@ Bone* Bone::Create(const aiNode* node, int32 parentBoneIndex)
     }
 
     return bone;
+}
+
+Bone* Bone::Clone()
+{
+    return new Bone(*this);
 }
 
 void Bone::Free()

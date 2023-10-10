@@ -7,6 +7,7 @@
 #include "Utils.h"
 #include "FileUtils.h"
 #include <filesystem>
+#include "Animation.h"
 
 Model::Model(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : Component(pDevice, pContext, COMPONENT_TYPE::MODEL)
@@ -22,11 +23,16 @@ Model::Model(const Model& rhs)
     , _materials(rhs._materials)
     , _modelPath(rhs._modelPath)
     , m_pAIScene(rhs.m_pAIScene)
-    , _bones(rhs._bones)
     , _ModelType(rhs._ModelType)
+    , _numAnimations(rhs._numAnimations)
+
 {
-    for (auto& boneiter : _bones)
-        Safe_AddRef<Bone*>(boneiter);
+
+    for (auto& pAnimation : rhs._animations)
+        _animations.push_back(pAnimation->Clone());
+
+    for (auto& boneiter : rhs._bones)
+        _bones.push_back(boneiter->Clone());
 
     for (auto& material : _materials)
         for (size_t i = 0; i < AI_TEXTURE_TYPE_MAX; i++)
@@ -34,8 +40,6 @@ Model::Model(const Model& rhs)
 
     for (auto& mesh : m_Meshes)
         Safe_AddRef<Mesh*>(mesh);
-
-
 }
 
 int32 Model::GetBoneIndex(const char* boneName) const
@@ -87,7 +91,8 @@ HRESULT Model::InitializePrototype(MODEL_TYPE type, const string& pModelFilePath
     if (FAILED(ReadyMaterial(pModelFilePath)))
         return E_FAIL;
 
-
+    if (FAILED(ReadyAnimations()))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -95,6 +100,21 @@ HRESULT Model::InitializePrototype(MODEL_TYPE type, const string& pModelFilePath
 HRESULT Model::Initialize(void* pArg)
 {
 
+
+    return S_OK;
+}
+
+HRESULT Model::SetUp_Animation(_bool isLoop, uint32 animationIndex)
+{
+    if (animationIndex >= _numAnimations ||
+        animationIndex == _currenAnimIndex)
+        return S_OK;
+
+    _animations[_currenAnimIndex]->Reset();
+
+    _currenAnimIndex = animationIndex;
+
+    _animations[_currenAnimIndex]->SetLoop(isLoop);
 
     return S_OK;
 }
@@ -120,7 +140,11 @@ HRESULT Model::BindMaterialTexture(Shader* shader, const char* constantName, uin
 
 HRESULT Model::PlayAnimation(const _float& timeDelta)
 {
-    // 뼈들의 트랜스폼 매트릭스를 애니메이션 상태에 맞도록 바꿔준다 deletatime.
+    /* 뼈들의 TransformationMatrix를 애니메이션 상태(Animation -> Channel -> 시간에 맞는 KeyFrame으로 맞도록 바꿔준다. */
+
+    /* 이 애니메이션에서 사용되는 뼈들의 TransformationMatrix행렬을 갱신하고. */
+    /* TransformationMatrix : 부모기준으로 표현된 이 뼈만의 행렬. */
+    _animations[_currenAnimIndex]->UpdateTransformationMatrix(_bones, timeDelta);
 
 
     for (auto& bone : _bones)
@@ -134,205 +158,6 @@ HRESULT Model::Render(uint32 meshIndex)
     m_Meshes[meshIndex]->Render();
 
     return S_OK;
-}
-
-HRESULT Model::BinaryModel(const wstring& fbxpath, const wstring& filePath)
-{
-
-
-    return S_OK;
-}
-
-HRESULT Model::ExportDeviceInitialize()
-{
-    // 이미 들고 있을 수 있으니까 Safe_Delete.
-    if(nullptr != _converter)
-        Safe_Delete<Converter*>(_converter);
-
-    // 참조하고 있지만 별도로 AddRef 안해도 될 듯. 어차피 게임 구동에는 지장을 안 줌.
-    _converter = new Converter(_device, _deviceContext);
-
-
-    return S_OK;
-}
-
-HRESULT Model::ExportModelData(wstring modelPath, uint32 modelNumber)
-{
-    // 
-    wstring fullpath = _modelRootfilePath + modelPath;
-
-    _converter->ExportModelData(fullpath, modelNumber);
-
-
-    return S_OK;
-}
-
-HRESULT Model::ExportMaterialData(wstring modelPath, uint32 modelNumber)
-{
-    //
-    wstring fullpath = _modelRootfilePath + modelPath;
-
-    _converter->ExportMaterialData(fullpath, modelNumber);
-
-
-
-    return S_OK;
-}
-
-void Model::ReadMaterial(wstring fileName, uint32 modelNumber)
-{
-    wstring fullPath = Utils::ToWString(_texturePath) + fileName + L".xml";
-    auto parentPath = filesystem::path(fullPath).parent_path();
-
-    tinyxml2::XMLDocument* document = new tinyxml2::XMLDocument();
-    tinyxml2::XMLError error = document->LoadFile(Utils::ToString(fullPath).c_str());
-    assert(error == tinyxml2::XML_SUCCESS);
-
-    tinyxml2::XMLElement* root = document->FirstChildElement();
-    tinyxml2::XMLElement* materialNode = root->FirstChildElement();
-
-    MESH_MATERIAL meshMaterial;
-    ::ZeroMemory(&meshMaterial, sizeof(MESH_MATERIAL));
-
-    while (materialNode)
-    {
-        shared_ptr<asMaterial> material = make_shared<asMaterial>();
-
-        tinyxml2::XMLElement* node = nullptr;
-
-        node = materialNode->FirstChildElement();
-        material->name = node->GetText();
-
-        // Diffuse Texture
-        node = node->NextSiblingElement();
-
-        if (node->GetText())
-        {
-            wstring DiffusetextureStr = Utils::ToWString(node->GetText());
-            if (DiffusetextureStr.length() > 0)
-            {
-                // TODO
-                
-                //auto texture = 
-                // 읽어왔으면 텍스쳐를 찾아서 마테리얼의 디퓨즈에 넣는다.
-                // 모델 자체가 Material을 들고 있으니까 여기다가 푸쉬해서 넣어주면 될 듯.
-                Texture* loadDiffuseTexture = Texture::Create(_device, _deviceContext, DiffusetextureStr);
-                meshMaterial._texture[aiTextureType_DIFFUSE] = loadDiffuseTexture;
-            }
-        }
-
-        // Specular Texture
-        node = node->NextSiblingElement();
-        if (node->GetText())
-        {
-            wstring SpecularTextureStr = Utils::ToWString(node->GetText());
-            if (SpecularTextureStr.length() > 0)
-            {
-                // specular texture add 
-                Texture* loadSpecularTexture = Texture::Create(_device, _deviceContext, SpecularTextureStr);
-                meshMaterial._texture[aiTextureType_SPECULAR] = loadSpecularTexture;
-            }
-        }
-
-        // NormalTexture 
-        node = node->NextSiblingElement();
-        if (node->GetText())
-        {
-            wstring normalTextureStr = Utils::ToWString(node->GetText());
-            if (normalTextureStr.length() > 0)
-            {
-                // TODO
-                // normalTexture Add
-                Texture* loadNormalTexture = Texture::Create(_device, _deviceContext, normalTextureStr);
-                meshMaterial._texture[aiTextureType_NORMALS] = loadNormalTexture;
-
-            }
-        }
-
-        _materials.push_back(meshMaterial);
-    }
-
-}
-
-void Model::ReadModel(wstring fileName, uint32 modelNumber)
-{
-    wstring fullPath = Utils::ToWString(_modelPath) + fileName + L".mesh";
-
-    shared_ptr<FileUtils> file = make_shared<FileUtils>();
-    file->Open(fullPath, FileMode::Read);
-
-    // Bones
-    {
-        const uint32 count = file->Read<uint32>();
-
-        for (uint32 i = 0; i < count; ++i)
-        {
-            shared_ptr<ModelBone> bone = make_shared<ModelBone>();
-            bone->index = file->Read<int32>();
-            bone->name = Utils::ToWString(file->Read<string>());
-            bone->parentIndex = file->Read<int32>();
-            bone->transform = file->Read<Matrix>();
-
-            _modelBones.push_back(bone);
-        }
-    }
-
-
-    //m_iNumMeshes = m_pAIScene->mNumMeshes;
-
-    //m_Meshes.reserve(m_iNumMeshes);
-
-    //for (size_t i = 0; i < m_iNumMeshes; i++)
-    //{
-    //    Mesh* mesh = Mesh::Create(_device, _deviceContext, type, this, m_pAIScene->mMeshes[i], ::XMLoadFloat4x4(&_pivotMatrix));
-    //    if (nullptr == mesh)
-    //        return E_FAIL;
-
-    //    m_Meshes.push_back(mesh);
-    //}
-    // Mesh
-    {
-        const uint32 count = file->Read<uint32>();
-
-        for (uint32 i = 0; i < count; ++i)
-        {
-           // shared_ptr<Mesh> mesh = make_shared<Mesh>();
-
-           //mesh->name = Utils::ToWString(file->Read<string>());
-           //mesh->boneindex = file->Read<int32>();
-           //
-           //mesh->mateiralname = Utils::ToWString(file->Read<string>());
-
-            // VertexData
-            {
-                const uint32 count = file->Read<uint32>();
-                vector<VertexType> vertices;
-                vertices.resize(count);
-
-                void* data = vertices.data();
-                file->Read(&data, sizeof(VertexType) * count);
-                // mesh add geometry;
-                //Mesh* mesh = Mesh::Create(_device, _deviceContext, MODEL_TYPE::NONE, this, )
-            }
-
-            // indexData
-            {
-                const uint32 count = file->Read<uint32>();
-
-                vector<uint32> indices;
-                indices.resize(count);
-
-                void* data = indices.data();
-                file->Read(&data, sizeof(uint32) * count);
-                // mesh add indices
-            }
-
-            // mesh create buffer
-
-            // mesh pushback
-        }
-    }
-
 }
 
 HRESULT Model::ReadyMeshes(MODEL_TYPE type)
@@ -435,6 +260,22 @@ HRESULT Model::ReadyBones(const aiNode* node, int32 parentNodeIndex)
     return S_OK;
 }
 
+HRESULT Model::ReadyAnimations()
+{
+    _numAnimations = m_pAIScene->mNumAnimations;
+
+    for (uint32 i = 0; i < _numAnimations; ++i)
+    {
+        Animation* pAnimation = Animation::Create(this, m_pAIScene->mAnimations[i]);
+        if (nullptr == pAnimation)
+            return E_FAIL;
+
+        _animations.push_back(pAnimation);
+    }
+
+    return S_OK;
+}
+
 Model* Model::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL_TYPE type, const string& pModelFilePath, FXMMATRIX pivotMat)
 {
     Model* pInstance = new Model(pDevice, pContext);
@@ -465,6 +306,11 @@ void Model::Free()
 {
     __super::Free();
 
+    for (auto& pAnimation : _animations)
+        Safe_Release<Animation*>(pAnimation);
+
+    _animations.clear();
+
 
     for (auto& material : _materials)
         for (size_t i = 0; i < AI_TEXTURE_TYPE_MAX; i++)
@@ -485,7 +331,4 @@ void Model::Free()
         Safe_Release<Bone*>(bone);
 
     _bones.clear();
-
-    if(_converter != nullptr)
-        Safe_Delete<Converter*>(_converter);
 }

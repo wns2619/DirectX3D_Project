@@ -32,6 +32,26 @@ BinaryModel::BinaryModel(const BinaryModel& rhs)
 		Safe_AddRef<BinaryMesh*>(mesh);
 }
 
+int32 BinaryModel::GetBoneIndex(const char* boneName) const
+{
+	uint32 boneIndex = 0;
+
+	auto iter = find_if(_bones.begin(), _bones.end(), [&](Bone* bone)
+		{
+			if (false == ::strcmp(bone->GetBoneName(), boneName))
+				return true;
+
+			++boneIndex;
+
+			return false;
+		});
+
+	if (iter == _bones.end())
+		return -1;
+
+	return boneIndex;
+}
+
 HRESULT BinaryModel::InitializePrototype(MODEL_TYPE type, const string& pBinaryModelFilePath, FXMMATRIX pivotMat)
 {
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
@@ -40,17 +60,17 @@ HRESULT BinaryModel::InitializePrototype(MODEL_TYPE type, const string& pBinaryM
 	uint32 iType;
 	file->Read<uint32>(iType);
 	_ModelType = static_cast<MODEL_TYPE>(iType);
-	// 모델 타입 저장.
+	//// 모델 타입 저장.
 
 	Matrix pivotMatrix;
 	file->Read<Matrix>(pivotMatrix);
 	_pivotMatrix = pivotMatrix;
-	// 모텔 사전 행렬 저장
+	//// 모텔 사전 행렬 저장
 
 	uint32 NumMeshes;
 	file->Read<uint32>(NumMeshes);
 	m_iNumMeshes = NumMeshes;
-	// 메쉬 개수 -> 나중에 이 메쉬만큼 돌아야함.
+	//// 메쉬 개수 -> 나중에 이 메쉬만큼 돌아야함.
 
 	for (uint32 i = 0; i < NumMeshes; ++i)
 	{
@@ -103,8 +123,8 @@ HRESULT BinaryModel::InitializePrototype(MODEL_TYPE type, const string& pBinaryM
 		BinaryMesh* newBinaryMesh = 
 			BinaryMesh::Create(_device, _deviceContext, type, viBufferDesc, meshBufferDesc, meshIndex, pVertices, pIndices, pivotMatrix);
 
-		if (nullptr == newBinaryMesh)
-			return E_FAIL;
+		//if (nullptr == newBinaryMesh)
+		//	return E_FAIL;
 
 		m_Meshes.push_back(newBinaryMesh);
 
@@ -112,37 +132,37 @@ HRESULT BinaryModel::InitializePrototype(MODEL_TYPE type, const string& pBinaryM
 		Safe_Delete_Array<_ulong*>(pIndices);
 	}
 
-	// 마테리얼 개수 
-	uint32 NumMaterialCount;
- 	file->Read<uint32>(NumMaterialCount);
-	_numMaterial = NumMaterialCount;
-	
+	//// 마테리얼 개수 
+	//uint32 NumMaterialCount;
+ //	file->Read<uint32>(NumMaterialCount);
+	//_numMaterial = NumMaterialCount;
+	//
 
-	for (uint32 i = 0; i < NumMaterialCount; ++i)
-	{
-		uint32 textureCount;
-		file->Read<uint32>(textureCount);
+	//for (uint32 i = 0; i < NumMaterialCount; ++i)
+	//{
+	//	uint32 textureCount;
+	//	file->Read<uint32>(textureCount);
 
-		MESH_MATERIAL meshMaterials;
-		::ZeroMemory(&meshMaterials, sizeof(meshMaterials));
+	//	MESH_MATERIAL meshMaterials;
+	//	::ZeroMemory(&meshMaterials, sizeof(meshMaterials));
 
-		for (uint32 j = 0; j < textureCount; ++j)
-		{
+	//	for (uint32 j = 0; j < textureCount; ++j)
+	//	{
 
-			uint32 textureType;
-			file->Read<uint32>(textureType);
+	//		uint32 textureType;
+	//		file->Read<uint32>(textureType);
 
-			string texturePath;
-			file->Read(texturePath);
+	//		string texturePath;
+	//		file->Read(texturePath);
 
-			Texture* texture = Texture::Create(_device, _deviceContext, Utils::ToWString(texturePath));
-			if (texture == nullptr)
-				return E_FAIL;
+	//		Texture* texture = Texture::Create(_device, _deviceContext, Utils::ToWString(texturePath));
+	//		if (texture == nullptr)
+	//			return E_FAIL;
 
-			meshMaterials._texture[textureType] = texture;
-		}
-		_materials.push_back(meshMaterials);
-	}
+	//		meshMaterials._texture[textureType] = texture;
+	//	}
+	//	_materials.push_back(meshMaterials);
+	//}
 
 	return S_OK;
 }
@@ -232,6 +252,5 @@ void BinaryModel::Free()
 		Safe_Release<Bone*>(bone);
 
 	_bones.clear();
-
 
 }

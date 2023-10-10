@@ -159,6 +159,15 @@ namespace Engine
 	};
 
 
+	struct KEYFRAME
+	{
+		_float time;
+		Vec3 scale;
+		Vec4 rotation;
+		Vec4 translation;
+	};
+
+
 };
 
 

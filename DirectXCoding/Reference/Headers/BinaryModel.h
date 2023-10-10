@@ -16,6 +16,7 @@ private:
 
 public:
 	uint32 GetNumMeshes() const { return m_iNumMeshes; }
+	int32 GetBoneIndex(const char* boneName) const;
 
 public:
 	virtual HRESULT InitializePrototype(MODEL_TYPE type, const string& pBinaryModelFilePath, FXMMATRIX pivotMat);

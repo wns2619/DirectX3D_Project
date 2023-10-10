@@ -145,6 +145,12 @@
     <Filter Include="01.Utility\04.Component\Model\Mesh\BinaryMesh">
       <UniqueIdentifier>{23566593-d5cb-4090-affa-5a040c175c0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Component\Model\Animation">
+      <UniqueIdentifier>{d116be1f-a072-40da-92a0-1dacdf9fb5ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Model\Animation\Channel">
+      <UniqueIdentifier>{af697d4f-753a-4085-af59-777eb9403fe5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -327,6 +333,12 @@
     <ClInclude Include="..\Public\BinaryMesh.h">
       <Filter>01.Utility\04.Component\Model\Mesh\BinaryMesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Animation.h">
+      <Filter>01.Utility\04.Component\Model\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Channel.h">
+      <Filter>01.Utility\04.Component\Model\Animation\Channel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -466,6 +478,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\BinaryMesh.cpp">
       <Filter>01.Utility\04.Component\Model\Mesh\BinaryMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Animation.cpp">
+      <Filter>01.Utility\04.Component\Model\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Channel.cpp">
+      <Filter>01.Utility\04.Component\Model\Animation\Channel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

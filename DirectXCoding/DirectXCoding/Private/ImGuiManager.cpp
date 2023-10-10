@@ -15,6 +15,7 @@
 #include "Utils.h"
 #include "FileUtils.h"
 #include "Mesh.h"
+#include "Bone.h"
 
 ImGui::FileBrowser g_fileDialog;
 
@@ -304,7 +305,6 @@ void ImGuiManager::MainSection()
 			//uint32 layerSize = gameInstance->GetLayerObjectCount();
 	
 			// 이 레이어를 전부 돌면서 파일 Save
-			gameInstance->GameObjectSave();
 			
 		}
 
@@ -439,11 +439,11 @@ HRESULT ImGuiManager::ModelNameCardSection()
 					wstring findPrototypename = ImGuiResourceHandler::GetInstance()->FindProtoFilePath(modelPath);
 
 
-					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), _editlayerTag, TEXT("ProtoTypeGameObjectPlayer"))))
-					{
-						RELEASE_INSTANCE(GameInstance);
-						return E_FAIL;
-					}
+					//if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), _editlayerTag, findPrototypename)))
+					//{
+					//	RELEASE_INSTANCE(GameInstance);
+					//	return E_FAIL;
+					//}
 
 					//GameObject* temp = gameInstance->GetLayerObjectTag(_editlayerTag, _modelNames[i].first);
 
@@ -455,7 +455,7 @@ HRESULT ImGuiManager::ModelNameCardSection()
 						fileExtension = modelPath.substr(0, dotPosition);
 					
 
-					//BinaryModel(modelPath, Utils::ToWString(fileExtension));
+					//BinaryModelSave(modelPath, Utils::ToWString(fileExtension));
 		
 				}
 				else
@@ -578,14 +578,6 @@ HRESULT ImGuiManager::ObjectsSection()
 	return S_OK;
 }
 
-void ImGuiManager::FileSave()
-{
-}
-
-void ImGuiManager::FileLoad()
-{
-}
-
 void ImGuiManager::BinaryModelSave(const string& fpxPath, const wstring& binaryDirectory)
 {
 	Matrix ModelInitailizeMatrix = Matrix::Identity;
@@ -687,9 +679,167 @@ void ImGuiManager::BinaryModelSave(const string& fpxPath, const wstring& binaryD
 			}
 		}
 	}
-
 	Safe_Release<Model*>(pBinaryModel);
 
+}
+
+void ImGuiManager::BinaryAnimModelSave(const string& fpxPath, const wstring& binaryDirectory)
+{
+	Matrix ModelInitailizeMatrix = Matrix::Identity;
+	ModelInitailizeMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
+	Model* pBinaryModel = Model::Create(_device, _deviceContext, Model::MODEL_TYPE::ANIM, fpxPath, ModelInitailizeMatrix);
+
+	if (nullptr != pBinaryModel)
+	{
+		auto path = filesystem::path(binaryDirectory);
+
+		filesystem::create_directory(path.parent_path());
+
+		shared_ptr<FileUtils> file = make_shared<FileUtils>();
+
+		wstring finalPath = binaryDirectory + L".dat";
+
+		file->Open(finalPath, FileMode::Write);
+
+		uint32 iType = static_cast<uint32>(pBinaryModel->GetModelType());
+		file->Write<uint32>(iType);
+		// 모델 타입 저장.
+
+		//Matrix pivotMatrix = pBinaryModel->GetPivotMatrix();
+		//file->Write<Matrix>(pivotMatrix);
+		// 모텔 사전 행렬 저장
+
+		// -> 애니메이션 모델은 사전행렬 설정하면 안 됨.
+
+
+		// 본을 먼저 세팅.
+		vector<Bone*> Bones = pBinaryModel->GetBones();
+		for (auto& Boneiter : Bones)
+		{
+			// 뼈의 페어런트 인덱스 설정. -> 벡터의 사이즈 -1이 페어런트 사이즈임. -> 어차피 본이 만들어질 때 들고 있다.
+			int32 boneParnetIndex = Boneiter->GetBoneIndex();
+			file->Write<int32>(boneParnetIndex);
+
+			// 뼈의 이름을 가지고온다.
+			const _char* boneName = Boneiter->GetBoneName();
+			file->Write<const _char*>(boneName);
+
+			// 뼈 본인의 TransformMatrix를 가지고옴 // Combiend는 부모의 뼈니까 불러올 때 재귀적으로 불러오면 될 듯?.
+			// 순서대로 저장하고 순서대로 인덱스에 넣으면 뼈 그대로 될 것임.
+			// 이미 전치한 상태로 갖고 있으니까 꺼내 올 때 따로 전치할 필요 없음.
+			Matrix boneOriginTransformMatrix = Boneiter->GetTransformMatrix();
+			file->Write<Matrix>(boneOriginTransformMatrix);
+		}
+
+
+
+		uint32 NumMeshes = pBinaryModel->GetNumMeshes();
+		file->Write<uint32>(NumMeshes);
+		// 메쉬 개수 -> 나중에 이 메쉬만큼 돌아야함.
+
+		vector<Mesh*>* vecMesh = pBinaryModel->GetMeshes();
+		for (auto& Meshiter : *vecMesh)
+		{
+			// 메쉬를 구성하고있는 버퍼를 어떤 형식으로 읽을건지 메인 BufferDesc
+			VIBuffer::BUFFER_DESC viBufferDesc = *Meshiter->GetBufferDesc();
+			file->Write<VIBuffer::BUFFER_DESC>(viBufferDesc);
+
+			// 그리고 그 형식으로 이루어진 Mesh Desc
+			Mesh::MESH_BUFFER_DESC meshBufferDesc = *Meshiter->GetMeshBufferDesc();
+			file->Write<Mesh::MESH_BUFFER_DESC>(meshBufferDesc);
+
+			// 메쉬의 마테리얼 인덱스.
+			uint32 meshIndex = Meshiter->GetMaterialIndex();
+			file->Write<uint32>(meshIndex);
+
+			// 애니메이션 메쉬의 버텍스 개수.
+			uint32 Numvertices = Meshiter->GetBufferDesc()->_numvertices;
+			file->Write<uint32>(Numvertices);
+
+			// 애니메이션 버텍스를 가지고온다.
+			VTXANIMMESH* pVertices = Meshiter->GetVertexAnimBuffer();
+
+			for (uint32 i = 0; i < Numvertices; i++)
+			{
+				file->Write<Vec3>(pVertices[i].position);
+				file->Write<Vec3>(pVertices[i].normal);
+				file->Write<Vec2>(pVertices[i].texcoord);
+				file->Write<Vec3>(pVertices[i].tangent);
+				file->Write<Vec3>(pVertices[i].bitangent);
+			}
+
+
+			// 그 메쉬에 영향을 주는 뼈의 개수.
+			uint32 effectBones = Meshiter->GetMeshEffectBones();
+			file->Write<uint32>(effectBones);
+
+			// 공통으로 사용되는 뼈대들을 보정하기 위한 매트릭스.
+			vector<Matrix> vectorOffsetMatrix = Meshiter->vecGetOffsetMatrices();
+
+			// 메쉬의 영향을 주는 뼈의 개수만틈 오프셋과 몇 번 뼈의 인덱스인 지 확인.
+			for (uint32 i = 0; i < effectBones; ++i)
+			{
+				// 영향을 받는 본의 개수만큼 오프셋매트릭스를 읽어들인다.
+				Matrix BonesOffsetMatrix = vectorOffsetMatrix[i];
+				file->Write<Matrix>(BonesOffsetMatrix);
+
+				// 뼈 이름 정보를 저장해서 본 인덱스 몇 번 뼈의 인덱스를 확인한다.
+				string szBoneName = Meshiter->GetBoneName();
+				file->Write<string>(szBoneName);
+
+				// 저장한 이름으로 뼈의 인덱스를 저장함.
+				int32 boneIndex = pBinaryModel->GetBoneIndex(szBoneName.c_str());
+				file->Write<int32>(boneIndex);
+
+				uint32 blentWeights = pBinaryModel->GetBl
+
+			}
+
+
+			// 그 정보로 구성된 버텍스로 이루어진 인덱스 
+			_ulong* pIndices = Meshiter->GetIndicesMeshBuffer();
+
+			const uint32 IndicesCount = Meshiter->GetBufferDesc()->_numIndices / 3;
+			file->Write<uint32>(IndicesCount);
+
+			uint32 numIndices = 0;
+
+			for (uint32 i = 0; i < IndicesCount; ++i)
+			{
+				file->Write<_ulong>(pIndices[numIndices++]);
+				file->Write<_ulong>(pIndices[numIndices++]);
+				file->Write<_ulong>(pIndices[numIndices++]);
+			}
+
+		}
+
+		// 마테리얼 개수 
+		uint32 NumMaterialCount = pBinaryModel->GetMaterialCount();
+		file->Write<uint32>(NumMaterialCount);
+
+		// 이제 개수만큼 마테리얼 돌면서 텍스쳐 입히면 됨.
+		vector<MESH_MATERIAL>* vecMaterial = pBinaryModel->GetMaterial();
+
+		for (auto& Materialiter : *vecMaterial)
+		{
+			uint32 textureCount = Materialiter.textureCount;
+			file->Write<uint32>(textureCount);
+
+			for (uint32 i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
+			{
+				if (Materialiter._texture[i] == nullptr)
+					continue;
+
+				// 텍스쳐의 타입
+				uint32 textureType = i;
+				file->Write<uint32>(textureType);
+
+				wstring texturePath = Materialiter._texture[i]->GetTexturePath();
+				file->Write<string>(Utils::ToString(texturePath));
+			}
+		}
+	}
+	Safe_Release<Model*>(pBinaryModel);
 }
 
 void ImGuiManager::AddLightSection()
