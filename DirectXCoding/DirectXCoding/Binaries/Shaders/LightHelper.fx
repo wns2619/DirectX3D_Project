@@ -158,6 +158,7 @@ float4 ComputeLight(float3 normal, float2 uv, float3 worldPosition)
 float4 ComputeTeacherLight(float3 normal, float2 uv, float3 worldPosition)
 {
     vector vMaterialDiffuse = DiffuseMap.Sample(LinearSampler, uv);
+
     
     if (vMaterialDiffuse.a < 0.3f)
         discard;

@@ -441,7 +441,7 @@ HRESULT ImGuiManager::ModelNameCardSection()
 					wstring findPrototypename = ImGuiResourceHandler::GetInstance()->FindProtoFilePath(modelPath);
 
 
-					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), _editlayerTag, findPrototypename)))
+					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), _editlayerTag, TEXT("ProtoTypeGameObjectPlayer"))))
 					{
 						RELEASE_INSTANCE(GameInstance);
 						return E_FAIL;
@@ -458,7 +458,7 @@ HRESULT ImGuiManager::ModelNameCardSection()
 					
 
 					//BinaryModelSave(modelPath, Utils::ToWString(fileExtension));
-					BinaryAnimModelSave(modelPath, Utils::ToWString(fileExtension));
+					//BinaryAnimModelSave(modelPath, Utils::ToWString(fileExtension));
 		
 				}
 				else
@@ -717,21 +717,17 @@ void ImGuiManager::BinaryAnimModelSave(const string& fpxPath, const wstring& bin
 
 		// 본을 먼저 세팅.
 		vector<Bone*> Bones = pBinaryModel->GetBones();
+		file->Write<uint32>(Bones.size());
 		for (auto& Boneiter : Bones)
 		{
-			// 뼈의 페어런트 인덱스 설정. -> 벡터의 사이즈 -1이 페어런트 사이즈임. -> 어차피 본이 만들어질 때 들고 있다.
-			int32 boneParnetIndex = Boneiter->GetBoneIndex();
-			file->Write<int32>(boneParnetIndex);
-
 			// 뼈의 이름을 가지고온다.
 			const _char* boneName = Boneiter->GetBoneName();
-			file->Write<const _char*>(boneName);
+			file->Write<string>(boneName);
 
-			// 뼈 본인의 TransformMatrix를 가지고옴 // Combiend는 부모의 뼈니까 불러올 때 재귀적으로 불러오면 될 듯?.
-			// 순서대로 저장하고 순서대로 인덱스에 넣으면 뼈 그대로 될 것임.
-			// 이미 전치한 상태로 갖고 있으니까 꺼내 올 때 따로 전치할 필요 없음.
-			Matrix boneOriginTransformMatrix = Boneiter->GetTransformMatrix();
-			file->Write<Matrix>(boneOriginTransformMatrix);
+			// 본의 정보를 들고 있는 구조체.
+			Bone::BONE_DESC boneDesc = Boneiter->GetBoneDesc();
+			file->Write<Bone::BONE_DESC>(boneDesc);
+
 		}
 
 
@@ -769,6 +765,8 @@ void ImGuiManager::BinaryAnimModelSave(const string& fpxPath, const wstring& bin
 				file->Write<Vec2>(pVertices[i].texcoord);
 				file->Write<Vec3>(pVertices[i].tangent);
 				file->Write<Vec3>(pVertices[i].bitangent);
+				file->Write<XMUINT4>(pVertices[i].blendIndices);
+				file->Write<Vec4>(pVertices[i].blendWeights);
 			}
 
 
@@ -782,9 +780,6 @@ void ImGuiManager::BinaryAnimModelSave(const string& fpxPath, const wstring& bin
 			// 본 뼈 이름를 갖고있는 벡터를 가지고 온다.
 			vector<string> boneNames = Meshiter->vecGetBoneName();
 
-			// 이 뼈가 몇 개의 정점에 영향을 주는 지 담아놓은 벡터.
-			vector<uint32> blendWeights = Meshiter->vecGetBlendWeights();
-
 			// 메쉬의 영향을 주는 뼈의 개수만틈 오프셋과 몇 번 뼈의 인덱스인 지 확인.
 			for (uint32 i = 0; i < effectBones; ++i)
 			{
@@ -795,44 +790,6 @@ void ImGuiManager::BinaryAnimModelSave(const string& fpxPath, const wstring& bin
 				// 뼈 이름 정보를 저장해서 본 인덱스 몇 번 뼈의 인덱스를 확인한다.
 				string szBoneName = boneNames[i];
 				file->Write<string>(szBoneName);
-
-				// 저장한 이름으로 뼈의 인덱스를 저장함.
-				int32 boneIndex = pBinaryModel->GetBoneIndex(szBoneName.c_str());
-				file->Write<int32>(boneIndex);
-
-				// 뼈가 몇 개의 메쉬정점에 영향을 주는 지 포문을 돈다.
-				file->Write<uint32>(blendWeights[i]);
-
-				vector<Mesh::BLEND_WEIGHT_DESC> blendDesc = Meshiter->vecBlendDesc();
-
-				for (uint32 j = 0; j < blendWeights[i]; ++j)
-				{
-					uint32 VertexID = blendDesc[j].vertexID;
-					file->Write<uint32>(VertexID);
-
-					if (0.f == blendDesc[j].blendOriginWeights.x)
-					{
-						// uint32 짜리 vertexID가 있고. -> 이게 배열에 들어가고
-						// float짜리 mWeight가 있다. -> 이게 값임.
-						file->Write<uint32>(i);
-						file->Write<_float>(blendDesc[j].blendWeights);
-					}
-					else if (0.f == blendDesc[j].blendOriginWeights.y)
-					{
-						file->Write<uint32>(i);
-						file->Write<_float>(blendDesc[j].blendWeights);
-					}
-					else if (0.f == blendDesc[j].blendOriginWeights.z)
-					{
-						file->Write<uint32>(i);
-						file->Write<_float>(blendDesc[j].blendWeights);
-					}
-					else if (0.f == blendDesc[j].blendOriginWeights.w)
-					{
-						file->Write<uint32>(i);
-						file->Write<_float>(blendDesc[j].blendWeights);
-					}
-				}
 			}
 
 
@@ -881,7 +838,12 @@ void ImGuiManager::BinaryAnimModelSave(const string& fpxPath, const wstring& bin
 		}
 
 
+
 		// Model Animation
+
+		uint32 animationCount = pBinaryModel->GetNumAnimations();
+		file->Write<uint32>(animationCount);
+
 		vector<Animation*> modelAnimation = pBinaryModel->GetAnimation();
 		for (auto& animiter : modelAnimation)
 		{
@@ -890,7 +852,11 @@ void ImGuiManager::BinaryAnimModelSave(const string& fpxPath, const wstring& bin
 			file->Write<Animation::ANIMATION_DESC>(animDuration);
 			// CurrenKeyFrame 사이즈는 어차피 디스크립션의 NumChannels임.
 
+			_char* animationName = animiter->GetAnimationBoneName();
+			file->Write<string>(animationName);
+
 			vector<Channel*> animationChannel = animiter->GetChannels();
+			file->Write<uint32>(animationChannel.size());
 			// 이 애니메이션 당 들고있는 채널 개수.
 			for (auto& pChannel : animationChannel)
 			{
@@ -905,6 +871,7 @@ void ImGuiManager::BinaryAnimModelSave(const string& fpxPath, const wstring& bin
 				file->Write<Channel::CHANNEL_DESC>(channelDesc);
 
 				vector<KEYFRAME> keyFrame = pChannel->GetKeyFrame();
+				file->Write<uint32>(keyFrame.size());
 				for (auto& pKeyFrame : keyFrame)
 				{
 

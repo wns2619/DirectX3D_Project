@@ -189,6 +189,7 @@ HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, const Model* model)
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendIndices.x = i;
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.x = bone->mWeights[j].mWeight;
 
+
                 blendWeightDesc.vertexID = bone->mWeights[j].mVertexId;
                 blendWeightDesc.blendWeights = bone->mWeights[j].mWeight;
 

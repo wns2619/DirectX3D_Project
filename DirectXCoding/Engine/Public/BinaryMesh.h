@@ -23,17 +23,18 @@ public:
 	uint32 GetMaterialIndex() const { return _materialIndex; }
 
 public:
-	virtual HRESULT InitializePrototype(BinaryModel::MODEL_TYPE type, VIBuffer::BUFFER_DESC viBufferInfo, MESH_BUFFER_DESC binaryMeshInfo, VTXMESH* vertices,
-		_ulong* Indices, uint32 MeshIndex, FXMMATRIX pivotMat);
+	HRESULT InitializePrototype(BinaryModel::MODEL_TYPE type, VIBuffer::BUFFER_DESC viBufferInfo, MESH_BUFFER_DESC binaryMeshInfo, void* vertices,
+		_ulong* Indices, uint32 MeshIndex, vector<uint32>& boneIndex, vector<Matrix>& offsetMatrix, uint32 NumberBone, FXMMATRIX pivotMat = ::XMMatrixIdentity());
+
+	HRESULT InitializePrototype(BinaryModel::MODEL_TYPE type, VIBuffer::BUFFER_DESC viBufferInfo, MESH_BUFFER_DESC binaryMeshInfo, void* vertices,
+		_ulong* Indices, uint32 MeshIndex, FXMMATRIX pivotMat = ::XMMatrixIdentity());
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
-	HRESULT BindBoneMatrices(class Shader* shader, const vector<class Bone*>& bones, const char* constantName);
+	HRESULT BindBoneMatrices(class Shader* shader, const vector<class BinaryBone*>& bones, const char* constantName);
 
 
 private:
-	uint32 _boneIndex;
-
 	MESH_BUFFER_DESC _MeshBufferDesc;
 
 private:
@@ -48,13 +49,16 @@ private:
 	//HRESULT ReadyVertexBufferNoneAnim(const aiBinaryMesh* BinaryMesh, FXMMATRIX pivotMat);
 	//HRESULT ReadyVertexBufferAnim(const aiBinaryMesh* BinaryMesh, const Model* model);
 public:
-	static BinaryMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, 
-		BinaryModel::MODEL_TYPE type, VIBuffer::BUFFER_DESC viBufferInfo, MESH_BUFFER_DESC binaryMeshInfo, uint32 MeshIndex, VTXMESH* vertices, 
-		_ulong* Indices, FXMMATRIX pivotMat);
+	static BinaryMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
+		BinaryModel::MODEL_TYPE type, VIBuffer::BUFFER_DESC viBufferInfo, MESH_BUFFER_DESC binaryMeshInfo, uint32 MeshIndex, void* vertices,
+		_ulong* Indices, vector<uint32>& boneIndex, vector<Matrix>& offsetMatrix, uint32 NumberBone, FXMMATRIX pivotMat = ::XMMatrixIdentity());
 
-
+	static BinaryMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
+		BinaryModel::MODEL_TYPE type, VIBuffer::BUFFER_DESC viBufferInfo, MESH_BUFFER_DESC binaryMeshInfo, uint32 MeshIndex, void* vertices,
+		_ulong* Indices, FXMMATRIX pivotMat = ::XMMatrixIdentity());
 	virtual Component* Clone(void* pArg) override;
 	virtual void Free() override;
 };
 
 END
+

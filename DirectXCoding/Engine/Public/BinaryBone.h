@@ -4,7 +4,7 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL Bone final : public Base
+class ENGINE_DLL BinaryBone final : public Base
 {
 public:
 	struct BONE_DESC
@@ -21,24 +21,25 @@ public:
 	};
 
 private:
-	Bone();
-	explicit Bone(const Bone& rhs);
-	virtual ~Bone() = default;
+	BinaryBone();
+	explicit BinaryBone(const BinaryBone& rhs);
+	virtual ~BinaryBone() = default;
 
 public:
 	const char* GetBoneName() const { return _szName; }
 	const Matrix GetCombinedTransformMatrix() const { return _BoneDesc._combinedTransformationMatrix; }
 	const XMMATRIX GetCombinedTransformCaculator() const { return ::XMLoadFloat4x4(&_BoneDesc._combinedTransformationMatrix); }
 	int32 GetBoneIndex() { return _BoneDesc._parentBoneIndex; }
-	
+
 	void SetTransformationMatrix(FXMMATRIX transformationMatrix) { ::XMStoreFloat4x4(&_BoneDesc._transformationMatrix, transformationMatrix); }
 
 	Matrix GetTransformMatrix() { return _BoneDesc._transformationMatrix; }
 
 	BONE_DESC& GetBoneDesc() { return _BoneDesc; }
+
 public:
-	HRESULT Initialize(const aiNode* node, int32 parentBoneIndex);
-	HRESULT UpdateCombinedTransformMatrix(const vector<class Bone*>& bones);
+	HRESULT Initialize(const BONE_DESC boneInfo, const _char* nameData, int32 parentBoneIndex);
+	HRESULT UpdateCombinedTransformMatrix(const vector<class BinaryBone*>& bones);
 
 private:
 	_char _szName[MAX_PATH] = "";
@@ -46,8 +47,8 @@ private:
 	BONE_DESC _BoneDesc = {};
 
 public:
-	static Bone* Create(const aiNode* node, int32 parentBoneIndex);
-	Bone* Clone();
+	static BinaryBone* Cretae(BONE_DESC boneInfo, const _char* nameData, int32 parentBoneIndex);
+	BinaryBone* Clone();
 	virtual void Free() override;
 };
 

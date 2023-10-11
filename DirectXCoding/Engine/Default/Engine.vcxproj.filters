@@ -151,6 +151,15 @@
     <Filter Include="01.Utility\04.Component\Model\Animation\Channel">
       <UniqueIdentifier>{af697d4f-753a-4085-af59-777eb9403fe5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Component\Model\Bone\BinaryBone">
+      <UniqueIdentifier>{d5eca353-69b0-488b-92c1-e245a2e27909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Model\Animation\BinaryAnimation">
+      <UniqueIdentifier>{dbe2a5b0-5067-4390-bca8-63ec7738b133}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Model\Animation\Channel\BinaryChannel">
+      <UniqueIdentifier>{410e73f4-1d58-4c67-941c-b7ac1c840f7e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -339,6 +348,15 @@
     <ClInclude Include="..\Public\Channel.h">
       <Filter>01.Utility\04.Component\Model\Animation\Channel</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BinaryBone.h">
+      <Filter>01.Utility\04.Component\Model\Bone\BinaryBone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BinaryAnimation.h">
+      <Filter>01.Utility\04.Component\Model\Animation\BinaryAnimation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BinaryChannel.h">
+      <Filter>01.Utility\04.Component\Model\Animation\Channel\BinaryChannel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -484,6 +502,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Channel.cpp">
       <Filter>01.Utility\04.Component\Model\Animation\Channel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BinaryBone.cpp">
+      <Filter>01.Utility\04.Component\Model\Bone\BinaryBone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BinaryAnimation.cpp">
+      <Filter>01.Utility\04.Component\Model\Animation\BinaryAnimation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BinaryChannel.cpp">
+      <Filter>01.Utility\04.Component\Model\Animation\Channel\BinaryChannel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

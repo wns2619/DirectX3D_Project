@@ -79,8 +79,6 @@ HRESULT Model::InitializePrototype(MODEL_TYPE type, const string& pModelFilePath
 
     ::XMStoreFloat4x4(&_pivotMatrix, pivotMat);
     
-
-
     // 재귀적으로 함수 호출한다. 처음에 루트를 시작할 node.
     if (FAILED(ReadyBones(m_pAIScene->mRootNode, -1)))
         return E_FAIL;

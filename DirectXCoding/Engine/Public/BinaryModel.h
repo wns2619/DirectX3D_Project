@@ -2,6 +2,7 @@
 
 #include "Component.h"
 #include "AsTypes.h"
+#include "FileUtils.h"
 
 BEGIN(Engine)
 
@@ -23,10 +24,16 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
+	HRESULT SetUp_Animation(_bool isLoop, uint32 animationIndex);
 	HRESULT BindBoneMatrices(class Shader* shader, uint32 meshIndex, const char* constantName);
 	HRESULT BindMaterialTexture(class Shader* shader, const char* constantName, uint32 meshIndex, aiTextureType type);
 	HRESULT PlayAnimation(const _float& timeDelta);
 	HRESULT Render(uint32 meshIndex);
+
+public:
+	HRESULT BinaryModelStatic(shared_ptr<FileUtils> file, const string& pBinaryModelFilePath, FXMMATRIX pivotMat);
+	HRESULT BinaryModelDynamic(shared_ptr<FileUtils> file, const string& pBinaryModelFilePath);
+
 
 public:
 	vector<class BinaryMesh*>* GetMeshes() { return &m_Meshes; }
@@ -47,7 +54,12 @@ private:
 	Matrix					_pivotMatrix;
 
 private:
-	vector<class Bone*>		_bones;
+	vector<class BinaryBone*>		_bones;
+
+private:
+	uint32 _currenAnimIndex = 0;
+	uint32 _numAnimations = 0;
+	vector<class BinaryAnimation*> _animations;
 
 private: // IMGUI
 	MODEL_TYPE _ModelType = MODEL_TYPE::TYPE_END;

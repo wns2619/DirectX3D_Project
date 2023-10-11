@@ -23,6 +23,9 @@
     <ClInclude Include="..\Public\Animation.h" />
     <ClInclude Include="..\Public\AsTypes.h" />
     <ClInclude Include="..\Public\Base.h" />
+    <ClInclude Include="..\Public\BinaryAnimation.h" />
+    <ClInclude Include="..\Public\BinaryBone.h" />
+    <ClInclude Include="..\Public\BinaryChannel.h" />
     <ClInclude Include="..\Public\BinaryMesh.h" />
     <ClInclude Include="..\Public\BinaryModel.h" />
     <ClInclude Include="..\Public\Bone.h" />
@@ -92,6 +95,9 @@
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
     </ClCompile>
     <ClCompile Include="..\Private\Base.cpp" />
+    <ClCompile Include="..\Private\BinaryAnimation.cpp" />
+    <ClCompile Include="..\Private\BinaryBone.cpp" />
+    <ClCompile Include="..\Private\BinaryChannel.cpp" />
     <ClCompile Include="..\Private\BinaryMesh.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
