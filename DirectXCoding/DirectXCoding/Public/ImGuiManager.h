@@ -95,9 +95,9 @@ private:
 	// GameObjects
 	GameObject* _SelectGameObject = nullptr;
 
-	void GameObjectUpdate(int32 vectorIndex);
-	void UpdateModelUI(int32 vectorIndex);
-	void UpdateMaterialUI(int32 vectorIndex);
+	void GameObjectUpdate(uint32 objectID, GameObject* pObj);
+	void UpdateModelUI(uint32 objectID, GameObject* pObj);
+	void UpdateMaterialUI(uint32 objectID, GameObject* pObj);
 
 	// Camera
 

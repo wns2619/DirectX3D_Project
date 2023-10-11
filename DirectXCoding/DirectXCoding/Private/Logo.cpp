@@ -49,7 +49,7 @@ HRESULT Logo::LateTick(const _float& timeDelta)
 	return S_OK;
 }
 
-HRESULT Logo::ReadyLayerBackGround(const wstring& layerTag)
+HRESULT Logo::ReadyLayerBackGround(const LAYER_TAG layerTag)
 {
 	GameInstance* gameInstance = GameInstance::GetInstance();
 	Safe_AddRef<GameInstance*>(gameInstance);

@@ -3,7 +3,6 @@
 #include "TimeManager.h"
 #include "GraphicsManager.h"
 #include "LevelManager.h"
-#include "ObjectManager.h"
 #include "Picking.h"
 
 IMPLEMENT_SINGLETON(GameInstance)
@@ -165,7 +164,7 @@ HRESULT GameInstance::AddProtoType(const wstring& protoTypeTag, GameObject* prot
     return _objectManager->AddPrototype(protoTypeTag, prototype);
 }
 
-HRESULT GameInstance::AddGameObject(uint32 levelIndex, const wstring& layerTag, const wstring& prototypeTag, void* argument)
+HRESULT GameInstance::AddGameObject(uint32 levelIndex, const LAYER_TAG layerTag, const wstring& prototypeTag, void* argument)
 {
     if (nullptr == _objectManager)
         return E_FAIL;
@@ -173,7 +172,7 @@ HRESULT GameInstance::AddGameObject(uint32 levelIndex, const wstring& layerTag, 
     return _objectManager->AddGameObject(levelIndex, layerTag, prototypeTag, argument);
 }
 
-GameObject* GameInstance::GetLayerObject(const wstring& layertag, OBJECT_TYPE type)
+GameObject* GameInstance::GetLayerObject(const LAYER_TAG layertag, OBJECT_TYPE type)
 {
     if (nullptr == _objectManager)
         return nullptr;
@@ -181,7 +180,7 @@ GameObject* GameInstance::GetLayerObject(const wstring& layertag, OBJECT_TYPE ty
     return _objectManager->GetLayerObject(layertag, type);
 }
 
-GameObject* GameInstance::GetLayerObjectTag(const wstring& layerag, const string& modelname)
+GameObject* GameInstance::GetLayerObjectTag(const LAYER_TAG layerag, const string& modelname)
 {
     if (nullptr == _objectManager)
         return nullptr;
@@ -189,7 +188,7 @@ GameObject* GameInstance::GetLayerObjectTag(const wstring& layerag, const string
     return _objectManager->GetLayerObjectTag(layerag, modelname);
 }
 
-HRESULT GameInstance::ComparisonAddObject(int32 levelIndex, const string& addObjectfile, const wstring& layertag, void* argument)
+HRESULT GameInstance::ComparisonAddObject(int32 levelIndex, const string& addObjectfile, const LAYER_TAG layertag, void* argument)
 {
     if (nullptr == _objectManager)
         return E_FAIL;
@@ -205,17 +204,30 @@ int32 GameInstance::GetLayerObjectCount()
     return _objectManager->GetLayerObjectCount();
 }
 
-vector<GameObject*>* GameInstance::GetCurrentObjectList(wstring& layerTag)
+vector<GameObject*>* GameInstance::GetCurrentObjectList(LAYER_TAG layerTag)
 {
     return _objectManager->GetCurrentObjectList(layerTag);
 }
 
-HRESULT GameInstance::DeleteGameObject(uint32 levelIndex, const wstring& layertag, const uint32 objectNumber, const string& modelNames)
+HRESULT GameInstance::DeleteGameObject(uint32 levelIndex, const LAYER_TAG layertag, const uint32 objectNumber, const string& modelNames)
 {
     if (nullptr == _objectManager)
         return E_FAIL;
 
     return _objectManager->DeleteObject(levelIndex, layertag, objectNumber, modelNames);
+}
+
+map<const LAYER_TAG, Layer*>* GameInstance::GetEntireObjectLayer()
+{
+    return _objectManager->GetEntireObjectLayer();
+}
+
+int32 GameInstance::GetEntireLevel()
+{
+    if (nullptr == _objectManager)
+        return -1;
+
+    return _objectManager->GetEntireLevel();
 }
 
 

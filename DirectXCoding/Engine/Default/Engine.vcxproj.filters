@@ -142,23 +142,23 @@
     <Filter Include="01.Utility\04.Component\Model\BinaryModel">
       <UniqueIdentifier>{5f6c0a11-2f97-419f-a334-f484d2cccf4e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\04.Component\Model\Mesh\BinaryMesh">
-      <UniqueIdentifier>{23566593-d5cb-4090-affa-5a040c175c0d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\04.Component\Model\Animation">
       <UniqueIdentifier>{d116be1f-a072-40da-92a0-1dacdf9fb5ac}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Utility\04.Component\Model\Animation\Channel">
       <UniqueIdentifier>{af697d4f-753a-4085-af59-777eb9403fe5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\04.Component\Model\Bone\BinaryBone">
-      <UniqueIdentifier>{d5eca353-69b0-488b-92c1-e245a2e27909}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\04.Component\Model\Animation\BinaryAnimation">
-      <UniqueIdentifier>{dbe2a5b0-5067-4390-bca8-63ec7738b133}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\04.Component\Model\Animation\Channel\BinaryChannel">
       <UniqueIdentifier>{410e73f4-1d58-4c67-941c-b7ac1c840f7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Model\BinaryModel\BinaryAnimation">
+      <UniqueIdentifier>{dbe2a5b0-5067-4390-bca8-63ec7738b133}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Model\BinaryModel\BinaryBone">
+      <UniqueIdentifier>{d5eca353-69b0-488b-92c1-e245a2e27909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Model\BinaryModel\BinaryMesh">
+      <UniqueIdentifier>{23566593-d5cb-4090-affa-5a040c175c0d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -340,7 +340,7 @@
       <Filter>01.Utility\04.Component\Model\BinaryModel</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BinaryMesh.h">
-      <Filter>01.Utility\04.Component\Model\Mesh\BinaryMesh</Filter>
+      <Filter>01.Utility\04.Component\Model\BinaryModel\BinaryMesh</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Animation.h">
       <Filter>01.Utility\04.Component\Model\Animation</Filter>
@@ -349,10 +349,10 @@
       <Filter>01.Utility\04.Component\Model\Animation\Channel</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BinaryBone.h">
-      <Filter>01.Utility\04.Component\Model\Bone\BinaryBone</Filter>
+      <Filter>01.Utility\04.Component\Model\BinaryModel\BinaryBone</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BinaryAnimation.h">
-      <Filter>01.Utility\04.Component\Model\Animation\BinaryAnimation</Filter>
+      <Filter>01.Utility\04.Component\Model\BinaryModel\BinaryAnimation</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BinaryChannel.h">
       <Filter>01.Utility\04.Component\Model\Animation\Channel\BinaryChannel</Filter>
@@ -495,7 +495,7 @@
       <Filter>01.Utility\04.Component\Model\BinaryModel</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BinaryMesh.cpp">
-      <Filter>01.Utility\04.Component\Model\Mesh\BinaryMesh</Filter>
+      <Filter>01.Utility\04.Component\Model\BinaryModel\BinaryMesh</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Animation.cpp">
       <Filter>01.Utility\04.Component\Model\Animation</Filter>
@@ -504,10 +504,10 @@
       <Filter>01.Utility\04.Component\Model\Animation\Channel</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BinaryBone.cpp">
-      <Filter>01.Utility\04.Component\Model\Bone\BinaryBone</Filter>
+      <Filter>01.Utility\04.Component\Model\BinaryModel\BinaryBone</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BinaryAnimation.cpp">
-      <Filter>01.Utility\04.Component\Model\Animation\BinaryAnimation</Filter>
+      <Filter>01.Utility\04.Component\Model\BinaryModel\BinaryAnimation</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BinaryChannel.cpp">
       <Filter>01.Utility\04.Component\Model\Animation\Channel\BinaryChannel</Filter>

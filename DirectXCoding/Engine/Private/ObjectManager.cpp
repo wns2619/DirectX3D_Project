@@ -34,7 +34,7 @@ HRESULT ObjectManager::AddPrototype(const wstring& prototypeTag, GameObject* pro
 	return S_OK;
 }
 
-HRESULT ObjectManager::AddGameObject(uint32 levelIndex, const wstring& layerTag, const wstring& prototypeTag, void* argument)
+HRESULT ObjectManager::AddGameObject(uint32 levelIndex, const LAYER_TAG layerTag, const wstring& prototypeTag, void* argument)
 {
 	GameObject* protoType = FindPrototype(prototypeTag);
 	if (nullptr == protoType)
@@ -86,7 +86,7 @@ void ObjectManager::Clear(uint32 levelIndex)
 	_Layers[levelIndex].clear();
 }
 
-GameObject* ObjectManager::GetLayerObject(const wstring& layertag, OBJECT_TYPE type)
+GameObject* ObjectManager::GetLayerObject(const LAYER_TAG layertag, OBJECT_TYPE type)
 {
 	Layer* CurrentLayer = FindLayer(_currenlevel, layertag);
 	if (CurrentLayer == nullptr)
@@ -103,7 +103,7 @@ GameObject* ObjectManager::GetLayerObject(const wstring& layertag, OBJECT_TYPE t
 	return nullptr;
 }
 
-GameObject* ObjectManager::GetLayerObjectTag(const wstring& layerag, const string& modelname)
+GameObject* ObjectManager::GetLayerObjectTag(const LAYER_TAG layerag, const string& modelname)
 {
 	Layer* CurrentLayer = FindLayer(_currenlevel, layerag);
 	if (CurrentLayer == nullptr)
@@ -139,14 +139,14 @@ uint32 ObjectManager::GetLayerObjectCount()
 				(*gameObject)[i]->SetIdNumber(i);
 
 
-			listsize = pair.second->GetGameObject()->size();
+			listsize += pair.second->GetGameObject()->size();
 		}
 	}
 
 	return listsize;
 }
 
-vector<GameObject*>* ObjectManager::GetCurrentObjectList(wstring& layerTag)
+vector<GameObject*>* ObjectManager::GetCurrentObjectList(LAYER_TAG layerTag)
 {
 	Layer* layer = FindLayer(_currenlevel, layerTag);
 
@@ -158,7 +158,7 @@ vector<GameObject*>* ObjectManager::GetCurrentObjectList(wstring& layerTag)
 	return layer->GetGameObject();
 }
 
-HRESULT ObjectManager::ComparisonAddObject(int32 levelIndex, const string& addObjectfile, const wstring& layertag, void* argument)
+HRESULT ObjectManager::ComparisonAddObject(int32 levelIndex, const string& addObjectfile, LAYER_TAG layertag, void* argument)
 {
 	if (levelIndex >= _levelNumber)
 		return E_FAIL;
@@ -191,7 +191,7 @@ HRESULT ObjectManager::ComparisonAddObject(int32 levelIndex, const string& addOb
 	return S_OK;
 }
 
-HRESULT ObjectManager::DeleteObject(uint32 levelIndex, const wstring& layertag, const uint32 objectNumber, const string& modelnames)
+HRESULT ObjectManager::DeleteObject(uint32 levelIndex, const LAYER_TAG layertag, const uint32 objectNumber, const string& modelnames)
 {
 	auto iter = FindLayer(levelIndex, layertag);
 	if (nullptr == iter)
@@ -210,7 +210,7 @@ GameObject* ObjectManager::FindPrototype(const wstring& prototypeTag)
 	return iter->second;
 }
 
-Layer* ObjectManager::FindLayer(int32 levelIndex, const wstring& layerTag)
+Layer* ObjectManager::FindLayer(int32 levelIndex, LAYER_TAG layerTag)
 {
 	if (levelIndex >= _levelNumber)
 		return nullptr;

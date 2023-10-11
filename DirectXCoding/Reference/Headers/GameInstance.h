@@ -7,7 +7,7 @@
 #include "GameObject.h"
 #include "Viewport.h"
 #include "InputHandler.h"
-
+#include "ObjectManager.h"
 
 BEGIN(Engine)
 
@@ -47,13 +47,15 @@ public: // LevelManager
 
 public: // ObjectManager
 	HRESULT AddProtoType(const wstring& prototypeTag, GameObject* prototype);
-	HRESULT AddGameObject(uint32 levelIndex, const wstring& layerTag, const wstring& prototypeTag, void* argument = nullptr);
-	GameObject* GetLayerObject(const wstring& layertag, OBJECT_TYPE type);
-	GameObject* GetLayerObjectTag(const wstring& layerag, const string& modelname);
-	HRESULT ComparisonAddObject(int32 levelIndex, const string& addObjectfile = "", const wstring& layertag = L"", void* argument = nullptr);
+	HRESULT AddGameObject(uint32 levelIndex, const LAYER_TAG layerTag, const wstring& prototypeTag, void* argument = nullptr);
+	GameObject* GetLayerObject(const LAYER_TAG layertag, OBJECT_TYPE type);
+	GameObject* GetLayerObjectTag(const LAYER_TAG layerag, const string& modelname);
+	HRESULT ComparisonAddObject(int32 levelIndex, const string& addObjectfile = "", const LAYER_TAG layertag = LAYER_TAG::LAYER_END, void* argument = nullptr);
 	int32	GetLayerObjectCount();
-	vector<GameObject*>* GetCurrentObjectList(wstring& layerTag);
-	HRESULT DeleteGameObject(uint32 levelIndex, const wstring& layertag, const uint32 objectNumber, const string& modelNames);
+	vector<GameObject*>* GetCurrentObjectList(LAYER_TAG layerTag);
+	HRESULT DeleteGameObject(uint32 levelIndex, const LAYER_TAG layertag, const uint32 objectNumber, const string& modelNames);
+	map<const LAYER_TAG, Layer*>* GetEntireObjectLayer();
+	int32 GetEntireLevel();
 
 public: // Component Manager
 	HRESULT	AddProtoType(uint32 levelIndex, const wstring& PrototypeTag, class Component* protoType);

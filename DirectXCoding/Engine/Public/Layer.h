@@ -7,7 +7,7 @@ BEGIN(Engine)
 class GameObject;
 class Component;
 
-class Layer final : public Base
+class ENGINE_DLL Layer final : public Base
 {
 private:
 	Layer();
@@ -21,6 +21,7 @@ public:
 
 public:
 	HRESULT DeleteLayerObject(uint32 objectNumber, const string& modelName);
+	vector<GameObject*> GetCurrenLayer() { return _gameObjects; }
 
 public:
 	vector<GameObject*>* GetGameObject() { return &_gameObjects; }

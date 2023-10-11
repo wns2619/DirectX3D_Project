@@ -18,6 +18,7 @@
 #include "Bone.h"
 #include "Animation.h"
 #include "Channel.h"
+#include "Layer.h"
 
 ImGui::FileBrowser g_fileDialog;
 
@@ -138,7 +139,7 @@ HRESULT ImGuiManager::Render()
 			desc.numVerticesX = i1;
 			desc.numVerticesZ = i1;
 
-			if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), _editlayerTag, TEXT("ProtoTypeGameObjectEditTerrain"), &desc)))
+			if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), LAYER_TAG::LAYER_TERRAIN, TEXT("ProtoTypeGameObjectEditTerrain"), &desc)))
 				return E_FAIL;
 
 		
@@ -252,7 +253,7 @@ void ImGuiManager::MouseMove()
 
 	if (_Isterrain)
 	{
-		EditorTerrain* terrain = static_cast<EditorTerrain*>(gameinstance->GetLayerObject(_editlayerTag, OBJECT_TYPE::TERRAIN));
+		EditorTerrain* terrain = static_cast<EditorTerrain*>(gameinstance->GetLayerObject(LAYER_TAG::LAYER_TERRAIN, OBJECT_TYPE::TERRAIN));
 
 		pos = terrain->TerrainPick();
 
@@ -334,7 +335,7 @@ void ImGuiManager::MainSection()
 			ImGui::Checkbox("Window Move", &_windowMoveFlag);
 			if (ImGui::CollapsingHeader("Camera"))
 			{
-				wstring cameraLayer = TEXT("LayerCameraObject");
+				LAYER_TAG cameraLayer = LAYER_TAG::LAYER_CAMERA;
 				vector<GameObject*>* gamevector = gameInstance->GetCurrentObjectList(cameraLayer);
 
 				int32 objectsize = gameInstance->GetLayerObjectCount();
@@ -441,7 +442,7 @@ HRESULT ImGuiManager::ModelNameCardSection()
 					wstring findPrototypename = ImGuiResourceHandler::GetInstance()->FindProtoFilePath(modelPath);
 
 
-					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), _editlayerTag, TEXT("ProtoTypeGameObjectPlayer"))))
+					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), LAYER_TAG::LAYER_PLAYER, TEXT("ProtoTypeGameObjectPlayer"))))
 					{
 						RELEASE_INSTANCE(GameInstance);
 						return E_FAIL;
@@ -521,55 +522,68 @@ HRESULT ImGuiManager::ObjectsSection()
 		// TODO : for문으로 gameobject 순회 
 		int32 objectsize = gameInstance->GetLayerObjectCount();
 
-		for (size_t i = 0; i < objectsize; i++)
+		map<const LAYER_TAG, Layer*>* EntireLayer = gameInstance->GetEntireObjectLayer();
+		int32 LevelIndex = gameInstance->GetEntireLevel();
+
+		if (nullptr == EntireLayer)
+			return E_FAIL;
+
+		// 전부 순회? 
+		for (uint32 i = 0; i < LevelIndex; ++i)
 		{
-			if (i > 0)
-				ImGui::NewLine();
+			//if (i > 0)
+			//	ImGui::NewLine();
 
- 			vector<GameObject*>* gamevector = gameInstance->GetCurrentObjectList(_editlayerTag);
-			if (gamevector == nullptr)
-				break;
-
-
-
-			if ((*gamevector)[i] != nullptr)
+			for (auto& pair : EntireLayer[i])
 			{
-				GameObject* gameObject = (*gamevector)[i];
-				if (gameObject != nullptr)
+				if (pair.second == nullptr)
+					continue;
+
+				vector<GameObject*>* gamevector = pair.second->GetGameObject();
+				if (nullptr == gamevector)
+					continue;
+
+				uint32 objectID = 0;
+
+				for (auto& pObjList : *gamevector)
 				{
-					ImGui::Text(gameObject->GetModelNameId().c_str());
-				}
-			}
+					if (pObjList->GetObjectType() == OBJECT_TYPE::CAMERA)
+						continue;
 
-			ImGui::PushID("gameobject Uptate" + i);
-			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
-			ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 24);
+					objectID++;
+					if (objectID > 1)
+						ImGui::NewLine();
 
-			if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\baseline_delete_white_18dp.png"), ImVec2(20, 20)))
-			{
-				if (_selectedIndex = (int32)i)
-					_selectedIndex = -1;
+					ImGui::Text(pObjList->GetModelNameId().c_str());
 
-				if (gamevector != nullptr)
-				{
-					if (FAILED(gameInstance->DeleteGameObject(static_cast<uint32>(LEVEL::EDIT), _editlayerTag, i, (*gamevector)[i]->GetModelName())))
-						return E_FAIL;
+
+					ImGui::PushID("gameobject Uptate" + objectID);
+					ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+					ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 24);
+
+					if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\baseline_delete_white_18dp.png"), ImVec2(20, 20)))
+					{
+						if (pObjList != nullptr)
+						{
+							if (FAILED(gameInstance->DeleteGameObject(static_cast<uint32>(LEVEL::EDIT), LAYER_TAG::LAYER_PLAYER, pObjList->GetIdNumber(), pObjList->GetModelName())))
+								return E_FAIL;
+						}
+
+
+						ImGui::PopStyleVar();
+					}
 					else
-						--objectsize;
+					{
+						ImGui::PopStyleVar();
+
+
+						GameObjectUpdate(objectID, pObjList);
+					}
+
+					ImGui::PopID();
+
 				}
-
-
-				ImGui::PopStyleVar();
 			}
-			else
-			{
-				ImGui::PopStyleVar();
-
-
-				GameObjectUpdate(i);
-			}
-
-			ImGui::PopID();
 		}
 	}
 
@@ -1167,99 +1181,87 @@ HRESULT ImGuiManager::MainLightSection()
 	return S_OK;
 }
 
-void ImGuiManager::GameObjectUpdate(int32 vectorIndex)
+void ImGuiManager::GameObjectUpdate(uint32 objectID, GameObject* pObj)
 {
-	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
-
-	vector<GameObject*>* gamevector = gameInstance->GetCurrentObjectList(_editlayerTag);
-
-	if ((*gamevector)[vectorIndex] != nullptr)
+	if (pObj != nullptr)
 	{
-		GameObject* gameObject = (*gamevector)[vectorIndex];
-		if (gameObject != nullptr)
+		ImGui::PushID(pObj->GetModelNameId().c_str());
+		string enabledLabel = "Enabled##" + to_string(pObj->GetIdNumber());
+		string selectLabel = "Select##" + to_string(pObj->GetIdNumber());
+		
+		_bool* enable = pObj->GetEnabled();
+		_bool* select = pObj->GetObjectSelect();
+		if (ImGui::Checkbox(enabledLabel.c_str(), enable))
 		{
-			ImGui::PushID(gameObject->GetModelNameId().c_str());
-			string enabledLabel = "Enabled##" + to_string(gameObject->GetIdNumber());
-			string selectLabel = "Select##" + to_string(gameObject->GetIdNumber());
-
-			_bool* enable = gameObject->GetEnabled();
-			_bool* select = gameObject->GetObjectSelect();
-			if (ImGui::Checkbox(enabledLabel.c_str(), enable))
-			{
-
-			}
-
-			ImGui::SameLine();
-
-			if (ImGui::Checkbox(selectLabel.c_str(), select))
-			{
-				_SelectGameObject = gameObject;
-			}
-				
-
-			if (!*enable)
-			{
-
-				if (nullptr != gameObject->GetTransform())
-				{
-					Vec3 Scaled = gameObject->GetTransform()->GetScaled();
-					XMVECTOR worldScale = ::XMLoadFloat3(&Scaled);
-
-					XMMATRIX Position = gameObject->GetTransform()->GetWorldMatrix();
-					XMVECTOR worldPosition = Position.r[3];
-
-					XMVECTOR worldRotation = gameObject->GetTransform()->GetWorldRotation();
-
-					//Vec3 Rotation = gameObject->GetTransform()->
-
-					if (ImGui::CollapsingHeader("Movement"))
-					{
-						// TODO ratation은 고민 해봐야겠음.
-						// 
-
-						ImGui::DragFloat3("Scale", &worldScale.m128_f32[0], 0.1f, 0.1f, 20.f);
-						ImGui::DragFloat3("Rotation", &worldRotation.m128_f32[0], 1.f);
-						ImGui::DragFloat3("Position", &worldPosition.m128_f32[0], 0.1f);
-
-
-						::XMStoreFloat3(&Scaled, worldScale);
-						gameObject->GetTransform()->SetScaling(Scaled);
-						gameObject->GetTransform()->SetState(Transform::STATE::POSITION, worldPosition);
-						gameObject->GetTransform()->FixRotation(worldRotation.m128_f32[0], worldRotation.m128_f32[1], worldRotation.m128_f32[2]);
-					}
-				}
-				
-
-				UpdateModelUI(vectorIndex);
-			}
-
-			ImGui::PopID();
+		
 		}
-	}
+		
+		ImGui::SameLine();
+		
+		if (ImGui::Checkbox(selectLabel.c_str(), select))
+			_SelectGameObject = pObj;
 
-	
-	RELEASE_INSTANCE(GameInstance);
+		if (!*enable)
+		{
+		
+			if (nullptr != pObj->GetTransform())
+			{
+				Vec3 Scaled = pObj->GetTransform()->GetScaled();
+				XMVECTOR worldScale = ::XMLoadFloat3(&Scaled);
+		
+				XMMATRIX Position = pObj->GetTransform()->GetWorldMatrix();
+				XMVECTOR worldPosition = Position.r[3];
+		
+				XMVECTOR worldRotation = pObj->GetTransform()->GetWorldRotation();
+		
+				//Vec3 Rotation = gameObject->GetTransform()->
+		
+				if (ImGui::CollapsingHeader("Movement"))
+				{
+					// TODO ratation은 고민 해봐야겠음.
+					// 
+		
+					ImGui::DragFloat3("Scale", &worldScale.m128_f32[0], 0.1f, 0.1f, 20.f);
+					ImGui::DragFloat3("Rotation", &worldRotation.m128_f32[0], 1.f);
+					ImGui::DragFloat3("Position", &worldPosition.m128_f32[0], 0.1f);
+		
+		
+					::XMStoreFloat3(&Scaled, worldScale);
+					pObj->GetTransform()->SetScaling(Scaled);
+					pObj->GetTransform()->SetState(Transform::STATE::POSITION, worldPosition);
+					pObj->GetTransform()->FixRotation(worldRotation.m128_f32[0], worldRotation.m128_f32[1], worldRotation.m128_f32[2]);
+
+				}
+			}
+			
+		
+			UpdateModelUI(objectID, pObj);
+		}
+		
+		ImGui::PopID();
+		
+	}
 }
 
-void ImGuiManager::UpdateModelUI(int32 vectorIndex)
+void ImGuiManager::UpdateModelUI(uint32 objectID, GameObject* pObj)
 {
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-	vector<GameObject*>* gameObject = gameInstance->GetCurrentObjectList(_editlayerTag);
+	vector<GameObject*>* gameObject = gameInstance->GetCurrentObjectList(LAYER_TAG::LAYER_PLAYER);
 
 	if (ImGui::CollapsingHeader("Mesh List"))
 	{
 		if (nullptr != gameObject)
 		{
-			ImGui::PushID(string(::to_string(vectorIndex) + (*gameObject)[vectorIndex]->GetModelName()).c_str());
+			ImGui::PushID(string(::to_string(pObj->GetIdNumber()) + pObj->GetModelName()).c_str());
 
 
-			if (nullptr != (*gameObject)[vectorIndex]->GetBinaryModelComponent())
+			if (nullptr != pObj->GetBinaryModelComponent())
 			{
 
 				if (ImGui::TreeNodeEx(string("PBR").c_str()))
 				{
-					UpdateMaterialUI(vectorIndex);
+					UpdateMaterialUI(objectID, pObj);
 					
 
 					ImGui::TreePop();
@@ -1273,20 +1275,14 @@ void ImGuiManager::UpdateModelUI(int32 vectorIndex)
 	RELEASE_INSTANCE(GameInstance);
 }
 
-void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
+void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 {
-	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
-
-
 	// 여기까진 게임오브젝트의 리스트를 순회해서 마테리얼 정보랑 모델 정보를 갖고 와야 되고.
+	BinaryModel* modelComponent = pObj->GetBinaryModelComponent();
 
-	vector<GameObject*>* gameObject = gameInstance->GetCurrentObjectList(_editlayerTag);
+	vector<MESH_MATERIAL>* vectorMesh = pObj->GetBinaryModelComponent()->GetMaterial();
 
-	BinaryModel* modelComponent = (*gameObject)[vectorIndex]->GetBinaryModelComponent();
-
-	vector<MESH_MATERIAL>* vectorMesh = (*gameObject)[vectorIndex]->GetBinaryModelComponent()->GetMaterial();
-
-	uint32 MeshIndex = (*gameObject)[vectorIndex]->GetBinaryModelComponent()->GetNumMeshes();
+	uint32 MeshIndex = pObj->GetBinaryModelComponent()->GetNumMeshes();
 
 	// 이 밑에 부터는 메쉬가 따로 돌아야함. 그니까 vectorIndex는 여기까지만 사용하고 메쉬 인덱스를 다시 돌아야함.
 	// 콤보박스에서 인덱스 지정해주고 그 인덱스번호에 있는 메쉬 텍스쳐 불러와서 텍스쳐 변경하면 될 듯.
@@ -1664,7 +1660,7 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 			case aiTextureType_OPACITY:
 				break;
 			case aiTextureType_DISPLACEMENT:
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT]->SelfDelete((*vectorMesh)[vectorIndex]._texture[aiTextureType_DISPLACEMENT]);
+				(*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT]->SelfDelete((*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT]);
 				(*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT] = Texture::Create(_device, _deviceContext, path);
 				(*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.displacmentPath = wstring(strPath.begin(), strPath.end());
@@ -1714,8 +1710,6 @@ void ImGuiManager::UpdateMaterialUI(int32 vectorIndex)
 
 		g_fileDialog.ClearSelected();
 	}
-
-	RELEASE_INSTANCE(GameInstance);
 }
 
 void ImGuiManager::LoadModelList(string path)

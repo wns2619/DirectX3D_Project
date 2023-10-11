@@ -17,13 +17,13 @@ GameScene::~GameScene()
 
 HRESULT GameScene::Initialize()
 {
-    if (FAILED(ReadyLayerTerrain(TEXT("LayerTerrain"))))
+    if (FAILED(ReadyLayerTerrain(LAYER_TAG::LAYER_TERRAIN)))
         return E_FAIL;
 
-    if (FAILED(ReadyLayerCamera(TEXT("LayerCamera"))))
+    if (FAILED(ReadyLayerCamera(LAYER_TAG::LAYER_CAMERA)))
         return E_FAIL;
 
-    if (FAILED(ReadyLayerPlayer(TEXT("LayerPlayer"))))
+    if (FAILED(ReadyLayerPlayer(LAYER_TAG::LAYER_PLAYER)))
         return E_FAIL;
 
     if (FAILED(ReadyLight()))
@@ -44,7 +44,7 @@ HRESULT GameScene::LateTick(const _float& timeDelata)
     return S_OK;
 }
 
-HRESULT GameScene::ReadyLayerTerrain(const wstring& layerTag)
+HRESULT GameScene::ReadyLayerTerrain(const LAYER_TAG layerTag)
 {
 
     GameInstance* gameInstance = GameInstance::GetInstance();
@@ -59,7 +59,7 @@ HRESULT GameScene::ReadyLayerTerrain(const wstring& layerTag)
     return S_OK;
 }
 
-HRESULT GameScene::ReadyLayerCamera(const wstring& layerTag)
+HRESULT GameScene::ReadyLayerCamera(const LAYER_TAG layerTag)
 {
     GameInstance* gameInstance = GameInstance::GetInstance();
     Safe_AddRef<GameInstance*>(gameInstance);
@@ -87,7 +87,7 @@ HRESULT GameScene::ReadyLayerCamera(const wstring& layerTag)
     return S_OK;
 }
 
-HRESULT GameScene::ReadyLayerPlayer(const wstring& layerTag)
+HRESULT GameScene::ReadyLayerPlayer(const LAYER_TAG layerTag)
 {
 
     GameInstance* gameInstance = GameInstance::GetInstance();

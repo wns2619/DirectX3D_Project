@@ -21,7 +21,7 @@ EditScene::~EditScene()
 
 HRESULT EditScene::Initialize()
 {
-    if (FAILED(ReadyLayerEditCamera(TEXT("LayerCameraObject"))))
+    if (FAILED(ReadyLayerEditCamera(LAYER_TAG::LAYER_CAMERA)))
         return E_FAIL;
 
     //if (FAILED(ReadyTerrain(TEXT("LayerTerrain"))))
@@ -43,7 +43,7 @@ HRESULT EditScene::LateTick(const _float& timeDelata)
     return S_OK;
 }
 
-HRESULT EditScene::ReadyLayerEditCamera(const wstring& layerTag)
+HRESULT EditScene::ReadyLayerEditCamera(const LAYER_TAG layerTag)
 {
     GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
@@ -71,12 +71,12 @@ HRESULT EditScene::ReadyLayerEditCamera(const wstring& layerTag)
     return S_OK;
 }
 
-HRESULT EditScene::ReadyLayerEntire(const wstring& layerTage)
+HRESULT EditScene::ReadyLayerEntire(const LAYER_TAG layerTage)
 {
     return S_OK;
 }
 
-HRESULT EditScene::ReadyTerrain(const wstring& layerTag)
+HRESULT EditScene::ReadyTerrain(const LAYER_TAG layerTag)
 {
     GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
