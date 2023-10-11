@@ -143,7 +143,7 @@ HRESULT LevelHelper::LodingforLevelEdit()
     LoadingObject();
 
 
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\Player.dat", TEXT("ProtoTypeGameObjectPlayer"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", TEXT("ProtoTypeGameObjectPlayer"));
 
 
     _title = TEXT("Loading Successed");
@@ -241,7 +241,7 @@ HRESULT LevelHelper::LoadingMesh()
 
 
          if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelPlayer"),
-            BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\MyModels\\Player\\Player.dat", modelInitializMatrix))))
+            Model::Create(_device, _deviceContext, Model::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", modelInitializMatrix))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

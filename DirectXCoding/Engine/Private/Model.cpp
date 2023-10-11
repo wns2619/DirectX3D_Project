@@ -26,6 +26,7 @@ Model::Model(const Model& rhs)
     , _ModelType(rhs._ModelType)
     , _numAnimations(rhs._numAnimations)
     , _pivotMatrix(rhs._pivotMatrix)
+ 
 {
 
     for (auto& pAnimation : rhs._animations)
