@@ -147,6 +147,9 @@ HRESULT BinaryModel::BinaryModelStatic(shared_ptr<FileUtils> file, const string&
 
 	for (uint32 i = 0; i < NumMeshes; ++i)
 	{
+		string MeshName;
+		file->Read(MeshName);
+
 		// 메쉬를 구성하고있는 버퍼를 어떤 형식으로 읽을건지 메인 BufferDesc
 		VIBuffer::BUFFER_DESC viBufferDesc;
 		file->Read<VIBuffer::BUFFER_DESC>(viBufferDesc);
@@ -194,7 +197,7 @@ HRESULT BinaryModel::BinaryModelStatic(shared_ptr<FileUtils> file, const string&
 		}
 
 		BinaryMesh* newBinaryMesh =
-			BinaryMesh::Create(_device, _deviceContext, _ModelType, viBufferDesc, meshBufferDesc, meshIndex, pVertices, pIndices, pivotMatrix);
+			BinaryMesh::Create(_device, _deviceContext, _ModelType, MeshName, viBufferDesc, meshBufferDesc, meshIndex, pVertices, pIndices, pivotMatrix);
 
 		//if (nullptr == newBinaryMesh)
 		//	return E_FAIL;
@@ -271,6 +274,9 @@ HRESULT BinaryModel::BinaryModelDynamic(shared_ptr<FileUtils> file, const string
 
 	for (uint32 i = 0; i < NumMeshes; ++i)
 	{
+		string MeshName;
+		file->Read(MeshName);
+
 		// 메쉬를 구성하고있는 버퍼를 어떤 형식으로 읽을건지 메인 BufferDesc
 		VIBuffer::BUFFER_DESC viBufferDesc;
 		file->Read<VIBuffer::BUFFER_DESC>(viBufferDesc);
@@ -346,7 +352,7 @@ HRESULT BinaryModel::BinaryModelDynamic(shared_ptr<FileUtils> file, const string
 		}
 
 		BinaryMesh* newBinaryMesh = BinaryMesh::Create(_device, _deviceContext, _ModelType, 
-			viBufferDesc, meshBufferDesc, meshIndex, pVertices, pIndices, vecBoneIndex, offsetMatrix, effectBones);
+			MeshName, viBufferDesc, meshBufferDesc, meshIndex, pVertices, pIndices, vecBoneIndex, offsetMatrix, effectBones);
 
 		if (nullptr == newBinaryMesh)
 			return E_FAIL;

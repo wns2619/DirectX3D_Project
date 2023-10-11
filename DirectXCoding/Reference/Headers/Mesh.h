@@ -14,13 +14,6 @@ public:
 		D3D11_BUFFER_DESC _vertexBufferDesc;
 		D3D11_BUFFER_DESC _indexBufferDesc;
 	};
-
-	struct BLEND_WEIGHT_DESC
-	{
-		uint32 vertexID = 0;
-		Vec4 blendOriginWeights;
-		_float blendWeights = 0;
-	};
 private:
 	explicit Mesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit Mesh(const Mesh& rhs);
@@ -35,7 +28,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
-	HRESULT BindBoneMatrices(class Shader* shader, const vector<class Bone*>& bones, const char* constantName);
+	HRESULT BindBoneMatrices(class Shader* shader, const vector<class Bone*>& bones, const char* constantName, FXMMATRIX pivotMatrix);
 
 
 public:
@@ -48,20 +41,17 @@ public:
 
 	vector<string>& vecGetBoneName() { return _szBoneName; }
 	vector<uint32>& vecGetMeshEffectBones() { return _bones; }
-	vector<uint32>& vecGetBlendWeights() { return _blendWeights; }
 	vector<Matrix>& vecGetOffsetMatrices() { return _offsetMatrices; }
-	vector<BLEND_WEIGHT_DESC>& vecBlendDesc() { return _blendWeightDesc; }
+	_char* GetMeshName() { return szName; }
 private: // IMGUI LOAD && SAVE
 	MESH_BUFFER_DESC _MeshBufferDesc;
-	vector<BLEND_WEIGHT_DESC> _blendWeightDesc;
 	VTXANIMMESH* _pAnimVertex = nullptr;
 	VTXMESH* _pVertices = nullptr;
 	_ulong* _pIndices = nullptr;
 
 
 	vector<string> _szBoneName;
-	vector<uint32> _blendWeights;
-
+	_char szName[MAX_PATH] = "";
 private:
 	uint32 _materialIndex = 0;
 

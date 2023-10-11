@@ -25,7 +25,7 @@ Model::Model(const Model& rhs)
     , m_pAIScene(rhs.m_pAIScene)
     , _ModelType(rhs._ModelType)
     , _numAnimations(rhs._numAnimations)
-
+    , _pivotMatrix(rhs._pivotMatrix)
 {
 
     for (auto& pAnimation : rhs._animations)
@@ -79,16 +79,29 @@ HRESULT Model::InitializePrototype(MODEL_TYPE type, const string& pModelFilePath
 
     ::XMStoreFloat4x4(&_pivotMatrix, pivotMat);
     
-    // 재귀적으로 함수 호출한다. 처음에 루트를 시작할 node.
+    /* DirectX로 그려낼 수 있도록 데이터들을 정리한다. */
+
+	/* 모델의 전체 뼈를 로드하자 */
+	/* aiNode : 뼈들의 상속관계. 부모가 누구인지에대한. 부모자식의 관계를 알고 있다면. 
+	뼈의 최종적인 상태행렬. */
     if (FAILED(ReadyBones(m_pAIScene->mRootNode, -1)))
         return E_FAIL;
 
+    /* 모델의 각 파츠 정점 정보를 로드하나다. */
+    /* 메시에게 메시당 영향을 주는 뼈들의 인덱스를 모아두었다. */
+    /* 렌더링할 때 메시 별로 렌더링을 수행을하고. 메시 당 사용하는 뼏르을 모아서 셰이더에 전달해줘야할 필요가 있었다. */
+    /* 메시를 구성하는 정점들에게 어떤 뼈들의 영향을 얼마나 받는지에 대한 정보를 추가했다. */
+    /* 혹여 특정 메시가 뼈의 갯수가 정의되어있지 않은 경우, 강제로 뼈의 갯수를 1개로 늘렸다.
+    추가한 뼈는 메시랑 이름이 같은 뼈를 추가해놓는방식. */
     if (FAILED(ReadyMeshes(type)))
         return E_FAIL;
 
+    /* 모델의 픽셀별로 정의된 재질 정보를 저장해준 텍스쳐를 읽어오자. */
     if (FAILED(ReadyMaterial(pModelFilePath)))
         return E_FAIL;
 
+    /* 애니메이션의 갯수(걷기, 대기, 공격, 등등등 )*/
+    /* 애니메이션을 로드한다. -> 이 애니메이션은 어떤 뼈(Channel)들을 갱신하는가? -> 이 뼈는 이 애니메이션 내에서 어떤 시간대에 어떤 상태(KeyFrame)를 취하는지를 뼈마다 로드해놓는다. */
     if (FAILED(ReadyAnimations()))
         return E_FAIL;
 
@@ -119,7 +132,7 @@ HRESULT Model::SetUp_Animation(_bool isLoop, uint32 animationIndex)
 
 HRESULT Model::BindBoneMatrices(Shader* shader, uint32 meshIndex, const char* constantName)
 {
-    return m_Meshes[meshIndex]->BindBoneMatrices(shader, _bones, constantName);
+    return m_Meshes[meshIndex]->BindBoneMatrices(shader, _bones, constantName, _pivotMatrix);
 }
 
 HRESULT Model::BindMaterialTexture(Shader* shader, const char* constantName, uint32 meshIndex, aiTextureType type)

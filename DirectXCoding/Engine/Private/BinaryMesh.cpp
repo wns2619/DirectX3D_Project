@@ -18,12 +18,13 @@ BinaryMesh::BinaryMesh(const BinaryMesh& rhs)
 }
 
 
-HRESULT BinaryMesh::InitializePrototype(BinaryModel::MODEL_TYPE type, VIBuffer::BUFFER_DESC viBufferInfo, 
+HRESULT BinaryMesh::InitializePrototype(BinaryModel::MODEL_TYPE type, string& meshName, VIBuffer::BUFFER_DESC viBufferInfo, 
 	MESH_BUFFER_DESC binaryMeshInfo, void* vertices,
 	_ulong* Indices, uint32 MeshIndex, vector<uint32>& boneIndex, vector<Matrix>& offsetMatrix, uint32 NumberBone, FXMMATRIX pivotMat)
 {
 	_BufferDesc._stride = BinaryModel::MODEL_TYPE::NONE == type ? sizeof(VTXMESH) : sizeof(VTXANIMMESH);
-
+	strcpy_s(_szName, meshName.c_str());
+	
 	_bones = boneIndex;
 	_offsetMatrices = offsetMatrix;
 	_numBones = NumberBone;
@@ -73,9 +74,10 @@ HRESULT BinaryMesh::InitializePrototype(BinaryModel::MODEL_TYPE type, VIBuffer::
 	return S_OK;
 }
 
-HRESULT BinaryMesh::InitializePrototype(BinaryModel::MODEL_TYPE type, VIBuffer::BUFFER_DESC viBufferInfo, MESH_BUFFER_DESC binaryMeshInfo, void* vertices, _ulong* Indices, uint32 MeshIndex, FXMMATRIX pivotMat)
+HRESULT BinaryMesh::InitializePrototype(BinaryModel::MODEL_TYPE type, string& meshName, VIBuffer::BUFFER_DESC viBufferInfo, MESH_BUFFER_DESC binaryMeshInfo, void* vertices, _ulong* Indices, uint32 MeshIndex, FXMMATRIX pivotMat)
 {
 	_BufferDesc._stride = BinaryModel::MODEL_TYPE::NONE == type ? sizeof(VTXMESH) : sizeof(VTXANIMMESH);
+	strcpy_s(_szName, meshName.c_str());
 
 	_materialIndex = MeshIndex;
 	_BufferDesc._numvertices = viBufferInfo._numvertices;
@@ -146,13 +148,13 @@ HRESULT BinaryMesh::BindBoneMatrices(Shader* shader, const vector<class BinaryBo
 }
 
 BinaryMesh* BinaryMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
-	BinaryModel::MODEL_TYPE type, VIBuffer::BUFFER_DESC viBufferInfo, 
+	BinaryModel::MODEL_TYPE type, string& meshName, VIBuffer::BUFFER_DESC viBufferInfo,
 	MESH_BUFFER_DESC binaryMeshInfo, uint32 MeshIndex, void* vertices,
 	_ulong* Indices, vector<uint32>& boneIndex, vector<Matrix>& offsetMatrix, uint32 NumberBone, FXMMATRIX pivotMat)
 {
 	BinaryMesh* pInstance = new BinaryMesh(pDevice, pContext);
 
-	if (FAILED(pInstance->InitializePrototype(type, viBufferInfo, binaryMeshInfo, vertices, Indices, MeshIndex, boneIndex, offsetMatrix, NumberBone)))
+	if (FAILED(pInstance->InitializePrototype(type, meshName, viBufferInfo, binaryMeshInfo, vertices, Indices, MeshIndex, boneIndex, offsetMatrix, NumberBone)))
 	{
 		MSG_BOX("Create to Failed Binary Mesh");
 		Safe_Release<BinaryMesh*>(pInstance);
@@ -161,11 +163,11 @@ BinaryMesh* BinaryMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	return pInstance;
 }
 
-BinaryMesh* BinaryMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, BinaryModel::MODEL_TYPE type, VIBuffer::BUFFER_DESC viBufferInfo, MESH_BUFFER_DESC binaryMeshInfo, uint32 MeshIndex, void* vertices, _ulong* Indices , FXMMATRIX pivotMat)
+BinaryMesh* BinaryMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, BinaryModel::MODEL_TYPE type, string& meshName, VIBuffer::BUFFER_DESC viBufferInfo, MESH_BUFFER_DESC binaryMeshInfo, uint32 MeshIndex, void* vertices, _ulong* Indices , FXMMATRIX pivotMat)
 {
 	BinaryMesh* pInstance = new BinaryMesh(pDevice, pContext);
 
-	if (FAILED(pInstance->InitializePrototype(type, viBufferInfo, binaryMeshInfo, vertices, Indices, MeshIndex, pivotMat)))
+	if (FAILED(pInstance->InitializePrototype(type, meshName, viBufferInfo, binaryMeshInfo, vertices, Indices, MeshIndex, pivotMat)))
 	{
 		MSG_BOX("Create to Failed Binary Mesh");
 		Safe_Release<BinaryMesh*>(pInstance);

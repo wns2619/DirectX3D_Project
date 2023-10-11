@@ -614,6 +614,9 @@ void ImGuiManager::BinaryModelSave(const string& fpxPath, const wstring& binaryD
 		vector<Mesh*>* vecMesh = pBinaryModel->GetMeshes();
 		for (auto& Meshiter : *vecMesh)
 		{
+			string MeshName = Meshiter->GetMeshName();
+			file->Write<string>(MeshName);
+
 			// 메쉬를 구성하고있는 버퍼를 어떤 형식으로 읽을건지 메인 BufferDesc
 			VIBuffer::BUFFER_DESC viBufferDesc = *Meshiter->GetBufferDesc();
 			file->Write<VIBuffer::BUFFER_DESC>(viBufferDesc);
@@ -739,6 +742,9 @@ void ImGuiManager::BinaryAnimModelSave(const string& fpxPath, const wstring& bin
 		vector<Mesh*>* vecMesh = pBinaryModel->GetMeshes();
 		for (auto& Meshiter : *vecMesh)
 		{
+			string MeshName = Meshiter->GetMeshName();
+			file->Write<string>(MeshName);
+
 			// 메쉬를 구성하고있는 버퍼를 어떤 형식으로 읽을건지 메인 BufferDesc
 			VIBuffer::BUFFER_DESC viBufferDesc = *Meshiter->GetBufferDesc();
 			file->Write<VIBuffer::BUFFER_DESC>(viBufferDesc);

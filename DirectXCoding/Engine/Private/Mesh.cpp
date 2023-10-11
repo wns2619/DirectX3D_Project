@@ -15,13 +15,14 @@ Mesh::Mesh(const Mesh& rhs)
     , _materialIndex(rhs._materialIndex)
     , _numBones(rhs._numBones)
     , _szBoneName(rhs._szBoneName)
-    , _blendWeightDesc(rhs._blendWeightDesc)
 {
 
 }
 
 HRESULT Mesh::InitializePrototype(Model::MODEL_TYPE type, const Model* model, const aiMesh* pAIMesh, FXMMATRIX pivotMat)
 {
+    strcpy_s(szName, pAIMesh->mName.data);
+
     _BufferDesc._stride = Model::MODEL_TYPE::NONE == type ? sizeof(VTXMESH) : sizeof(VTXANIMMESH);
     
     // 마테리얼의 인덱스 숫자를 저장한다. 이 인덱스의 마테리얼 정보를 이용
@@ -90,7 +91,7 @@ HRESULT Mesh::Initialize(void* pArg)
     return S_OK  ;
 }
 
-HRESULT Mesh::BindBoneMatrices(Shader* shader, const vector<class Bone*>& bones, const char* constantName)
+HRESULT Mesh::BindBoneMatrices(Shader* shader, const vector<class Bone*>& bones, const char* constantName, FXMMATRIX pivotMatrix)
 {
     Matrix boneMatrices[256];
     ::ZeroMemory(boneMatrices, sizeof(Matrix) * 256);
@@ -100,7 +101,7 @@ HRESULT Mesh::BindBoneMatrices(Shader* shader, const vector<class Bone*>& bones,
     for (auto& boneIndex : _bones)
     {
         ::XMStoreFloat4x4(&boneMatrices[index++],
-            ::XMLoadFloat4x4(&_offsetMatrices[index]) * bones[boneIndex]->GetCombinedTransformCaculator());
+            ::XMLoadFloat4x4(&_offsetMatrices[index]) * bones[boneIndex]->GetCombinedTransformCaculator() * pivotMatrix);
     }
        
     // 쉐이더에 넘길 본 매트릭스에 오프셋 매트릭스와 * 부모행렬이 곱해진 최종 변환행렬의 곱을 저장한다.
@@ -177,61 +178,43 @@ HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, const Model* model)
         _bones.push_back(boneIndex);
 
         // 이 뼈가 몇 개의 정점에게 영향을 주는 지 포문을 돈다.
-        _blendWeights.push_back(bone->mNumWeights);
         for (size_t j = 0; j < bone->mNumWeights; j++)
         {
-             BLEND_WEIGHT_DESC blendWeightDesc;
-            ::ZeroMemory(&blendWeightDesc, sizeof(blendWeightDesc));
-
              if (0.f == _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.x)
             {
-                 blendWeightDesc.blendOriginWeights = _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights;
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendIndices.x = i;
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.x = bone->mWeights[j].mWeight;
-
-
-                blendWeightDesc.vertexID = bone->mWeights[j].mVertexId;
-                blendWeightDesc.blendWeights = bone->mWeights[j].mWeight;
-
-                _blendWeightDesc.push_back(blendWeightDesc);
             }
             else if (0.f == _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.y)
             {
-                 blendWeightDesc.blendOriginWeights = _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights;
-
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendIndices.y = i;
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.y = bone->mWeights[j].mWeight;
-
-                blendWeightDesc.vertexID = bone->mWeights[j].mVertexId;
-                blendWeightDesc.blendWeights = bone->mWeights[j].mWeight;
-
-                _blendWeightDesc.push_back(blendWeightDesc);
             }
             else if (0.f == _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.z)
             {
-                 blendWeightDesc.blendOriginWeights = _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights;
-
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendIndices.z = i;
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.z = bone->mWeights[j].mWeight;
-
-                blendWeightDesc.vertexID = bone->mWeights[j].mVertexId;
-                blendWeightDesc.blendWeights = bone->mWeights[j].mWeight;
-
-                _blendWeightDesc.push_back(blendWeightDesc);
             }
             else if (0.f == _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.w)
             {
-                 blendWeightDesc.blendOriginWeights = _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights;
-
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendIndices.w = i;
                 _pAnimVertex[bone->mWeights[j].mVertexId].blendWeights.w = bone->mWeights[j].mWeight;
-
-                blendWeightDesc.vertexID = bone->mWeights[j].mVertexId;
-                blendWeightDesc.blendWeights = bone->mWeights[j].mWeight;
-
-                _blendWeightDesc.push_back(blendWeightDesc);
             }
         }
+    }
+
+    if (0 == _numBones)
+    {
+        _numBones = 1;
+
+        uint32 iIndex = model->GetBoneIndex(szName);
+        if (-1 == iIndex)
+            return E_FAIL;
+
+        Matrix offsetMatrix = Matrix::Identity;
+
+        _offsetMatrices.push_back(offsetMatrix);
+        _bones.push_back(iIndex);
     }
 
     // TODO 
@@ -281,7 +264,6 @@ void Mesh::Free()
 {
     __super::Free();
 
-    _blendWeightDesc.clear();
     _szBoneName.clear();
    
     Safe_Delete_Array<VTXMESH*>(_pVertices);
