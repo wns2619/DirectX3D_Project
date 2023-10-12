@@ -22,7 +22,6 @@ Model::Model(const Model& rhs)
     , _numMaterial(rhs._numMaterial)
     , _materials(rhs._materials)
     , _modelPath(rhs._modelPath)
-    , m_pAIScene(rhs.m_pAIScene)
     , _ModelType(rhs._ModelType)
     , _numAnimations(rhs._numAnimations)
     , _pivotMatrix(rhs._pivotMatrix)
@@ -63,12 +62,25 @@ int32 Model::GetBoneIndex(const char* boneName) const
 
 }
 
+FXMMATRIX Model::GetBoneMatrix(const _char* pBoneName) const
+{
+    auto iter = find_if(_bones.begin(), _bones.end(), [&](Bone* pBone)
+        {
+            if (false == ::strcmp(pBone->GetBoneName(), pBoneName))
+                return true;
+
+            return false;
+        });
+
+    return (*iter)->GetCombinedTransformCaculator();
+}
+
 HRESULT Model::InitializePrototype(MODEL_TYPE type, const string& pModelFilePath, FXMMATRIX pivotMat)
 {
     _modelPath = pModelFilePath;
     _ModelType = type;
 
-    uint32 flag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
+     uint32 flag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
 
     if (MODEL_TYPE::NONE == type)
         flag |= aiProcess_PreTransformVertices;
@@ -151,6 +163,8 @@ HRESULT Model::BindMaterialTexture(Shader* shader, const char* constantName, uin
 
 HRESULT Model::PlayAnimation(const _float& timeDelta)
 {
+    if (0 == _numAnimations)
+        return S_OK;
     /* 뼈들의 TransformationMatrix를 애니메이션 상태(Animation -> Channel -> 시간에 맞는 KeyFrame으로 맞도록 바꿔준다. */
 
     /* 이 애니메이션에서 사용되는 뼈들의 TransformationMatrix행렬을 갱신하고. */

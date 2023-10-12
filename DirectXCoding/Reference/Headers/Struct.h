@@ -149,7 +149,7 @@ namespace Engine
 		_ulong textureCount = 0;
 
 		_char strName[MAX_PATH];
-		class Texture* _texture[AI_TEXTURE_TYPE_MAX];
+		class Texture* _texture[TEXTURE_TYPE_MAX];
 	};
 
 	struct LightHelper

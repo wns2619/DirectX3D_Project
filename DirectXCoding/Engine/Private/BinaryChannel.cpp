@@ -25,11 +25,6 @@ HRESULT BinaryChannel::Initialize(const BinaryModel* pModel, const _char* channe
     _channelDesc._numKeyFrames = max(channelInfo.mNumScalingKeys, channelInfo.mNumRotationKeys);
     _channelDesc._numKeyFrames = max(_channelDesc._numKeyFrames, channelInfo.mNumPositionKeys);
 
-    Vec3 scale;
-    Vec4 rotation;
-    Vec4 translation;
-
-
     _keyFrames = vecKey;
 
     ///* m_iNumKeyFrames : 특정 애니메이션 내에서 Channel에 해당하는 뼈가 몇개의 상태변환을 가져가는가?!  */
@@ -88,6 +83,7 @@ void BinaryChannel::UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<
     if (trackPosition >= LastkeyFrame.time)
     {
         // 마지막 키프레임의 크기, 회전, 이동을 그대로 유지
+        *pCurrentKeyFrame = _keyFrames.size() - 1;
         scale = LastkeyFrame.scale;
         rotation = LastkeyFrame.rotation;
         translation = LastkeyFrame.translation;
@@ -95,7 +91,7 @@ void BinaryChannel::UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<
     else
     {
         // 트랙 포지션이 다음 프레임의 시간보다 크거나 같다면 프레임이 넘어온 것임.
-        if (trackPosition >= _keyFrames[*pCurrentKeyFrame + 1].time)
+        while (trackPosition >= _keyFrames[*pCurrentKeyFrame + 1].time)
             ++*pCurrentKeyFrame;
 
         _float ratio = (trackPosition - _keyFrames[*pCurrentKeyFrame].time) / (_keyFrames[*pCurrentKeyFrame + 1].time - _keyFrames[*pCurrentKeyFrame].time);

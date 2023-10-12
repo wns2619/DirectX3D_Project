@@ -77,6 +77,12 @@
     <Filter Include="소스 파일\02.GameObjects\EmptyObject">
       <UniqueIdentifier>{2342d57f-c4d6-4592-b445-be8b3b83840d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\03.Player\Body">
+      <UniqueIdentifier>{e78fdfec-90d9-4fb6-ac4d-ce513f5c59cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\03.Player\Surefire">
+      <UniqueIdentifier>{f34441a5-e308-4989-ad3d-b30f35cca510}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -175,6 +181,12 @@
     <ClInclude Include="..\Public\EmptyObject.h">
       <Filter>소스 파일\02.GameObjects\EmptyObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PlayerBody.h">
+      <Filter>소스 파일\02.GameObjects\03.Player\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Surefire.h">
+      <Filter>소스 파일\02.GameObjects\03.Player\Surefire</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -251,6 +263,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\EmptyObject.cpp">
       <Filter>소스 파일\02.GameObjects\EmptyObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerBody.cpp">
+      <Filter>소스 파일\02.GameObjects\03.Player\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Surefire.cpp">
+      <Filter>소스 파일\02.GameObjects\03.Player\Surefire</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

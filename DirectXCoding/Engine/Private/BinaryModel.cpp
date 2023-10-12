@@ -21,6 +21,7 @@ BinaryModel::BinaryModel(const BinaryModel& rhs)
 	, _materials(rhs._materials)
 	, _ModelType(rhs._ModelType)
 	, _numAnimations(rhs._numAnimations)
+	, _pivotMatrix(rhs._pivotMatrix)
 {
 
 	for (auto& pAnimation : rhs._animations)
@@ -59,6 +60,8 @@ int32 BinaryModel::GetBoneIndex(const char* boneName) const
 
 HRESULT BinaryModel::InitializePrototype(MODEL_TYPE type, const string& pBinaryModelFilePath, FXMMATRIX pivotMat)
 {
+	_pivotMatrix = pivotMat;
+
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
 	file->Open(Utils::ToWString(pBinaryModelFilePath), FileMode::Read);
 
@@ -96,10 +99,10 @@ HRESULT BinaryModel::SetUp_Animation(_bool isLoop, uint32 animationIndex)
 
 HRESULT BinaryModel::BindBoneMatrices(Shader* shader, uint32 meshIndex, const char* constantName)
 {
-	return m_Meshes[meshIndex]->BindBoneMatrices(shader, _bones, constantName);
+	return m_Meshes[meshIndex]->BindBoneMatrices(shader, _bones, constantName, _pivotMatrix);
 }
 
-HRESULT BinaryModel::BindMaterialTexture(Shader* shader, const char* constantName, uint32 meshIndex, aiTextureType type)
+HRESULT BinaryModel::BindMaterialTexture(Shader* shader, const char* constantName, uint32 meshIndex, TextureType type)
 {
 	if (meshIndex >= m_iNumMeshes)
 		return E_FAIL;

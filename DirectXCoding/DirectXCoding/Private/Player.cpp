@@ -28,7 +28,7 @@ HRESULT Player::Initialize(void* pArg)
 	if (FAILED(ReadyComponents()))
 		return E_FAIL;
 
- 	_model->SetUp_Animation(true, 2);
+ 	_model->SetUp_Animation(true, animationcount);
 
 	return S_OK;
 }
@@ -37,6 +37,8 @@ void Player::Tick(const _float& fTimeDelta)
 {
 	if (_enabled)
 		return;
+
+	KeyInput(fTimeDelta);
 
 	_model->PlayAnimation(fTimeDelta);
 }
@@ -81,6 +83,37 @@ HRESULT Player::Render()
 _bool Player::Intersects(POINT pt)
 {
 	return false;
+}
+
+void Player::KeyInput(const _float& timeDelta)
+{
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+	if (gameInstance->Get_DIKeyState(DIK_A) & 0x80)
+		_transform->Turn(Vec4(0.f, 1.f, 0.f, 0.f), timeDelta * -1.f);
+
+	if (gameInstance->Get_DIKeyState(DIK_D) & 0x80)
+		_transform->Turn(Vec4(0.f, 1.f, 0.f, 0.f), timeDelta);
+
+	if (gameInstance->Get_DIKeyState(DIK_UP) & 0x80)
+	{
+		//_transform->Forward(timeDelta);
+
+		if (animationcount < 3)
+			++animationcount;
+
+		_model->SetUp_Animation(true, 1);
+	}
+	if (gameInstance->Get_DIKeyState(DIK_DOWN) & 0x80)
+	{
+		//_transform->Backward(timeDelta);
+		if (animationcount > 0)
+			--animationcount;
+
+		//_binaryModel->SetUp_Animation(true, animationcount);
+	}
+
+	RELEASE_INSTANCE(GameInstance);
 }
 
 HRESULT Player::ReadyComponents()

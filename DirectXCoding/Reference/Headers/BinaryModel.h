@@ -26,7 +26,7 @@ public:
 public:
 	HRESULT SetUp_Animation(_bool isLoop, uint32 animationIndex);
 	HRESULT BindBoneMatrices(class Shader* shader, uint32 meshIndex, const char* constantName);
-	HRESULT BindMaterialTexture(class Shader* shader, const char* constantName, uint32 meshIndex, aiTextureType type);
+	HRESULT BindMaterialTexture(class Shader* shader, const char* constantName, uint32 meshIndex, TextureType type);
 	HRESULT PlayAnimation(const _float& timeDelta);
 	HRESULT Render(uint32 meshIndex);
 

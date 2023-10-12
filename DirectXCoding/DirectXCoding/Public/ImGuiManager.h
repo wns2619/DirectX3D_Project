@@ -84,7 +84,7 @@ private:
 	uint32  _tempSize = 64;
 
 	
-	aiTextureType _textureType = aiTextureType::aiTextureType_TRANSMISSION;
+	TextureType _textureType = TextureType::TextureType_Force32Bit;
 	_float _imageSize = 50.f;
 	_float _offset = 60.f;
 	_float _checkBoxOffset = 28.f;

@@ -27,12 +27,14 @@ public:
 
 public:
 	_bool Intersects(POINT pt);
+	void KeyInput(const _float& timeDelta);
 
 private:
 	Renderer* _render		= nullptr;
 	Shader* _shader			= nullptr;
 	//Light* _light			= nullptr;
 
+	uint32 animationcount = 0;
 private:
 	HRESULT ReadyComponents();
 	HRESULT BindShaderResuorces();

@@ -324,9 +324,6 @@
     <ClInclude Include="..\Public\OtherLight.h">
       <Filter>01.Utility\04.Component\Light\diffrentLight</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Converter.h">
-      <Filter>01.Utility\04.Component\Model\ToolUtils</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Utils.h">
       <Filter>01.Utility\04.Component\Model\ToolUtils</Filter>
     </ClInclude>
@@ -481,9 +478,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\OtherLight.cpp">
       <Filter>01.Utility\04.Component\Light\diffrentLight</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Converter.cpp">
-      <Filter>01.Utility\04.Component\Model\ToolUtils</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Utils.cpp">
       <Filter>01.Utility\04.Component\Model\ToolUtils</Filter>

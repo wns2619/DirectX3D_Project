@@ -448,8 +448,6 @@ HRESULT ImGuiManager::ModelNameCardSection()
 						return E_FAIL;
 					}
 
-					//GameObject* temp = gameInstance->GetLayerObjectTag(_editlayerTag, _modelNames[i].first);
-
 
 					size_t dotPosition = modelPath.find_last_of(".");
 					string fileExtension = "";
@@ -459,7 +457,9 @@ HRESULT ImGuiManager::ModelNameCardSection()
 					
 
 					//BinaryModelSave(modelPath, Utils::ToWString(fileExtension));
-					//BinaryAnimModelSave(modelPath, Utils::ToWString(fileExtension));
+					
+					if (GetAsyncKeyState(VK_RETURN) & 0x8000)
+						BinaryAnimModelSave(modelPath, Utils::ToWString(fileExtension));
 		
 				}
 				else
@@ -487,6 +487,8 @@ HRESULT ImGuiManager::ModelNameCardSection()
 		ImGui::Columns(1);
 		ImGui::End();
 	}
+
+
 
 	RELEASE_INSTANCE(GameInstance);
 	return S_OK;
@@ -1339,10 +1341,10 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 		if (ImGui::TreeNodeEx((void*)"Diffuse", ImGuiTreeNodeFlags_DefaultOpen, "Diffuse"))
 		{
 			
-			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE])
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE])
 			{
-				ImGui::Image((*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE]->
+				ImGui::Image((*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE]->
 					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.diffusePath.c_str());
 				nameStr = _texturePath.diffusePath.c_str();
 			}
@@ -1368,7 +1370,7 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 			{
 				g_fileDialog.Open();
 				g_fileDialog.SetPwd(filesystem::current_path() / _fileguipath);
-				_textureType = aiTextureType_DIFFUSE;
+				_textureType = TextureType_DIFFUSE;
 			}
 
 			ImGui::Unindent(_checkBoxOffset);
@@ -1391,10 +1393,10 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 		if (ImGui::TreeNodeEx((void*)"Normal", ImGuiTreeNodeFlags_DefaultOpen, "Normal"))
 		{
 			
-			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[aiTextureType_NORMALS])
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[TextureType_NORMALS])
 			{
-				ImGui::Image((*vectorMesh)[selectIndex]._texture[aiTextureType_NORMALS]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_NORMALS]->
+				ImGui::Image((*vectorMesh)[selectIndex]._texture[TextureType_NORMALS]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[selectIndex]._texture[TextureType_NORMALS]->
 					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.normalPath.c_str());
 				nameStr = _texturePath.normalPath.c_str();
 			}
@@ -1410,7 +1412,7 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 			{
 				g_fileDialog.Open();
 				g_fileDialog.SetPwd(filesystem::current_path() / _fileguipath);
-				_textureType = aiTextureType_NORMALS;
+				_textureType = TextureType_NORMALS;
 			}
 			ImGui::Unindent(_offset);
 			
@@ -1423,10 +1425,10 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 		{
 			
 			
-			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[aiTextureType_METALNESS])
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[TextureType_METALNESS])
 			{
-				ImGui::Image((*vectorMesh)[selectIndex]._texture[aiTextureType_METALNESS]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_METALNESS]->
+				ImGui::Image((*vectorMesh)[selectIndex]._texture[TextureType_METALNESS]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[selectIndex]._texture[TextureType_METALNESS]->
 					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.metallicPath.c_str());
 				nameStr = _texturePath.metallicPath.c_str();
 			}
@@ -1443,7 +1445,7 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 			{
 				g_fileDialog.Open();
 				g_fileDialog.SetPwd(filesystem::current_path() / _fileguipath);
-				_textureType = aiTextureType_METALNESS;
+				_textureType = TextureType_METALNESS;
 			}
 			ImGui::PushItemWidth(ImGui::GetWindowWidth() - _imageSize - _offset - 40.f);
 			static _float metallic = 0.f;
@@ -1462,10 +1464,10 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 		if (ImGui::TreeNodeEx((void*)"Rougness", ImGuiTreeNodeFlags_DefaultOpen, "Rougness"))
 		{
 			
-			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS])
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE_ROUGHNESS])
 			{
-				ImGui::Image((*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]->
+				ImGui::Image((*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE_ROUGHNESS]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE_ROUGHNESS]->
 					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.roughnessPath.c_str());
 				nameStr = _texturePath.roughnessPath.c_str();
 			}
@@ -1482,7 +1484,7 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 			{
 				g_fileDialog.Open();
 				g_fileDialog.SetPwd(filesystem::current_path() / _fileguipath);
-				_textureType = aiTextureType_DIFFUSE_ROUGHNESS;
+				_textureType = TextureType_DIFFUSE_ROUGHNESS;
 			}
 			ImGui::PushItemWidth(ImGui::GetWindowWidth() - _imageSize - _offset - 40.f);
 			static _float Rougness = 0.f;
@@ -1502,10 +1504,10 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 		if (ImGui::TreeNodeEx((void*)"Emissive", ImGuiTreeNodeFlags_DefaultOpen, "Emissive"))
 		{
 
-			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[aiTextureType_EMISSIVE])
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[TextureType_EMISSIVE])
 			{
-				ImGui::Image((*vectorMesh)[selectIndex]._texture[aiTextureType_EMISSIVE]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_EMISSIVE]->
+				ImGui::Image((*vectorMesh)[selectIndex]._texture[TextureType_EMISSIVE]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[selectIndex]._texture[TextureType_EMISSIVE]->
 					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.emissivePath.c_str());
 				nameStr = _texturePath.emissivePath.c_str();
 			}
@@ -1529,7 +1531,7 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 			{
 				g_fileDialog.Open();
 				g_fileDialog.SetPwd(filesystem::current_path() / _fileguipath);
-				_textureType = aiTextureType_EMISSIVE;
+				_textureType = TextureType_EMISSIVE;
 			}
 			ImGui::Unindent(_checkBoxOffset);
 			ImGui::PushItemWidth(ImGui::GetWindowWidth() - _imageSize - _offset - 40.f);
@@ -1550,10 +1552,10 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 		if (ImGui::TreeNodeEx((void*)"Amibent Occlusion", ImGuiTreeNodeFlags_DefaultOpen, "Amibent Occlusion"))
 		{
 
-			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[aiTextureType_AMBIENT_OCCLUSION])
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[TextureType_AMBIENT_OCCLUSION])
 			{
-				ImGui::Image((*vectorMesh)[selectIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]->
+				ImGui::Image((*vectorMesh)[selectIndex]._texture[TextureType_AMBIENT_OCCLUSION]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[selectIndex]._texture[TextureType_AMBIENT_OCCLUSION]->
 					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.ambientOcclusionPath.c_str());
 				nameStr = _texturePath.ambientOcclusionPath.c_str();
 			}
@@ -1569,7 +1571,7 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 			{
 				g_fileDialog.Open();
 				g_fileDialog.SetPwd(filesystem::current_path() / _fileguipath);
-				_textureType = aiTextureType_AMBIENT_OCCLUSION;
+				_textureType = TextureType_AMBIENT_OCCLUSION;
 			}
 			ImGui::Unindent(_offset);
 			ImGui::TreePop();
@@ -1580,10 +1582,10 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 		if (ImGui::TreeNodeEx((void*)"Displacement", ImGuiTreeNodeFlags_DefaultOpen, "Displacement"))
 		{
 
-			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT])
+			if (!modelComponent->GetMaterial()->empty() && nullptr != (*vectorMesh)[selectIndex]._texture[TextureType_DISPLACEMENT])
 			{
-				ImGui::Image((*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT]->
+				ImGui::Image((*vectorMesh)[selectIndex]._texture[TextureType_DISPLACEMENT]->GetShaderResourceViews()[0], ImVec2(_imageSize, _imageSize));
+				(*vectorMesh)[selectIndex]._texture[TextureType_DISPLACEMENT]->
 					GetShaderResourceViews()[0]->GetPrivateData(WKPDID_D3DDebugObjectNameW, &_tempSize, (void*)_texturePath.displacmentPath.c_str());
 				nameStr = _texturePath.displacmentPath.c_str();
 			}
@@ -1599,7 +1601,7 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 			{
 				g_fileDialog.Open();
 				g_fileDialog.SetPwd(filesystem::current_path() / _fileguipath);
-				_textureType = aiTextureType_DISPLACEMENT;
+				_textureType = TextureType_DISPLACEMENT;
 			}
 			ImGui::Unindent(_offset);
 			ImGui::TreePop();
@@ -1629,79 +1631,73 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 
 			switch (_textureType)
 			{
-			case aiTextureType_NONE:
+			case TextureType_NONE:
 				break;
-			case aiTextureType_DIFFUSE:
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE]->SelfDelete((*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE]);
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE] = Texture::Create(_device, _deviceContext, path);
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+			case TextureType_DIFFUSE:
+				(*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE]->SelfDelete((*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE]);
+				(*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.diffusePath = wstring(strPath.begin(), strPath.end());
 				break;
-			case aiTextureType_SPECULAR:
+			case TextureType_SPECULAR:
 				break;
-			case aiTextureType_AMBIENT:
+			case TextureType_AMBIENT:
 				break;
-			case aiTextureType_EMISSIVE:
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_EMISSIVE]->SelfDelete((*vectorMesh)[selectIndex]._texture[aiTextureType_EMISSIVE]);
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_EMISSIVE] = Texture::Create(_device, _deviceContext, path);
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_EMISSIVE]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+			case TextureType_EMISSIVE:
+				(*vectorMesh)[selectIndex]._texture[TextureType_EMISSIVE]->SelfDelete((*vectorMesh)[selectIndex]._texture[TextureType_EMISSIVE]);
+				(*vectorMesh)[selectIndex]._texture[TextureType_EMISSIVE] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[selectIndex]._texture[TextureType_EMISSIVE]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.emissivePath = wstring(strPath.begin(), strPath.end());
 				break;
-			case aiTextureType_HEIGHT:
+			case TextureType_HEIGHT:
 				break;
-			case aiTextureType_NORMALS:
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_NORMALS]->SelfDelete((*vectorMesh)[selectIndex]._texture[aiTextureType_NORMALS]);
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_NORMALS] = Texture::Create(_device, _deviceContext, path);
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_NORMALS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+			case TextureType_NORMALS:
+				(*vectorMesh)[selectIndex]._texture[TextureType_NORMALS]->SelfDelete((*vectorMesh)[selectIndex]._texture[TextureType_NORMALS]);
+				(*vectorMesh)[selectIndex]._texture[TextureType_NORMALS] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[selectIndex]._texture[TextureType_NORMALS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.normalPath = wstring(strPath.begin(), strPath.end());
 				break;
-			case aiTextureType_SHININESS:
+			case TextureType_SHININESS:
 				break;
-			case aiTextureType_OPACITY:
+			case TextureType_OPACITY:
 				break;
-			case aiTextureType_DISPLACEMENT:
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT]->SelfDelete((*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT]);
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT] = Texture::Create(_device, _deviceContext, path);
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_DISPLACEMENT]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+			case TextureType_DISPLACEMENT:
+				(*vectorMesh)[selectIndex]._texture[TextureType_DISPLACEMENT]->SelfDelete((*vectorMesh)[selectIndex]._texture[TextureType_DISPLACEMENT]);
+				(*vectorMesh)[selectIndex]._texture[TextureType_DISPLACEMENT] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[selectIndex]._texture[TextureType_DISPLACEMENT]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.displacmentPath = wstring(strPath.begin(), strPath.end());
 				break;
-			case aiTextureType_LIGHTMAP:
+			case TextureType_LIGHTMAP:
 				break;
-			case aiTextureType_REFLECTION:
+			case TextureType_REFLECTION:
 				break;
-			case aiTextureType_BASE_COLOR:
+			case TextureType_BASE_COLOR:
 				break;
-			case aiTextureType_NORMAL_CAMERA:
+			case TextureType_NORMAL_CAMERA:
 				break;
-			case aiTextureType_EMISSION_COLOR:
+			case TextureType_EMISSION_COLOR:
 				break;
-			case aiTextureType_METALNESS:
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_METALNESS]->SelfDelete((*vectorMesh)[selectIndex]._texture[aiTextureType_METALNESS]);
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_METALNESS] = Texture::Create(_device, _deviceContext, path);
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_METALNESS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+			case TextureType_METALNESS:
+				(*vectorMesh)[selectIndex]._texture[TextureType_METALNESS]->SelfDelete((*vectorMesh)[selectIndex]._texture[TextureType_METALNESS]);
+				(*vectorMesh)[selectIndex]._texture[TextureType_METALNESS] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[selectIndex]._texture[TextureType_METALNESS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.metallicPath = wstring(strPath.begin(), strPath.end());
 				break;
-			case aiTextureType_DIFFUSE_ROUGHNESS:
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]->SelfDelete((*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]);
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS] = Texture::Create(_device, _deviceContext, path);
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_DIFFUSE_ROUGHNESS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+			case TextureType_DIFFUSE_ROUGHNESS:
+				(*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE_ROUGHNESS]->SelfDelete((*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE_ROUGHNESS]);
+				(*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE_ROUGHNESS] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE_ROUGHNESS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.roughnessPath = wstring(strPath.begin(), strPath.end());
 				break;
-			case aiTextureType_AMBIENT_OCCLUSION:
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]->SelfDelete((*vectorMesh)[selectIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]);
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_AMBIENT_OCCLUSION] = Texture::Create(_device, _deviceContext, path);
-				(*vectorMesh)[selectIndex]._texture[aiTextureType_AMBIENT_OCCLUSION]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+			case TextureType_AMBIENT_OCCLUSION:
+				(*vectorMesh)[selectIndex]._texture[TextureType_AMBIENT_OCCLUSION]->SelfDelete((*vectorMesh)[selectIndex]._texture[TextureType_AMBIENT_OCCLUSION]);
+				(*vectorMesh)[selectIndex]._texture[TextureType_AMBIENT_OCCLUSION] = Texture::Create(_device, _deviceContext, path);
+				(*vectorMesh)[selectIndex]._texture[TextureType_AMBIENT_OCCLUSION]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.ambientOcclusionPath = wstring(strPath.begin(), strPath.end());
 				break;
-			case aiTextureType_SHEEN:
+			case TextureType_UNKNOWN:
 				break;
-			case aiTextureType_CLEARCOAT:
-				break;
-			case aiTextureType_TRANSMISSION:
-				break;
-			case aiTextureType_UNKNOWN:
-				break;
-			case _aiTextureType_Force32Bit:
+			case TextureType_Force32Bit:
 				break;
 			default:
 				break;

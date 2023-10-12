@@ -129,7 +129,7 @@ HRESULT BinaryMesh::Initialize(void* pArg)
 	return E_NOTIMPL;
 }
 
-HRESULT BinaryMesh::BindBoneMatrices(Shader* shader, const vector<class BinaryBone*>& bones, const char* constantName)
+HRESULT BinaryMesh::BindBoneMatrices(Shader* shader, const vector<class BinaryBone*>& bones, const char* constantName, FXMMATRIX pivotMatrix)
 {
 	Matrix boneMatrices[256];
 	::ZeroMemory(boneMatrices, sizeof(Matrix) * 256);
@@ -139,7 +139,7 @@ HRESULT BinaryMesh::BindBoneMatrices(Shader* shader, const vector<class BinaryBo
 	for (auto& boneIndex : _bones)
 	{
 		::XMStoreFloat4x4(&boneMatrices[index++],
-			::XMLoadFloat4x4(&_offsetMatrices[index]) * bones[boneIndex]->GetCombinedTransformCaculator());
+			::XMLoadFloat4x4(&_offsetMatrices[index]) * bones[boneIndex]->GetCombinedTransformCaculator() * pivotMatrix);
 	}
 
 	// 쉐이더에 넘길 본 매트릭스에 오프셋 매트릭스와 * 부모행렬이 곱해진 최종 변환행렬의 곱을 저장한다.

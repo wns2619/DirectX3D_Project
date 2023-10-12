@@ -24,6 +24,7 @@ HRESULT Bone::Initialize(const aiNode* node, int32 parentBoneIndex)
 
     // 매트릭스를 불러올 때 정보가 Column major이다. 그래서 row major로 바꾸기 위해 전치행렬로 바꿔서 저장함.
     ::XMStoreFloat4x4(&_BoneDesc._transformationMatrix, ::XMMatrixTranspose(::XMLoadFloat4x4(&_BoneDesc._transformationMatrix)));
+    _BoneDesc._combinedTransformationMatrix = Matrix::Identity;
 
     return S_OK;
 }

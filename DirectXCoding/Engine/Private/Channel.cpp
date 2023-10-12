@@ -9,118 +9,105 @@ Channel::Channel()
 
 HRESULT Channel::Initialize(const class Model* pModel, const aiNodeAnim* pAIChannel)
 {
-    ::strcpy_s(_szName, pAIChannel->mNodeName.data);
+
+    strcpy_s(_szName, pAIChannel->mNodeName.data);
 
     _channelDesc._boneIndex = pModel->GetBoneIndex(_szName);
 
-    // IMGUI SAVE && LOAD
-    {
-        _channelDesc.mNumScalingKeys = pAIChannel->mNumScalingKeys;
-        _channelDesc.mNumRotationKeys = pAIChannel->mNumRotationKeys;
-        _channelDesc.mNumPositionKeys = pAIChannel->mNumPositionKeys;
-    }
-
-   
-    // 어떤 유형의 애니메이션이 노드에 더 많은 영향을 끼칠 지 판단.
     _channelDesc._numKeyFrames = max(pAIChannel->mNumScalingKeys, pAIChannel->mNumRotationKeys);
     _channelDesc._numKeyFrames = max(_channelDesc._numKeyFrames, pAIChannel->mNumPositionKeys);
 
-    Vec3 scale;
-    Vec4 rotation;
-    Vec4 translation;
+    Vec3		vScale;
+    Vec4		vRotation;
+    Vec4		vTranslation;
 
     /* m_iNumKeyFrames : 특정 애니메이션 내에서 Channel에 해당하는 뼈가 몇개의 상태변환을 가져가는가?!  */
-    for (uint32 i = 0; i < _channelDesc._numKeyFrames; ++i)
+    for (size_t i = 0; i < _channelDesc._numKeyFrames; i++)
     {
-        KEYFRAME keyFrame;
-        ZeroMemory(&keyFrame, sizeof(keyFrame));
+        KEYFRAME		KeyFrame;
+        ZeroMemory(&KeyFrame, sizeof KeyFrame);
 
         if (pAIChannel->mNumScalingKeys > i)
         {
-            ::memcpy(&scale, &pAIChannel->mScalingKeys[i].mValue, sizeof(Vec3));
-            keyFrame.time = pAIChannel->mScalingKeys[i].mTime;
+            memcpy(&vScale, &pAIChannel->mScalingKeys[i].mValue, sizeof(Vec3));
+            KeyFrame.time = pAIChannel->mScalingKeys[i].mTime;
         }
 
         if (pAIChannel->mNumRotationKeys > i)
         {
-            rotation.x = pAIChannel->mRotationKeys[i].mValue.x;
-            rotation.y = pAIChannel->mRotationKeys[i].mValue.y;
-            rotation.z = pAIChannel->mRotationKeys[i].mValue.z;
-            rotation.w = pAIChannel->mRotationKeys[i].mValue.w;
-            keyFrame.time = pAIChannel->mRotationKeys[i].mTime;
+            /*memcpy(&vRotation, &pAIChannel->mRotationKeys[i].mValue, sizeof(_float4));*/
+            vRotation.x = pAIChannel->mRotationKeys[i].mValue.x;
+            vRotation.y = pAIChannel->mRotationKeys[i].mValue.y;
+            vRotation.z = pAIChannel->mRotationKeys[i].mValue.z;
+            vRotation.w = pAIChannel->mRotationKeys[i].mValue.w;
+            KeyFrame.time = pAIChannel->mRotationKeys[i].mTime;
         }
 
         if (pAIChannel->mNumPositionKeys > i)
         {
-            ::memcpy(&translation, &pAIChannel->mPositionKeys[i].mValue, sizeof(Vec3));
-            translation.w = 1.f;
-            keyFrame.time = pAIChannel->mPositionKeys[i].mTime;
+            memcpy(&vTranslation, &pAIChannel->mPositionKeys[i].mValue, sizeof(Vec3));
+            vTranslation.w = 1.f;
+            KeyFrame.time = pAIChannel->mPositionKeys[i].mTime;
         }
 
         /* KeyFrame : KeyFrame.fTime에 이 뼈가 취해야할 KeyFrame.Scale, KeyFrame.Rotation, KeyFrame.Position에 대한 상태를 저장ㅎ나다. */
-        keyFrame.scale = scale;
-        keyFrame.rotation = rotation;
-        keyFrame.translation = translation;
+        KeyFrame.scale = vScale;
+        KeyFrame.rotation = vRotation;
+        KeyFrame.translation = vTranslation;
 
-        _keyFrames.push_back(keyFrame);
+        _keyFrames.push_back(KeyFrame);
     }
 
-    return S_OK;
+     return S_OK;
 }
 
 void Channel::UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<class Bone*>& Bones, _float trackPosition)
 {
-    // 애니메이션이 끝나면 재 시작.
+
+    /* 애니메이션 한번 끝나고 재시작. */
     if (0.0f == trackPosition)
         *pCurrentKeyFrame = 0;
 
-    Vec3 scale;
-    Vec4 rotation;
-    Vec4 translation;
+    Vec3		vScale;
+    Vec4		vRotation;
+    Vec4		vTranslation;
 
-    // 마지막 키프레임과 비교.
-    KEYFRAME LastkeyFrame = _keyFrames.back();
+    KEYFRAME		LastKeyFrame = _keyFrames.back();
 
-    // 트랙 포지션이 마지막 키 프레임보다 크거나 같다면.
-    if (trackPosition >= LastkeyFrame.time)
+    /* 마지막 뼈의 상태를 계속 유지하낟. */
+    if (trackPosition >= LastKeyFrame.time)
     {
-        // 마지막 키프레임의 크기, 회전, 이동을 그대로 유지
-        scale = LastkeyFrame.scale;
-        rotation = LastkeyFrame.rotation;
-        translation = LastkeyFrame.translation;
+        *pCurrentKeyFrame = _keyFrames.size() - 1;
+        vScale = LastKeyFrame.scale;
+        vRotation = LastKeyFrame.rotation;
+        vTranslation = Vec4(LastKeyFrame.translation.x, LastKeyFrame.translation.y, LastKeyFrame.translation.z, 1.f);
     }
+    /* 특정 키프레임과 키프레임 사이에 있다. */
     else
     {
-        // 트랙 포지션이 다음 프레임의 시간보다 크거나 같다면 프레임이 넘어온 것임.
-        if (trackPosition >= _keyFrames[*pCurrentKeyFrame + 1].time)
+        while (trackPosition >= _keyFrames[*pCurrentKeyFrame + 1].time)
             ++*pCurrentKeyFrame;
 
-        _float ratio = (trackPosition - _keyFrames[*pCurrentKeyFrame].time) / (_keyFrames[*pCurrentKeyFrame + 1].time - _keyFrames[*pCurrentKeyFrame].time);
-        // 키 프레임 사이를 보간한 값이다. 0 ~ 1 사이로 만드는 공식이고
-        // 다음 프레임에서 현재 프레임을 뺀 값으로 들어온 트랙포지션과 키 프레임을 뺀다.
-        // ex) 현 프레임이 10이고, 다음 프레임이 20이라면    (15 - 10)  / ( 20 - 10 ) -> 이런식으로 5 / 10 이 되므로 1/2 만큼 온 것임.
+        _float		fRatio = (trackPosition - _keyFrames[*pCurrentKeyFrame].time) / (_keyFrames[*pCurrentKeyFrame + 1].time - _keyFrames[*pCurrentKeyFrame].time);
 
+        Vec4		vSourScale = XMLoadFloat3(&_keyFrames[*pCurrentKeyFrame].scale);
+        Vec4		vDestScale = XMLoadFloat3(&_keyFrames[*pCurrentKeyFrame + 1].scale);
+        XMStoreFloat3(&vScale, XMVectorLerp(vSourScale, vDestScale, fRatio));
 
-        // 스케일 로테이션 트렌슬레이션도 보간한다.
-        Vec4 sourScale = ::XMLoadFloat3(&_keyFrames[*pCurrentKeyFrame].scale);
-        Vec4 destScale = ::XMLoadFloat3(&_keyFrames[*pCurrentKeyFrame + 1].scale);
-        ::XMStoreFloat3(&scale, ::XMVectorLerp(sourScale, destScale, ratio));
+        Vec4		vSourRotation = XMLoadFloat4(&_keyFrames[*pCurrentKeyFrame].rotation);
+        Vec4		vDestRotation = XMLoadFloat4(&_keyFrames[*pCurrentKeyFrame + 1].rotation);
+        XMStoreFloat4(&vRotation, XMQuaternionSlerp(vSourRotation, vDestRotation, fRatio));
 
-        Vec4 sourRotation = ::XMLoadFloat4(&_keyFrames[*pCurrentKeyFrame].rotation);
-        Vec4 destRotation = ::XMLoadFloat4(&_keyFrames[*pCurrentKeyFrame + 1].rotation);
-        ::XMStoreFloat4(&rotation, ::XMQuaternionSlerp(sourRotation, destRotation, ratio));
-
-        Vec4 sourTranslation = ::XMLoadFloat4(&_keyFrames[*pCurrentKeyFrame].translation);
-        Vec4 destTranslation = ::XMLoadFloat4(&_keyFrames[*pCurrentKeyFrame + 1].translation);
-        ::XMStoreFloat4(&translation, ::XMVectorLerp(sourTranslation, destTranslation, ratio));
+        Vec4		vSourTranslation = XMLoadFloat4(&_keyFrames[*pCurrentKeyFrame].translation);
+        Vec4		vDestTranslation = XMLoadFloat4(&_keyFrames[*pCurrentKeyFrame + 1].translation);
+        XMStoreFloat4(&vTranslation, XMVectorLerp(vSourTranslation, vDestTranslation, fRatio));
     }
 
-    // 크기 * 자전 * 이동 행렬 == Affine
-    Matrix TransformationMatrix = ::XMMatrixAffineTransformation(::XMLoadFloat3(&scale),
-        ::XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&rotation), ::XMLoadFloat4(&translation));
+    /* 아핀행렬(크자이)을 만든다. */
+    Matrix		TransformationMatrix = XMMatrixAffineTransformation(XMLoadFloat3(&vScale), XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&vRotation), XMLoadFloat4(&vTranslation));
 
-    // 모델이 들고 있는 뼈한테 Affine Matrix 세팅.
     Bones[_channelDesc._boneIndex]->SetTransformationMatrix(TransformationMatrix);
+
 }
 
 Channel* Channel::Create(const class Model* pModel, const aiNodeAnim* pAIChannel)

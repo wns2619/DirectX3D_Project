@@ -37,12 +37,12 @@ using namespace Microsoft::WRL;
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
-#ifdef _DEBUG
-#pragma comment(lib, "assimp-vc143-mtd.lib")
-#else
-#pragma comment(lib, "assimp-vc143-mt.lib")
-#endif
-
+//#ifdef _DEBUG
+//#pragma comment(lib, "assimp-vc140-mtd.lib")
+//#else
+//#pragma comment(lib, "assimp-vc140-mt.lib")
+//#endif
+//
 
 #include <vector>
 #include <list>

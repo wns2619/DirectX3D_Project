@@ -27,7 +27,7 @@ private:
 
 public:
 	const char* GetBoneName() const { return _szName; }
-	const Matrix GetCombinedTransformMatrix() const { return _BoneDesc._combinedTransformationMatrix; }
+	Matrix GetCombinedTransformMatrix() const { return _BoneDesc._combinedTransformationMatrix; }
 	const XMMATRIX GetCombinedTransformCaculator() const { return ::XMLoadFloat4x4(&_BoneDesc._combinedTransformationMatrix); }
 	int32 GetBoneIndex() { return _BoneDesc._parentBoneIndex; }
 	

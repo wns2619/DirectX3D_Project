@@ -31,7 +31,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
-	HRESULT BindBoneMatrices(class Shader* shader, const vector<class BinaryBone*>& bones, const char* constantName);
+	HRESULT BindBoneMatrices(class Shader* shader, const vector<class BinaryBone*>& bones, const char* constantName, FXMMATRIX pivotMatrix);
 
 
 private:
