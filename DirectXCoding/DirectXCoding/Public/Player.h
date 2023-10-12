@@ -13,6 +13,8 @@ BEGIN(Client)
 
 class Player final : public GameObject
 {
+	enum PART { PART_BODY, PART_SURFIRE, PART_END };
+
 private:
 	explicit Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	explicit Player(const Player& rhs);
@@ -26,18 +28,21 @@ public:
 	virtual HRESULT Render()						override;
 
 public:
-	_bool Intersects(POINT pt);
 	void KeyInput(const _float& timeDelta);
+
+
+private:
+	vector<class GameObject*> m_pPlayerPart;
 
 private:
 	Renderer* _render		= nullptr;
 	Shader* _shader			= nullptr;
-	//Light* _light			= nullptr;
 
 	uint32 animationcount = 0;
 private:
 	HRESULT ReadyComponents();
 	HRESULT BindShaderResuorces();
+	HRESULT ReadyPlayerPart();
 
 public:
 	static Player* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);

@@ -11,6 +11,8 @@
 #include "AABBboxCollider.h"
 #include "SphereCollider.h"
 #include "ToolCamera.h"
+#include "PlayerBody.h"
+#include "Surefire.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -247,6 +249,13 @@ HRESULT LevelHelper::LoadingMesh()
             return E_FAIL;
         }
 
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelsurefire"),
+             Model::Create(_device, _deviceContext, Model::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Player\\surefire.fbx", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
     }
         break;
     default:
@@ -385,6 +394,20 @@ HRESULT LevelHelper::LoadingObject()
 
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectPlayer"),
             Player::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectPlayerBody"),
+            PlayerBody::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectPlayerSurefire"),
+            Surefire::Create(_device, _deviceContext))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

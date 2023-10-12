@@ -14,10 +14,10 @@ PlayerBody::PlayerBody(const GameObject& rhs)
 
 }
 
-FXMMATRIX PlayerBody::Get_SocketBonePtr(const char* pBoneName)
+Matrix* PlayerBody::Get_SocketBonePtr(const char* pBoneName)
 {
 	if (nullptr == _model)
-		return FXMMATRIX();
+		return nullptr;
 
 	return _model->GetBoneMatrix(pBoneName);
 	// 소켓을 붙일 뼈의 매트릭스 정보.
@@ -33,10 +33,12 @@ Matrix PlayerBody::Get_SocketPivotMatrix()
 
 void PlayerBody::Set_AnimationIndex(_bool isLoop, uint32 iAnimIndex)
 {
+
+
 	_model->SetUp_Animation(isLoop, iAnimIndex);
 }
 
-HRESULT PlayerBody::Initialize_Prototype()
+HRESULT PlayerBody::InitializePrototype()
 {
 	return S_OK;
 }
@@ -58,7 +60,7 @@ HRESULT PlayerBody::Initialize(void* pArg)
 	return S_OK;
 }
 
-void PlayerBody::Tick(_float fTimeDelta)
+void PlayerBody::Tick(const _float& fTimeDelta)
 {
 	_model->PlayAnimation(fTimeDelta);
 
@@ -66,7 +68,7 @@ void PlayerBody::Tick(_float fTimeDelta)
 	// 본인 월드 * 소켓뼈의 부모행렬 
 }
 
-void PlayerBody::LateTick(_float fTimeDelta)
+void PlayerBody::LateTick(const _float& fTimeDelta)
 {
 }
 
@@ -116,8 +118,13 @@ HRESULT PlayerBody::Ready_Components()
 		return E_FAIL;
 
 	/* Transform Component */
+
+	Transform::TRANSFORM_DESC transformDesc;
+	transformDesc.speedPerSec = 10.f;
+	transformDesc.rotationRadianPerSec = ::XMConvertToRadians(90.f);
+
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
-		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform))))
+		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform), &transformDesc)))
 		return E_FAIL;
 
 	/* Model Component */
@@ -136,8 +143,10 @@ HRESULT PlayerBody::Bind_ShaderResources()
 	GameInstance* gameInstance = GameInstance::GetInstance();
 	Safe_AddRef<GameInstance*>(gameInstance);
 
-	if (FAILED(_transform->BindShaderResources(m_pShaderCom, "W")))
+
+	if (FAILED(m_pShaderCom->BindMatrix("W", &m_WorldMatrix)))
 		return E_FAIL;
+
 	if (FAILED(gameInstance->BindTransformToShader(m_pShaderCom, "V", CameraHelper::TRANSFORMSTATE::D3DTS_VIEW)))
 		return E_FAIL;
 	if (FAILED(gameInstance->BindTransformToShader(m_pShaderCom, "P", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
@@ -166,7 +175,7 @@ PlayerBody* PlayerBody::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 {
 	PlayerBody* pInstance = new PlayerBody(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype()))
+	if (FAILED(pInstance->InitializePrototype()))
 	{
 		MSG_BOX("Failed to Created : Player Body");
 		Safe_Release<PlayerBody*>(pInstance);
@@ -179,7 +188,7 @@ GameObject* PlayerBody::Clone(void* pArg)
 {
 	PlayerBody* pInstance = new PlayerBody(*this);
 
-	if (FAILED(pInstance->Initialize_Prototype()))
+	if (FAILED(pInstance->Initialize(pArg)))
 	{
 		MSG_BOX("Failed to Created : Player Body");
 		Safe_Release<PlayerBody*>(pInstance);

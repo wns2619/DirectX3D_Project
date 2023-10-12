@@ -62,7 +62,7 @@ int32 Model::GetBoneIndex(const char* boneName) const
 
 }
 
-FXMMATRIX Model::GetBoneMatrix(const _char* pBoneName) const
+Matrix* Model::GetBoneMatrix(const _char* pBoneName) const
 {
     auto iter = find_if(_bones.begin(), _bones.end(), [&](Bone* pBone)
         {
@@ -72,7 +72,7 @@ FXMMATRIX Model::GetBoneMatrix(const _char* pBoneName) const
             return false;
         });
 
-    return (*iter)->GetCombinedTransformCaculator();
+    return (*iter)->GetCombientTransformMatrixPoint();
 }
 
 HRESULT Model::InitializePrototype(MODEL_TYPE type, const string& pModelFilePath, FXMMATRIX pivotMat)

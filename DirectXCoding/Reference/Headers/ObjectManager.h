@@ -29,6 +29,10 @@ public:
 	uint32 GetLayerObjectCount();
 	vector<GameObject*>* GetCurrentObjectList(LAYER_TAG layerTag);
 
+	GameObject* CloneGameObject(const wstring& strPrototypeTag, void* pArg);
+
+
+
 public: // IMGUI ¿ëµµ
 	HRESULT ComparisonAddObject(int32 levelIndex, const string& addObjectfile = "", LAYER_TAG layertag = LAYER_TAG::LAYER_END , void* argument = nullptr);
 	HRESULT DeleteObject(uint32 levelIndex, const LAYER_TAG layertag, const uint32 objectNumber, const string& modelnames);

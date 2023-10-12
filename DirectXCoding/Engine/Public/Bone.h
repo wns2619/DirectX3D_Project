@@ -27,13 +27,14 @@ private:
 
 public:
 	const char* GetBoneName() const { return _szName; }
-	Matrix GetCombinedTransformMatrix() const { return _BoneDesc._combinedTransformationMatrix; }
+	Matrix GetCombinedTransformMatrix() { return _BoneDesc._combinedTransformationMatrix; }
 	const XMMATRIX GetCombinedTransformCaculator() const { return ::XMLoadFloat4x4(&_BoneDesc._combinedTransformationMatrix); }
 	int32 GetBoneIndex() { return _BoneDesc._parentBoneIndex; }
 	
 	void SetTransformationMatrix(FXMMATRIX transformationMatrix) { ::XMStoreFloat4x4(&_BoneDesc._transformationMatrix, transformationMatrix); }
 
 	Matrix GetTransformMatrix() { return _BoneDesc._transformationMatrix; }
+	Matrix* GetCombientTransformMatrixPoint() { return &_BoneDesc._combinedTransformationMatrix; }
 
 	BONE_DESC& GetBoneDesc() { return _BoneDesc; }
 public:

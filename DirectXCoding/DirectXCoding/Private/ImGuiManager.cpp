@@ -265,12 +265,53 @@ void ImGuiManager::MouseMove()
 			
 	}
 
+	map<const LAYER_TAG, Layer*>* EntireLayer = gameinstance->GetEntireObjectLayer();
+	int32 LevelIndex = gameinstance->GetEntireLevel();
+
+
+	Vec4 ObjectPos = Vec4(0.f, 0.f, 0.f, 1.f);
+
+	for (uint32 i = LevelIndex - 1; i < LevelIndex; ++i)
+	{
+		for (auto& layeriter : EntireLayer[i])
+		{
+			vector<GameObject*>* layerObjectList = layeriter.second->GetGameObject();
+
+			for (auto& pObj : *layerObjectList)
+			{
+				// TODO
+				// picking에 pObj의 모델의 메쉬 넘기기.
+				vector<Mesh*>* ObjectMesh = pObj->GetModelComponent()->GetMeshes();
+
+				for (auto& meshiter : *ObjectMesh)
+				{
+					// 이 오브젝트의 메쉬랑 마우스랑 충돌처리 하면 될 듯? 
+
+				}
+			}
+		}
+	}
+
+
+
 	ImGui::Spacing();
 
 	ImGui::Text("Terrain Pos X : %.f", pos.x);
+	ImGui::SameLine(200);
+	ImGui::Text("Object Pos X : %.f", pos.x);
+	ImGui::Spacing();
 	ImGui::Text("Terrain Pos Y : %.f", pos.y);
+	ImGui::SameLine(200);
+	ImGui::Text("Object Pos Y : %.f", pos.y);
+	ImGui::Spacing();
 	ImGui::Text("Terrain Pos Z : %.f", pos.z);
+	ImGui::SameLine(200);
+	ImGui::Text("Object Pos Z : %.f", pos.z);
+	ImGui::Spacing();
 	ImGui::Text("Terrain Pos W : %.f", pos.w);
+	ImGui::SameLine(200);
+	ImGui::Text("Object Pos W : %.f", pos.w);
+
 
 
 

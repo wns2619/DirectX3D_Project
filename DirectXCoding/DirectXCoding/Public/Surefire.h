@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 
+
 BEGIN(Client)
 
 class Surefire final : public GameObject
@@ -10,8 +11,9 @@ public:
 	typedef struct tagPartDesc
 	{
 		Transform*		pParentTransform = { nullptr };
-		FXMMATRIX		SocetMatrix;
+		Matrix*			SocetMatrix = nullptr;
 		Matrix			SocketPivot;
+
 	}PART_DESC;
 
 protected:
@@ -23,11 +25,11 @@ protected:
 	virtual ~Surefire() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype();
-	virtual HRESULT Initialize(void* pArg);
-	virtual void Tick(_float fTimeDelta);
-	virtual void LateTick(_float fTimeDelta);
-	virtual HRESULT Render();
+	virtual HRESULT InitializePrototype()				override;
+	virtual HRESULT Initialize(void* pArg)				override;
+	virtual void Tick(const _float& fTimeDelta)			override;
+	virtual void LateTick(const _float& fTimeDelta)		override;
+	virtual HRESULT Render()							override;
 
 private: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	Shader*				m_pShaderCom = { nullptr };	
@@ -35,9 +37,9 @@ private: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 
 private:
 	Transform*				m_pParentTransform = { nullptr };
-	FXMMATRIX				m_pSocketMatrix;
+	Matrix*					m_SocketMatrix;
 	Matrix					m_SocketPivotMatrix;
-	Matrix				m_WorldMatrix;
+	Matrix					m_WorldMatrix;
 
 private:
 	HRESULT Ready_Components();

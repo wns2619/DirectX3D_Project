@@ -17,7 +17,7 @@ private:
 public:
 	uint32 GetNumMeshes() const { return m_iNumMeshes; }
 	int32 GetBoneIndex(const char* boneName) const;
-	FXMMATRIX GetBoneMatrix(const _char* pBoneName) const;
+	Matrix* GetBoneMatrix(const _char* pBoneName) const;
 
 public:
 	virtual HRESULT InitializePrototype(MODEL_TYPE type, const string& pModelFilePath, FXMMATRIX pivotMat);

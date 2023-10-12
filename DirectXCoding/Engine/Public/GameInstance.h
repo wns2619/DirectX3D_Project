@@ -56,6 +56,7 @@ public: // ObjectManager
 	HRESULT DeleteGameObject(uint32 levelIndex, const LAYER_TAG layertag, const uint32 objectNumber, const string& modelNames);
 	map<const LAYER_TAG, Layer*>* GetEntireObjectLayer();
 	int32 GetEntireLevel();
+	GameObject* CloneGameObject(const wstring& strPrototypeTag, void* pArg);
 
 public: // Component Manager
 	HRESULT	AddProtoType(uint32 levelIndex, const wstring& PrototypeTag, class Component* protoType);

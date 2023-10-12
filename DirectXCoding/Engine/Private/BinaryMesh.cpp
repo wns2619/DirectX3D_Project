@@ -126,7 +126,7 @@ HRESULT BinaryMesh::InitializePrototype(BinaryModel::MODEL_TYPE type, string& me
 
 HRESULT BinaryMesh::Initialize(void* pArg)
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 HRESULT BinaryMesh::BindBoneMatrices(Shader* shader, const vector<class BinaryBone*>& bones, const char* constantName, FXMMATRIX pivotMatrix)

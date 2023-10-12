@@ -33,6 +33,7 @@ HRESULT Animation::Initialize(const class Model* pModel, const aiAnimation* pAIA
 
 	// 애니메이션 초당 속도.
 	_animationDesc._tickPerSecond = static_cast<_float>(pAIAnimation->mTicksPerSecond);
+	_animationDesc._tickPerSecond /= 1.5;
 
 	// 애니메이션이 사용하는 뼈의 개수.
 	_animationDesc._numChannels = pAIAnimation->mNumChannels;

@@ -22,7 +22,7 @@ protected:
 	virtual ~PlayerBody() = default;
 
 public:
-	FXMMATRIX Get_SocketBonePtr(const char* pBoneName);
+	Matrix* Get_SocketBonePtr(const char* pBoneName);
 	Matrix Get_SocketPivotMatrix();
 
 public:
@@ -31,11 +31,11 @@ public:
 
 
 public:
-	virtual HRESULT Initialize_Prototype();
-	virtual HRESULT Initialize(void* pArg);
-	virtual void Tick(_float fTimeDelta);
-	virtual void LateTick(_float fTimeDelta);
-	virtual HRESULT Render();
+	virtual HRESULT InitializePrototype()			override;
+	virtual HRESULT Initialize(void* pArg)			override;
+	virtual void Tick(const _float& fTimeDelta)		override;
+	virtual void LateTick(const _float& fTimeDelta) override;
+	virtual HRESULT Render()						override;
 
 private: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	Shader* m_pShaderCom = { nullptr };

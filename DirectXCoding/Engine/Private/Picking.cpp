@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Picking.h"
 #include "GameInstance.h"
+#include "Mesh.h"
 
 IMPLEMENT_SINGLETON(Picking)
 
@@ -8,7 +9,7 @@ Picking::Picking()
 {
 }
 
-_bool Picking::PickObject(POINT pt)
+_bool Picking::PickObject(POINT pt, Transform* trans, VIBuffer* objectBuffer)
 {
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
@@ -24,6 +25,7 @@ _bool Picking::PickObject(POINT pt)
 	Matrix viewMatrix = gameInstance->GetTransformCalculator(CameraHelper::TRANSFORMSTATE::D3DTS_VIEW);
 	Matrix viewMatrixInv = viewMatrix.Invert();
 
+
 	// view space에서 Ray정의
 	Vec4 rayOrigin, rayDir;
 	rayOrigin = Vec4(0.f, 0.f, 0.f, 1.f);
@@ -37,6 +39,12 @@ _bool Picking::PickObject(POINT pt)
 	// WorldSpace에서 연산
 	Ray ray = Ray(WorldRayOrigin, worldRayDir);
 	
+	_float minDistance = FLT_MAX;
+	_float distance = 0.f;
+
+	_ulong* pIndices = static_cast<Mesh*>(objectBuffer)->GetIndicesMeshBuffer();
+
+
 
 	RELEASE_INSTANCE(GameInstance);
 

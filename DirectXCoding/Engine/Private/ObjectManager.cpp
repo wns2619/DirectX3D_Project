@@ -158,6 +158,20 @@ vector<GameObject*>* ObjectManager::GetCurrentObjectList(LAYER_TAG layerTag)
 	return layer->GetGameObject();
 }
 
+GameObject* ObjectManager::CloneGameObject(const wstring& strPrototypeTag, void* pArg)
+{
+	GameObject* pPrototype = FindPrototype(strPrototypeTag);
+	if (nullptr == pPrototype)
+		return nullptr;
+
+	/* 원형을 보ㅓㄱ제하여 사본을 마느단다. */
+	GameObject* pGameObject = pPrototype->Clone(pArg);
+	if (nullptr == pGameObject)
+		return nullptr;
+
+	return pGameObject;
+}
+
 HRESULT ObjectManager::ComparisonAddObject(int32 levelIndex, const string& addObjectfile, LAYER_TAG layertag, void* argument)
 {
 	if (levelIndex >= _levelNumber)

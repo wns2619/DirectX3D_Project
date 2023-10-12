@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Player.h"
-#include "Terrain.h"
-
+#include "PlayerBody.h"
+#include "Surefire.h"
 #include "GameInstance.h"
 
 Player::Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
@@ -28,8 +28,10 @@ HRESULT Player::Initialize(void* pArg)
 	if (FAILED(ReadyComponents()))
 		return E_FAIL;
 
- 	_model->SetUp_Animation(true, animationcount);
+	if (FAILED(ReadyPlayerPart()))
+		return E_FAIL;
 
+	static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(true, animationcount);
 	return S_OK;
 }
 
@@ -40,12 +42,24 @@ void Player::Tick(const _float& fTimeDelta)
 
 	KeyInput(fTimeDelta);
 
-	_model->PlayAnimation(fTimeDelta);
+	for (auto& pPart : m_pPlayerPart)
+	{
+		if (nullptr != pPart)
+			pPart->Tick(fTimeDelta);
+	}
+
 }
 
 void Player::LateTick(const _float& fTimeDelta)
 {
-	if(!_enabled)
+
+	for (auto& pPart : m_pPlayerPart)
+	{
+		if (nullptr != pPart)
+			pPart->LateTick(fTimeDelta);
+	}
+
+	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
 }
 
@@ -58,51 +72,38 @@ HRESULT Player::Render()
 	if (FAILED(BindShaderResuorces()))
 		return E_FAIL;
 
-	uint32 numMeshes = _model->GetNumMeshes();
 
-	for (size_t i = 0; i < numMeshes; i++)
+	for (auto& pPart : m_pPlayerPart)
 	{
-
-		if (FAILED(_model->BindBoneMatrices(_shader, i, "BoneMatrices")))
-			return E_FAIL;
-
-		if(FAILED(_model->BindMaterialTexture(_shader, "DiffuseMap", i, aiTextureType_DIFFUSE)))
-			return E_FAIL;
-
-		if (FAILED(_shader->Begin(0)))
-			return E_FAIL;
-
-		if (FAILED(_model->Render(i)))
-			return E_FAIL;
+		if (nullptr != pPart)
+			pPart->Render();
 	}
-	
+
 
 	return S_OK;
-}
-
-_bool Player::Intersects(POINT pt)
-{
-	return false;
 }
 
 void Player::KeyInput(const _float& timeDelta)
 {
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-	if (gameInstance->Get_DIKeyState(DIK_A) & 0x80)
+	if (gameInstance->Get_DIKeyState(DIK_Z) & 0x80)
+		_transform->Forward(timeDelta);
+
+	if (gameInstance->Get_DIKeyState(DIK_Q) & 0x80)
 		_transform->Turn(Vec4(0.f, 1.f, 0.f, 0.f), timeDelta * -1.f);
 
-	if (gameInstance->Get_DIKeyState(DIK_D) & 0x80)
+	if (gameInstance->Get_DIKeyState(DIK_E) & 0x80)
 		_transform->Turn(Vec4(0.f, 1.f, 0.f, 0.f), timeDelta);
 
 	if (gameInstance->Get_DIKeyState(DIK_UP) & 0x80)
 	{
 		//_transform->Forward(timeDelta);
 
-		if (animationcount < 3)
+		if (animationcount < 4)
 			++animationcount;
 
-		_model->SetUp_Animation(true, 1);
+		static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(true, animationcount);
 	}
 	if (gameInstance->Get_DIKeyState(DIK_DOWN) & 0x80)
 	{
@@ -110,7 +111,13 @@ void Player::KeyInput(const _float& timeDelta)
 		if (animationcount > 0)
 			--animationcount;
 
-		//_binaryModel->SetUp_Animation(true, animationcount);
+		static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(true, animationcount);
+	}
+
+	for (auto& pPart : m_pPlayerPart)
+	{
+		if (nullptr != pPart)
+			pPart->Tick(timeDelta);
 	}
 
 	RELEASE_INSTANCE(GameInstance);
@@ -129,42 +136,15 @@ HRESULT Player::ReadyComponents()
 		TEXT("ComponentRenderer"), reinterpret_cast<Component**>(&_render))))
 		return E_FAIL;
 
-	/* Shader Component */
-	if (FAILED(__super::AddComponent(level,
-		TEXT("ProtoTypeComponentAnimMesh"),
-		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
-		return E_FAIL;
-
 	/* Transform Component */
+	Transform::TRANSFORM_DESC transformDesc;
+	transformDesc.speedPerSec = 10.f;
+	transformDesc.rotationRadianPerSec = ::XMConvertToRadians(90.f);
+
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
-		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform))))
+		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform), &transformDesc)))
 		return E_FAIL;
 
-	/* Model Component */
-	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeModelPlayer"),
-		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_model))))
-		return E_FAIL;
-
-
-
-	/* Collider Component */
-	//if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentCollider"),
-	//	TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_owner))))
-	//	return E_FAIL;
-
-	/* Light Component */
-	//Light::DirectinoalLight testlightinfo;
-	//::ZeroMemory(&testlightinfo, sizeof(testlightinfo));
-	//{
-	//	testlightinfo.Direction = Vec3(1.f, -1.f, 1.f);
-	//	testlightinfo.Diffuse = Vec4(1.f, 1.f, 1.f, 1.f);
-	//	testlightinfo.Ambient = Vec4(1.f, 1.f, 1.f, 1.f);
-	//	testlightinfo.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
-	//	testlightinfo.Pad = 0.f;
-	//}
-	//if (FAILED(__super::AddLightComponent(level, Light::LightType::DIRECTIONAL,
-	//	TEXT("ProtoTypeComponentLight"), reinterpret_cast<Component**>(&_light), &testlightinfo)))
-	//	return E_FAIL;
 
 	RELEASE_INSTANCE(GameInstance);
 
@@ -173,40 +153,44 @@ HRESULT Player::ReadyComponents()
 
 HRESULT Player::BindShaderResuorces()
 {
-	GameInstance* gameInstance = GameInstance::GetInstance();
-	Safe_AddRef<GameInstance*>(gameInstance);
 
-	if (FAILED(_transform->BindShaderResources(_shader, "W")))
-		return E_FAIL;
-	if (FAILED(gameInstance->BindTransformToShader(_shader, "V", CameraHelper::TRANSFORMSTATE::D3DTS_VIEW)))
-		return E_FAIL;
-	if (FAILED(gameInstance->BindTransformToShader(_shader, "P", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
-		return E_FAIL;
-
-	//if (FAILED(gameInstance->BindCameraPosition(_shader, "CameraPostiion", sizeof(Vec4))))
-	//	return E_FAIL;
-
-	const LIGHT_DESC* lightdesc = gameInstance->GetLightDesc(0);
-
-	if (FAILED(_shader->BindRawValue("GlobalLight", lightdesc, sizeof(LIGHT_DESC))))
-		return E_FAIL;
-
-	MESH_MATERIAL materialDesc;
-	::ZeroMemory(&materialDesc, sizeof(materialDesc));
-	materialDesc.ambient = Vec4(0.8);
-	materialDesc.diffuse = Vec4(1.f);
-	materialDesc.specular = Vec4(1.f);
-
-	if (FAILED(_shader->BindRawValue("Material", &materialDesc, 80)))
-		return E_FAIL;
-
-	//if (FAILED(_light->BindingLightToShader(_shader, "dirLight", Light::LightType::DIRECTIONAL, sizeof(Light::DirectinoalLight))))
-	//	return E_FAIL;
-
-	Safe_Release<GameInstance*>(gameInstance);
 
 	return S_OK;
 
+}
+
+HRESULT Player::ReadyPlayerPart()
+{
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+	GameObject* pPlayerPart = nullptr;
+
+	// Player Body
+	PlayerBody::PART_DESC PartDesc;
+	PartDesc.pParentTransform = _transform;
+
+	pPlayerPart = gameInstance->CloneGameObject(TEXT("ProtoTypeGameObjectPlayerBody"), &PartDesc);
+	if (nullptr == pPlayerPart)
+		return E_FAIL;
+	m_pPlayerPart.push_back(pPlayerPart);
+
+
+	// SureFire
+	Surefire::PART_DESC surefireDesc;
+	surefireDesc.pParentTransform = _transform;
+	surefireDesc.SocetMatrix = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketBonePtr("gun_root");
+	surefireDesc.SocketPivot = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketPivotMatrix();
+
+
+	pPlayerPart = gameInstance->CloneGameObject(TEXT("ProtoTypeGameObjectPlayerSurefire"), &surefireDesc);
+	if (nullptr == pPlayerPart)
+		return E_FAIL;
+	m_pPlayerPart.push_back(pPlayerPart);
+
+	RELEASE_INSTANCE(GameInstance);
+
+
+	return S_OK;
 }
 
 Player* Player::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
@@ -240,6 +224,11 @@ GameObject* Player::Clone(void* argument)
 void Player::Free()
 {
 	__super::Free();
+
+	for (auto& pPart : m_pPlayerPart)
+		Safe_Release<GameObject*>(pPart);
+
+	m_pPlayerPart.clear();
 
 	Safe_Release<Shader*>(_shader);
 	Safe_Release<Renderer*>(_render);

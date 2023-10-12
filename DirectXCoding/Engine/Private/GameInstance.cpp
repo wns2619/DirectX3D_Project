@@ -230,6 +230,14 @@ int32 GameInstance::GetEntireLevel()
     return _objectManager->GetEntireLevel();
 }
 
+GameObject* GameInstance::CloneGameObject(const wstring& strPrototypeTag, void* pArg)
+{
+    if (nullptr == _objectManager)
+        return nullptr;
+
+    return _objectManager->CloneGameObject(strPrototypeTag, pArg);
+}
+
 
 HRESULT GameInstance::AddProtoType(uint32 levelIndex, const wstring& PrototypeTag, Component* protoType)
 {
@@ -373,7 +381,7 @@ _bool GameInstance::PickObject(POINT pt)
     if (nullptr == _picking)
         return false;
 
-    return _picking->PickObject(pt);
+    return true;
 }
 
 XMVECTOR GameInstance::GetCameraCaculator() const
