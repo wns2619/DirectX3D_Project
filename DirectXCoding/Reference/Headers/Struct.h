@@ -168,6 +168,14 @@ namespace Engine
 	};
 
 
+	struct ENGINE_DLL ComponentNames
+	{
+		wstring _strShaderName;
+		wstring _strModelComponentName;
+		string _strModelName;
+	};
+
+
 };
 
 

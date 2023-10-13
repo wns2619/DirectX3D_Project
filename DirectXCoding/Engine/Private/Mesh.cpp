@@ -114,6 +114,8 @@ HRESULT Mesh::ReadyVertexBufferNoneAnim(const aiMesh* mesh, FXMMATRIX pivotMat)
     _pVertices = new VTXMESH[_BufferDesc._numvertices];
     ZeroMemory(_pVertices, sizeof(VTXMESH) * _BufferDesc._numvertices);
 
+    _pVertexPos = new Vec3[_BufferDesc._numvertices];
+
     for (size_t i = 0; i < _BufferDesc._numvertices; i++)
     {
         memcpy(&_pVertices[i].position, &mesh->mVertices[i], sizeof(Vec3));
@@ -125,6 +127,8 @@ HRESULT Mesh::ReadyVertexBufferNoneAnim(const aiMesh* mesh, FXMMATRIX pivotMat)
         memcpy(&_pVertices[i].texcoord, &mesh->mTextureCoords[0][i], sizeof(Vec2));
         memcpy(&_pVertices[i].tangent, &mesh->mTangents[i], sizeof(Vec3));
         memcpy(&_pVertices[i].bitangent, &mesh->mBitangents[i], sizeof(Vec3));
+
+        _pVertexPos[i] = _pVertices[i].position;
     }
 
     ZeroMemory(&_BufferDesc._subResourceData, sizeof _BufferDesc._subResourceData);
@@ -143,6 +147,8 @@ HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, const Model* model)
     _pAnimVertex = new VTXANIMMESH[_BufferDesc._numvertices];
     ZeroMemory(_pAnimVertex, sizeof(VTXANIMMESH) * _BufferDesc._numvertices);
 
+    _pVertexPos = new Vec3[_BufferDesc._numvertices];
+
     for (size_t i = 0; i < _BufferDesc._numvertices; i++)
     {
         memcpy(&_pAnimVertex[i].position, &mesh->mVertices[i], sizeof(Vec3));
@@ -150,6 +156,8 @@ HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, const Model* model)
         memcpy(&_pAnimVertex[i].texcoord, &mesh->mTextureCoords[0][i], sizeof(Vec2));
         memcpy(&_pAnimVertex[i].tangent, &mesh->mTangents[i], sizeof(Vec3));
         memcpy(&_pAnimVertex[i].bitangent, &mesh->mBitangents[i], sizeof(Vec3));
+
+        _pVertexPos[i] = _pAnimVertex[i].position;
     }
     
     // 메쉬를 이루고 있는 정점에 영향을 주는 뼈의 개수.
@@ -268,6 +276,7 @@ void Mesh::Free()
    
     Safe_Delete_Array<VTXMESH*>(_pVertices);
     Safe_Delete_Array<_ulong*>(_pIndices);
+    Safe_Delete_Array<Vec3*>(_pVertexPos);
     Safe_Delete_Array<VTXANIMMESH*>(_pAnimVertex);
 
 }

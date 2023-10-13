@@ -195,6 +195,7 @@
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\PlayerBody.h" />
     <ClInclude Include="..\Public\PlayerCamera.h" />
+    <ClInclude Include="..\Public\StaticObject.h" />
     <ClInclude Include="..\Public\Surefire.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\ToolCamera.h" />
@@ -251,6 +252,7 @@
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\PlayerBody.cpp" />
     <ClCompile Include="..\Private\PlayerCamera.cpp" />
+    <ClCompile Include="..\Private\StaticObject.cpp" />
     <ClCompile Include="..\Private\Surefire.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp">
       <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">EditAndContinue</DebugInformationFormat>

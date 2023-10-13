@@ -13,6 +13,7 @@ BEGIN(Client)
 
 class Player final : public GameObject
 {
+public:
 	enum PART { PART_BODY, PART_SURFIRE, PART_END };
 
 private:
@@ -30,6 +31,8 @@ public:
 public:
 	void KeyInput(const _float& timeDelta);
 
+public:
+	vector<class GameObject*>& GetPlyaerPart() { return m_pPlayerPart; }
 
 private:
 	vector<class GameObject*> m_pPlayerPart;

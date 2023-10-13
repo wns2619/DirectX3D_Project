@@ -376,12 +376,12 @@ Vec4 GameInstance::TerrainPicking(POINT pt, Transform* trans, VIBufferTerrain* b
     return _picking->GetInstance()->TerrainPicking(pt, trans, buffer);
 }
 
-_bool GameInstance::PickObject(POINT pt)
+_bool GameInstance::PickObject(POINT pt, Transform* trans, VIBuffer* objectBuffer, Vec4& vPos)
 {
     if (nullptr == _picking)
         return false;
 
-    return true;
+    return _picking->PickObject(pt, trans, objectBuffer, vPos);
 }
 
 XMVECTOR GameInstance::GetCameraCaculator() const

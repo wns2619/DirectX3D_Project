@@ -136,19 +136,37 @@ _bool ImGuiResourceHandler::CreateTextureFormFile(const WCHAR* texturePath, _boo
     return couldLoad;
 }
 
-const wstring& ImGuiResourceHandler::FindProtoFilePath(const string& filePathKey)
+const pair<LAYER_TAG, wstring>& ImGuiResourceHandler::FindProtoFilePath(const string& filePathKey)
 {
     auto iter = _prototypefilepath.find(filePathKey);
 
     if (iter == _prototypefilepath.end())
-        return wstring();
+        return pair<LAYER_TAG, wstring>();
 
     return iter->second;
 }
 
-HRESULT ImGuiResourceHandler::AddProtoFilePath(const string& filePathKey, const wstring& filePathValue)
+HRESULT ImGuiResourceHandler::AddProtoFilePath(const string& filePathKey, LAYER_TAG layertag, const wstring& filePathValue)
 {
-    _prototypefilepath.emplace(filePathKey, filePathValue);
+    _prototypefilepath.emplace(filePathKey, make_pair(layertag,filePathValue));
+
+    return S_OK;
+}
+
+const pair<const wstring, const wstring>& ImGuiResourceHandler::FindProtoComponentName(const string& filePathKey)
+{
+    auto iter = _prototypeComponentName.find(filePathKey);
+
+    if (iter == _prototypeComponentName.end())
+        return pair<wstring, wstring>();
+
+    return iter->second;
+}
+
+HRESULT ImGuiResourceHandler::AddProtoComponentName(const string& filePathKey, const wstring& modelNameKey, const wstring& ShaderValue)
+{
+    _prototypeComponentName.emplace(filePathKey, make_pair(modelNameKey, ShaderValue));
+
 
     return S_OK;
 }

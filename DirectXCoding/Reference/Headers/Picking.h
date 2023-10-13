@@ -15,7 +15,7 @@ private:
 	virtual ~Picking() = default;
 
 public:
-	_bool PickObject(POINT pt, Transform* trans, VIBuffer* objectBuffer);
+	_bool PickObject(POINT pt, Transform* trans, VIBuffer* objectBuffer, Vec4& vPos);
 	Vec4 TerrainPicking(POINT pt, Transform* trans, VIBufferTerrain* buffer);
 	
 public:

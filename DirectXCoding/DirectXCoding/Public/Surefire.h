@@ -34,7 +34,6 @@ public:
 private: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	Shader*				m_pShaderCom = { nullptr };	
 
-
 private:
 	Transform*				m_pParentTransform = { nullptr };
 	Matrix*					m_SocketMatrix;

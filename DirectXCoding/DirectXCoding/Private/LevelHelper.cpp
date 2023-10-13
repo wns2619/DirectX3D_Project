@@ -13,6 +13,7 @@
 #include "ToolCamera.h"
 #include "PlayerBody.h"
 #include "Surefire.h"
+#include "StaticObject.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -145,8 +146,15 @@ HRESULT LevelHelper::LodingforLevelEdit()
     LoadingObject();
 
 
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", TEXT("ProtoTypeGameObjectPlayer"));
+    // PLAYER
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", LAYER_TAG::LAYER_PLAYER, TEXT("ProtoTypeGameObjectPlayer"));
+ 
+    // STATIC
 
+#pragma region 2stBottom
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stBottom\\2stBottom.fbx", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stBottom\\2stBottom.fbx", TEXT("ProtoType2stBottom"), TEXT("../Binaries/Shaders/DefaultMeshShader.fx"));
+#pragma endregion 2stBottom
 
     _title = TEXT("Loading Successed");
     _IsFinished = true;
@@ -251,6 +259,13 @@ HRESULT LevelHelper::LoadingMesh()
 
          if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelsurefire"),
              Model::Create(_device, _deviceContext, Model::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Player\\surefire.fbx", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoType2stBottom"),
+             Model::Create(_device, _deviceContext, Model::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stBottom\\2stBottom.fbx", modelInitializMatrix))))
          {
              RELEASE_INSTANCE(GameInstance);
              return E_FAIL;
@@ -408,6 +423,13 @@ HRESULT LevelHelper::LoadingObject()
 
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectPlayerSurefire"),
             Surefire::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeStaticObject"),
+            StaticObject::Create(_device, _deviceContext))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

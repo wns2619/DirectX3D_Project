@@ -2,7 +2,7 @@
 #include "EmptyObject.h"
 
 EmptyObject::EmptyObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: GameObject(device, deviceContext, OBJECT_TYPE::EMPTYOBJECT)
+	: GameObject(device, deviceContext, OBJECT_TYPE::STATIC)
 {
 	// Empty¿´´Ù°¡ 
 }

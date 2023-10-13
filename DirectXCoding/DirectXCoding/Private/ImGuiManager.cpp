@@ -19,6 +19,7 @@
 #include "Animation.h"
 #include "Channel.h"
 #include "Layer.h"
+#include "Player.h"
 
 ImGui::FileBrowser g_fileDialog;
 
@@ -251,66 +252,146 @@ void ImGuiManager::MouseMove()
 	Vec4 pos = Vec4(0.f, 0.f, 0.f, 1.f);
 	_float distance = 0.f;
 
-	if (_Isterrain)
+	static _bool IsTerrain = true;
+	static _bool IsObjectPick = false;
+	_bool IsIntersects = false;
+
+ 	if(ImGui::Button("Terrain Picking", ImVec2(140, 20)))
 	{
-		EditorTerrain* terrain = static_cast<EditorTerrain*>(gameinstance->GetLayerObject(LAYER_TAG::LAYER_TERRAIN, OBJECT_TYPE::TERRAIN));
-
-		pos = terrain->TerrainPick();
-
-		if (nullptr != _SelectGameObject)
-		{
-			if(gameinstance->Get_DIMouseState(InputManager::MOUSEKEYSTATE::MKS_LBUTTON))
-				_SelectGameObject->GetTransform()->SetState(Transform::STATE::POSITION, ::XMLoadFloat4(&pos));
-		}
-			
+		if (IsTerrain == true)
+			IsTerrain = false;
+		else
+			IsTerrain = true;
 	}
 
-	map<const LAYER_TAG, Layer*>* EntireLayer = gameinstance->GetEntireObjectLayer();
-	int32 LevelIndex = gameinstance->GetEntireLevel();
+	ImGui::SameLine(150);
 
-
-	Vec4 ObjectPos = Vec4(0.f, 0.f, 0.f, 1.f);
-
-	for (uint32 i = LevelIndex - 1; i < LevelIndex; ++i)
+	if (ImGui::Button("Object Picking", ImVec2(140, 20)))
 	{
-		for (auto& layeriter : EntireLayer[i])
+		if (IsObjectPick == true)
+			IsObjectPick = false;
+		else
+			IsObjectPick = true;
+	}
+
+
+	ImGui::Spacing();
+
+
+	if (true == IsTerrain)
+	{
+		if (_Isterrain)
+		{
+			EditorTerrain* terrain = static_cast<EditorTerrain*>(gameinstance->GetLayerObject(LAYER_TAG::LAYER_TERRAIN, OBJECT_TYPE::TERRAIN));
+
+			if (nullptr == terrain)
+				return;
+
+			pos = terrain->TerrainPick();
+
+
+			for (const auto& Selectiter : _SelectGameObject)
+			{
+				if (Selectiter.second.first == true)
+				{
+					if (gameinstance->Get_DIMouseState(InputManager::MOUSEKEYSTATE::MKS_RBUTTON))
+						Selectiter.second.second->GetTransform()->SetState(Transform::STATE::POSITION, ::XMLoadFloat4(&pos));
+				}
+			}
+		}
+
+
+		ImGui::Text("Terrain Pos X : %.f", pos.x);
+		ImGui::Spacing();
+
+		ImGui::Text("Terrain Pos Y : %.f", pos.y);
+		ImGui::Spacing();
+
+		ImGui::Text("Terrain Pos Z : %.f", pos.z);
+		ImGui::Spacing();
+
+		ImGui::Text("Terrain Pos W : %.f", pos.w);
+		ImGui::Spacing();
+	}
+
+
+	if (true == IsObjectPick)
+	{
+		map<const LAYER_TAG, Layer*>* EntireLayer = gameinstance->GetEntireObjectLayer();
+		int32 LevelIndex = gameinstance->GetCurrentLevelIndex();
+
+
+		Vec4 ObjectPos = Vec4(0.f, 0.f, 0.f, 1.f);
+
+
+		for (auto& layeriter : EntireLayer[LevelIndex])
 		{
 			vector<GameObject*>* layerObjectList = layeriter.second->GetGameObject();
+
+			if (true == IsIntersects)
+				break;
 
 			for (auto& pObj : *layerObjectList)
 			{
 				// TODO
 				// picking에 pObj의 모델의 메쉬 넘기기.
-				vector<Mesh*>* ObjectMesh = pObj->GetModelComponent()->GetMeshes();
+				Model* ObjectMesh = nullptr;
+				Transform* trans = nullptr;
 
-				for (auto& meshiter : *ObjectMesh)
+				if (pObj->GetObjectType() == OBJECT_TYPE::PLAYER)
 				{
-					// 이 오브젝트의 메쉬랑 마우스랑 충돌처리 하면 될 듯? 
-
+					vector<GameObject*>& playerPart = dynamic_cast<Player*>(pObj)->GetPlyaerPart();
+					ObjectMesh = playerPart[Player::PART::PART_BODY]->GetModelComponent();
 				}
+				else
+					ObjectMesh = pObj->GetModelComponent();
+
+
+				if (nullptr == ObjectMesh)
+					continue;
+
+				if (true == IsIntersects)
+					break;
+
+				vector<Mesh*>* MeshList = ObjectMesh->GetMeshes();
+
+				for (auto& meshiter : *MeshList)
+				{
+					IsIntersects = gameinstance->PickObject(pt, pObj->GetTransform(), meshiter, ObjectPos);
+					
+					if (true == IsIntersects)
+						break;
+				}
+					
+			}
+		}
+
+
+		ImGui::Text("Object Pos X : %.f", ObjectPos.x);
+		ImGui::Spacing();
+		ImGui::Text("Object Pos Y : %.f", ObjectPos.y);
+		ImGui::Spacing();
+		ImGui::Text("Object Pos Z : %.f", ObjectPos.z);
+		ImGui::Spacing();
+		ImGui::Text("Object Pos W : %.f", ObjectPos.w);
+		ImGui::Spacing();
+
+
+
+		for (const auto& Selectiter : _SelectGameObject)
+		{
+			if (Selectiter.second.first == true)
+			{
+				if (gameinstance->Get_DIMouseState(InputManager::MOUSEKEYSTATE::MKS_RBUTTON))
+					Selectiter.second.second->GetTransform()->SetState(Transform::STATE::POSITION, ::XMLoadFloat4(&ObjectPos));
 			}
 		}
 	}
 
 
 
-	ImGui::Spacing();
 
-	ImGui::Text("Terrain Pos X : %.f", pos.x);
-	ImGui::SameLine(200);
-	ImGui::Text("Object Pos X : %.f", pos.x);
-	ImGui::Spacing();
-	ImGui::Text("Terrain Pos Y : %.f", pos.y);
-	ImGui::SameLine(200);
-	ImGui::Text("Object Pos Y : %.f", pos.y);
-	ImGui::Spacing();
-	ImGui::Text("Terrain Pos Z : %.f", pos.z);
-	ImGui::SameLine(200);
-	ImGui::Text("Object Pos Z : %.f", pos.z);
-	ImGui::Spacing();
-	ImGui::Text("Terrain Pos W : %.f", pos.w);
-	ImGui::SameLine(200);
-	ImGui::Text("Object Pos W : %.f", pos.w);
+
 
 
 
@@ -349,6 +430,9 @@ void ImGuiManager::MainSection()
 			//uint32 layerSize = gameInstance->GetLayerObjectCount();
 	
 			// 이 레이어를 전부 돌면서 파일 Save
+			wstring filePath = L"Test";
+			SceneSave(filePath);
+			
 			
 		}
 
@@ -480,10 +564,21 @@ HRESULT ImGuiManager::ModelNameCardSection()
 					// Model 생성을 도와줄 Helper 클래스를 만들어서 내부에서 ProtoType 만들고 그 즉시 Clone까지 해주자.
 					// 그러면 받을 인자 값은 Layer 위치 + ProtoTypeTag
 
-					wstring findPrototypename = ImGuiResourceHandler::GetInstance()->FindProtoFilePath(modelPath);
+					const pair<LAYER_TAG, wstring>& findPrototypename = ImGuiResourceHandler::GetInstance()->FindProtoFilePath(modelPath);
 
 
-					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), LAYER_TAG::LAYER_PLAYER, TEXT("ProtoTypeGameObjectPlayer"))))
+					//struct ComponentNames
+					//{
+					//	wstring _strShaderName = L"";
+					//	wstring _strModelComponentName = L"";
+					//	string _strModelName;
+					//};
+
+					ComponentNames comNames;
+	
+
+
+					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), findPrototypename.first, findPrototypename.second)))
 					{
 						RELEASE_INSTANCE(GameInstance);
 						return E_FAIL;
@@ -1242,7 +1337,21 @@ void ImGuiManager::GameObjectUpdate(uint32 objectID, GameObject* pObj)
 		ImGui::SameLine();
 		
 		if (ImGui::Checkbox(selectLabel.c_str(), select))
-			_SelectGameObject = pObj;
+			_SelectGameObject.emplace(pObj->GetModelNameId(), make_pair(select, pObj));
+
+		if (*select == false && !_SelectGameObject.empty())
+		{
+			auto iter = _SelectGameObject.find(pObj->GetModelNameId());
+
+			if (iter != _SelectGameObject.end())
+			{
+				iter->second.first = false;
+				iter->second.second = nullptr;
+				_SelectGameObject.erase(iter);
+			}
+		}
+
+
 
 		if (!*enable)
 		{
@@ -1805,6 +1914,69 @@ void ImGuiManager::LoadModelList(string path)
 
 		::closedir(dir);
 	}
+}
+
+void ImGuiManager::SceneSave(wstring& filePath)
+{
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+	auto path = filesystem::path(filePath);
+
+	filesystem::create_directory(path.parent_path());
+
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+
+	file->Open(filePath, FileMode::Write);
+
+	map<const LAYER_TAG, Layer*>* EntireLayer = gameInstance->GetEntireObjectLayer();
+
+	for (auto EntrieIter : *EntireLayer)
+	{
+		// 오브젝트 매니저에 레이어 태그들 일단 저장.
+		uint32 LayerTagType = static_cast<uint32>(EntrieIter.first);
+		file->Write<uint32>(LayerTagType);
+
+		//LAYER_PLAYER, LAYER_MONSTER, LAYER_TERRAIN, LAYER_CAMERA, LAYER_ENVIRONMENT, LAYER_END,
+
+		vector<GameObject*>* LayerGameObjectList = EntrieIter.second->GetGameObject();
+
+
+		switch (static_cast<LAYER_TAG>(LayerTagType))
+		{
+		case Engine::LAYER_TAG::LAYER_PLAYER:
+			for (auto& LayerObjects : *LayerGameObjectList)
+			{
+				vector<GameObject*>& playerPart = static_cast<Player*>(LayerObjects)->GetPlyaerPart();
+
+				//playerPart[Player::PART::PART_BODY]
+
+			}
+			break;
+		case Engine::LAYER_TAG::LAYER_MONSTER:
+			break;
+		case Engine::LAYER_TAG::LAYER_TERRAIN:
+			break;
+		case Engine::LAYER_TAG::LAYER_CAMERA:
+			break;
+		case Engine::LAYER_TAG::LAYER_STATIC:
+			break;
+		case Engine::LAYER_TAG::LAYER_DYNAMIC:
+			break;
+		case Engine::LAYER_TAG::LAYER_END:
+			break;
+		default:
+			break;
+		}
+
+
+
+	}
+
+	RELEASE_INSTANCE(GameInstance);
+}
+
+void ImGuiManager::SceneLoad(wstring& filePath)
+{
 }
 
 void ImGuiManager::Free()

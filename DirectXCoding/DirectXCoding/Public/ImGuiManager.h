@@ -93,7 +93,7 @@ private:
 	TexturePathPBR _texturePath = {};
 
 	// GameObjects
-	GameObject* _SelectGameObject = nullptr;
+	map<string, pair<_bool, GameObject*>> _SelectGameObject;
 
 	void GameObjectUpdate(uint32 objectID, GameObject* pObj);
 	void UpdateModelUI(uint32 objectID, GameObject* pObj);
@@ -111,6 +111,8 @@ private:
 
 	// Load && Save
 	void LoadModelList(string path = "..\\Binaries\\Resources\\MyModels\\");
+	void SceneSave(wstring& filePath);
+	void SceneLoad(wstring& filePath);
 	
 
 	vector<pair<string, _bool>> _modelNames; // string = name, bool = Isdirectory

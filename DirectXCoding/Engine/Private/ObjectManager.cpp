@@ -123,7 +123,7 @@ GameObject* ObjectManager::GetLayerObjectTag(const LAYER_TAG layerag, const stri
 uint32 ObjectManager::GetLayerObjectCount()
 {
 	_levelObjectCount = 0;
-	int32 i = 0;
+	int32 j = 0;
 	size_t listsize = 0;
 
 	for (const auto& pair : _Layers[_currenlevel])
@@ -136,7 +136,11 @@ uint32 ObjectManager::GetLayerObjectCount()
 
 
 			for (size_t i = 0; i < gameObject->size(); i++)
-				(*gameObject)[i]->SetIdNumber(i);
+			{
+				(*gameObject)[i]->SetIdNumber(j);
+				++j;
+			}
+	
 
 
 			listsize += pair.second->GetGameObject()->size();

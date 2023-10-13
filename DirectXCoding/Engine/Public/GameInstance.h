@@ -83,7 +83,7 @@ public: // LightManager
 
 public: // Picking
 	Vec4 TerrainPicking(POINT pt, Transform* trans, VIBufferTerrain* buffer);
-	_bool PickObject(POINT pt);
+	_bool PickObject(POINT pt, Transform* trans, VIBuffer* objectBuffer, Vec4& vPos);
 
 private:
 	class TimeManager* _timeManager = nullptr;

@@ -118,7 +118,7 @@ HRESULT PlayerBody::Ready_Components()
 		return E_FAIL;
 
 	/* Transform Component */
-
+	
 	Transform::TRANSFORM_DESC transformDesc;
 	transformDesc.speedPerSec = 10.f;
 	transformDesc.rotationRadianPerSec = ::XMConvertToRadians(90.f);

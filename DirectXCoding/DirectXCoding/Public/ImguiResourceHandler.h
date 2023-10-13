@@ -26,16 +26,20 @@ public:
 
 public:
 	_bool CreateTextureFormFile(const WCHAR* texturePath, _bool isCubeMap = false);
-	const wstring& FindProtoFilePath(const string& filePathKey);
-	HRESULT AddProtoFilePath(const string& filePathKey, const wstring& filePathValue);
+	const pair<LAYER_TAG, wstring>& FindProtoFilePath(const string& filePathKey);
+	HRESULT AddProtoFilePath(const string& filePathKey, LAYER_TAG layertag, const wstring& filePathValue);
 
+public:
+	const pair<const wstring, const wstring>& FindProtoComponentName(const string& filePathKey);
+	HRESULT AddProtoComponentName(const string& filePathKey, const wstring& modelNameKey, const wstring& ShaderValue);
 
 private:
 	ID3D11Device* _device				= nullptr;
 	ID3D11DeviceContext* _deviceContext = nullptr;
 
 	map<const wstring, ID3D11ShaderResourceView*> _imguitextures;
-	map<const string, wstring> _prototypefilepath;
+	map<const string, pair<LAYER_TAG, wstring>> _prototypefilepath;
+	map<const string, pair<const wstring, const wstring>> _prototypeComponentName;
 
 	const wstring rootTexturePath = TEXT("..\\Binaries\\Resources\\Textures\\");
 public:

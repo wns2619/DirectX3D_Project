@@ -83,6 +83,9 @@
     <Filter Include="소스 파일\02.GameObjects\03.Player\Surefire">
       <UniqueIdentifier>{f34441a5-e308-4989-ad3d-b30f35cca510}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\04. Static">
+      <UniqueIdentifier>{8d3c8ece-7e21-47ce-81cc-4ca8cbf84627}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -187,6 +190,9 @@
     <ClInclude Include="..\Public\Surefire.h">
       <Filter>소스 파일\02.GameObjects\03.Player\Surefire</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\StaticObject.h">
+      <Filter>소스 파일\02.GameObjects\04. Static</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -269,6 +275,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Surefire.cpp">
       <Filter>소스 파일\02.GameObjects\03.Player\Surefire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StaticObject.cpp">
+      <Filter>소스 파일\02.GameObjects\04. Static</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

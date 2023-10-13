@@ -35,8 +35,8 @@ HRESULT Surefire::Initialize(void* pArg)
 		return E_FAIL;
 
 	_transform->SetScaling(Vec3(0.0001f, 0.0001f, 0.00005f));
-	_transform->SetState(Transform::STATE::POSITION, Vec4(0.f, -0.07f, 0.015f, 1.f));
 	_transform->FixRotation(Vec3(1.f, 0.f, 0.f), ::XMConvertToRadians(45));
+	_transform->SetState(Transform::STATE::POSITION, Vec4(0.f, -0.07f, 0.015f, 1.f));
 
 	return S_OK;
 }

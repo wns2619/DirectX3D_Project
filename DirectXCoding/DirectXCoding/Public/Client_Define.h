@@ -8,6 +8,8 @@ namespace Client
 
 	const unsigned long g_iWinSizeX = 1600;
 	const unsigned long g_iWinSizeY = 900;
+
+
 }
 
 extern HWND g_hWnd;

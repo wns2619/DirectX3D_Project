@@ -36,6 +36,7 @@ public:
 	VTXMESH* GetVertexMeshBuffer() { return _pVertices; }
 	VTXANIMMESH* GetVertexAnimBuffer() { return _pAnimVertex; }
 	_ulong* GetIndicesMeshBuffer() { return _pIndices; }
+	Vec3* GetVertexPos() { return _pVertexPos; }
 	uint32 GetMeshEffectBones() { return _numBones; }
 
 
@@ -45,9 +46,13 @@ public:
 	_char* GetMeshName() { return szName; }
 private: // IMGUI LOAD && SAVE
 	MESH_BUFFER_DESC _MeshBufferDesc;
+
+
 	VTXANIMMESH* _pAnimVertex = nullptr;
+	Vec3* _pVertexPos = nullptr;
 	VTXMESH* _pVertices = nullptr;
 	_ulong* _pIndices = nullptr;
+
 
 
 	vector<string> _szBoneName;
