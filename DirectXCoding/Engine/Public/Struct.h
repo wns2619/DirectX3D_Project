@@ -172,6 +172,7 @@ namespace Engine
 	{
 		wstring _strShaderName;
 		wstring _strModelComponentName;
+		wstring _protoTypeName;
 		string _strModelName;
 	};
 

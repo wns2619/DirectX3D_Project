@@ -18,6 +18,7 @@ public:
 	{
 		wstring _strShaderName;
 		wstring _strModelComponentName;
+		wstring _protoTypeTag;
 	};
 
 private:
@@ -32,6 +33,9 @@ public:
 	virtual void LateTick(const _float& timeDelta)	override;
 	virtual HRESULT Render()						override;
 	
+public:
+	STATE_DESC& GetStaticComponentsName() { return _comNames; }
+
 private:
 	Renderer* _render = nullptr;
 	Shader* _shader = nullptr;

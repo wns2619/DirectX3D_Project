@@ -20,6 +20,7 @@
 #include "Channel.h"
 #include "Layer.h"
 #include "Player.h"
+#include "StaticObject.h"
 
 ImGui::FileBrowser g_fileDialog;
 
@@ -430,8 +431,8 @@ void ImGuiManager::MainSection()
 			//uint32 layerSize = gameInstance->GetLayerObjectCount();
 	
 			// 이 레이어를 전부 돌면서 파일 Save
-			wstring filePath = L"Test";
-			SceneSave(filePath);
+			wstring filepath = L"..\\Binaries\\Resources\\MapData\\";
+			SceneSave(filepath);
 			
 			
 		}
@@ -576,6 +577,7 @@ HRESULT ImGuiManager::ModelNameCardSection()
 						if (namePosition != std::string::npos && namePosition > 0)
 							useModelName = _modelNames[i].first.substr(0, namePosition);
 
+						comNames._protoTypeName = findPrototypename.second;
 						comNames._strModelComponentName = findProtoComName.first;
 						comNames._strShaderName = findProtoComName.second;
 						comNames._strModelName = useModelName;
@@ -595,9 +597,8 @@ HRESULT ImGuiManager::ModelNameCardSection()
 					if (dotPosition != std::string::npos && dotPosition > 0)
 						fileExtension = modelPath.substr(0, dotPosition);
 
-					
-					if (GetAsyncKeyState(VK_RETURN) & 0x8000)
-						BinaryAnimModelSave(modelPath, Utils::ToWString(fileExtension));
+					//BinaryModelSave(modelPath, Utils::ToWString(fileExtension));
+					//BinaryAnimModelSave(modelPath, Utils::ToWString(fileExtension));
 		
 				}
 				else
@@ -1918,7 +1919,7 @@ void ImGuiManager::LoadModelList(string path)
 	}
 }
 
-void ImGuiManager::SceneSave(wstring& filePath)
+HRESULT ImGuiManager::SceneSave(wstring& filePath)
 {
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
@@ -1928,11 +1929,20 @@ void ImGuiManager::SceneSave(wstring& filePath)
 
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
 
-	file->Open(filePath, FileMode::Write);
+	wstring finalPath = filePath + L"MapData.dat";
+
+	file->Open(finalPath, FileMode::Write);
 
 	map<const LAYER_TAG, Layer*>* EntireLayer = gameInstance->GetEntireObjectLayer();
 
-	for (auto EntrieIter : *EntireLayer)
+	// 레이어 사이즈도 저장해야할듯?
+	uint32 levelIndex = gameInstance->GetCurrentLevelIndex();
+	file->Write<uint32>(levelIndex);
+
+	uint32 totalLayerSize = EntireLayer[levelIndex].size();
+	file->Write<uint32>(totalLayerSize);
+
+	for (auto EntrieIter : EntireLayer[levelIndex])
 	{
 		// 오브젝트 매니저에 레이어 태그들 일단 저장.
 		uint32 LayerTagType = static_cast<uint32>(EntrieIter.first);
@@ -1941,6 +1951,8 @@ void ImGuiManager::SceneSave(wstring& filePath)
 		//LAYER_PLAYER, LAYER_MONSTER, LAYER_TERRAIN, LAYER_CAMERA, LAYER_ENVIRONMENT, LAYER_END,
 
 		vector<GameObject*>* LayerGameObjectList = EntrieIter.second->GetGameObject();
+		uint32 GameObjectListSize = LayerGameObjectList->size();
+		file->Write<uint32>(GameObjectListSize);
 
 
 		switch (static_cast<LAYER_TAG>(LayerTagType))
@@ -1961,6 +1973,25 @@ void ImGuiManager::SceneSave(wstring& filePath)
 		case Engine::LAYER_TAG::LAYER_CAMERA:
 			break;
 		case Engine::LAYER_TAG::LAYER_STATIC:
+			for (auto& LayerObjects : *LayerGameObjectList)
+			{
+				// 모델 타입.
+				OBJECT_TYPE modelType = LayerObjects->GetObjectType();
+				file->Write<uint32>(static_cast<uint32>(modelType));
+
+				// 모델 이름.
+				string modelName = LayerObjects->GetModelName();
+				file->Write<string>(modelName);
+
+				// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
+				StaticObject::STATE_DESC StaticComponentName = static_cast<StaticObject*>(LayerObjects)->GetStaticComponentsName();
+				file->Write<string>(Utils::ToString(StaticComponentName._strModelComponentName));
+				file->Write<string>(Utils::ToString(StaticComponentName._strShaderName));
+				file->Write<string>(Utils::ToString(StaticComponentName._protoTypeTag));
+
+				Matrix staticObjectWorldMarix = LayerObjects->GetTransform()->GetWorldMatrix();
+				file->Write<Matrix>(staticObjectWorldMarix);
+			}
 			break;
 		case Engine::LAYER_TAG::LAYER_DYNAMIC:
 			break;
@@ -1975,10 +2006,92 @@ void ImGuiManager::SceneSave(wstring& filePath)
 	}
 
 	RELEASE_INSTANCE(GameInstance);
+	return S_OK;
 }
 
-void ImGuiManager::SceneLoad(wstring& filePath)
+HRESULT ImGuiManager::SceneLoad(wstring& filePath)
 {
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+
+	wstring finalPath = filePath + L".dat";
+
+	file->Open(filePath, FileMode::Read);
+
+	map<const LAYER_TAG, Layer*>* EntireLayer = gameInstance->GetEntireObjectLayer();
+
+	// 레이어 사이즈도 저장해야할듯?
+	uint32 LevelIndex;
+	file->Read<uint32>(LevelIndex);
+
+	uint32 LayerTagType;
+	file->Read<uint32>(LayerTagType);
+
+	uint32 GameObjectListSize;
+	file->Read<uint32>(GameObjectListSize);
+
+	switch (static_cast<LAYER_TAG>(LayerTagType))
+	{
+	case Engine::LAYER_TAG::LAYER_PLAYER:
+		for (uint32 j = 0; j < GameObjectListSize; ++j)
+		{
+			//TODO
+		}
+		break;
+	case Engine::LAYER_TAG::LAYER_MONSTER:
+		break;
+	case Engine::LAYER_TAG::LAYER_TERRAIN:
+		break;
+	case Engine::LAYER_TAG::LAYER_CAMERA:
+		break;
+	case Engine::LAYER_TAG::LAYER_STATIC:
+		for (uint32 j = 0; j < GameObjectListSize; ++j)
+		{
+			// 모델 타입.
+			uint32 modelType;
+			file->Read<uint32>(modelType);
+
+
+			// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
+			ComponentNames StaticComponentName;
+
+			// 모델 이름.
+			string modelName;
+			file->Read(modelName);
+			StaticComponentName._strModelName = modelName;
+
+			string modelComponentName;
+			file->Read(modelName);
+			StaticComponentName._strModelComponentName = Utils::ToWString(modelComponentName);
+
+			string modelShaderName;
+			file->Read(modelShaderName);
+			StaticComponentName._strShaderName = Utils::ToWString(modelShaderName);
+
+			string prototypeModelName;
+			file->Read(prototypeModelName);
+			StaticComponentName._protoTypeName = Utils::ToWString(prototypeModelName);
+
+			Matrix staticObjectWorldMarix;
+			file->Read<Matrix>(staticObjectWorldMarix);
+
+			if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), static_cast<LAYER_TAG>(LayerTagType), StaticComponentName._protoTypeName, &StaticComponentName)))
+				return E_FAIL;
+
+		}
+		break;
+	case Engine::LAYER_TAG::LAYER_DYNAMIC:
+		break;
+	case Engine::LAYER_TAG::LAYER_END:
+		break;
+	default:
+		break;
+	}
+	
+
+	RELEASE_INSTANCE(GameInstance);
+	return S_OK;
 }
 
 void ImGuiManager::Free()

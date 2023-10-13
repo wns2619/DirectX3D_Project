@@ -111,8 +111,8 @@ private:
 
 	// Load && Save
 	void LoadModelList(string path = "..\\Binaries\\Resources\\MyModels\\");
-	void SceneSave(wstring& filePath);
-	void SceneLoad(wstring& filePath);
+	HRESULT SceneSave(wstring& filePath);
+	HRESULT SceneLoad(wstring& filePath);
 	
 
 	vector<pair<string, _bool>> _modelNames; // string = name, bool = Isdirectory

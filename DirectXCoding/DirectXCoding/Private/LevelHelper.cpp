@@ -147,8 +147,10 @@ HRESULT LevelHelper::LodingforLevelEdit()
 
 
     // PLAYER
+#pragma region Player
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", LAYER_TAG::LAYER_PLAYER, TEXT("ProtoTypeGameObjectPlayer"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", TEXT("ProtoTypeModelPlayer"), TEXT("ProtoTypeComponentAnimMesh"));
+#pragma endregion
     // STATIC
 
 #pragma region 2stBottom

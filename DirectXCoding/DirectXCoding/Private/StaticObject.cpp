@@ -25,6 +25,7 @@ HRESULT StaticObject::Initialize(void* pArg)
 		// TODO
 		// 복사할 떄 사용할 쉐이더와 모델 이름을 던진다.
 		ComponentNames* names = static_cast<ComponentNames*>(pArg);
+		_comNames._protoTypeTag = names->_protoTypeName;
 		_comNames._strModelComponentName = names->_strModelComponentName;
 		_modelName = names->_strModelName;
 		_comNames._strShaderName = names->_strShaderName;
