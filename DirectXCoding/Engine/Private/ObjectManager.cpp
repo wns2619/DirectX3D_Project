@@ -51,7 +51,7 @@ HRESULT ObjectManager::AddGameObject(uint32 levelIndex, const LAYER_TAG layerTag
 		layer = Layer::Create();
 
 		layer->AddGameObject(gameObject);
-
+		layer->SetLayerTag(layerTag);
 
 		_Layers[levelIndex].emplace(layerTag, layer);
 
@@ -137,8 +137,11 @@ uint32 ObjectManager::GetLayerObjectCount()
 
 			for (size_t i = 0; i < gameObject->size(); i++)
 			{
-				(*gameObject)[i]->SetIdNumber(j);
-				++j;
+				if ((*gameObject)[i]->GetObjectType() != OBJECT_TYPE::CAMERA)
+				{
+					(*gameObject)[i]->SetIdNumber(j);
+					++j;
+				}
 			}
 	
 

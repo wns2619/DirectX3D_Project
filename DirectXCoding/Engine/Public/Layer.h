@@ -26,8 +26,13 @@ public:
 public:
 	vector<GameObject*>* GetGameObject() { return &_gameObjects; }
 
+public:
+	void SetLayerTag(LAYER_TAG type) { _layerTag = type; }
+	LAYER_TAG GetLayerTag() { return _layerTag; }
 private:
 	vector<GameObject*> _gameObjects;
+
+	LAYER_TAG _layerTag;
 
 public:
 	static Layer* Create();

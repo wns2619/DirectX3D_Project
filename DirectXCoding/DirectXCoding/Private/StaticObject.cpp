@@ -20,16 +20,20 @@ HRESULT StaticObject::InitializePrototype()
 
 HRESULT StaticObject::Initialize(void* pArg)
 {
-	if (FAILED(ReadyComponents()))
-		return E_FAIL;
-
-
 	if (nullptr != pArg)
 	{
 		// TODO
 		// 복사할 떄 사용할 쉐이더와 모델 이름을 던진다.
-		
+		ComponentNames* names = static_cast<ComponentNames*>(pArg);
+		_comNames._strModelComponentName = names->_strModelComponentName;
+		_modelName = names->_strModelName;
+		_comNames._strShaderName = names->_strShaderName;
 	}
+
+	if (FAILED(ReadyComponents()))
+		return E_FAIL;
+
+	_transform->SetScaling(Vec3(0.01f, 0.01f, 0.01f));
 
 	return S_OK;
 }
@@ -85,7 +89,7 @@ HRESULT StaticObject::ReadyComponents()
 		return E_FAIL;
 
 	if (FAILED(__super::AddComponent(level,
-		TEXT("ProtoTypeComponentDefaultMeshShader"),
+		_comNames._strShaderName,
 		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
 
@@ -95,7 +99,7 @@ HRESULT StaticObject::ReadyComponents()
 		return E_FAIL;
 
 
-	if (FAILED(__super::AddComponent(level, TEXT("ProtoType2stBottom"),
+	if (FAILED(__super::AddComponent(level, _comNames._strModelComponentName,
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_model))))
 		return E_FAIL;
 

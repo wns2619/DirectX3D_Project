@@ -123,6 +123,8 @@ RasterizerState FillModeSolid
 };
 
 
+
+
 #define SOLID_PASS_VP(name, vs, ps)                 \
 pass name                                           \
 {                                                   \
@@ -138,6 +140,14 @@ pass name                                           \
     SetVertexShader(CompileShader(vs_5_0, vs()));   \
     SetPixelShader(CompileShader(ps_5_0, ps()));    \
 }
+
+//#define NONE_PASS_VP(name, vs, ps)                  \
+//pass name                                           \
+//{                                                   \
+//    SetRasterizerState(FillModelNone);              \
+//    SetVertexShader(CompileShader(vs_5_0, vs()));   \
+//    SetPixelShader(CompileShader(ps_5_0, ps()));    \
+//}
 
 float3 CameraPosition()
 {

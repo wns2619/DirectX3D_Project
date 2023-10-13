@@ -71,12 +71,5 @@ PS_OUT PS_MAIN(PS_IN input)
 
 technique11 MeshTechnique
 {
-    pass Mesh
-    {
-        VertexShader = compile vs_5_0 VS_MAIN();
-        GeometryShader = NULL;
-        HullShader = null;
-        DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN();
-    }
+    SOLID_PASS_VP(StaticMesh, VS_MAIN, PS_MAIN)
 }

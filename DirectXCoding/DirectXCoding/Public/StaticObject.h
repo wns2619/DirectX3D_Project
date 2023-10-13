@@ -18,7 +18,6 @@ public:
 	{
 		wstring _strShaderName;
 		wstring _strModelComponentName;
-		string _strModelName;
 	};
 
 private:
@@ -36,6 +35,8 @@ public:
 private:
 	Renderer* _render = nullptr;
 	Shader* _shader = nullptr;
+
+	STATE_DESC _comNames;
 
 private:
 	HRESULT ReadyComponents();

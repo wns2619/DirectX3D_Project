@@ -565,34 +565,36 @@ HRESULT ImGuiManager::ModelNameCardSection()
 					// 그러면 받을 인자 값은 Layer 위치 + ProtoTypeTag
 
 					const pair<LAYER_TAG, wstring>& findPrototypename = ImGuiResourceHandler::GetInstance()->FindProtoFilePath(modelPath);
+					const pair<const wstring, const wstring>& findProtoComName = ImGuiResourceHandler::GetInstance()->FindProtoComponentName(modelPath);
 
-
-					//struct ComponentNames
-					//{
-					//	wstring _strShaderName = L"";
-					//	wstring _strModelComponentName = L"";
-					//	string _strModelName;
-					//};
 
 					ComponentNames comNames;
+					{
+						size_t namePosition = _modelNames[i].first.find_last_of(".");
+						string useModelName;
+
+						if (namePosition != std::string::npos && namePosition > 0)
+							useModelName = _modelNames[i].first.substr(0, namePosition);
+
+						comNames._strModelComponentName = findProtoComName.first;
+						comNames._strShaderName = findProtoComName.second;
+						comNames._strModelName = useModelName;
+					}
 	
 
 
-					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), findPrototypename.first, findPrototypename.second)))
+					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), findPrototypename.first, findPrototypename.second, &comNames)))
 					{
 						RELEASE_INSTANCE(GameInstance);
 						return E_FAIL;
 					}
 
-
 					size_t dotPosition = modelPath.find_last_of(".");
 					string fileExtension = "";
 
-					if (dotPosition != std::string::npos && dotPosition > 0) 
+					if (dotPosition != std::string::npos && dotPosition > 0)
 						fileExtension = modelPath.substr(0, dotPosition);
-					
 
-					//BinaryModelSave(modelPath, Utils::ToWString(fileExtension));
 					
 					if (GetAsyncKeyState(VK_RETURN) & 0x8000)
 						BinaryAnimModelSave(modelPath, Utils::ToWString(fileExtension));
@@ -703,7 +705,7 @@ HRESULT ImGuiManager::ObjectsSection()
 					{
 						if (pObjList != nullptr)
 						{
-							if (FAILED(gameInstance->DeleteGameObject(static_cast<uint32>(LEVEL::EDIT), LAYER_TAG::LAYER_PLAYER, pObjList->GetIdNumber(), pObjList->GetModelName())))
+							if (FAILED(gameInstance->DeleteGameObject(static_cast<uint32>(LEVEL::EDIT), pair.second->GetLayerTag(), pObjList->GetIdNumber(), pObjList->GetModelName())))
 								return E_FAIL;
 						}
 
