@@ -58,6 +58,19 @@ int32 BinaryModel::GetBoneIndex(const char* boneName) const
 	return boneIndex;
 }
 
+Matrix* BinaryModel::GetBoneMatrix(const _char* pBoneName) const
+{
+	auto iter = find_if(_bones.begin(), _bones.end(), [&](BinaryBone* pBone)
+		{
+			if (false == ::strcmp(pBone->GetBoneName(), pBoneName))
+				return true;
+
+			return false;
+		});
+
+	return (*iter)->GetCombientTransformMatrixPoint();
+}
+
 HRESULT BinaryModel::InitializePrototype(MODEL_TYPE type, const string& pBinaryModelFilePath, FXMMATRIX pivotMat)
 {
 	_pivotMatrix = pivotMat;
@@ -86,14 +99,19 @@ HRESULT BinaryModel::Initialize(void* pArg)
 
 HRESULT BinaryModel::SetUp_Animation(_bool isLoop, uint32 animationIndex)
 {
-	if (animationIndex >= _numAnimations ||
-		animationIndex == _currenAnimIndex)
+	if (animationIndex >= _numAnimations)
 		return S_OK;
 
-	_animations[_currenAnimIndex]->Reset();
+
+	if (_currenAnimIndex != animationIndex)
+	{
+		_beforeChannel.clear();
+		_beforeChannel = _animations[_currenAnimIndex]->GetChannels();
+
+		_animations[_currenAnimIndex]->Reset();
+	}
 
 	_currenAnimIndex = animationIndex;
-
 	_animations[_currenAnimIndex]->SetLoop(isLoop);
 }
 
@@ -120,7 +138,7 @@ HRESULT BinaryModel::PlayAnimation(const _float& timeDelta)
 {
 	// 뼈들의 트랜스폼 매트릭스를 애니메이션 상태에 맞도록 바꿔준다 deletatime.
 
-	_animations[_currenAnimIndex]->UpdateTransformationMatrix(_bones, timeDelta);
+	_animations[_currenAnimIndex]->UpdateTransformationMatrix(_bones, timeDelta, _beforeChannel);
 
 
 	for (auto& bone : _bones)

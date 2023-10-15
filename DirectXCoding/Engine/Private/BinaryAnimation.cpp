@@ -47,7 +47,7 @@ HRESULT BinaryAnimation::Initialize(const BinaryModel* pModel, const _char* anim
 	return S_OK;
 }
 
-void BinaryAnimation::UpdateTransformationMatrix(vector<class BinaryBone*>& Bones, const _float& timeDelta)
+void BinaryAnimation::UpdateTransformationMatrix(vector<class BinaryBone*>& Bones, const _float& timeDelta, vector<class BinaryChannel*>& beforeChannel)
 {
 	if (true == _isFinished)
 		return;
@@ -64,8 +64,24 @@ void BinaryAnimation::UpdateTransformationMatrix(vector<class BinaryBone*>& Bone
 
 	uint32 iNumChannel = 0;
 
-	for (auto& pChannel : _channels)
-		pChannel->UpdateTransformationMatrix(&_CurrentKeyFrame[iNumChannel++], Bones, _animationDesc._trackPosition);
+	for (uint32 i = 0; i < _channels.size(); ++i)
+	{
+		KEYFRAME keyFrame = {};
+
+		if (beforeChannel.size() != 0)
+		{
+			for (uint32 j = 0; j < beforeChannel.size(); ++j)
+			{
+				if (::strcmp(_channels[i]->GetChannelName(), beforeChannel[j]->GetChannelName()) == false)
+					keyFrame = beforeChannel[j]->GetKeyFrame().back();
+			}
+		}
+
+		_channels[i]->UpdateTransformationMatrix(&_CurrentKeyFrame[iNumChannel++], Bones, _animationDesc._trackPosition, keyFrame);
+	}
+
+	//for (auto& pChannel : _channels)
+	//	pChannel->UpdateTransformationMatrix(&_CurrentKeyFrame[iNumChannel++], Bones, _animationDesc._trackPosition);
 }
 
 void BinaryAnimation::Reset()

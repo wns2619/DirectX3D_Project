@@ -66,27 +66,45 @@ HRESULT BinaryChannel::Initialize(const BinaryModel* pModel, const _char* channe
     return S_OK;
 }
 
-void BinaryChannel::UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<class BinaryBone*>& Bones, _float trackPosition)
+void BinaryChannel::UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<class BinaryBone*>& Bones, _float trackPosition, KEYFRAME& beforeKeyFrame)
 {
     // 애니메이션이 끝나면 재 시작.
     if (0.0f == trackPosition)
         *pCurrentKeyFrame = 0;
 
-    Vec3 scale;
-    Vec4 rotation;
-    Vec4 translation;
+    Vec3		vScale;
+    Vec4		vRotation;
+    Vec4		vTranslation;
 
-    // 마지막 키프레임과 비교.
-    KEYFRAME LastkeyFrame = _keyFrames.back();
+    KEYFRAME        FrontKeyFrame = _keyFrames.front();
+    KEYFRAME		LastKeyFrame = _keyFrames.back();
 
-    // 트랙 포지션이 마지막 키 프레임보다 크거나 같다면.
-    if (trackPosition >= LastkeyFrame.time)
+    /* 마지막 뼈의 상태를 계속 유지하낟. */
+
+    if (beforeKeyFrame.time != 0.f)
+    {
+        _float fTransitionTime = min(trackPosition, 0.2f);
+        _float fRatio = fTransitionTime / 0.2f;
+
+        Vec4		vSourScale = XMLoadFloat3(&beforeKeyFrame.scale);
+        Vec4		vDestScale = XMLoadFloat3(&FrontKeyFrame.scale);
+        XMStoreFloat3(&vScale, XMVectorLerp(vSourScale, vDestScale, fRatio));
+
+        Vec4		vSourRotation = XMLoadFloat4(&beforeKeyFrame.rotation);
+        Vec4		vDestRotation = XMLoadFloat4(&FrontKeyFrame.rotation);
+        XMStoreFloat4(&vRotation, XMQuaternionSlerp(vSourRotation, vDestRotation, fRatio));
+
+        Vec4		vSourTranslation = XMLoadFloat4(&beforeKeyFrame.translation);
+        Vec4		vDestTranslation = XMLoadFloat4(&FrontKeyFrame.translation);
+        XMStoreFloat4(&vTranslation, XMVectorLerp(vSourTranslation, vDestTranslation, fRatio));
+    }
+    else if (trackPosition >= LastKeyFrame.time)
     {
         // 마지막 키프레임의 크기, 회전, 이동을 그대로 유지
         *pCurrentKeyFrame = _keyFrames.size() - 1;
-        scale = LastkeyFrame.scale;
-        rotation = LastkeyFrame.rotation;
-        translation = LastkeyFrame.translation;
+        vScale = LastKeyFrame.scale;
+        vRotation = LastKeyFrame.rotation;
+        vTranslation = LastKeyFrame.translation;
     }
     else
     {
@@ -103,20 +121,20 @@ void BinaryChannel::UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<
         // 스케일 로테이션 트렌슬레이션도 보간한다.
         Vec4 sourScale = ::XMLoadFloat3(&_keyFrames[*pCurrentKeyFrame].scale);
         Vec4 destScale = ::XMLoadFloat3(&_keyFrames[*pCurrentKeyFrame + 1].scale);
-        ::XMStoreFloat3(&scale, ::XMVectorLerp(sourScale, destScale, ratio));
+        ::XMStoreFloat3(&vScale, ::XMVectorLerp(sourScale, destScale, ratio));
 
         Vec4 sourRotation = ::XMLoadFloat4(&_keyFrames[*pCurrentKeyFrame].rotation);
         Vec4 destRotation = ::XMLoadFloat4(&_keyFrames[*pCurrentKeyFrame + 1].rotation);
-        ::XMStoreFloat4(&rotation, ::XMQuaternionSlerp(sourRotation, destRotation, ratio));
+        ::XMStoreFloat4(&vRotation, ::XMQuaternionSlerp(sourRotation, destRotation, ratio));
 
         Vec4 sourTranslation = ::XMLoadFloat4(&_keyFrames[*pCurrentKeyFrame].translation);
         Vec4 destTranslation = ::XMLoadFloat4(&_keyFrames[*pCurrentKeyFrame + 1].translation);
-        ::XMStoreFloat4(&translation, ::XMVectorLerp(sourTranslation, destTranslation, ratio));
+        ::XMStoreFloat4(&vTranslation, ::XMVectorLerp(sourTranslation, destTranslation, ratio));
     }
 
     // 크기 * 자전 * 이동 행렬 == Affine
-    Matrix TransformationMatrix = ::XMMatrixAffineTransformation(::XMLoadFloat3(&scale),
-        ::XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&rotation), ::XMLoadFloat4(&translation));
+    Matrix TransformationMatrix = ::XMMatrixAffineTransformation(::XMLoadFloat3(&vScale),
+        ::XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&vRotation), ::XMLoadFloat4(&vTranslation));
 
     // 모델이 들고 있는 뼈한테 Affine Matrix 세팅.
     Bones[_channelDesc._boneIndex]->SetTransformationMatrix(TransformationMatrix);

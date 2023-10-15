@@ -148,9 +148,6 @@
     <Filter Include="01.Utility\04.Component\Model\Animation\Channel">
       <UniqueIdentifier>{af697d4f-753a-4085-af59-777eb9403fe5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\04.Component\Model\Animation\Channel\BinaryChannel">
-      <UniqueIdentifier>{410e73f4-1d58-4c67-941c-b7ac1c840f7e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\04.Component\Model\BinaryModel\BinaryAnimation">
       <UniqueIdentifier>{dbe2a5b0-5067-4390-bca8-63ec7738b133}</UniqueIdentifier>
     </Filter>
@@ -159,6 +156,9 @@
     </Filter>
     <Filter Include="01.Utility\04.Component\Model\BinaryModel\BinaryMesh">
       <UniqueIdentifier>{23566593-d5cb-4090-affa-5a040c175c0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Model\BinaryModel\BinaryChannel">
+      <UniqueIdentifier>{410e73f4-1d58-4c67-941c-b7ac1c840f7e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -352,7 +352,7 @@
       <Filter>01.Utility\04.Component\Model\BinaryModel\BinaryAnimation</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BinaryChannel.h">
-      <Filter>01.Utility\04.Component\Model\Animation\Channel\BinaryChannel</Filter>
+      <Filter>01.Utility\04.Component\Model\BinaryModel\BinaryChannel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -504,7 +504,7 @@
       <Filter>01.Utility\04.Component\Model\BinaryModel\BinaryAnimation</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BinaryChannel.cpp">
-      <Filter>01.Utility\04.Component\Model\Animation\Channel\BinaryChannel</Filter>
+      <Filter>01.Utility\04.Component\Model\BinaryModel\BinaryChannel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

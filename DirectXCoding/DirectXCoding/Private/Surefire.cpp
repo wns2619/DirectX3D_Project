@@ -60,17 +60,17 @@ HRESULT Surefire::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	uint32 numMeshes = _model->GetNumMeshes();
+	uint32 numMeshes = _binaryModel->GetNumMeshes();
 
 	for (size_t i = 0; i < numMeshes; i++)
 	{
-		if (FAILED(_model->BindMaterialTexture(m_pShaderCom, "DiffuseMap", i, aiTextureType_DIFFUSE)))
+		if (FAILED(_binaryModel->BindMaterialTexture(m_pShaderCom, "DiffuseMap", i, TextureType_DIFFUSE)))
 			return E_FAIL;
 
 		if (FAILED(m_pShaderCom->Begin(0)))
 			return E_FAIL;
 
-		if (FAILED(_model->Render(i)))
+		if (FAILED(_binaryModel->Render(i)))
 			return E_FAIL;
 	}
 
@@ -103,7 +103,7 @@ HRESULT Surefire::Ready_Components()
 
 	/* Model Component */
 	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeModelsurefire"),
-		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_model))))
+		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
 
 

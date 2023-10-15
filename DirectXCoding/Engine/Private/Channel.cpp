@@ -61,7 +61,7 @@ HRESULT Channel::Initialize(const class Model* pModel, const aiNodeAnim* pAIChan
      return S_OK;
 }
 
-void Channel::UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<class Bone*>& Bones, _float trackPosition)
+void Channel::UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<class Bone*>& Bones, _float trackPosition, KEYFRAME& beforeKeyFrame)
 {
 
     /* 애니메이션 한번 끝나고 재시작. */
@@ -72,10 +72,29 @@ void Channel::UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<class 
     Vec4		vRotation;
     Vec4		vTranslation;
 
+    KEYFRAME        FrontKeyFrame = _keyFrames.front();
     KEYFRAME		LastKeyFrame = _keyFrames.back();
 
     /* 마지막 뼈의 상태를 계속 유지하낟. */
-    if (trackPosition >= LastKeyFrame.time)
+
+    if (beforeKeyFrame.time != 0.f)
+    {
+        _float fTransitionTime = min(trackPosition, 0.2f);
+        _float fRatio = fTransitionTime / 0.2f;
+
+        Vec4		vSourScale = XMLoadFloat3(&beforeKeyFrame.scale);
+        Vec4		vDestScale = XMLoadFloat3(&FrontKeyFrame.scale);
+        XMStoreFloat3(&vScale, XMVectorLerp(vSourScale, vDestScale, fRatio));
+
+        Vec4		vSourRotation = XMLoadFloat4(&beforeKeyFrame.rotation);
+        Vec4		vDestRotation = XMLoadFloat4(&FrontKeyFrame.rotation);
+        XMStoreFloat4(&vRotation, XMQuaternionSlerp(vSourRotation, vDestRotation, fRatio));
+
+        Vec4		vSourTranslation = XMLoadFloat4(&beforeKeyFrame.translation);
+        Vec4		vDestTranslation = XMLoadFloat4(&FrontKeyFrame.translation);
+        XMStoreFloat4(&vTranslation, XMVectorLerp(vSourTranslation, vDestTranslation, fRatio));
+    }
+    else if (trackPosition >= LastKeyFrame.time)
     {
         *pCurrentKeyFrame = _keyFrames.size() - 1;
         vScale = LastKeyFrame.scale;
@@ -107,6 +126,11 @@ void Channel::UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<class 
     Matrix		TransformationMatrix = XMMatrixAffineTransformation(XMLoadFloat3(&vScale), XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&vRotation), XMLoadFloat4(&vTranslation));
 
     Bones[_channelDesc._boneIndex]->SetTransformationMatrix(TransformationMatrix);
+
+}
+
+void Channel::BlendChannel(uint32* pCurrentKeyFrame, KEYFRAME& prevLastKeyFrame, vector<class Bone*>& bones, _float blentTime)
+{
 
 }
 

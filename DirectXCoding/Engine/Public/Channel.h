@@ -27,7 +27,8 @@ private:
 
 public:
 	HRESULT Initialize(const class Model* pModel, const aiNodeAnim* pAIChannel);
-	void UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<class Bone*>& Bones, _float trackPosition);
+	void UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<class Bone*>& Bones, _float trackPosition, KEYFRAME& beforeKeyFrame);
+	void BlendChannel(uint32* pCurrentKeyFrame, KEYFRAME& prevLastKeyFrame, vector<class Bone*>& bones, _float blentTime);
 
 public:
 	_char* GetChannelName() { return _szName; }

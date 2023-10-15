@@ -65,8 +65,14 @@ private: // Bone
 
 private: // Animation
 	uint32 _currenAnimIndex = 0;
+	uint32 _prevAnimIndex = 0;
 	uint32 _numAnimations = 0;
 	vector<class Animation*> _animations;
+	vector<class Channel*> _beforeChannel;
+	_float _transitionTimeElapsed = 0.2f;
+	_float _transitionDuration = 1.0f;
+	_bool _transitioningAnimation = false;
+
 
 private: // IMGUI
 	MODEL_TYPE _ModelType = MODEL_TYPE::TYPE_END;
@@ -94,6 +100,9 @@ private:
 	HRESULT ReadyMaterial(const string& modelFilePath);
 	HRESULT ReadyBones(const aiNode* node, int32 parentNodeIndex);
 	HRESULT ReadyAnimations();
+
+private:
+	_float CacluateBlendFactor();
 
 public:
 	static Model* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL_TYPE type, const string& pModelFilePath, FXMMATRIX pivotMat = ::XMMatrixIdentity());

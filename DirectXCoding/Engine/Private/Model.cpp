@@ -129,14 +129,29 @@ HRESULT Model::Initialize(void* pArg)
 
 HRESULT Model::SetUp_Animation(_bool isLoop, uint32 animationIndex)
 {
-    if (animationIndex >= _numAnimations ||
-        animationIndex == _currenAnimIndex)
+    if (animationIndex >= _numAnimations)
         return S_OK;
 
-    _animations[_currenAnimIndex]->Reset();
 
+    if (_currenAnimIndex != animationIndex)
+    {
+        _beforeChannel.clear();
+        _beforeChannel = _animations[_currenAnimIndex]->GetChannels();
+
+        _animations[_currenAnimIndex]->Reset();
+    }
+
+
+    //if (_prevAnimIndex != _currenAnimIndex)
+    //{
+    //    _animations[_currenAnimIndex]->Reset();
+    //    _transitioningAnimation = true;
+    //}
+
+
+    // 커런트 인덱스를 받기전에. Prev 인덱스를 하나 갖고있는다.
+    //_prevAnimIndex = _currenAnimIndex;
     _currenAnimIndex = animationIndex;
-
     _animations[_currenAnimIndex]->SetLoop(isLoop);
 
     return S_OK;
@@ -169,8 +184,24 @@ HRESULT Model::PlayAnimation(const _float& timeDelta)
 
     /* 이 애니메이션에서 사용되는 뼈들의 TransformationMatrix행렬을 갱신하고. */
     /* TransformationMatrix : 부모기준으로 표현된 이 뼈만의 행렬. */
-    _animations[_currenAnimIndex]->UpdateTransformationMatrix(_bones, timeDelta);
+    //if (_transitioningAnimation)
+    //{
+    //    _float blendFactor = CacluateBlendFactor();
+    //    _animations[_currenAnimIndex]->BlendAnimations(_animations[_prevAnimIndex], blendFactor, _bones);
+    //    
 
+    //    _transitionTimeElapsed += timeDelta;
+
+    //    if (_transitionTimeElapsed >= _transitionDuration)
+    //    {
+    //        _transitioningAnimation = false;
+    //        _prevAnimIndex = _currenAnimIndex;
+    //        _transitionTimeElapsed = 0.2f;
+    //    }
+    //}
+    //else
+    //    _animations[_currenAnimIndex]->UpdateTransformationMatrix(_bones, timeDelta);
+    _animations[_currenAnimIndex]->UpdateTransformationMatrix(_bones, timeDelta, _beforeChannel);
 
     for (auto& bone : _bones)
         bone->UpdateCombinedTransformMatrix(_bones);
@@ -299,6 +330,15 @@ HRESULT Model::ReadyAnimations()
     }
 
     return S_OK;
+}
+
+_float Model::CacluateBlendFactor()
+{
+    _float blendFactor = _transitionTimeElapsed / _transitionDuration;
+
+    blendFactor = std:: clamp(blendFactor, 0.0f, 1.f);
+
+    return blendFactor;
 }
 
 Model* Model::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL_TYPE type, const string& pModelFilePath, FXMMATRIX pivotMat)

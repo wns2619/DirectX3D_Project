@@ -34,8 +34,15 @@ HRESULT StaticObject::Initialize(void* pArg)
 	if (FAILED(ReadyComponents()))
 		return E_FAIL;
 
+	//_transform->SetScaling(Vec3(0.01f, 0.01f, 0.01f));
+	
+	if (nullptr != pArg)
+		_transform->SetWorldMatrix(static_cast<ComponentNames*>(pArg)->_saveWorldMatrix);
+
 	_transform->SetScaling(Vec3(0.01f, 0.01f, 0.01f));
 
+	//_transform->SetWorldMatrix()
+	//_transform->FixRotation(Vec3(0.f, 1.f, 0.f), ::XMConvertToRadians(90.f));
 	return S_OK;
 }
 
@@ -58,17 +65,17 @@ HRESULT StaticObject::Render()
 	if (FAILED(BindShaderResource()))
 		return E_FAIL;
 
-	uint32 numMeshes = _model->GetNumMeshes();
+	uint32 numMeshes = _binaryModel->GetNumMeshes();
 
 	for (size_t i = 0; i < numMeshes; i++)
 	{
-		if (FAILED(_model->BindMaterialTexture(_shader, "DiffuseMap", i, aiTextureType_DIFFUSE)))
+		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
 			return E_FAIL;
 
 		if (FAILED(_shader->Begin(0)))
 			return E_FAIL;
 
-		if (FAILED(_model->Render(i)))
+		if (FAILED(_binaryModel->Render(i)))
 			return E_FAIL;
 	}
 
@@ -101,7 +108,7 @@ HRESULT StaticObject::ReadyComponents()
 
 
 	if (FAILED(__super::AddComponent(level, _comNames._strModelComponentName,
-		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_model))))
+		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
 
 

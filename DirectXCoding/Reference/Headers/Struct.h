@@ -174,6 +174,8 @@ namespace Engine
 		wstring _strModelComponentName;
 		wstring _protoTypeName;
 		string _strModelName;
+
+		Matrix _saveWorldMatrix;
 	};
 
 

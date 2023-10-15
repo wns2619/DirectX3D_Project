@@ -55,10 +55,19 @@ HRESULT Animation::Initialize(const class Model* pModel, const aiAnimation* pAIA
 	return S_OK;
 }
 
-void Animation::UpdateTransformationMatrix(vector<class Bone*>& Bones, const _float& timeDelta)
+void Animation::UpdateTransformationMatrix(vector<class Bone*>& Bones, const _float& timeDelta, vector<class Channel*>& beforChannel)
 {
 	if (true == _isFinished)
 		return;
+
+
+	if (beforChannel.size() != 0 && _animationDesc._trackPosition >= 0.2f)
+	{
+		beforChannel.clear();
+		_animationDesc._trackPosition = 0.f;
+		for (auto& iCurrentKeyFrame : _CurrentKeyFrame) { iCurrentKeyFrame = 0; }
+	}
+
 
 	_animationDesc._trackPosition += _animationDesc._tickPerSecond * timeDelta;
 
@@ -72,8 +81,26 @@ void Animation::UpdateTransformationMatrix(vector<class Bone*>& Bones, const _fl
 
 	uint32 iNumChannel = 0;
 
-	for (auto& pChannel : _channels)
-		pChannel->UpdateTransformationMatrix(&_CurrentKeyFrame[iNumChannel++], Bones, _animationDesc._trackPosition);
+
+	for (uint32 i = 0; i < _channels.size(); ++i)
+	{
+		KEYFRAME keyFrame = {};
+
+		if (beforChannel.size() != 0)
+		{
+			for (uint32 j = 0; j < beforChannel.size(); ++j)
+			{
+				if (::strcmp(_channels[i]->GetChannelName(), beforChannel[j]->GetChannelName()) == false)
+					keyFrame = beforChannel[j]->GetKeyFrame().back();
+			}
+		}
+
+		_channels[i]->UpdateTransformationMatrix(&_CurrentKeyFrame[iNumChannel++],Bones, _animationDesc._trackPosition, keyFrame);
+	}
+
+
+	//for (auto& pChannel : _channels)
+	//	pChannel->UpdateTransformationMatrix(&_CurrentKeyFrame[iNumChannel++], Bones, _animationDesc._trackPosition);
 
 	// 채널을 키 프레임을 애니메이션에서 관리한다. 
 }
@@ -87,6 +114,57 @@ void Animation::Reset()
 	for (auto& pChannel : _CurrentKeyFrame)
 		pChannel = 0;
 	// 리셋할 땐 벡터를 돌면서 전부 프레임을 0으로 만들면 된다.
+}
+
+void Animation::BlendAnimations(Animation* prevAnimation, _float blendFactor, vector<class Bone*>& Bones)
+{
+	if (true == _isFinished)
+		return;
+
+	vector<Channel*>& vecPrevChannel = prevAnimation->GetChannels();
+
+	if (vecPrevChannel.size() != 0 && _animationDesc._trackPosition >= 0.2f)
+	{
+		vecPrevChannel.clear();
+		_animationDesc._tickPerSecond = 0.f;
+		for (auto& currentKeyFrame : _CurrentKeyFrame) { currentKeyFrame = 0; }
+	}
+
+	_animationDesc._trackPosition += _animationDesc._tickPerSecond * blendFactor;
+
+	if (_animationDesc._trackPosition >= _animationDesc._duration)
+	{
+		if (true == _isLoop)
+			_animationDesc._trackPosition = 0.f;
+		else
+			_isFinished = true;
+	}
+
+
+	// 이전 채널과, 현재 채널
+	uint32 iNumChannel = 0;
+	
+	for (uint32 i = 0; i < _channels.size(); ++i)
+	{
+		KEYFRAME keyFrame = {};
+
+		if (vecPrevChannel.size() != 0)
+		{
+			for (uint32 j = 0; j < vecPrevChannel.size(); ++j)
+			{
+				if (::strcmp(_channels[i]->GetChannelName(), _channels[i]->GetChannelName()) == false)
+					keyFrame = vecPrevChannel[j]->GetKeyFrame().back();
+			}
+		}
+
+		_channels[i]->BlendChannel(&_CurrentKeyFrame[iNumChannel++], keyFrame, Bones, blendFactor);
+	}
+
+
+	//for (auto& pChannel : _channels)
+	//	_channels.front()->BlendChannel(&_CurrentKeyFrame[iNumChannel++], prevLastKeyFrame, Bones, blendFactor);
+
+
 }
 
 Animation* Animation::Create(const class Model* pModel, const aiAnimation* pAIAnimation)

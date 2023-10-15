@@ -16,26 +16,26 @@ PlayerBody::PlayerBody(const GameObject& rhs)
 
 Matrix* PlayerBody::Get_SocketBonePtr(const char* pBoneName)
 {
-	if (nullptr == _model)
+	if (nullptr == _binaryModel)
 		return nullptr;
 
-	return _model->GetBoneMatrix(pBoneName);
+	return _binaryModel->GetBoneMatrix(pBoneName);
 	// 소켓을 붙일 뼈의 매트릭스 정보.
 }
 
 Matrix PlayerBody::Get_SocketPivotMatrix()
 {
-	if (nullptr == _model)
+	if (nullptr == _binaryModel)
 		return Matrix();
 
-	return _model->GetPivotMatrix();
+	return _binaryModel->GetPivotMatrix();
 }
 
 void PlayerBody::Set_AnimationIndex(_bool isLoop, uint32 iAnimIndex)
 {
 
 
-	_model->SetUp_Animation(isLoop, iAnimIndex);
+	_binaryModel->SetUp_Animation(isLoop, iAnimIndex);
 }
 
 HRESULT PlayerBody::InitializePrototype()
@@ -55,14 +55,14 @@ HRESULT PlayerBody::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	_model->SetUp_Animation(true, 3);
+	_binaryModel->SetUp_Animation(true, 3);
 
 	return S_OK;
 }
 
 void PlayerBody::Tick(const _float& fTimeDelta)
 {
-	_model->PlayAnimation(fTimeDelta);
+	_binaryModel->PlayAnimation(fTimeDelta);
 
 	m_WorldMatrix = _transform->GetWorldMatrix() * m_pParentTransform->GetWorldMatrix();
 	// 본인 월드 * 소켓뼈의 부모행렬 
@@ -81,20 +81,20 @@ HRESULT PlayerBody::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	uint32 numMeshes = _model->GetNumMeshes();
+	uint32 numMeshes = _binaryModel->GetNumMeshes();
 
 	for (size_t i = 0; i < numMeshes; i++)
 	{
-		if (FAILED(_model->BindBoneMatrices(m_pShaderCom, i, "BoneMatrices")))
+		if (FAILED(_binaryModel->BindBoneMatrices(m_pShaderCom, i, "BoneMatrices")))
 			return E_FAIL;
 
-		if (FAILED(_model->BindMaterialTexture(m_pShaderCom, "DiffuseMap", i, aiTextureType_DIFFUSE)))
+		if (FAILED(_binaryModel->BindMaterialTexture(m_pShaderCom, "DiffuseMap", i, TextureType_DIFFUSE)))
 			return E_FAIL;
 
 		if (FAILED(m_pShaderCom->Begin(0)))
 			return E_FAIL;
 
-		if (FAILED(_model->Render(i)))
+		if (FAILED(_binaryModel->Render(i)))
 			return E_FAIL;
 	}
 
@@ -129,7 +129,7 @@ HRESULT PlayerBody::Ready_Components()
 
 	/* Model Component */
 	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeModelPlayer"),
-		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_model))))
+		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
 
 

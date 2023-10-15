@@ -34,6 +34,7 @@ public:
 	void SetTransformationMatrix(FXMMATRIX transformationMatrix) { ::XMStoreFloat4x4(&_BoneDesc._transformationMatrix, transformationMatrix); }
 
 	Matrix GetTransformMatrix() { return _BoneDesc._transformationMatrix; }
+	Matrix* GetCombientTransformMatrixPoint() { return &_BoneDesc._combinedTransformationMatrix; }
 
 	BONE_DESC& GetBoneDesc() { return _BoneDesc; }
 

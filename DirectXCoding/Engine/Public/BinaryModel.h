@@ -18,6 +18,7 @@ private:
 public:
 	uint32 GetNumMeshes() const { return m_iNumMeshes; }
 	int32 GetBoneIndex(const char* boneName) const;
+	Matrix* GetBoneMatrix(const _char* pBoneName) const;
 
 public:
 	virtual HRESULT InitializePrototype(MODEL_TYPE type, const string& pBinaryModelFilePath, FXMMATRIX pivotMat);
@@ -60,7 +61,7 @@ private:
 	uint32 _currenAnimIndex = 0;
 	uint32 _numAnimations = 0;
 	vector<class BinaryAnimation*> _animations;
-
+	vector<class BinaryChannel*> _beforeChannel;
 private: // IMGUI
 	MODEL_TYPE _ModelType = MODEL_TYPE::TYPE_END;
 

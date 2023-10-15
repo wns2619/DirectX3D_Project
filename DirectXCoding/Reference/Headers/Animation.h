@@ -26,14 +26,17 @@ public:
 
 public:
 	HRESULT Initialize(const class Model* pModel, const aiAnimation* pAIAnimation);
-	void UpdateTransformationMatrix(vector<class Bone*>& Bones, const _float& timeDelta);
+	void UpdateTransformationMatrix(vector<class Bone*>& Bones, const _float& timeDelta, vector<class Channel*>& beforChannel);
 	void Reset();
 
 public:
 	_char* GetAnimationBoneName() { return _szName; }
 	ANIMATION_DESC& GetAnimationDesc() { return _animationDesc; }
 	vector<uint32>& GetCurrentKeyFrame() { return _CurrentKeyFrame; }
-	vector<class Channel*> GetChannels() { return _channels; }
+	vector<class Channel*>& GetChannels() { return _channels; }
+
+public:
+	void BlendAnimations(Animation* prevAnimation, _float blendFactor, vector<class Bone*>& Bones);
 
 private:
 	ANIMATION_DESC _animationDesc;

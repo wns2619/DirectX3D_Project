@@ -245,9 +245,15 @@ void ImGuiManager::MouseMove()
 	::ScreenToClient(g_hWnd, &pt);
 	//::SetCursorPos(pt.x, pt.y);
 
+	ImGuiWindowFlags windowFlags = 0;
+	if (!_windowResizeFlag)
+		windowFlags |= ImGuiWindowFlags_NoResize;
+	if (!_windowMoveFlag)
+		windowFlags |= ImGuiWindowFlags_NoMove;
+
 	GameInstance* gameinstance = GET_INSTANCE(GameInstance);
 
-	ImGui::Begin("Mouse Pose");
+	ImGui::Begin("Mouse Pose", NULL, windowFlags);
 	ImGui::Text("Mouse Position X(%d), Y(%d)", pt.x, pt.y);
 
 	Vec4 pos = Vec4(0.f, 0.f, 0.f, 1.f);
@@ -409,9 +415,9 @@ void ImGuiManager::MainSection()
 
 	ImGuiWindowFlags windowFlags = 0;
 	if (!_windowResizeFlag)
-		windowFlags |= ImGuiWindowFlags_None;
+		windowFlags |= ImGuiWindowFlags_NoResize;
 	if (!_windowMoveFlag)
-		windowFlags |= ImGuiWindowFlags_None;
+		windowFlags |= ImGuiWindowFlags_NoMove;
 
 	{
 		MouseMove();
@@ -445,7 +451,8 @@ void ImGuiManager::MainSection()
 		ImGui::SameLine(ImGui::GetWindowWidth() - 84);
 		if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\free-icon-loading-6356659.png"), ImVec2(20, 20)))
 		{
-
+			wstring filepath = L"..\\Binaries\\Resources\\MapData\\";
+			SceneLoad(filepath);
 		}
 
 		ImGui::PopStyleVar();
@@ -489,9 +496,9 @@ HRESULT ImGuiManager::ModelNameCardSection()
 
 	ImGuiWindowFlags windowFlags = 0;
 	if (!_windowResizeFlag)
-		windowFlags |= ImGuiWindowFlags_None;
+		windowFlags |= ImGuiWindowFlags_NoResize;
 	if (!_windowMoveFlag)
-		windowFlags |= ImGuiWindowFlags_None;
+		windowFlags |= ImGuiWindowFlags_NoMove;
 
 	if (_modelNames.size())
 	{
@@ -565,6 +572,15 @@ HRESULT ImGuiManager::ModelNameCardSection()
 					// Model 생성을 도와줄 Helper 클래스를 만들어서 내부에서 ProtoType 만들고 그 즉시 Clone까지 해주자.
 					// 그러면 받을 인자 값은 Layer 위치 + ProtoTypeTag
 
+					// dat 파일용
+					size_t modelPathPosition = modelPath.find_last_of(".");
+					if (modelPathPosition != std::string::npos && modelPathPosition > 0)
+						modelPath = modelPath.substr(0, modelPathPosition);
+
+					modelPath += ".dat";
+
+					// 여기까지
+
 					const pair<LAYER_TAG, wstring>& findPrototypename = ImGuiResourceHandler::GetInstance()->FindProtoFilePath(modelPath);
 					const pair<const wstring, const wstring>& findProtoComName = ImGuiResourceHandler::GetInstance()->FindProtoComponentName(modelPath);
 
@@ -581,6 +597,8 @@ HRESULT ImGuiManager::ModelNameCardSection()
 						comNames._strModelComponentName = findProtoComName.first;
 						comNames._strShaderName = findProtoComName.second;
 						comNames._strModelName = useModelName;
+						Matrix ScaleMatrix;
+						comNames._saveWorldMatrix *= ScaleMatrix.CreateScale(Vec3(0.1, 0.1f, 0.1f));
 					}
 	
 
@@ -639,9 +657,9 @@ HRESULT ImGuiManager::ObjectsSection()
 
 	ImGuiWindowFlags windowFlags = 0;
 	if (!_windowResizeFlag)
-		windowFlags |= ImGuiWindowFlags_None;
+		windowFlags |= ImGuiWindowFlags_NoResize;
 	if (!_windowMoveFlag)
-		windowFlags |= ImGuiWindowFlags_None;
+		windowFlags |= ImGuiWindowFlags_NoMove;
 
 	ImGuiStyle& imguiStyle = ImGui::GetStyle();
 
@@ -704,6 +722,8 @@ HRESULT ImGuiManager::ObjectsSection()
 
 					if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\baseline_delete_white_18dp.png"), ImVec2(20, 20)))
 					{
+						int32 a = 0;
+
 						if (pObjList != nullptr)
 						{
 							if (FAILED(gameInstance->DeleteGameObject(static_cast<uint32>(LEVEL::EDIT), pair.second->GetLayerTag(), pObjList->GetIdNumber(), pObjList->GetModelName())))
@@ -1016,7 +1036,7 @@ void ImGuiManager::BinaryAnimModelSave(const string& fpxPath, const wstring& bin
 			_char* animationName = animiter->GetAnimationBoneName();
 			file->Write<string>(animationName);
 
-			vector<Channel*> animationChannel = animiter->GetChannels();
+			vector<Channel*>& animationChannel = animiter->GetChannels();
 			file->Write<uint32>(animationChannel.size());
 			// 이 애니메이션 당 들고있는 채널 개수.
 			for (auto& pChannel : animationChannel)
@@ -1376,7 +1396,7 @@ void ImGuiManager::GameObjectUpdate(uint32 objectID, GameObject* pObj)
 					// TODO ratation은 고민 해봐야겠음.
 					// 
 		
-					ImGui::DragFloat3("Scale", &worldScale.m128_f32[0], 0.1f, 0.1f, 20.f);
+					ImGui::DragFloat3("Scale", &worldScale.m128_f32[0], 0.01f, 0.01f, 20.f);
 					ImGui::DragFloat3("Rotation", &worldRotation.m128_f32[0], 1.f);
 					ImGui::DragFloat3("Position", &worldPosition.m128_f32[0], 0.1f);
 		
@@ -2015,80 +2035,89 @@ HRESULT ImGuiManager::SceneLoad(wstring& filePath)
 
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
 
-	wstring finalPath = filePath + L".dat";
+	wstring finalPath = filePath + L"MapData.dat";
 
-	file->Open(filePath, FileMode::Read);
+	file->Open(finalPath, FileMode::Read);
 
 	map<const LAYER_TAG, Layer*>* EntireLayer = gameInstance->GetEntireObjectLayer();
 
 	// 레이어 사이즈도 저장해야할듯?
-	uint32 LevelIndex;
-	file->Read<uint32>(LevelIndex);
+	uint32 levelIndex;
+	file->Read<uint32>(levelIndex);
 
-	uint32 LayerTagType;
-	file->Read<uint32>(LayerTagType);
+	uint32 totalLayerSize;
+	file->Read<uint32>(totalLayerSize);
 
-	uint32 GameObjectListSize;
-	file->Read<uint32>(GameObjectListSize);
-
-	switch (static_cast<LAYER_TAG>(LayerTagType))
+	for (uint32 i = 0; i < totalLayerSize; ++i)
 	{
-	case Engine::LAYER_TAG::LAYER_PLAYER:
-		for (uint32 j = 0; j < GameObjectListSize; ++j)
+		uint32 LayerTagType;
+		file->Read<uint32>(LayerTagType);
+
+		//LAYER_PLAYER, LAYER_MONSTER, LAYER_TERRAIN, LAYER_CAMERA, LAYER_ENVIRONMENT, LAYER_END,
+
+		uint32 GameObjectListSize;
+		file->Read<uint32>(GameObjectListSize);
+
+		switch (static_cast<LAYER_TAG>(LayerTagType))
 		{
-			//TODO
+		case Engine::LAYER_TAG::LAYER_PLAYER:
+			for (uint32 j = 0; j < GameObjectListSize; ++j)
+			{
+				//TODO
+			}
+			break;
+		case Engine::LAYER_TAG::LAYER_MONSTER:
+			break;
+		case Engine::LAYER_TAG::LAYER_TERRAIN:
+			break;
+		case Engine::LAYER_TAG::LAYER_CAMERA:
+			break;
+		case Engine::LAYER_TAG::LAYER_STATIC:
+			for (uint32 j = 0; j < GameObjectListSize; ++j)
+			{
+				// 모델 타입.
+				uint32 modelType;
+				file->Read<uint32>(modelType);
+
+
+				// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
+				ComponentNames StaticComponentName;
+
+				// 모델 이름.
+				string modelName;
+				file->Read(modelName);
+				StaticComponentName._strModelName = modelName;
+
+				string modelComponentName;
+				file->Read(modelComponentName);
+				StaticComponentName._strModelComponentName = Utils::ToWString(modelComponentName);
+
+				string modelShaderName;
+				file->Read(modelShaderName);
+				StaticComponentName._strShaderName = Utils::ToWString(modelShaderName);
+
+				string prototypeModelName;
+				file->Read(prototypeModelName);
+				StaticComponentName._protoTypeName = Utils::ToWString(prototypeModelName);
+
+				Matrix staticObjectWorldMarix;
+				file->Read<Matrix>(staticObjectWorldMarix);
+				StaticComponentName._saveWorldMatrix = staticObjectWorldMarix;
+
+				if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), static_cast<LAYER_TAG>(LayerTagType), StaticComponentName._protoTypeName, &StaticComponentName)))
+					return E_FAIL;
+
+			}
+			break;
+		case Engine::LAYER_TAG::LAYER_DYNAMIC:
+			break;
+		case Engine::LAYER_TAG::LAYER_END:
+			break;
+		default:
+			break;
 		}
-		break;
-	case Engine::LAYER_TAG::LAYER_MONSTER:
-		break;
-	case Engine::LAYER_TAG::LAYER_TERRAIN:
-		break;
-	case Engine::LAYER_TAG::LAYER_CAMERA:
-		break;
-	case Engine::LAYER_TAG::LAYER_STATIC:
-		for (uint32 j = 0; j < GameObjectListSize; ++j)
-		{
-			// 모델 타입.
-			uint32 modelType;
-			file->Read<uint32>(modelType);
 
-
-			// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
-			ComponentNames StaticComponentName;
-
-			// 모델 이름.
-			string modelName;
-			file->Read(modelName);
-			StaticComponentName._strModelName = modelName;
-
-			string modelComponentName;
-			file->Read(modelName);
-			StaticComponentName._strModelComponentName = Utils::ToWString(modelComponentName);
-
-			string modelShaderName;
-			file->Read(modelShaderName);
-			StaticComponentName._strShaderName = Utils::ToWString(modelShaderName);
-
-			string prototypeModelName;
-			file->Read(prototypeModelName);
-			StaticComponentName._protoTypeName = Utils::ToWString(prototypeModelName);
-
-			Matrix staticObjectWorldMarix;
-			file->Read<Matrix>(staticObjectWorldMarix);
-
-			if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), static_cast<LAYER_TAG>(LayerTagType), StaticComponentName._protoTypeName, &StaticComponentName)))
-				return E_FAIL;
-
-		}
-		break;
-	case Engine::LAYER_TAG::LAYER_DYNAMIC:
-		break;
-	case Engine::LAYER_TAG::LAYER_END:
-		break;
-	default:
-		break;
 	}
-	
 
 	RELEASE_INSTANCE(GameInstance);
 	return S_OK;

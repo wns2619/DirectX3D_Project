@@ -25,7 +25,7 @@ public:
 
 public:
 	HRESULT Initialize(const class BinaryModel* pModel, const _char* animationName, const ANIMATION_DESC pAIAnimation, vector<class BinaryChannel*>& vecChannel);
-	void UpdateTransformationMatrix(vector<class BinaryBone*>& Bones, const _float& timeDelta);
+	void UpdateTransformationMatrix(vector<class BinaryBone*>& Bones, const _float& timeDelta, vector<class BinaryChannel*>& beforeChannel);
 	void Reset();
 
 public:

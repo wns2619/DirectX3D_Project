@@ -47,6 +47,7 @@ public:
 
 	void SetState(STATE state, FXMVECTOR vectorState);
 	void SetScaling(const Vec3& vectorScale);
+	void SetWorldMatrix(Matrix WorldMatrix) { _worldMatrix = WorldMatrix; }
 public:
 	virtual HRESULT InitializePrototype()		override;
 	virtual HRESULT Initialize(void* argument)	override;
