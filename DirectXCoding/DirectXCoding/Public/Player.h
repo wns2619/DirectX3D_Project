@@ -3,8 +3,6 @@
 #include "GameObject.h"
 
 BEGIN(Engine)
-class Model;
-class Shader;
 class Renderer;
 class Transform;
 END

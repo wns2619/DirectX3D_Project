@@ -1,26 +1,24 @@
 #pragma once
 
-#include "GameObject.h"
-
+#include "PartObject.h"
 
 BEGIN(Client)
 
-class Surefire final : public GameObject
+class Surefire final : public PartObject
 {
 public:
-	typedef struct tagPartDesc
+	typedef struct tagPartDesc : public PartObject::PART_DESC
 	{
-		Transform*		pParentTransform = { nullptr };
-		Matrix*			SocetMatrix = nullptr;
+		Matrix*			SocketMatrix;
 		Matrix			SocketPivot;
 
-	}PART_DESC;
+	}FLASHLIGHT_DESC;
 
 protected:
 	/* 원형을 생성할 때 */
 	Surefire(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	/* 사본을 생성할 때 */
-	Surefire(const GameObject& rhs); /* 복사 생성자. */
+	Surefire(const PartObject& rhs); /* 복사 생성자. */
 
 	virtual ~Surefire() = default;
 
@@ -31,14 +29,9 @@ public:
 	virtual void LateTick(const _float& fTimeDelta)		override;
 	virtual HRESULT Render()							override;
 
-private: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
-	Shader*				m_pShaderCom = { nullptr };	
-
 private:
-	Transform*				m_pParentTransform = { nullptr };
 	Matrix*					m_SocketMatrix;
 	Matrix					m_SocketPivotMatrix;
-	Matrix					m_WorldMatrix;
 
 private:
 	HRESULT Ready_Components();

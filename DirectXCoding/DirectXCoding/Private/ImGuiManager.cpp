@@ -301,7 +301,7 @@ void ImGuiManager::MouseMove()
 			{
 				if (Selectiter.second.first == true)
 				{
-					if (gameinstance->Get_DIMouseState(InputManager::MOUSEKEYSTATE::MKS_RBUTTON))
+					if (gameinstance->Get_DIMouseState(DIMK::DIMK_LBUTTON))
 						Selectiter.second.second->GetTransform()->SetState(Transform::STATE::POSITION, ::XMLoadFloat4(&pos));
 				}
 			}
@@ -389,7 +389,7 @@ void ImGuiManager::MouseMove()
 		{
 			if (Selectiter.second.first == true)
 			{
-				if (gameinstance->Get_DIMouseState(InputManager::MOUSEKEYSTATE::MKS_RBUTTON))
+				if (gameinstance->Get_DIMouseState(DIMK::DIMK_RBUTTON))
 					Selectiter.second.second->GetTransform()->SetState(Transform::STATE::POSITION, ::XMLoadFloat4(&ObjectPos));
 			}
 		}

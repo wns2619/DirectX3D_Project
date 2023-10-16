@@ -192,6 +192,7 @@
     <ClInclude Include="..\Public\LevelHelper.h" />
     <ClInclude Include="..\Public\LevelLoading.h" />
     <ClInclude Include="..\Public\Logo.h" />
+    <ClInclude Include="..\Public\PartObject.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\PlayerBody.h" />
     <ClInclude Include="..\Public\PlayerCamera.h" />
@@ -249,6 +250,7 @@
     <ClCompile Include="..\Private\LevelHelper.cpp" />
     <ClCompile Include="..\Private\LevelLoading.cpp" />
     <ClCompile Include="..\Private\Logo.cpp" />
+    <ClCompile Include="..\Private\PartObject.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\PlayerBody.cpp" />
     <ClCompile Include="..\Private\PlayerCamera.cpp" />

@@ -62,12 +62,12 @@ void ToolCamera::MouseMove(const _float& timeDelta)
 	if (pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
 		_transform->Backward(timeDelta);
 
-	if (pGameInstance->Get_DIMouseState(InputManager::MOUSEKEYSTATE::MKS_RBUTTON))
+	if (pGameInstance->Get_DIMouseState(DIMK::DIMK_RBUTTON))
 	{
-		if (_MouseMove = pGameInstance->Get_DIMouseMove(InputManager::MOUSEMOVESTATE::MMS_X))
+		if (_MouseMove = pGameInstance->Get_DIMouseMove(DIMM::DIMM_X))
 			_transform->Turn(::XMVectorSet(0.f, 1.f, 0.f, 0.f), _mouseSensitive * _MouseMove * timeDelta);
 
-		if (_MouseMove = pGameInstance->Get_DIMouseMove(InputManager::MOUSEMOVESTATE::MMS_Y))
+		if (_MouseMove = pGameInstance->Get_DIMouseMove(DIMM::DIMM_Y))
 			_transform->Turn(_transform->GetState(Transform::STATE::RIGHT), _mouseSensitive * _MouseMove * timeDelta);
 	}
 

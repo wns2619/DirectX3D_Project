@@ -19,6 +19,7 @@ public:
 	uint32 GetNumMeshes() const { return m_iNumMeshes; }
 	int32 GetBoneIndex(const char* boneName) const;
 	Matrix* GetBoneMatrix(const _char* pBoneName) const;
+	class BinaryBone* GetBone(const _char* pNodeName) const;
 
 public:
 	virtual HRESULT InitializePrototype(MODEL_TYPE type, const string& pBinaryModelFilePath, FXMMATRIX pivotMat);
@@ -29,12 +30,12 @@ public:
 	HRESULT BindBoneMatrices(class Shader* shader, uint32 meshIndex, const char* constantName);
 	HRESULT BindMaterialTexture(class Shader* shader, const char* constantName, uint32 meshIndex, TextureType type);
 	HRESULT PlayAnimation(const _float& timeDelta);
+	HRESULT UpdateTweenData(const _float& timeDelta);
 	HRESULT Render(uint32 meshIndex);
 
 public:
 	HRESULT BinaryModelStatic(shared_ptr<FileUtils> file, const string& pBinaryModelFilePath, FXMMATRIX pivotMat);
 	HRESULT BinaryModelDynamic(shared_ptr<FileUtils> file, const string& pBinaryModelFilePath);
-
 
 public:
 	vector<class BinaryMesh*>* GetMeshes() { return &m_Meshes; }
@@ -42,6 +43,9 @@ public:
 	MODEL_TYPE GetBinaryModelType() { return _ModelType; }
 	Matrix GetPivotMatrix() { return _pivotMatrix; }
 	uint32 GetMaterialCount() { return _numMaterial; }
+
+
+	void StartAnimation(uint32 startIndex) { _currenAnimIndex = startIndex; }
 
 
 private:
@@ -59,8 +63,12 @@ private:
 
 private:
 	uint32 _currenAnimIndex = 0;
+	int32 _nextAnimIndex = -1;
+
 	uint32 _numAnimations = 0;
 	vector<class BinaryAnimation*> _animations;
+	BinaryAnimation* _nextAnimation = nullptr;
+
 	vector<class BinaryChannel*> _beforeChannel;
 private: // IMGUI
 	MODEL_TYPE _ModelType = MODEL_TYPE::TYPE_END;

@@ -160,6 +160,12 @@
     <Filter Include="01.Utility\04.Component\Model\BinaryModel\BinaryChannel">
       <UniqueIdentifier>{410e73f4-1d58-4c67-941c-b7ac1c840f7e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Component\Navigation">
+      <UniqueIdentifier>{d7f4503b-3113-4f59-8841-b3f44077556d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Navigation\Cell">
+      <UniqueIdentifier>{9a7451d1-b06a-45c6-a2d8-cef56b276ff4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -354,6 +360,12 @@
     <ClInclude Include="..\Public\BinaryChannel.h">
       <Filter>01.Utility\04.Component\Model\BinaryModel\BinaryChannel</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Navigation.h">
+      <Filter>01.Utility\04.Component\Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Cell.h">
+      <Filter>01.Utility\04.Component\Navigation\Cell</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -505,6 +517,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\BinaryChannel.cpp">
       <Filter>01.Utility\04.Component\Model\BinaryModel\BinaryChannel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Navigation.cpp">
+      <Filter>01.Utility\04.Component\Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Cell.cpp">
+      <Filter>01.Utility\04.Component\Navigation\Cell</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

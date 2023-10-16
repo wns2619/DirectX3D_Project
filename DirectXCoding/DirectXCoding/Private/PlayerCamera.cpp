@@ -72,10 +72,10 @@ void PlayerCamera::Tick(const _float& timeDelta)
 
 	//if (false == _mousePause)
 	//{
-		if (mouseMove = gameInstance->Get_DIMouseMove(InputManager::MMS_X))
+		if (mouseMove = gameInstance->Get_DIMouseMove(DIMM::DIMM_X))
 			_transform->Turn(::XMVectorSet(0.f, 1.f, 0.f, 0.f), mouseMove * _playerCameraDesc._mouseSensitive * timeDelta);
 
-		if (mouseMove = gameInstance->Get_DIMouseMove(InputManager::MMS_Y))
+		if (mouseMove = gameInstance->Get_DIMouseMove(DIMM::DIMM_Y))
 			_transform->Turn(_transform->GetState(Transform::STATE::RIGHT), mouseMove * _playerCameraDesc._mouseSensitive * timeDelta);
 //
 	//}

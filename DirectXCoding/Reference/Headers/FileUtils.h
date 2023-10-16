@@ -22,7 +22,11 @@ public:
 	void Write(const T& data)
 	{
 		DWORD numOfBytes = 0;
+#ifndef NDEBUG
 		assert(::WriteFile(_handle, &data, sizeof(T), (LPDWORD)&numOfBytes, nullptr));
+#else
+		::WriteFile(_handle, &data, sizeof(T), (LPDWORD)&numOfBytes, nullptr);
+#endif // !NDEBUG
 	}
 
 	template<> // 템플릿 특수화 
@@ -38,7 +42,13 @@ public:
 	void Read(OUT T& data)
 	{
 		DWORD numOfBytes = 0;
+#ifndef NDEBUG
 		assert(::ReadFile(_handle, &data, sizeof(T), (LPDWORD)&numOfBytes, nullptr));
+#else
+		::ReadFile(_handle, &data, sizeof(T), (LPDWORD)&numOfBytes, nullptr);
+#endif // !NDEBUG
+
+
 	}
 
 	template<typename T>

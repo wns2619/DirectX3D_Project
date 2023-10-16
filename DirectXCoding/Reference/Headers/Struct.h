@@ -178,6 +178,41 @@ namespace Engine
 		Matrix _saveWorldMatrix;
 	};
 
+	struct KeyframeDesc
+	{
+		int32 animIndex = -1;
+		uint32 currFrame = 0;
+		uint32 nextFrame = 0;
+		_float ratio = 0.f;
+		_float sumTime = 0.f;
+		_float speed = 0.1f;
+	};
+
+	struct TweenDesc
+	{
+		TweenDesc()
+		{
+			curr.animIndex = 0;
+			next.animIndex = -1;
+		}
+
+		void ClearNextAnim()
+		{
+			next.animIndex = -1;
+			next.currFrame = 0;
+			next.nextFrame = 0;
+			next.sumTime = 0;
+			tweenSumTime = 0;
+			tweenRatio = 0;
+		}
+
+		_float tweenDuration = 0.1f;
+		_float tweenRatio = 0.f;
+		_float tweenSumTime = 0.f;
+		KeyframeDesc curr;
+		KeyframeDesc next;
+	};
+
 
 };
 

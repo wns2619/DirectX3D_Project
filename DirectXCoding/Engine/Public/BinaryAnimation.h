@@ -25,15 +25,16 @@ public:
 
 public:
 	HRESULT Initialize(const class BinaryModel* pModel, const _char* animationName, const ANIMATION_DESC pAIAnimation, vector<class BinaryChannel*>& vecChannel);
-	void UpdateTransformationMatrix(vector<class BinaryBone*>& Bones, const _float& timeDelta, vector<class BinaryChannel*>& beforeChannel);
+	void UpdateTransformationMatrix(vector<class BinaryBone*>& Bones, const _float& timeDelta, vector<class BinaryChannel*>& pNextChannel);
 	void Reset();
 
 public:
 	_char* GetAnimationBoneName() { return _szName; }
 	ANIMATION_DESC& GetAnimationDesc() { return _animationDesc; }
 	vector<uint32>& GetCurrentKeyFrame() { return _CurrentKeyFrame; }
-	vector<class BinaryChannel*> GetChannels() { return _channels; }
+	vector<class BinaryChannel*>& GetChannels() { return _channels; }
 
+	uint32 GetMaxFrameCount() { return _maxFrameCount; }
 private:
 	ANIMATION_DESC _animationDesc;
 
@@ -44,6 +45,9 @@ private:
 	_char _szName[MAX_PATH] = ""; // 애니메이션이 구동해야하는 뼈의 정보들.
 	vector<class BinaryChannel*> _channels; // 애니메이션이 갖고 있는 채널 개수.
 	vector<uint32> _CurrentKeyFrame; // 클론 복사를 위해 채널의 current 프레임을 애니메이션이 직접 갖고 있음.
+
+	//vector<class BinaryBone*> _bones; // 애니메이션을 재생하는데 필요한 뼈들?
+	uint32 _maxFrameCount = 0;
 public:
 	static BinaryAnimation* Create(const class BinaryModel* pModel, const _char* animationName, ANIMATION_DESC AnimationInfo, vector<class BinaryChannel*>& vecChannel);
 	BinaryAnimation* Clone();

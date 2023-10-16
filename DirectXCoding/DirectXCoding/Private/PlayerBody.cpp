@@ -3,13 +3,13 @@
 #include "GameInstance.h"
 
 PlayerBody::PlayerBody(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: GameObject(pDevice, pContext, OBJECT_TYPE::PLAYER)
+	: PartObject(pDevice, pContext)
 {
 
 }
 
-PlayerBody::PlayerBody(const GameObject& rhs)
-	: GameObject(rhs)
+PlayerBody::PlayerBody(const PartObject& rhs)
+	: PartObject(rhs)
 {
 
 }
@@ -38,6 +38,11 @@ void PlayerBody::Set_AnimationIndex(_bool isLoop, uint32 iAnimIndex)
 	_binaryModel->SetUp_Animation(isLoop, iAnimIndex);
 }
 
+void PlayerBody::StartAnimation(uint32 startIndex)
+{
+	_binaryModel->StartAnimation(startIndex);
+}
+
 HRESULT PlayerBody::InitializePrototype()
 {
 	return S_OK;
@@ -45,17 +50,14 @@ HRESULT PlayerBody::InitializePrototype()
 
 HRESULT PlayerBody::Initialize(void* pArg)
 {
-	if (nullptr != pArg)
-	{
-		PART_DESC* pPartDesc = static_cast<PART_DESC*>(pArg);
-		m_pParentTransform = pPartDesc->pParentTransform;
-		Safe_AddRef<Transform*>(m_pParentTransform);
-	}
+
+	if (FAILED(__super::Initialize(pArg)))
+		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	_binaryModel->SetUp_Animation(true, 3);
+	_binaryModel->SetUp_Animation(true, 0);
 
 	return S_OK;
 }
@@ -64,8 +66,8 @@ void PlayerBody::Tick(const _float& fTimeDelta)
 {
 	_binaryModel->PlayAnimation(fTimeDelta);
 
-	m_WorldMatrix = _transform->GetWorldMatrix() * m_pParentTransform->GetWorldMatrix();
-	// 본인 월드 * 소켓뼈의 부모행렬 
+
+	Compute_RenderMatrix(_transform->GetWorldMatrix());
 }
 
 void PlayerBody::LateTick(const _float& fTimeDelta)
@@ -85,13 +87,13 @@ HRESULT PlayerBody::Render()
 
 	for (size_t i = 0; i < numMeshes; i++)
 	{
-		if (FAILED(_binaryModel->BindBoneMatrices(m_pShaderCom, i, "BoneMatrices")))
+		if (FAILED(_binaryModel->BindBoneMatrices(_shader, i, "BoneMatrices")))
 			return E_FAIL;
 
-		if (FAILED(_binaryModel->BindMaterialTexture(m_pShaderCom, "DiffuseMap", i, TextureType_DIFFUSE)))
+		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
 			return E_FAIL;
 
-		if (FAILED(m_pShaderCom->Begin(0)))
+		if (FAILED(_shader->Begin(0)))
 			return E_FAIL;
 
 		if (FAILED(_binaryModel->Render(i)))
@@ -114,7 +116,7 @@ HRESULT PlayerBody::Ready_Components()
 	/* Shader Component */
 	if (FAILED(__super::AddComponent(level,
 		TEXT("ProtoTypeComponentAnimMesh"),
-		TEXT("Component_Shader"), reinterpret_cast<Component**>(&m_pShaderCom))))
+		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
 
 	/* Transform Component */
@@ -144,17 +146,17 @@ HRESULT PlayerBody::Bind_ShaderResources()
 	Safe_AddRef<GameInstance*>(gameInstance);
 
 
-	if (FAILED(m_pShaderCom->BindMatrix("W", &m_WorldMatrix)))
+	if (FAILED(_shader->BindMatrix("W", &_WorldMatrix)))
 		return E_FAIL;
 
-	if (FAILED(gameInstance->BindTransformToShader(m_pShaderCom, "V", CameraHelper::TRANSFORMSTATE::D3DTS_VIEW)))
+	if (FAILED(gameInstance->BindTransformToShader(_shader, "V", CameraHelper::TRANSFORMSTATE::D3DTS_VIEW)))
 		return E_FAIL;
-	if (FAILED(gameInstance->BindTransformToShader(m_pShaderCom, "P", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
+	if (FAILED(gameInstance->BindTransformToShader(_shader, "P", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
 		return E_FAIL;
 
 	const LIGHT_DESC* lightdesc = gameInstance->GetLightDesc(0);
 
-	if (FAILED(m_pShaderCom->BindRawValue("GlobalLight", lightdesc, sizeof(LIGHT_DESC))))
+	if (FAILED(_shader->BindRawValue("GlobalLight", lightdesc, sizeof(LIGHT_DESC))))
 		return E_FAIL;
 
 	MESH_MATERIAL materialDesc;
@@ -163,7 +165,7 @@ HRESULT PlayerBody::Bind_ShaderResources()
 	materialDesc.diffuse = Vec4(1.f);
 	materialDesc.specular = Vec4(1.f);
 
-	if (FAILED(m_pShaderCom->BindRawValue("Material", &materialDesc, 80)))
+	if (FAILED(_shader->BindRawValue("Material", &materialDesc, 80)))
 		return E_FAIL;
 
 	Safe_Release<GameInstance*>(gameInstance);
@@ -201,6 +203,6 @@ void PlayerBody::Free()
 {
 	__super::Free();
 
-	Safe_Release<Shader*>(m_pShaderCom);
-	Safe_Release<Transform*>(m_pParentTransform);
+	Safe_Release<Transform*>(_transform);
+	Safe_Release<Shader*>(_shader);
 }

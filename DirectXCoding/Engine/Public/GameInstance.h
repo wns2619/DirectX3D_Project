@@ -35,8 +35,17 @@ public: // Graphic Device
 
 public: // InputDevice
 	_byte	Get_DIKeyState(_ubyte byKeyID);
-	_byte	Get_DIMouseState(InputManager::MOUSEKEYSTATE eMouse);
-	_long	Get_DIMouseMove(InputManager::MOUSEMOVESTATE eMouseState);
+	_byte	Get_DIMouseState(DIMK eMouse);
+	_long	Get_DIMouseMove(DIMM eMouseState);
+
+	_bool keyDown(_byte byKeyID);
+	_bool KeyPressing(_byte byKeyID);
+	_bool KeyUp(_byte byKeyID);
+
+	_bool mouseDown(DIMK eMouseKeyID);
+	_bool mousePreesing(DIMK eMouseKeyID);
+	_bool mouseUp(DIMK eMouseKeyID);
+
 
 public: // Custom Input
 	class InputHandler* GetInputHandler();

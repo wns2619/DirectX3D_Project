@@ -71,6 +71,19 @@ Matrix* BinaryModel::GetBoneMatrix(const _char* pBoneName) const
 	return (*iter)->GetCombientTransformMatrixPoint();
 }
 
+BinaryBone* BinaryModel::GetBone(const _char* pNodeName) const
+{
+	auto	iter = find_if(_bones.begin(), _bones.end(), [&](BinaryBone* pNode)
+		{
+			return !strcmp(pNodeName, pNode->GetBoneName());
+		});
+
+	if (iter == _bones.end())
+		return nullptr;
+
+	return *iter;
+}
+
 HRESULT BinaryModel::InitializePrototype(MODEL_TYPE type, const string& pBinaryModelFilePath, FXMMATRIX pivotMat)
 {
 	_pivotMatrix = pivotMat;
@@ -99,9 +112,31 @@ HRESULT BinaryModel::Initialize(void* pArg)
 
 HRESULT BinaryModel::SetUp_Animation(_bool isLoop, uint32 animationIndex)
 {
-	if (animationIndex >= _numAnimations)
+	if (animationIndex >= _numAnimations &&
+		animationIndex == _currenAnimIndex)
 		return S_OK;
 
+	// 현재 애니메이션과 셋업한 애니메이션의 인덱스가 다를 때 애니메이션 전환이 이루어져야한다.
+	// 그렇다면 비교할 애니메이션을 가지고 와야함.
+	// 현재 애니메이션은 다음 애니메이션과의 보간이 끝나면 리셋 되어야함.
+	//if (_currenAnimIndex != animationIndex)
+	//{
+	//	//_beforeChannel.clear();
+	//	//_beforeChannel = _animations[animationIndex]->GetChannels();
+	//	_nextAnimation = _animations[animationIndex];
+	//	_nextAnimIndex = animationIndex;
+
+	//	// 바꿔야 할 다음 채널의 정보를 받아온다.
+
+	//	// 리셋은 채널이 바뀐 뒤에 하는게 맞을 듯? 
+
+	//}
+	//else
+	//{
+	//	_animations[_currenAnimIndex]->Reset();
+	//	_currenAnimIndex = animationIndex;
+	//	_animations[_currenAnimIndex]->SetLoop(isLoop);
+	//}
 
 	if (_currenAnimIndex != animationIndex)
 	{
@@ -113,6 +148,8 @@ HRESULT BinaryModel::SetUp_Animation(_bool isLoop, uint32 animationIndex)
 
 	_currenAnimIndex = animationIndex;
 	_animations[_currenAnimIndex]->SetLoop(isLoop);
+
+	// 이 애니메이션이 넥스트 애니메이션이 됨.
 }
 
 HRESULT BinaryModel::BindBoneMatrices(Shader* shader, uint32 meshIndex, const char* constantName)
@@ -138,11 +175,87 @@ HRESULT BinaryModel::PlayAnimation(const _float& timeDelta)
 {
 	// 뼈들의 트랜스폼 매트릭스를 애니메이션 상태에 맞도록 바꿔준다 deletatime.
 
+	// 키 프레임이 바뀌었을 때 이 현재 인덱스에 이전 채널의 인덱스의 채널을 넣는다.
 	_animations[_currenAnimIndex]->UpdateTransformationMatrix(_bones, timeDelta, _beforeChannel);
+	//_beforeChannel[_currenAnimIndex]->UpdateTransformationMatrix()
 
 
 	for (auto& bone : _bones)
 		bone->UpdateCombinedTransformMatrix(_bones);
+
+	return S_OK;
+}
+
+HRESULT BinaryModel::UpdateTweenData(const _float& timeDelta)
+{
+	if (_currenAnimIndex < 0)
+		_currenAnimIndex = _animations.size() - 1;
+
+	TweenDesc desc;
+
+	BinaryAnimation* currentAnim = _animations[_currenAnimIndex];
+	// 현재 애니메이션.
+
+	desc.curr.sumTime += timeDelta;
+	// 보간에 사용 될 시간
+
+	if (currentAnim)
+	{
+		// 애니메이션 초당 속도로 1을 나눈다.
+		_float timePerFrame = 1 / currentAnim->GetAnimationDesc()._tickPerSecond;
+		if (desc.curr.sumTime >= timePerFrame)
+			// 현재 더한 값이 애니메이션의 초당 1로 나눈 속도보다 크다면
+		{
+			desc.curr.sumTime = 0.f;
+			desc.curr.currFrame = (desc.curr.currFrame + 1) % currentAnim->GetMaxFrameCount();
+			desc.curr.nextFrame = (desc.curr.currFrame + 1) % currentAnim->GetMaxFrameCount();
+		}
+
+		desc.curr.ratio = (desc.curr.sumTime / timePerFrame);
+	}
+
+	// 다음 애니메이션이 예약 되어있다면? -> 어디서 잡아두는듯.
+	if (desc.next.animIndex >= 0)
+	{
+		desc.tweenSumTime += timeDelta;
+		desc.tweenRatio = desc.tweenSumTime / desc.tweenDuration;
+
+		// 다음 애니메이션도 같이 보간이 되고 있어야한다?
+		if (desc.tweenRatio >= 1.f)
+		{
+			// 애니메이션 교체 OK
+			desc.curr = desc.next;
+			_currenAnimIndex = desc.next.animIndex;
+			desc.ClearNextAnim();
+		}
+		else
+		{
+			// 이건 교체하고 있는 중이다.
+			BinaryAnimation* nextAnim = _animations[desc.next.animIndex];
+			desc.next.sumTime += timeDelta;
+
+			_float timePerFrame = 1.f / nextAnim->GetAnimationDesc()._tickPerSecond;
+
+			if (desc.next.ratio >= 1.f)
+			{
+				desc.next.sumTime = 0;
+
+				desc.next.currFrame = (desc.next.currFrame + 1) % nextAnim->GetMaxFrameCount();
+				desc.next.nextFrame = (desc.next.currFrame + 1) % nextAnim->GetMaxFrameCount();
+			}
+
+			desc.next.ratio = desc.next.sumTime / timePerFrame;
+		}
+	}
+
+	if (0 <= _nextAnimIndex)
+	{
+		desc.ClearNextAnim();
+		_nextAnimIndex %= _animations.size();
+		desc.next.animIndex = _nextAnimIndex;
+
+		_nextAnimIndex = -1;
+	}
 
 	return S_OK;
 }

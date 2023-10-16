@@ -31,7 +31,7 @@ HRESULT Player::Initialize(void* pArg)
 	if (FAILED(ReadyPlayerPart()))
 		return E_FAIL;
 
-	static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(true, animationcount);
+	static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->StartAnimation(0);
 	return S_OK;
 }
 
@@ -41,13 +41,6 @@ void Player::Tick(const _float& fTimeDelta)
 		return;
 
 	KeyInput(fTimeDelta);
-
-	for (auto& pPart : m_pPlayerPart)
-	{
-		if (nullptr != pPart)
-			pPart->Tick(fTimeDelta);
-	}
-
 }
 
 void Player::LateTick(const _float& fTimeDelta)
@@ -96,16 +89,17 @@ void Player::KeyInput(const _float& timeDelta)
 	if (gameInstance->Get_DIKeyState(DIK_E) & 0x80)
 		_transform->Turn(Vec4(0.f, 1.f, 0.f, 0.f), timeDelta);
 
-	if (gameInstance->Get_DIKeyState(DIK_UP) & 0x80)
+	if (gameInstance->keyDown(DIK_UP))
 	{
 		//_transform->Forward(timeDelta);
 
-		if (animationcount < 4)
+		if (animationcount < 2)
 			++animationcount;
 
 		static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(true, animationcount);
 	}
-	if (gameInstance->Get_DIKeyState(DIK_DOWN) & 0x80)
+
+	if (gameInstance->keyDown(DIK_DOWN))
 	{
 		//_transform->Backward(timeDelta);
 		if (animationcount > 0)
@@ -166,7 +160,7 @@ HRESULT Player::ReadyPlayerPart()
 	GameObject* pPlayerPart = nullptr;
 
 	// Player Body
-	PlayerBody::PART_DESC PartDesc;
+	PartObject::PART_DESC PartDesc;
 	PartDesc.pParentTransform = _transform;
 
 	pPlayerPart = gameInstance->CloneGameObject(TEXT("ProtoTypeGameObjectPlayerBody"), &PartDesc);
@@ -176,9 +170,9 @@ HRESULT Player::ReadyPlayerPart()
 
 
 	// SureFire
-	Surefire::PART_DESC surefireDesc;
+	Surefire::FLASHLIGHT_DESC surefireDesc;
 	surefireDesc.pParentTransform = _transform;
-	surefireDesc.SocetMatrix = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketBonePtr("gun_root");
+	surefireDesc.SocketMatrix = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketBonePtr("gun_root");
 	surefireDesc.SocketPivot = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketPivotMatrix();
 
 

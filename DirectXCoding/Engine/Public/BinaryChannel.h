@@ -25,10 +25,10 @@ private:
 
 public:
 	HRESULT Initialize(const class BinaryModel* pModel, const _char* channelName, const CHANNEL_DESC channelInfo, vector<KEYFRAME>& vecKey);
-	void UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<class BinaryBone*>& Bones, _float trackPosition, KEYFRAME& beforeKeyFrame);
+	void UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<class BinaryBone*>& Bones, _float trackPosition, KEYFRAME keyFrame);
 
 public:
-	_char* GetChannelName() { return _szName; }
+	const _char* GetChannelName() { return _szName; }
 	vector<KEYFRAME>& GetKeyFrame() { return _keyFrames; }
 	CHANNEL_DESC& GetChannelDesc() { return _channelDesc; }
 

@@ -3,13 +3,13 @@
 #include "GameInstance.h"
 
 Surefire::Surefire(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: GameObject(pDevice, pContext, OBJECT_TYPE::PLAYER)
+	: PartObject(pDevice, pContext)
 {
 	_modelName = "Surefire";
 }
 
-Surefire::Surefire(const GameObject& rhs)
-	: GameObject(rhs)
+Surefire::Surefire(const PartObject& rhs)
+	: PartObject(rhs)
 {
 
 }
@@ -23,12 +23,13 @@ HRESULT Surefire::Initialize(void* pArg)
 {
 	if (nullptr != pArg)
 	{
-		PART_DESC* pPartDesc = static_cast<PART_DESC*>(pArg);
-		m_pParentTransform = pPartDesc->pParentTransform;
-		Safe_AddRef<Transform*>(m_pParentTransform);
+		FLASHLIGHT_DESC* pPartDesc = static_cast<FLASHLIGHT_DESC*>(pArg);
 
-		m_SocketMatrix = pPartDesc->SocetMatrix;
 		m_SocketPivotMatrix = pPartDesc->SocketPivot;
+		m_SocketMatrix = pPartDesc->SocketMatrix;
+
+		if (FAILED(__super::Initialize(pArg)))
+			return E_FAIL;
 	}
 
 	if (FAILED(Ready_Components()))
@@ -43,8 +44,13 @@ HRESULT Surefire::Initialize(void* pArg)
 
 void Surefire::Tick(const _float& fTimeDelta)
 {
+	XMMATRIX worldMatrix = ::XMLoadFloat4x4(m_SocketMatrix) * ::XMLoadFloat4x4(&m_SocketPivotMatrix);
 
-	m_WorldMatrix = _transform->GetWorldMatrix() * (*m_SocketMatrix) * m_SocketPivotMatrix * m_pParentTransform->GetWorldMatrix();
+	worldMatrix.r[0] = XMVector3Normalize(worldMatrix.r[0]);
+	worldMatrix.r[1] = XMVector3Normalize(worldMatrix.r[1]);
+	worldMatrix.r[2] = XMVector3Normalize(worldMatrix.r[2]);
+
+	Compute_RenderMatrix(_transform->GetWorldMatrix() * worldMatrix);
 }
 
 void Surefire::LateTick(const _float& fTimeDelta)
@@ -64,10 +70,10 @@ HRESULT Surefire::Render()
 
 	for (size_t i = 0; i < numMeshes; i++)
 	{
-		if (FAILED(_binaryModel->BindMaterialTexture(m_pShaderCom, "DiffuseMap", i, TextureType_DIFFUSE)))
+		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
 			return E_FAIL;
 
-		if (FAILED(m_pShaderCom->Begin(0)))
+		if (FAILED(_shader->Begin(0)))
 			return E_FAIL;
 
 		if (FAILED(_binaryModel->Render(i)))
@@ -89,7 +95,7 @@ HRESULT Surefire::Ready_Components()
 	/* Shader Component */
 	if (FAILED(__super::AddComponent(level,
 		TEXT("ProtoTypeComponentDefaultMeshShader"),
-		TEXT("Component_Shader"), reinterpret_cast<Component**>(&m_pShaderCom))))
+		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
 
 	/* Transform Component */
@@ -117,18 +123,18 @@ HRESULT Surefire::Bind_ShaderResources()
 	GameInstance* gameInstance = GameInstance::GetInstance();
 	Safe_AddRef<GameInstance*>(gameInstance);
 
-	if (FAILED(m_pShaderCom->BindMatrix("W", &m_WorldMatrix)))
+	if (FAILED(_shader->BindMatrix("W", &_WorldMatrix)))
 		return E_FAIL;
 
 
-	if (FAILED(gameInstance->BindTransformToShader(m_pShaderCom, "V", CameraHelper::TRANSFORMSTATE::D3DTS_VIEW)))
+	if (FAILED(gameInstance->BindTransformToShader(_shader, "V", CameraHelper::TRANSFORMSTATE::D3DTS_VIEW)))
 		return E_FAIL;
-	if (FAILED(gameInstance->BindTransformToShader(m_pShaderCom, "P", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
+	if (FAILED(gameInstance->BindTransformToShader(_shader, "P", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
 		return E_FAIL;
 
 	const LIGHT_DESC* lightdesc = gameInstance->GetLightDesc(0);
 
-	if (FAILED(m_pShaderCom->BindRawValue("GlobalLight", lightdesc, sizeof(LIGHT_DESC))))
+	if (FAILED(_shader->BindRawValue("GlobalLight", lightdesc, sizeof(LIGHT_DESC))))
 		return E_FAIL;
 
 	MESH_MATERIAL materialDesc;
@@ -137,7 +143,7 @@ HRESULT Surefire::Bind_ShaderResources()
 	materialDesc.diffuse = Vec4(1.f);
 	materialDesc.specular = Vec4(1.f);
 
-	if (FAILED(m_pShaderCom->BindRawValue("Material", &materialDesc, 80)))
+	if (FAILED(_shader->BindRawValue("Material", &materialDesc, 80)))
 		return E_FAIL;
 
 	Safe_Release<GameInstance*>(gameInstance);
@@ -175,6 +181,6 @@ void Surefire::Free()
 {
 	__super::Free();
 
-	Safe_Release<Shader*>(m_pShaderCom);
-	Safe_Release<Transform*>(m_pParentTransform);
+	Safe_Release<Transform*>(_transform);
+	Safe_Release<Shader*>(_shader);
 }

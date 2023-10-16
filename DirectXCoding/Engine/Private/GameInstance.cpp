@@ -31,7 +31,7 @@ HRESULT GameInstance::Initialize_Engine(uint32 levelNumbers, HINSTANCE instance,
     if (FAILED(_graphicManager->Initialize(graphicDesc, device, deviceContext)))
         return E_FAIL;
 
-    if (FAILED(_inputManager->Ready_Input_Device(instance, graphicDesc._hwnd)))
+    if (FAILED(_inputManager->Initialize(instance, graphicDesc._hwnd)))
         return E_FAIL;
 
     if (FAILED(_objectManager->ReserveManager(levelNumbers)))
@@ -116,20 +116,50 @@ _byte GameInstance::Get_DIKeyState(_ubyte byKeyID)
     if (nullptr == _inputManager)
         return 0;
 
-    return _inputManager->Get_DIKeyState(byKeyID);
+    return _inputManager->Get_DIKState(byKeyID);
 }
 
-_byte GameInstance::Get_DIMouseState(InputManager::MOUSEKEYSTATE eMouse)
+_byte GameInstance::Get_DIMouseState(DIMK eMouse)
 {
     if (nullptr == _inputManager)
         return 0;
 
-    return _inputManager->Get_DIMouseState(eMouse);
+    return _inputManager->Get_DIMKeyState(eMouse);
 }
 
-_long GameInstance::Get_DIMouseMove(InputManager::MOUSEMOVESTATE eMouseState)
+_long GameInstance::Get_DIMouseMove(DIMM eMouseState)
 {
-    return _inputManager->Get_DIMouseMove(eMouseState);
+    return _inputManager->Get_DIMMoveState(eMouseState);
+}
+
+_bool GameInstance::keyDown(_byte byKeyID)
+{
+    return _inputManager->keyDown(byKeyID);
+}
+
+_bool GameInstance::KeyPressing(_byte byKeyID)
+{
+    return _inputManager->keyPressing(byKeyID);
+}
+
+_bool GameInstance::KeyUp(_byte byKeyID)
+{
+    return _inputManager->keyUp(byKeyID);
+}
+
+_bool GameInstance::mouseDown(DIMK eMouseKeyID)
+{
+    return _inputManager->mouseDown(eMouseKeyID);
+}
+
+_bool GameInstance::mousePreesing(DIMK eMouseKeyID)
+{
+    return _inputManager->mousePressing(eMouseKeyID);
+}
+
+_bool GameInstance::mouseUp(DIMK eMouseKeyID)
+{
+    return _inputManager->mouseUp(eMouseKeyID);
 }
 
 InputHandler* GameInstance::GetInputHandler()
@@ -349,24 +379,6 @@ HRESULT GameInstance::DeleteLight(uint32 lightIndex, const string& lightName)
 
     return _lightManager->DeleteLight(lightIndex, lightName);
 }
-
-//HRESULT GameInstance::AddLightProtoType(uint32 levelIndex, Light::LightType type, const wstring& lighttag, Component* prototype)
-//{
-//    if (nullptr == _lightManager)
-//        return E_FAIL;
-//
-//    _lightManager->AddLightProtoType(levelIndex, type, lighttag, prototype);
-//
-//    return S_OK;
-//}
-
-//Component* GameInstance::CloneLight(uint32 levelIndex, Light::LightType type, const wstring& lighttag, void* argument)
-//{
-//    if(nullptr == _lightManager)
-//        return nullptr;
-//
-//    return _lightManager->CloneLight(levelIndex, type, lighttag, argument);
-//}
 
 Vec4 GameInstance::TerrainPicking(POINT pt, Transform* trans, VIBufferTerrain* buffer)
 {

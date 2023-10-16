@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "BinaryAnimation.h"
 #include "BinaryChannel.h"
+#include "BinaryModel.h"
 
 BinaryAnimation::BinaryAnimation()
 {
@@ -39,18 +40,31 @@ HRESULT BinaryAnimation::Initialize(const BinaryModel* pModel, const _char* anim
 	// 애니메이션이 사용하는 뼈의 개수만큼 프레임 크기를 미리 할당.
 
 	for (auto& pChannel : vecChannel)
-	{
 		_channels.push_back(pChannel);
-	}
+
+
+	for (uint32 i = 0; i < _channels.size(); ++i)
+		// 이 애니메이션이 사용하는 채널중에 가장 큰 프레임 개수를 구하는 듯?
+		_maxFrameCount = ::max(_maxFrameCount, static_cast<uint32>(_channels[i]->GetKeyFrame().size()));
+
+
 	//_channels = vecChannel;
 
 	return S_OK;
 }
 
-void BinaryAnimation::UpdateTransformationMatrix(vector<class BinaryBone*>& Bones, const _float& timeDelta, vector<class BinaryChannel*>& beforeChannel)
+void BinaryAnimation::UpdateTransformationMatrix(vector<class BinaryBone*>& Bones, const _float& timeDelta, vector<BinaryChannel*>& pNextChannel)
 {
 	if (true == _isFinished)
 		return;
+
+
+	if (pNextChannel.size() != 0 && _animationDesc._trackPosition >= 0.5f)
+	{
+		pNextChannel.clear();
+		_animationDesc._trackPosition = 0.f;
+		for (auto& iCurrentKeyFrame : _CurrentKeyFrame) { iCurrentKeyFrame = 0; }
+	}
 
 	_animationDesc._trackPosition += _animationDesc._tickPerSecond * timeDelta;
 
@@ -64,24 +78,25 @@ void BinaryAnimation::UpdateTransformationMatrix(vector<class BinaryBone*>& Bone
 
 	uint32 iNumChannel = 0;
 
+	// 포인터로 보내서 이미 커런트 키프레임이 바뀌었음. 본은 모델한테 받아왔음.
+
+
 	for (uint32 i = 0; i < _channels.size(); ++i)
 	{
 		KEYFRAME keyFrame = {};
 
-		if (beforeChannel.size() != 0)
+
+		if (pNextChannel.size() != 0)
 		{
-			for (uint32 j = 0; j < beforeChannel.size(); ++j)
+			for (uint32 j = 0; j < pNextChannel.size(); ++j)
 			{
-				if (::strcmp(_channels[i]->GetChannelName(), beforeChannel[j]->GetChannelName()) == false)
-					keyFrame = beforeChannel[j]->GetKeyFrame().back();
+				if (::strcmp(_channels[i]->GetChannelName(), pNextChannel[j]->GetChannelName()) == false)
+					keyFrame = pNextChannel[j]->GetKeyFrame().back();
 			}
 		}
 
 		_channels[i]->UpdateTransformationMatrix(&_CurrentKeyFrame[iNumChannel++], Bones, _animationDesc._trackPosition, keyFrame);
 	}
-
-	//for (auto& pChannel : _channels)
-	//	pChannel->UpdateTransformationMatrix(&_CurrentKeyFrame[iNumChannel++], Bones, _animationDesc._trackPosition);
 }
 
 void BinaryAnimation::Reset()

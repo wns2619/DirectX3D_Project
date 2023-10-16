@@ -74,6 +74,9 @@ namespace Engine
 
 #define TEXTURE_TYPE_MAX  TextureType_UNKNOWN
 
+	enum DIMK { DIMK_LBUTTON, DIMK_RBUTTON, DIMK_WHEEL, DIMK_X, DIMK_END };
+	enum DIMM { DIMM_X, DIMM_Y, DIMM_WHEEL, DIMM_END };
+
 }
 
 #endif // Engine_Typedef_h__
