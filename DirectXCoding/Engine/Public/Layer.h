@@ -16,6 +16,7 @@ private:
 public:
 	HRESULT	Initialize();
 	HRESULT	AddGameObject(GameObject* gameObject);
+	void PriorityTick(const _float& timeDelta);
 	void Tick(const _float& timeDelta);
 	void LateTick(const _float& timeDelta);
 

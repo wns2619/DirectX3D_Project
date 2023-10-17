@@ -23,6 +23,7 @@ namespace Engine
 		Vec3 position;
 
 		static const uint32 VertexPosElementCount = 1;
+		static const D3D11_INPUT_ELEMENT_DESC Elements[VertexPosElementCount];
 	};
 
 

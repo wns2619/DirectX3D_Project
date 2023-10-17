@@ -50,6 +50,8 @@ void GameInstance::Tick(_float fTimeDelta)
 {
     _inputManager->Tick();
 
+    _objectManager->PriorityTick(fTimeDelta);
+
     _objectManager->Tick(fTimeDelta);
     _levelManager->Tick(fTimeDelta);
 

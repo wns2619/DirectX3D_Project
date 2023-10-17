@@ -14,6 +14,7 @@
 #include "PlayerBody.h"
 #include "Surefire.h"
 #include "StaticObject.h"
+#include "Navigation.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -144,6 +145,11 @@ HRESULT LevelHelper::LodingforLevelEdit()
 
     _title = TEXT("Object Loading");
     LoadingObject();
+
+    // Components
+    //if(FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeNavigation"),
+    //    Navigation::Create(_device, _deviceContext)
+
 
 #pragma region 2stProbs
     

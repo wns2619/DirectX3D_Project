@@ -81,6 +81,7 @@
     <ClInclude Include="..\Public\Utils.h" />
     <ClInclude Include="..\Public\Values.h" />
     <ClInclude Include="..\Public\VIBuffer.h" />
+    <ClInclude Include="..\Public\VIBufferCell.h" />
     <ClInclude Include="..\Public\VIBufferRect.h" />
     <ClInclude Include="..\Public\VIBufferTerrain.h" />
     <ClInclude Include="..\Public\Viewport.h" />
@@ -162,6 +163,7 @@
     <ClCompile Include="..\Private\Transform.cpp" />
     <ClCompile Include="..\Private\Utils.cpp" />
     <ClCompile Include="..\Private\VIBuffer.cpp" />
+    <ClCompile Include="..\Private\VIBufferCell.cpp" />
     <ClCompile Include="..\Private\VIBufferRect.cpp" />
     <ClCompile Include="..\Private\VIBufferTerrain.cpp" />
     <ClCompile Include="..\Private\Viewport.cpp" />
@@ -172,6 +174,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Public\SimpleMath.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Binaries\Shaders\Shader_Cell.fx">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

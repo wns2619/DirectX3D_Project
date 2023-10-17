@@ -27,6 +27,10 @@ HRESULT GameObject::Initialize(void* argument)
 	return S_OK;
 }
 
+void GameObject::PriorityTick(const _float& timeDelta)
+{
+}
+
 void GameObject::Tick(const _float& timeDelta)
 {
 

@@ -166,6 +166,12 @@
     <Filter Include="01.Utility\04.Component\Navigation\Cell">
       <UniqueIdentifier>{9a7451d1-b06a-45c6-a2d8-cef56b276ff4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Component\VIBuffer\Cell">
+      <UniqueIdentifier>{f2d06a31-1749-4d7f-aea2-2536752b4404}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Navigation\ShaderFiles">
+      <UniqueIdentifier>{77d9f6f0-30f7-4cd2-b57a-4508712d947a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -366,6 +372,9 @@
     <ClInclude Include="..\Public\Cell.h">
       <Filter>01.Utility\04.Component\Navigation\Cell</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBufferCell.h">
+      <Filter>01.Utility\04.Component\VIBuffer\Cell</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -524,10 +533,18 @@
     <ClCompile Include="..\Private\Cell.cpp">
       <Filter>01.Utility\04.Component\Navigation\Cell</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\VIBufferCell.cpp">
+      <Filter>01.Utility\04.Component\VIBuffer\Cell</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Public\SimpleMath.inl">
       <Filter>02.Defines\99.Headers\99.Utils</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Binaries\Shaders\Shader_Cell.fx">
+      <Filter>01.Utility\04.Component\Navigation\ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

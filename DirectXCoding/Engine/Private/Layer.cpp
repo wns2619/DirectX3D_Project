@@ -21,6 +21,15 @@ HRESULT Layer::AddGameObject(GameObject* gameObject)
 	return S_OK;
 }
 
+void Layer::PriorityTick(const _float& timeDelta)
+{
+	for (auto& pGameObject : _gameObjects)
+	{
+		if (nullptr != pGameObject)
+			pGameObject->PriorityTick(timeDelta);
+	}
+}
+
 void Layer::Tick(const _float& timeDelta)
 {
 	for (auto& gameiter : _gameObjects)

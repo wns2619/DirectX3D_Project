@@ -551,12 +551,7 @@ HRESULT BinaryModel::ChangeAnimation(_float duration, const _float& timeDelta)
 				Matrix TransformationMatrix = ::XMMatrixAffineTransformation(::XMLoadFloat3(&vScale),
 					::XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&vRotation), ::XMLoadFloat4(&vTranslation));
 
-				// 
-
-				// 모델이 들고 있는 뼈한테 Affine Matrix 세팅.
 				_bones[pCurChannel->GetChannelDesc()._boneIndex]->SetTransformationMatrix(TransformationMatrix);
-				//Bones[_channelDesc._boneIndex]->SetTransformationMatrix(TransformationMatrix);
-
 			}
 		}
 	}

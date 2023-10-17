@@ -20,6 +20,8 @@ public:
 	HRESULT	ReserveManager(uint32 levelNumbers);
 	HRESULT	AddPrototype(const wstring& prototypeTag, GameObject* prototype);
 	HRESULT AddGameObject(uint32 levelIndex, const LAYER_TAG layerTag, const wstring& prototypeTag, void* argument);
+
+	void PriorityTick(const _float& timeDelta);
 	void Tick(const _float& timeDelta);
 	void LateTick(const _float& timeDelta);
 	void Clear(uint32 levelIndex);

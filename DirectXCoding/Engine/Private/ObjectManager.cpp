@@ -64,6 +64,15 @@ HRESULT ObjectManager::AddGameObject(uint32 levelIndex, const LAYER_TAG layerTag
 	return S_OK;
 }
 
+void ObjectManager::PriorityTick(const _float& timeDelta)
+{
+	for (uint32 i = 0; i < _levelNumber; ++i)
+	{
+		for (auto& pair : _Layers[i])
+			pair.second->PriorityTick(timeDelta);
+	}
+}
+
 void ObjectManager::Tick(const _float& timeDelta)
 {
 	for (size_t i = 0; i < _levelNumber; i++)
