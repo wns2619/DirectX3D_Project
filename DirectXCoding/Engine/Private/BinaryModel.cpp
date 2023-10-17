@@ -110,48 +110,6 @@ HRESULT BinaryModel::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT BinaryModel::SetUp_Animation(_bool isLoop, uint32 animationIndex)
-{
-	if (animationIndex >= _numAnimations &&
-		animationIndex == _currenAnimIndex)
-		return S_OK;
-
-	// 현재 애니메이션과 셋업한 애니메이션의 인덱스가 다를 때 애니메이션 전환이 이루어져야한다.
-	// 그렇다면 비교할 애니메이션을 가지고 와야함.
-	// 현재 애니메이션은 다음 애니메이션과의 보간이 끝나면 리셋 되어야함.
-	//if (_currenAnimIndex != animationIndex)
-	//{
-	//	//_beforeChannel.clear();
-	//	//_beforeChannel = _animations[animationIndex]->GetChannels();
-	//	_nextAnimation = _animations[animationIndex];
-	//	_nextAnimIndex = animationIndex;
-
-	//	// 바꿔야 할 다음 채널의 정보를 받아온다.
-
-	//	// 리셋은 채널이 바뀐 뒤에 하는게 맞을 듯? 
-
-	//}
-	//else
-	//{
-	//	_animations[_currenAnimIndex]->Reset();
-	//	_currenAnimIndex = animationIndex;
-	//	_animations[_currenAnimIndex]->SetLoop(isLoop);
-	//}
-
-	if (_currenAnimIndex != animationIndex)
-	{
-		_beforeChannel.clear();
-		_beforeChannel = _animations[_currenAnimIndex]->GetChannels();
-
-		_animations[_currenAnimIndex]->Reset();
-	}
-
-	_currenAnimIndex = animationIndex;
-	_animations[_currenAnimIndex]->SetLoop(isLoop);
-
-	// 이 애니메이션이 넥스트 애니메이션이 됨.
-}
-
 HRESULT BinaryModel::BindBoneMatrices(Shader* shader, uint32 meshIndex, const char* constantName)
 {
 	return m_Meshes[meshIndex]->BindBoneMatrices(shader, _bones, constantName, _pivotMatrix);
@@ -173,89 +131,14 @@ HRESULT BinaryModel::BindMaterialTexture(Shader* shader, const char* constantNam
 
 HRESULT BinaryModel::PlayAnimation(const _float& timeDelta)
 {
-	// 뼈들의 트랜스폼 매트릭스를 애니메이션 상태에 맞도록 바꿔준다 deletatime.
-
-	// 키 프레임이 바뀌었을 때 이 현재 인덱스에 이전 채널의 인덱스의 채널을 넣는다.
-	_animations[_currenAnimIndex]->UpdateTransformationMatrix(_bones, timeDelta, _beforeChannel);
-	//_beforeChannel[_currenAnimIndex]->UpdateTransformationMatrix()
-
+	if (true == _animationChange)
+		ChangeAnimation(0.2f, timeDelta);
+	if (false == _animationChange)
+		_animations[_currentAnimIndex]->UpdateTransformationMatrix(_bones, timeDelta);
+	
 
 	for (auto& bone : _bones)
 		bone->UpdateCombinedTransformMatrix(_bones);
-
-	return S_OK;
-}
-
-HRESULT BinaryModel::UpdateTweenData(const _float& timeDelta)
-{
-	if (_currenAnimIndex < 0)
-		_currenAnimIndex = _animations.size() - 1;
-
-	TweenDesc desc;
-
-	BinaryAnimation* currentAnim = _animations[_currenAnimIndex];
-	// 현재 애니메이션.
-
-	desc.curr.sumTime += timeDelta;
-	// 보간에 사용 될 시간
-
-	if (currentAnim)
-	{
-		// 애니메이션 초당 속도로 1을 나눈다.
-		_float timePerFrame = 1 / currentAnim->GetAnimationDesc()._tickPerSecond;
-		if (desc.curr.sumTime >= timePerFrame)
-			// 현재 더한 값이 애니메이션의 초당 1로 나눈 속도보다 크다면
-		{
-			desc.curr.sumTime = 0.f;
-			desc.curr.currFrame = (desc.curr.currFrame + 1) % currentAnim->GetMaxFrameCount();
-			desc.curr.nextFrame = (desc.curr.currFrame + 1) % currentAnim->GetMaxFrameCount();
-		}
-
-		desc.curr.ratio = (desc.curr.sumTime / timePerFrame);
-	}
-
-	// 다음 애니메이션이 예약 되어있다면? -> 어디서 잡아두는듯.
-	if (desc.next.animIndex >= 0)
-	{
-		desc.tweenSumTime += timeDelta;
-		desc.tweenRatio = desc.tweenSumTime / desc.tweenDuration;
-
-		// 다음 애니메이션도 같이 보간이 되고 있어야한다?
-		if (desc.tweenRatio >= 1.f)
-		{
-			// 애니메이션 교체 OK
-			desc.curr = desc.next;
-			_currenAnimIndex = desc.next.animIndex;
-			desc.ClearNextAnim();
-		}
-		else
-		{
-			// 이건 교체하고 있는 중이다.
-			BinaryAnimation* nextAnim = _animations[desc.next.animIndex];
-			desc.next.sumTime += timeDelta;
-
-			_float timePerFrame = 1.f / nextAnim->GetAnimationDesc()._tickPerSecond;
-
-			if (desc.next.ratio >= 1.f)
-			{
-				desc.next.sumTime = 0;
-
-				desc.next.currFrame = (desc.next.currFrame + 1) % nextAnim->GetMaxFrameCount();
-				desc.next.nextFrame = (desc.next.currFrame + 1) % nextAnim->GetMaxFrameCount();
-			}
-
-			desc.next.ratio = desc.next.sumTime / timePerFrame;
-		}
-	}
-
-	if (0 <= _nextAnimIndex)
-	{
-		desc.ClearNextAnim();
-		_nextAnimIndex %= _animations.size();
-		desc.next.animIndex = _nextAnimIndex;
-
-		_nextAnimIndex = -1;
-	}
 
 	return S_OK;
 }
@@ -591,7 +474,96 @@ HRESULT BinaryModel::BinaryModelDynamic(shared_ptr<FileUtils> file, const string
 	return S_OK;
 }
 
+HRESULT BinaryModel::SetFirstAnimation(uint32 first, _bool loop)
+{
+	if (first >= _numAnimations &&
+		first == _currentAnimIndex)
+		return S_OK;
 
+	_currentAnimIndex = first;
+
+	_animations[_currentAnimIndex]->Reset();
+	_animations[_currentAnimIndex]->SetLoop(loop);
+	
+
+	return S_OK;
+}
+
+HRESULT BinaryModel::SetAnimation(uint32 next, _bool loop)
+{
+	if (next >= _numAnimations &&
+		next == _currentAnimIndex)
+		return S_OK;
+
+	_animationChange = true;
+	_nextAnimationIndex = next;
+	_ChangeTrackPosition = 0.f;
+	
+	_curChannels = _animations[_currentAnimIndex]->GetChannels();
+	_nextChannels = _animations[_nextAnimationIndex]->GetChannels();
+
+	return S_OK;
+}
+
+HRESULT BinaryModel::ChangeAnimation(_float duration, const _float& timeDelta)
+{
+	_ChangeTrackPosition += timeDelta;
+
+	Vec3 vScale;
+	Vec4 vRotation;
+	Vec4 vTranslation;
+
+	for (auto& pCurChannel : _curChannels)
+	{
+		for (auto& pNextChannel : _nextChannels)
+		{
+			if (pCurChannel->GetChannelDesc()._boneIndex == pNextChannel->GetChannelDesc()._boneIndex)
+			{
+				KEYFRAME curKeyFrame = pCurChannel->GetCurrentKeyFrame();
+				KEYFRAME nextKeyFrame = pNextChannel->GetKeyFrame().front();
+
+				while (_ChangeTrackPosition >= duration)
+				{
+					_animationChange = false;
+					_currentAnimIndex = _nextAnimationIndex;
+					_animations[_currentAnimIndex]->Reset();
+					_animations[_currentAnimIndex]->SetLoop(_nextAnimationLoop);
+
+					return S_OK;
+				}
+
+				_float ratio = (_ChangeTrackPosition - 0.f) / duration;
+
+				// 스케일 로테이션 트렌슬레이션도 보간한다.
+				Vec4 sourScale = ::XMLoadFloat3(&curKeyFrame.scale);
+				Vec4 destScale = ::XMLoadFloat3(&nextKeyFrame.scale);
+				::XMStoreFloat3(&vScale, ::XMVectorLerp(sourScale, destScale, ratio));
+
+				Vec4 sourRotation = ::XMLoadFloat4(&curKeyFrame.rotation);
+				Vec4 destRotation = ::XMLoadFloat4(&nextKeyFrame.rotation);
+				::XMStoreFloat4(&vRotation, ::XMQuaternionSlerp(sourRotation, destRotation, ratio));
+
+				Vec4 sourTranslation = ::XMLoadFloat4(&curKeyFrame.translation);
+				Vec4 destTranslation = ::XMLoadFloat4(&nextKeyFrame.translation);
+				::XMStoreFloat4(&vTranslation, ::XMVectorLerp(sourTranslation, destTranslation, ratio));
+
+
+				Matrix TransformationMatrix = ::XMMatrixAffineTransformation(::XMLoadFloat3(&vScale),
+					::XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&vRotation), ::XMLoadFloat4(&vTranslation));
+
+				// 
+
+				// 모델이 들고 있는 뼈한테 Affine Matrix 세팅.
+				_bones[pCurChannel->GetChannelDesc()._boneIndex]->SetTransformationMatrix(TransformationMatrix);
+				//Bones[_channelDesc._boneIndex]->SetTransformationMatrix(TransformationMatrix);
+
+			}
+		}
+	}
+
+
+	return S_OK;
+}
 
 BinaryModel* BinaryModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL_TYPE type, const string& pBinaryModelFilePath, FXMMATRIX pivotMat)
 {

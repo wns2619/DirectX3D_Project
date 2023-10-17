@@ -31,49 +31,24 @@ HRESULT BinaryChannel::Initialize(const BinaryModel* pModel, const _char* channe
     return S_OK;
 }
 
-void BinaryChannel::UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<class BinaryBone*>& Bones, _float trackPosition, KEYFRAME keyFrame)
+void BinaryChannel::UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<class BinaryBone*>& Bones, _float trackPosition)
 {
     // 애니메이션이 끝나면 재 시작.
     if (0.0f == trackPosition)
         *pCurrentKeyFrame = 0;
 
-    Vec3		vScale;
-    Vec4		vRotation;
-    Vec4		vTranslation;
-
-    Vec3        vNextScale;
-    Vec4        vNextRotation;
-    Vec4        vNextTranslation;
-
     KEYFRAME        FrontKeyFrame = _keyFrames.front();
     KEYFRAME		LastKeyFrame = _keyFrames.back();
 
-
     /* 마지막 뼈의 상태를 계속 유지하낟. */
-    if (keyFrame.time != 0.f)
-    {
-        _float fTransitionTime = min(trackPosition, 0.5f);
-        _float fRatio = fTransitionTime / 0.5f;
-
-        Vec4		vSourScale = XMLoadFloat3(&keyFrame.scale);
-        Vec4		vDestScale = XMLoadFloat3(&FrontKeyFrame.scale);
-        XMStoreFloat3(&vScale, XMVectorLerp(vSourScale, vDestScale, fRatio));
-
-        Vec4		vSourRotation = XMLoadFloat4(&keyFrame.rotation);
-        Vec4		vDestRotation = XMLoadFloat4(&FrontKeyFrame.rotation);
-        XMStoreFloat4(&vRotation, XMQuaternionSlerp(vSourRotation, vDestRotation, fRatio));
-
-        Vec4		vSourTranslation = XMLoadFloat4(&keyFrame.translation);
-        Vec4		vDestTranslation = XMLoadFloat4(&FrontKeyFrame.translation);
-        XMStoreFloat4(&vTranslation, XMVectorLerp(vSourTranslation, vDestTranslation, fRatio));
-    }
-    else if (trackPosition >= LastKeyFrame.time)
+    if (trackPosition >= LastKeyFrame.time)
     {
         // 마지막 키프레임의 크기, 회전, 이동을 그대로 유지
         *pCurrentKeyFrame = _keyFrames.size() - 1;
-        vScale = LastKeyFrame.scale;
-        vRotation = LastKeyFrame.rotation;
-        vTranslation = LastKeyFrame.translation;
+        _currentKeyFrame.scale = LastKeyFrame.scale;
+        _currentKeyFrame.rotation = LastKeyFrame.rotation;
+        _currentKeyFrame.translation = LastKeyFrame.translation;
+        _currentKeyFrame.time = trackPosition;
     }
     else
     {
@@ -90,57 +65,22 @@ void BinaryChannel::UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<
         // 스케일 로테이션 트렌슬레이션도 보간한다.
         Vec4 sourScale = ::XMLoadFloat3(&_keyFrames[*pCurrentKeyFrame].scale);
         Vec4 destScale = ::XMLoadFloat3(&_keyFrames[*pCurrentKeyFrame + 1].scale);
-        ::XMStoreFloat3(&vScale, ::XMVectorLerp(sourScale, destScale, ratio));
+        ::XMStoreFloat3(&_currentKeyFrame.scale, ::XMVectorLerp(sourScale, destScale, ratio));
 
         Vec4 sourRotation = ::XMLoadFloat4(&_keyFrames[*pCurrentKeyFrame].rotation);
         Vec4 destRotation = ::XMLoadFloat4(&_keyFrames[*pCurrentKeyFrame + 1].rotation);
-        ::XMStoreFloat4(&vRotation, ::XMQuaternionSlerp(sourRotation, destRotation, ratio));
+        ::XMStoreFloat4(&_currentKeyFrame.rotation, ::XMQuaternionSlerp(sourRotation, destRotation, ratio));
 
         Vec4 sourTranslation = ::XMLoadFloat4(&_keyFrames[*pCurrentKeyFrame].translation);
         Vec4 destTranslation = ::XMLoadFloat4(&_keyFrames[*pCurrentKeyFrame + 1].translation);
-        ::XMStoreFloat4(&vTranslation, ::XMVectorLerp(sourTranslation, destTranslation, ratio));
+        ::XMStoreFloat4(&_currentKeyFrame.translation, ::XMVectorLerp(sourTranslation, destTranslation, ratio));
+
+        _currentKeyFrame.time = trackPosition;
     }
-    // TODO
-    // 넥스트 애니메이션도 크자이 러프돌리고
 
-    //if (-1 != *nextFlag)
-    //    // 만약 넥스트 애니메이션이 다르다면.
-    //{
-    //    vector<KEYFRAME>& nextKeyFrame = pNextChannel->GetKeyFrame();
 
-    //    _float fTRansitionTime = min(trackPosition, 0.2f);
-    //    _float nextratio = fTRansitionTime / 0.2f;
-
-    //    if (fTRansitionTime >= trackPosition)
-    //    {
-    //        Vec4 sourScale = ::XMLoadFloat3(&nextKeyFrame[*pNextKeyFrame].scale);
-    //        Vec4 destScale = ::XMLoadFloat3(&nextKeyFrame[*pNextKeyFrame + 1].scale);
-    //        ::XMStoreFloat3(&vNextScale, ::XMVectorLerp(sourScale, destScale, nextratio));
-
-    //        Vec4 sourRotation = ::XMLoadFloat4(&nextKeyFrame[*pNextKeyFrame].rotation);
-    //        Vec4 destRotation = ::XMLoadFloat4(&nextKeyFrame[*pNextKeyFrame + 1].rotation);
-    //        ::XMStoreFloat4(&vNextRotation, ::XMQuaternionSlerp(sourRotation, destRotation, nextratio));
-
-    //        Vec4 sourTranslation = ::XMLoadFloat4(&nextKeyFrame[*pNextKeyFrame].translation);
-    //        Vec4 destTranslation = ::XMLoadFloat4(&nextKeyFrame[*pNextKeyFrame + 1].translation);
-    //        ::XMStoreFloat4(&vTranslation, ::XMVectorLerp(sourTranslation, destTranslation, nextratio));
-    //    }
-    //    else
-    //        *currentAnimation = *nextFlag;
-
-    //    ::XMStoreFloat3(&vScale, ::XMVectorLerp(vScale, vNextScale, nextratio));
-    //    ::XMStoreFloat4(&vRotation, ::XMQuaternionSlerp(vRotation, vNextRotation, nextratio));
-    //    ::XMStoreFloat4(&vTranslation, ::XMQuaternionSlerp(vTranslation, vNextTranslation, nextratio));
-    //}
-
-    // Lerp vScle vNextScale
-    // SLerp vRot vNextScale
-    // Lerp vpos vNextScale
-    ////////
-    ////////
-    // 크기 * 자전 * 이동 행렬 == Affine
-    Matrix TransformationMatrix = ::XMMatrixAffineTransformation(::XMLoadFloat3(&vScale),
-        ::XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&vRotation), ::XMLoadFloat4(&vTranslation));
+    Matrix TransformationMatrix = ::XMMatrixAffineTransformation(::XMLoadFloat3(&_currentKeyFrame.scale),
+        ::XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&_currentKeyFrame.rotation), ::XMLoadFloat4(&_currentKeyFrame.translation));
 
     // 
 

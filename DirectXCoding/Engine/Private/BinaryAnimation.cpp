@@ -42,29 +42,13 @@ HRESULT BinaryAnimation::Initialize(const BinaryModel* pModel, const _char* anim
 	for (auto& pChannel : vecChannel)
 		_channels.push_back(pChannel);
 
-
-	for (uint32 i = 0; i < _channels.size(); ++i)
-		// 이 애니메이션이 사용하는 채널중에 가장 큰 프레임 개수를 구하는 듯?
-		_maxFrameCount = ::max(_maxFrameCount, static_cast<uint32>(_channels[i]->GetKeyFrame().size()));
-
-
-	//_channels = vecChannel;
-
 	return S_OK;
 }
 
-void BinaryAnimation::UpdateTransformationMatrix(vector<class BinaryBone*>& Bones, const _float& timeDelta, vector<BinaryChannel*>& pNextChannel)
+void BinaryAnimation::UpdateTransformationMatrix(vector<class BinaryBone*>& Bones, const _float& timeDelta)
 {
 	if (true == _isFinished)
 		return;
-
-
-	if (pNextChannel.size() != 0 && _animationDesc._trackPosition >= 0.5f)
-	{
-		pNextChannel.clear();
-		_animationDesc._trackPosition = 0.f;
-		for (auto& iCurrentKeyFrame : _CurrentKeyFrame) { iCurrentKeyFrame = 0; }
-	}
 
 	_animationDesc._trackPosition += _animationDesc._tickPerSecond * timeDelta;
 
@@ -78,25 +62,8 @@ void BinaryAnimation::UpdateTransformationMatrix(vector<class BinaryBone*>& Bone
 
 	uint32 iNumChannel = 0;
 
-	// 포인터로 보내서 이미 커런트 키프레임이 바뀌었음. 본은 모델한테 받아왔음.
-
-
-	for (uint32 i = 0; i < _channels.size(); ++i)
-	{
-		KEYFRAME keyFrame = {};
-
-
-		if (pNextChannel.size() != 0)
-		{
-			for (uint32 j = 0; j < pNextChannel.size(); ++j)
-			{
-				if (::strcmp(_channels[i]->GetChannelName(), pNextChannel[j]->GetChannelName()) == false)
-					keyFrame = pNextChannel[j]->GetKeyFrame().back();
-			}
-		}
-
-		_channels[i]->UpdateTransformationMatrix(&_CurrentKeyFrame[iNumChannel++], Bones, _animationDesc._trackPosition, keyFrame);
-	}
+	for (auto& pChannel : _channels)
+		pChannel->UpdateTransformationMatrix(&_CurrentKeyFrame[iNumChannel++], Bones, _animationDesc._trackPosition);
 }
 
 void BinaryAnimation::Reset()
@@ -104,6 +71,7 @@ void BinaryAnimation::Reset()
 	_animationDesc._trackPosition = 0.f;
 	_isFinished = false;
 	_isLoop = false;
+
 
 	for (auto& pChannel : _CurrentKeyFrame)
 		pChannel = 0;

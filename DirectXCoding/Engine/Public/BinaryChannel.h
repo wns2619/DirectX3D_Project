@@ -25,12 +25,14 @@ private:
 
 public:
 	HRESULT Initialize(const class BinaryModel* pModel, const _char* channelName, const CHANNEL_DESC channelInfo, vector<KEYFRAME>& vecKey);
-	void UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<class BinaryBone*>& Bones, _float trackPosition, KEYFRAME keyFrame);
+	void UpdateTransformationMatrix(uint32* pCurrentKeyFrame, vector<class BinaryBone*>& Bones, _float trackPosition);
 
 public:
 	const _char* GetChannelName() { return _szName; }
 	vector<KEYFRAME>& GetKeyFrame() { return _keyFrames; }
 	CHANNEL_DESC& GetChannelDesc() { return _channelDesc; }
+
+	KEYFRAME& GetCurrentKeyFrame() { return _currentKeyFrame; }
 
 private:
 	CHANNEL_DESC _channelDesc = {};
@@ -38,6 +40,7 @@ private:
 	_char _szName[MAX_PATH] = ""; // ª¿¿« ¿Ã∏ß.
 
 	vector<KEYFRAME> _keyFrames;
+	KEYFRAME _currentKeyFrame;
 
 public:
 	static BinaryChannel* Create(const class BinaryModel* pModel, const _char* channelName, const CHANNEL_DESC channelInfo, vector<KEYFRAME>& vecKey);

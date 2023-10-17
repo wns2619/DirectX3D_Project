@@ -26,8 +26,8 @@ public:
 	Matrix Get_SocketPivotMatrix();
 
 public:
-	void Set_AnimationIndex(_bool isLoop, uint32 iAnimIndex);
-	void StartAnimation(uint32 startIndex);
+	void Set_AnimationIndex(uint32 iAnimIndex, _bool isLoop);
+	void StartAnimation(uint32 startIndex, _bool isLoop);
 
 
 public:

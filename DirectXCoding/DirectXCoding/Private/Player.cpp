@@ -31,7 +31,9 @@ HRESULT Player::Initialize(void* pArg)
 	if (FAILED(ReadyPlayerPart()))
 		return E_FAIL;
 
-	static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->StartAnimation(0);
+	animationcount = 2;
+	static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->StartAnimation(2, true);
+
 	return S_OK;
 }
 
@@ -96,7 +98,7 @@ void Player::KeyInput(const _float& timeDelta)
 		if (animationcount < 2)
 			++animationcount;
 
-		static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(true, animationcount);
+		static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
 	}
 
 	if (gameInstance->keyDown(DIK_DOWN))
@@ -105,7 +107,7 @@ void Player::KeyInput(const _float& timeDelta)
 		if (animationcount > 0)
 			--animationcount;
 
-		static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(true, animationcount);
+		static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
 	}
 
 	for (auto& pPart : m_pPlayerPart)

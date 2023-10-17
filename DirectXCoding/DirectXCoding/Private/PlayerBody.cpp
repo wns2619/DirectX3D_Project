@@ -31,16 +31,14 @@ Matrix PlayerBody::Get_SocketPivotMatrix()
 	return _binaryModel->GetPivotMatrix();
 }
 
-void PlayerBody::Set_AnimationIndex(_bool isLoop, uint32 iAnimIndex)
+void PlayerBody::Set_AnimationIndex(uint32 iAnimIndex, _bool isLoop)
 {
-
-
-	_binaryModel->SetUp_Animation(isLoop, iAnimIndex);
+	_binaryModel->SetAnimation(iAnimIndex, isLoop);
 }
 
-void PlayerBody::StartAnimation(uint32 startIndex)
+void PlayerBody::StartAnimation(uint32 startIndex, _bool isLoop)
 {
-	_binaryModel->StartAnimation(startIndex);
+	_binaryModel->SetFirstAnimation(startIndex, isLoop);
 }
 
 HRESULT PlayerBody::InitializePrototype()
@@ -57,7 +55,8 @@ HRESULT PlayerBody::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	_binaryModel->SetUp_Animation(true, 0);
+	//_binaryModel->SetUp_Animation(true, 0);
+	//_binaryModel->SetFirstAnimation(2, true);
 
 	return S_OK;
 }
