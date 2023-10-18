@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Transform.h"
 #include "Shader.h"
+#include "Navigation.h"
 
 Transform::Transform(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : Component(device, deviceContext, COMPONENT_TYPE::TRANSFORM), _worldMatrix(::XMMatrixIdentity())
@@ -69,7 +70,7 @@ HRESULT Transform::BindShaderResources(Shader* shader, const _char* constantName
     return shader->BindMatrix(constantName, &_worldMatrix);
 }
 
-void Transform::Forward(const _float& timeDelta)
+void Transform::Forward(const _float& timeDelta, class Navigation* pNavigation)
 {
     XMVECTOR look = GetState(STATE::LOOK);
 
@@ -77,10 +78,13 @@ void Transform::Forward(const _float& timeDelta)
 
     position += ::XMVector3Normalize(look) * _transformDesc.speedPerSec * timeDelta;
 
-    SetState(STATE::POSITION, position);
+    // True 네비게이션에게 진짜 움직여도 되는 지 묻는다.
+
+    if(nullptr == pNavigation || true == pNavigation->IsMove(position))
+        SetState(STATE::POSITION, position);
 }
 
-void Transform::Backward(const _float& timeDelta)
+void Transform::Backward(const _float& timeDelta, class Navigation* pNavigation)
 {
     XMVECTOR look = GetState(STATE::LOOK);
     
@@ -88,10 +92,11 @@ void Transform::Backward(const _float& timeDelta)
 
     position -= ::XMVector3Normalize(look) * _transformDesc.speedPerSec * timeDelta;
 
-    SetState(STATE::POSITION, position);
+    if (nullptr == pNavigation || true == pNavigation->IsMove(position))
+        SetState(STATE::POSITION, position);
 }
 
-void Transform::Left(const _float& timeDelta)
+void Transform::Left(const _float& timeDelta, class Navigation* pNavigation)
 {
     XMVECTOR right = GetState(STATE::RIGHT);
 
@@ -99,10 +104,12 @@ void Transform::Left(const _float& timeDelta)
 
     position -= ::XMVector3Normalize(right) * _transformDesc.speedPerSec * timeDelta;
 
-    SetState(STATE::POSITION, position);
+
+    if (nullptr == pNavigation || true == pNavigation->IsMove(position))
+        SetState(STATE::POSITION, position);
 }
 
-void Transform::Right(const _float& timeDelta)
+void Transform::Right(const _float& timeDelta, class Navigation* pNavigation)
 {
     XMVECTOR right = GetState(STATE::RIGHT);
     
@@ -110,7 +117,8 @@ void Transform::Right(const _float& timeDelta)
 
     position += ::XMVector3Normalize(right) * _transformDesc.speedPerSec * timeDelta;
 
-    SetState(STATE::POSITION, position);
+    if (nullptr == pNavigation || true == pNavigation->IsMove(position))
+        SetState(STATE::POSITION, position);
 }
 
 void Transform::FixRotation(XMVECTOR axis, const _float radian)

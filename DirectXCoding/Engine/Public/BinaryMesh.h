@@ -24,21 +24,28 @@ public:
 
 public:
 	HRESULT InitializePrototype(BinaryModel::MODEL_TYPE type, string& meshName, VIBuffer::BUFFER_DESC viBufferInfo, MESH_BUFFER_DESC binaryMeshInfo, void* vertices,
-		_ulong* Indices, uint32 MeshIndex, vector<uint32>& boneIndex, vector<Matrix>& offsetMatrix, uint32 NumberBone, FXMMATRIX pivotMat = ::XMMatrixIdentity());
+		Vec3* pPosition, _ulong* Indices, uint32 MeshIndex, vector<uint32>& boneIndex, vector<Matrix>& offsetMatrix, uint32 NumberBone, FXMMATRIX pivotMat = ::XMMatrixIdentity());
 
 	HRESULT InitializePrototype(BinaryModel::MODEL_TYPE type, string& meshName, VIBuffer::BUFFER_DESC viBufferInfo, MESH_BUFFER_DESC binaryMeshInfo, void* vertices,
-		_ulong* Indices, uint32 MeshIndex, FXMMATRIX pivotMat = ::XMMatrixIdentity());
+		Vec3* pPosition, _ulong* Indices, uint32 MeshIndex, FXMMATRIX pivotMat = ::XMMatrixIdentity());
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
 	HRESULT BindBoneMatrices(class Shader* shader, const vector<class BinaryBone*>& bones, const char* constantName, FXMMATRIX pivotMatrix);
 
 
+public:
+	_ulong* GetIndicesMeshBuffer() { return _pIndices; }
+	Vec3* GetVertexPos() { return _pVertexPos; }
+
 private:
 	MESH_BUFFER_DESC _MeshBufferDesc;
 
 private:
 	uint32 _materialIndex = 0;
+	Vec3* _pVertexPos = nullptr;
+	_ulong* _pIndices = nullptr;
+
 
 private:
 	uint32 _numBones = 0; // 메시를 구성하는 정점들에게 영향을 주는 뼈의 개수.
@@ -52,11 +59,11 @@ private:
 public:
 	static BinaryMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 		BinaryModel::MODEL_TYPE type, string& meshName, VIBuffer::BUFFER_DESC viBufferInfo, MESH_BUFFER_DESC binaryMeshInfo, uint32 MeshIndex, void* vertices,
-		_ulong* Indices, vector<uint32>& boneIndex, vector<Matrix>& offsetMatrix, uint32 NumberBone, FXMMATRIX pivotMat = ::XMMatrixIdentity());
+		Vec3* pPosition, _ulong* Indices, vector<uint32>& boneIndex, vector<Matrix>& offsetMatrix, uint32 NumberBone, FXMMATRIX pivotMat = ::XMMatrixIdentity());
 
 	static BinaryMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 		BinaryModel::MODEL_TYPE type, string& meshName, VIBuffer::BUFFER_DESC viBufferInfo, MESH_BUFFER_DESC binaryMeshInfo, uint32 MeshIndex, void* vertices,
-		_ulong* Indices, FXMMATRIX pivotMat = ::XMMatrixIdentity());
+		Vec3* pPosition, _ulong* Indices, FXMMATRIX pivotMat = ::XMMatrixIdentity());
 	virtual Component* Clone(void* pArg) override;
 	virtual void Free() override;
 };

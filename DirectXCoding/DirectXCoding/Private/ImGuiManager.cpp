@@ -21,6 +21,7 @@
 #include "Layer.h"
 #include "Player.h"
 #include "StaticObject.h"
+#include "BinaryMesh.h"
 
 ImGui::FileBrowser g_fileDialog;
 
@@ -342,16 +343,16 @@ void ImGuiManager::MouseMove()
 			{
 				// TODO
 				// picking에 pObj의 모델의 메쉬 넘기기.
-				Model* ObjectMesh = nullptr;
+				BinaryModel* ObjectMesh = nullptr;
 				Transform* trans = nullptr;
 
 				if (pObj->GetObjectType() == OBJECT_TYPE::PLAYER)
 				{
 					vector<GameObject*>& playerPart = dynamic_cast<Player*>(pObj)->GetPlyaerPart();
-					ObjectMesh = playerPart[Player::PART::PART_BODY]->GetModelComponent();
+					ObjectMesh = playerPart[Player::PART::PART_BODY]->GetBinaryModelComponent();
 				}
 				else
-					ObjectMesh = pObj->GetModelComponent();
+					ObjectMesh = pObj->GetBinaryModelComponent();
 
 
 				if (nullptr == ObjectMesh)
@@ -360,7 +361,7 @@ void ImGuiManager::MouseMove()
 				if (true == IsIntersects)
 					break;
 
-				vector<Mesh*>* MeshList = ObjectMesh->GetMeshes();
+				vector<BinaryMesh*>* MeshList = ObjectMesh->GetMeshes();
 
 				for (auto& meshiter : *MeshList)
 				{

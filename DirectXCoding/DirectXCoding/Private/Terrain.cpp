@@ -37,14 +37,24 @@ HRESULT Terrain::Render()
 		return S_OK;
 
 
-	if (FAILED(Bind_ShaderResources()))
-		return E_FAIL;
+	//if (FAILED(Bind_ShaderResources()))
+	//	return E_FAIL;
 
-	_shader->Begin(0);
+	//_shader->Begin(0);
 
-	_viBuffer->Render();
+	//_viBuffer->Render();
+
+#ifdef _DEBUG
+	_pNavigation->Render();
+#endif // _DEBUG
+
 
 	return S_OK;
+}
+
+void Terrain::PriorityTick(const _float& timeDelta)
+{
+	_pNavigation->Update(_transform->GetWorldMatrixCaculator());
 }
 
 void Terrain::Tick(const _float& fTimeDelta)
@@ -89,21 +99,9 @@ HRESULT Terrain::Ready_Components()
 		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform))))
 		return E_FAIL;
 
-	/* Light Component */
-	//Light::DirectinoalLight testlightinfo;
-	//::ZeroMemory(&testlightinfo, sizeof(testlightinfo));
-	//{
-	//	testlightinfo.Direction = Vec3(1.f, -1.f, 1.f);
-	//	testlightinfo.Diffuse = Vec4(1.f, 1.f, 1.f, 1.f);
-	//	testlightinfo.Ambient = Vec4(1.f, 1.f, 1.f, 1.f);
-	//	testlightinfo.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
-	//	testlightinfo.Pad = 0.f;
-	//}
-	//if(FAILED(__super::AddLightComponent(static_cast<uint32>(LEVEL::GAME), Light::LightType::DIRECTIONAL,
-	//	TEXT("ProtoTypeComponentLight"),reinterpret_cast<Component**>(&_light), &testlightinfo)))
-	//	return E_FAIL;
-
-	
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeNavigation"),
+		TEXT("ComponentNavigation"), reinterpret_cast<Component**>(&_pNavigation))))
+		return E_FAIL;
 
  	return S_OK;
 }
@@ -136,6 +134,8 @@ HRESULT Terrain::Bind_ShaderResources()
 
 	if (FAILED(_texture->BindShaderResource(_shader, "DiffuseTexture", 0)))
 		return E_FAIL;
+
+	_shader->Begin(0);
 
 	return S_OK;
 }
@@ -175,9 +175,9 @@ void Terrain::Free()
 {
 	__super::Free();
 
-	Safe_Release<Transform*>(_transform);
 	Safe_Release<Shader*>(_shader);
 	Safe_Release<Texture*>(_texture);
+	Safe_Release<Navigation*>(_pNavigation);
 	//Safe_Release<Light*>(_light);
 	Safe_Release<VIBufferTerrain*>(_viBuffer);
 	Safe_Release<Renderer*>(_renderComponent);

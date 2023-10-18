@@ -186,6 +186,8 @@ HRESULT BinaryModel::BinaryModelStatic(shared_ptr<FileUtils> file, const string&
 		VTXMESH* pVertices = new VTXMESH[Numvertices];
 		ZeroMemory(pVertices, sizeof(VTXMESH));
 
+		Vec3* pPosition = new Vec3[Numvertices];
+
 		for (uint32 i = 0; i < Numvertices; i++)
 		{
 			file->Read<Vec3>(pVertices[i].position);
@@ -193,6 +195,8 @@ HRESULT BinaryModel::BinaryModelStatic(shared_ptr<FileUtils> file, const string&
 			file->Read<Vec2>(pVertices[i].texcoord);
 			file->Read<Vec3>(pVertices[i].tangent);
 			file->Read<Vec3>(pVertices[i].bitangent);
+
+			pPosition[i] = pVertices[i].position;
 		}
 		// 그 정보로 구성된 버텍스로 이루어진 인덱스 
 
@@ -214,7 +218,7 @@ HRESULT BinaryModel::BinaryModelStatic(shared_ptr<FileUtils> file, const string&
 		}
 
 		BinaryMesh* newBinaryMesh =
-			BinaryMesh::Create(_device, _deviceContext, _ModelType, MeshName, viBufferDesc, meshBufferDesc, meshIndex, pVertices, pIndices, pivotMatrix);
+			BinaryMesh::Create(_device, _deviceContext, _ModelType, MeshName, viBufferDesc, meshBufferDesc, meshIndex, pVertices, pPosition, pIndices, pivotMatrix);
 
 		//if (nullptr == newBinaryMesh)
 		//	return E_FAIL;
@@ -222,7 +226,7 @@ HRESULT BinaryModel::BinaryModelStatic(shared_ptr<FileUtils> file, const string&
 		m_Meshes.push_back(newBinaryMesh);
 
 		Safe_Delete_Array<VTXMESH*>(pVertices);
-		Safe_Delete_Array<_ulong*>(pIndices);
+		//Safe_Delete_Array<_ulong*>(pIndices);
 	}
 
 	// 마테리얼 개수 
@@ -313,6 +317,8 @@ HRESULT BinaryModel::BinaryModelDynamic(shared_ptr<FileUtils> file, const string
 		VTXANIMMESH* pVertices = new VTXANIMMESH[Numvertices];
 		ZeroMemory(pVertices, sizeof(VTXANIMMESH));
 
+		Vec3* pVertexPos = new Vec3[Numvertices];
+
 		for (uint32 i = 0; i < Numvertices; i++)
 		{
 			file->Read<Vec3>(pVertices[i].position);
@@ -322,6 +328,8 @@ HRESULT BinaryModel::BinaryModelDynamic(shared_ptr<FileUtils> file, const string
 			file->Read<Vec3>(pVertices[i].bitangent);
 			file->Read<XMUINT4>(pVertices[i].blendIndices);
 			file->Read<Vec4>(pVertices[i].blendWeights);
+
+			pVertexPos[i] = pVertices[i].position;
 		}
 		// 그 정보로 구성된 버텍스로 이루어진 인덱스 
 
@@ -369,7 +377,7 @@ HRESULT BinaryModel::BinaryModelDynamic(shared_ptr<FileUtils> file, const string
 		}
 
 		BinaryMesh* newBinaryMesh = BinaryMesh::Create(_device, _deviceContext, _ModelType, 
-			MeshName, viBufferDesc, meshBufferDesc, meshIndex, pVertices, pIndices, vecBoneIndex, offsetMatrix, effectBones);
+			MeshName, viBufferDesc, meshBufferDesc, meshIndex, pVertices, pVertexPos, pIndices, vecBoneIndex, offsetMatrix, effectBones);
 
 		if (nullptr == newBinaryMesh)
 			return E_FAIL;
@@ -377,7 +385,7 @@ HRESULT BinaryModel::BinaryModelDynamic(shared_ptr<FileUtils> file, const string
 		m_Meshes.push_back(newBinaryMesh);
 
 		Safe_Delete_Array<VTXANIMMESH*>(pVertices);
-		Safe_Delete_Array<_ulong*>(pIndices);
+		//Safe_Delete_Array<_ulong*>(pIndices);
 	}
 
 	// 마테리얼 개수 

@@ -110,6 +110,7 @@ HRESULT LevelHelper::LodingforLevelGame()
     //if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentPhysics"),
     //    Physics::Create(_device, _deviceContext))))
     //    return E_FAIL;
+    GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
 
     _title = TEXT("Texture Loading");
@@ -127,6 +128,12 @@ HRESULT LevelHelper::LodingforLevelGame()
     _title = TEXT("Loading Successed");
     _IsFinished = true;
 
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeNavigation"),
+        Navigation::Create(_device, _deviceContext, TEXT("../Binaries/Data/Navigation.dat")))))
+        return E_FAIL;
+
+
+    RELEASE_INSTANCE(GameInstance);
     return S_OK;
 }
 
@@ -358,12 +365,19 @@ HRESULT LevelHelper::LoadingMesh()
         XMMATRIX modelInitializMatrix = ::XMMatrixIdentity();
         modelInitializMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
 
-         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelPlayer"),
-             Model::Create(_device, _deviceContext, Model::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", modelInitializMatrix))))
+          if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelPlayer"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\MyModels\\Player\\Player.dat", modelInitializMatrix))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelsurefire"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
         break;
     case Client::LEVEL::EDIT:
     {
@@ -795,6 +809,20 @@ HRESULT LevelHelper::LoadingObject()
 
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectPlayer"),
             Player::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectPlayerBody"),
+            PlayerBody::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectPlayerSurefire"),
+            Surefire::Create(_device, _deviceContext))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

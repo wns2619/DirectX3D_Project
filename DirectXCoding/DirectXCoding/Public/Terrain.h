@@ -9,6 +9,7 @@ class Texture;
 class Renderer;
 class Transform;
 class VIBufferTerrain;
+class Navigation;
 //class Light;
 
 END
@@ -25,17 +26,19 @@ private:
 	virtual ~Terrain() = default;
 
 public:
-	virtual HRESULT InitializePrototype()			override;
+	virtual HRESULT InitializePrototype()				override;
 	virtual HRESULT Initialize(void* pArg);
-	virtual HRESULT Render()						override;
-	virtual void Tick(const _float& fTimeDelta)		override;
-	virtual void LateTick(const _float& fTimeDelta) override;
+	virtual HRESULT Render()							override;
+	virtual void PriorityTick(const _float& timeDelta)	override;
+	virtual void Tick(const _float& fTimeDelta)			override;
+	virtual void LateTick(const _float& fTimeDelta)		override;
 
 private:
 	Renderer* _renderComponent	= nullptr;
 	Shader* _shader				= nullptr;
 	Texture* _texture			= nullptr;
 	VIBufferTerrain* _viBuffer	= nullptr;
+	Navigation* _pNavigation	= nullptr;
 	//Light* _light				= nullptr;
 
 private:

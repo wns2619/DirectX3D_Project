@@ -6,6 +6,12 @@ BEGIN(Engine)
 
 class ENGINE_DLL Navigation final : public Component 
 {
+public:
+	struct NAVIGATION_DESC
+	{
+		int32 _iCurrentIndex = -1;
+	};
+
 private:
 	explicit Navigation(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	explicit Navigation(const Navigation& rhs);
@@ -16,14 +22,16 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	void Update(FXMMATRIX worldMatrix);
 
+	_bool IsMove(XMVECTOR vPoint);
+
 #ifdef _DEBUG
 public:
 	HRESULT Render();
 #endif
 
 private:
-	Matrix _worldMatrix;
-	uint32 _currentIndex = 0;
+	static Matrix _worldMatrix;
+	int32 _iCurrentIndex = -1;
 	vector<class Cell*> _cells;
 
 #ifdef _DEBUG

@@ -74,6 +74,11 @@ HRESULT Player::Render()
 			pPart->Render();
 	}
 
+#ifdef _DEBUG
+	_pNavigation->Render();
+#endif // _DEBUG
+
+
 
 	return S_OK;
 }
@@ -91,23 +96,25 @@ void Player::KeyInput(const _float& timeDelta)
 	if (gameInstance->Get_DIKeyState(DIK_E) & 0x80)
 		_transform->Turn(Vec4(0.f, 1.f, 0.f, 0.f), timeDelta);
 
-	if (gameInstance->keyDown(DIK_UP))
+	if (gameInstance->KeyPressing(DIK_UP))
 	{
-		//_transform->Forward(timeDelta);
+		_transform->Forward(timeDelta, _pNavigation);
 
-		if (animationcount < 2)
-			++animationcount;
+		/*if (animationcount < 2)
+			++animationcount;*/
 
-		static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
+		//static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
 	}
 
-	if (gameInstance->keyDown(DIK_DOWN))
+	if (gameInstance->KeyPressing(DIK_DOWN))
 	{
-		//_transform->Backward(timeDelta);
-		if (animationcount > 0)
-			--animationcount;
+		_transform->Backward(timeDelta, _pNavigation);
 
-		static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
+		//_transform->Backward(timeDelta);
+		//if (animationcount > 0)
+		//	--animationcount;
+
+		//static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
 	}
 
 	for (auto& pPart : m_pPlayerPart)
@@ -134,11 +141,18 @@ HRESULT Player::ReadyComponents()
 
 	/* Transform Component */
 	Transform::TRANSFORM_DESC transformDesc;
-	transformDesc.speedPerSec = 10.f;
+	transformDesc.speedPerSec = 5.f;
 	transformDesc.rotationRadianPerSec = ::XMConvertToRadians(90.f);
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
 		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform), &transformDesc)))
+		return E_FAIL;
+
+	Navigation::NAVIGATION_DESC NavigationDesc;
+	NavigationDesc._iCurrentIndex = 0;
+
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeNavigation"),
+		TEXT("ComponentNavigation"), reinterpret_cast<Component**>(&_pNavigation), &NavigationDesc)))
 		return E_FAIL;
 
 
@@ -228,4 +242,5 @@ void Player::Free()
 
 	Safe_Release<Shader*>(_shader);
 	Safe_Release<Renderer*>(_render);
+	Safe_Release<Navigation*>(_pNavigation);
 }

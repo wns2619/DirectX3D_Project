@@ -15,8 +15,14 @@ private:
 	virtual ~Cell() = default;
 
 public:
+	const Vec3* GetPoint(POINTS ePoint) const { return &_vPoints_Original[ePoint]; }
+	void SetUp_Neighbor(LINE eLine, Cell* pCell) { _neightborIndices[eLine] = pCell->_iIndex; }
+
+public:
 	HRESULT Initialize(const Vec3* pPoints, uint32 iIndex);
 	void Update(FXMMATRIX worldMatrix);
+	_bool ComparePoints(const Vec3* pSourcePoint, const Vec3* pDestPoint);
+	_bool IsOut(FXMVECTOR vPoint, FXMMATRIX worldMatrix, int32* pNeighborIndex);
 
 #ifdef _DEBUG
 public:
@@ -32,7 +38,6 @@ private:
 	class VIBufferCell* _viBuffer = nullptr;
 #endif // _DEBUG
 
-private:
 
 private:
 	uint32 _iIndex = {};
@@ -43,7 +48,7 @@ private:
 	// 월드로 변환한 정점의 위치.
 	Vec3 _vNormals[LINE_END];
 
-	_int32 _neightborIndices[LINE_END] = { -1,-1,-1 };
+	int32 _neightborIndices[LINE_END] = { -1,-1,-1 };
 
 public:
 	static Cell* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const Vec3* pPoints, uint32 iIndex);

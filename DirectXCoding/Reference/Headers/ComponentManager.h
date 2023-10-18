@@ -12,6 +12,7 @@
 #include "Collider.h"
 #include "Physics.h"
 #include "BinaryModel.h"
+#include "Navigation.h"
 
 //#include "OBBBoxCollider.h"
 //#include "AABBBoxCollider.h"

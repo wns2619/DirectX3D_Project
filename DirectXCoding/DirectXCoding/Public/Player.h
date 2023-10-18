@@ -5,6 +5,7 @@
 BEGIN(Engine)
 class Renderer;
 class Transform;
+class Navigation;
 END
 
 BEGIN(Client)
@@ -36,8 +37,9 @@ private:
 	vector<class GameObject*> m_pPlayerPart;
 
 private:
-	Renderer* _render		= nullptr;
-	Shader* _shader			= nullptr;
+	Renderer* _render			= nullptr;
+	Shader* _shader				= nullptr;
+	Navigation* _pNavigation	= nullptr;
 
 	uint32 animationcount = 0;
 private:

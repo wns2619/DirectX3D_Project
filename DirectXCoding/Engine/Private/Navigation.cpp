@@ -4,6 +4,8 @@
 #include "Shader.h"
 #include "CameraHelper.h"
 
+Matrix Navigation::_worldMatrix = Matrix::Identity;
+
 Navigation::Navigation(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: Component(device, deviceContext, COMPONENT_TYPE::NAVIGATION)
 {
@@ -12,7 +14,7 @@ Navigation::Navigation(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 
 Navigation::Navigation(const Navigation& rhs)
 	: Component(rhs)
-	, _currentIndex(rhs._currentIndex)
+	, _iCurrentIndex(rhs._iCurrentIndex)
 	, _cells(rhs._cells)
 #ifdef _DEBUG
 	, _shader(rhs._shader)
@@ -33,6 +35,32 @@ HRESULT Navigation::InitializePrototype(const wstring& strNavigationFilePath)
 	// TODO 
 	// 파일 경로 읽어오면 됨 
 
+	_ulong		dwByte = 0;
+	HANDLE		hFile = CreateFile(strNavigationFilePath.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	if (0 == hFile)
+		return E_FAIL;
+
+	while (true)
+	{
+		Vec3		vPoints[Cell::POINT_END] = {};
+
+		ReadFile(hFile, vPoints, sizeof(Vec3) * Cell::POINT_END, &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		Cell* pCell = Cell::Create(_device, _deviceContext, vPoints, _cells.size());
+		if (nullptr == pCell)
+			return E_FAIL;
+
+		_cells.push_back(pCell);
+	}
+
+	CloseHandle(hFile);
+
+
+	if (FAILED(SetUp_Neighbors()))
+		return E_FAIL;
 
 #ifdef _DEBUG
 	_shader = Shader::Create(_device, _deviceContext, TEXT("..\\Binaries\\Shaders\\Shader_Cell.fx"), VertexPos::Elements, VertexPos::VertexPosElementCount);
@@ -45,6 +73,13 @@ HRESULT Navigation::InitializePrototype(const wstring& strNavigationFilePath)
 
 HRESULT Navigation::Initialize(void* pArg)
 {
+	if (nullptr == pArg)
+		return S_OK;
+
+	NAVIGATION_DESC* pNeviDesc = static_cast<NAVIGATION_DESC*>(pArg);
+
+	_iCurrentIndex = pNeviDesc->_iCurrentIndex;
+
 	return S_OK;
 }
 
@@ -55,6 +90,39 @@ void Navigation::Update(FXMMATRIX worldMatrix)
 	for (auto& pCell : _cells)
 		if (nullptr != pCell)
 			pCell->Update(worldMatrix);
+}
+
+_bool Navigation::IsMove(XMVECTOR vPoint)
+{
+	int32 iNeighborIndex = 0;
+
+	// 움직여도 되는지 묻는다. IsOut에서 판단.
+	if (true == _cells[_iCurrentIndex]->IsOut(vPoint, ::XMLoadFloat4x4(&_worldMatrix), &iNeighborIndex))
+	{
+		// 이동의 결과가 나왔는데 -1이 아니라면. 이웃셀이 있다고 판단해서 움직여야해.
+		if (-1 != iNeighborIndex)
+		{
+			while (true)
+			{
+				// 만약에 결과가 -1인데 들어왔다면 그냥 false
+				if (-1 == iNeighborIndex)
+					return false;
+
+				// 해당 셀에 도착했을 때 실제로 내가 그 셀에 있는 지 다시 한 번 판단하고, 만약 잘못 판단 됐으면 있는 위치에 넣는다.
+				if (false == _cells[iNeighborIndex]->IsOut(vPoint, ::XMLoadFloat4x4(&_worldMatrix), &iNeighborIndex))
+				{
+					_iCurrentIndex = iNeighborIndex;
+					break;
+				}
+
+			}
+				return true;
+		}
+		else
+			return false;
+	}
+	else
+		return true;
 }
 
 #ifdef _DEBUG
@@ -95,6 +163,27 @@ HRESULT Navigation::Render()
 
 HRESULT Navigation::SetUp_Neighbors()
 {
+	// 자기 자신의 벡터와 비교.
+	// pSourCell의 A선분과 pDescCell의 자기 자신의 A선분을 비교하고 
+	// 같은 위치라면 이웃 선분임을 확인하고 셀의 인덱스를 저장.
+	for (auto& pSourCell : _cells)
+	{
+		for (auto& pDescCell : _cells)
+		{
+			if (pSourCell == pDescCell)
+				continue;
+
+			if (true == pDescCell->ComparePoints(pSourCell->GetPoint(Cell::POINT_A), pSourCell->GetPoint(Cell::POINT_B)))
+				pSourCell->SetUp_Neighbor(Cell::LINE_AB, pDescCell);
+			else if (true == pDescCell->ComparePoints(pSourCell->GetPoint(Cell::POINT_B), pSourCell->GetPoint(Cell::POINT_C)))
+				pSourCell->SetUp_Neighbor(Cell::LINE_BC, pDescCell);
+			else if (true == pDescCell->ComparePoints(pSourCell->GetPoint(Cell::POINT_C), pSourCell->GetPoint(Cell::POINT_A)))
+				pSourCell->SetUp_Neighbor(Cell::LINE_CA, pDescCell);
+
+		}
+	}
+
+
 	return S_OK;
 }
 

@@ -2,6 +2,7 @@
 #include "Picking.h"
 #include "GameInstance.h"
 #include "Mesh.h"
+#include "BinaryMesh.h"
 
 IMPLEMENT_SINGLETON(Picking)
 
@@ -59,10 +60,10 @@ _bool Picking::PickObject(POINT pt, Transform* trans, VIBuffer* objectBuffer, Ve
 	_float minDistance = FLT_MAX;
 	_float distance = 0.f;
 
-	_ulong* pIndices = static_cast<Mesh*>(objectBuffer)->GetIndicesMeshBuffer();
-	Vec3* pVertex = static_cast<Mesh*>(objectBuffer)->GetVertexPos();
-	uint32 NumVertices = static_cast<Mesh*>(objectBuffer)->GetBufferDesc()->_numvertices;
-	uint32 NumIndices = static_cast<Mesh*>(objectBuffer)->GetBufferDesc()->_numIndices;
+	Vec3* pVertex = static_cast<BinaryMesh*>(objectBuffer)->GetVertexPos();
+	_ulong* pIndices = static_cast<BinaryMesh*>(objectBuffer)->GetIndicesMeshBuffer();
+	uint32 NumVertices = static_cast<BinaryMesh*>(objectBuffer)->GetBufferDesc()->_numvertices;
+	uint32 NumIndices = static_cast<BinaryMesh*>(objectBuffer)->GetBufferDesc()->_numIndices;
 
 	const uint32 finalIndices = NumIndices / 3;
 

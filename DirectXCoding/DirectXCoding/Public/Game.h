@@ -34,6 +34,8 @@ private:
 	HRESULT	OpenLevel(LEVEL levelID);
 	HRESULT	ReadyProtoTypeComponents();
 
+	HRESULT ReadyGara();
+
 public:
 	static Game* Create(HWND hwnd);
 public:
