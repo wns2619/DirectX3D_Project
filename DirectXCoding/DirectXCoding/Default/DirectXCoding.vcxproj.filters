@@ -89,6 +89,9 @@
     <Filter Include="소스 파일\02.GameObjects\03.Player\PartObject\Surefire">
       <UniqueIdentifier>{f34441a5-e308-4989-ad3d-b30f35cca510}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\05. Cell Draw">
+      <UniqueIdentifier>{9a452978-3d53-42d4-8086-19dd96905b7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -199,6 +202,9 @@
     <ClInclude Include="..\Public\PartObject.h">
       <Filter>소스 파일\02.GameObjects\03.Player\PartObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CellDraw.h">
+      <Filter>소스 파일\02.GameObjects\05. Cell Draw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -287,6 +293,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\PartObject.cpp">
       <Filter>소스 파일\02.GameObjects\03.Player\PartObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CellDraw.cpp">
+      <Filter>소스 파일\02.GameObjects\05. Cell Draw</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

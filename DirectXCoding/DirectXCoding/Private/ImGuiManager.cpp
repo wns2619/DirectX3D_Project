@@ -22,6 +22,7 @@
 #include "Player.h"
 #include "StaticObject.h"
 #include "BinaryMesh.h"
+#include "Cell.h"
 
 ImGui::FileBrowser g_fileDialog;
 
@@ -260,11 +261,13 @@ void ImGuiManager::MouseMove()
 	Vec4 pos = Vec4(0.f, 0.f, 0.f, 1.f);
 	_float distance = 0.f;
 
-	static _bool IsTerrain = true;
+	static _bool IsTerrain = false;
 	static _bool IsObjectPick = false;
+	static _bool IsNavigation = false;
+
 	_bool IsIntersects = false;
 
- 	if(ImGui::Button("Terrain Picking", ImVec2(140, 20)))
+	if (ImGui::Button("Terrain Picking", ImVec2(140, 20)))
 	{
 		if (IsTerrain == true)
 			IsTerrain = false;
@@ -280,6 +283,17 @@ void ImGuiManager::MouseMove()
 			IsObjectPick = false;
 		else
 			IsObjectPick = true;
+	}
+
+
+	ImGui::SameLine(300);
+
+	if (ImGui::Button("Navigation", ImVec2(135, 20)))
+	{
+		if (IsNavigation == true)
+			IsNavigation = false;
+		else
+			IsNavigation = true;
 	}
 
 
@@ -395,6 +409,109 @@ void ImGuiManager::MouseMove()
 			}
 		}
 	}
+
+	if (true == IsNavigation)
+	{
+		map<const LAYER_TAG, Layer*>* EntireLayer = gameinstance->GetEntireObjectLayer();
+		int32 LevelIndex = gameinstance->GetCurrentLevelIndex();
+
+		Vec4 NavigationPos = Vec4(0.f, 0.f, 0.f, 1.f);
+
+		for (auto& layeriter : EntireLayer[LevelIndex])
+		{
+			vector<GameObject*>* layerObjectList = layeriter.second->GetGameObject();
+
+			if (true == IsIntersects)
+				break;
+
+			for (auto& pObj : *layerObjectList)
+			{
+				// TODO
+				// picking에 pObj의 모델의 메쉬 넘기기.
+				if (pObj->GetModelName() == "2stBottom" || pObj->GetModelName() == "2stwall")
+				{
+					BinaryModel* ObjectMesh = pObj->GetBinaryModelComponent();
+
+					if (true == IsIntersects)
+						break;
+
+					vector<BinaryMesh*>* MeshList = ObjectMesh->GetMeshes();
+
+					for (auto& meshiter : *MeshList)
+					{
+						IsIntersects = gameinstance->PickObject(pt, pObj->GetTransform(), meshiter, NavigationPos);
+
+						if (true == IsIntersects)
+							break;
+					}
+				}
+			}
+		}
+
+
+		ImGui::Text("NavigationPos Pos X : %.f", NavigationPos.x);
+		ImGui::Spacing();
+		ImGui::Text("NavigationPos Pos Y : %.f", NavigationPos.y);
+		ImGui::Spacing();
+		ImGui::Text("NavigationPos Pos Z : %.f", NavigationPos.z);
+		ImGui::Spacing();
+		ImGui::Text("NavigationPos Pos W : %.f", NavigationPos.w);
+		ImGui::Spacing();
+
+		if (_iPointCount > 2)
+		{
+			// 소팅 한 후에 넣기?
+			//for (uint32 i = 0; i < _iPointCount; ++i)
+			//{
+			//	for (uint32 j = 0; j < _iPointCount - i - 1; ++j)
+			//	{
+			//		if (CompareVec3(_vPoints[j], _vPoints[j + 1]))
+			//		{
+			//			std::swap(_vPoints[j], _vPoints[j + 1]);
+			//		}
+			//	}
+			//}
+
+			_float Value1 = _vPoints[0].x * _vPoints[1].z + _vPoints[1].x * _vPoints[2].z + _vPoints[2].x * _vPoints[0].z;
+			_float Value2 = _vPoints[1].x * _vPoints[0].z + _vPoints[2].x * _vPoints[1].z + _vPoints[0].x * _vPoints[2].z;
+			_float Result = Value1 - Value2;
+
+			if (Result > 0)
+			{
+				Vec3 temp = _vPoints[0];
+				Vec3 dest = _vPoints[2];
+
+				_vPoints[0] = dest;
+				_vPoints[2] = temp;
+
+			}
+
+
+			Cell* pCell = Cell::Create(_device, _deviceContext, _vPoints, _Cells.size());
+
+			_Cells.push_back(pCell);
+
+			_iPointCount = 0;
+		}
+
+
+		if (gameinstance->mouseDown(DIMK::DIMK_RBUTTON))
+		{
+			_vPoints[_iPointCount] = Vec3(NavigationPos.x, NavigationPos.y, NavigationPos.z);
+
+
+
+			_float x;
+			_float y;
+			_float z;
+
+			++_iPointCount;
+		}
+
+
+
+	}
+
 
 
 
@@ -1079,6 +1196,10 @@ void ImGuiManager::BinaryAnimModelSave(const string& fpxPath, const wstring& bin
 
 
 	Safe_Release<Model*>(pBinaryModel);
+}
+
+void ImGuiManager::NavigationMeshSave(const wstring& binaryDirectory)
+{
 }
 
 void ImGuiManager::AddLightSection()
@@ -2131,6 +2252,20 @@ void ImGuiManager::Free()
 	ImGui::DestroyContext();
 
 
+	for (auto& pCell : _Cells)
+		Safe_Release<Cell*>(pCell);
+
+
 	Safe_Release<ID3D11Device*>(_device);
 	Safe_Release<ID3D11DeviceContext*>(_deviceContext);
+}
+
+_bool ImGuiManager::CompareVec3(const Vec3& a, const Vec3& b)
+{
+	if (a.x == std::min(a.x, b.x) && a.z == std::max(a.z, b.z))
+		return true;
+	else if (a.x == std::max(a.x, b.x) && a.z == std::min(a.z, b.z))
+		return true;
+
+	return false;
 }

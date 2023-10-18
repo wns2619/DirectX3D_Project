@@ -37,14 +37,14 @@ HRESULT Game::Initialize(HWND hwnd)
 	ImGuiResourceHandler::GetInstance()->Initialize(_device, _devicecontext);
 
 
-	if (FAILED(ReadyGara()))
-		return E_FAIL;
+	//if (FAILED(ReadyGara()))
+	//	return E_FAIL;
 
 	if (FAILED(ReadyProtoTypeComponents()))
 		return E_FAIL;
 
 
-	if (FAILED(OpenLevel(LEVEL::GAME)))
+	if (FAILED(OpenLevel(LEVEL::EDIT)))
 		return E_FAIL;
 	
 	

@@ -93,10 +93,42 @@ _bool Cell::IsOut(FXMVECTOR vPoint, FXMMATRIX worldMatrix, int32* pNeighborIndex
 		// 노말을 로컬에서 만들었으니 월드행렬을 곱해서 월드에서의 노멀로 바꾼다.
 		Vec4 vDest = ::XMVector3Normalize(::XMVector3TransformNormal(::XMLoadFloat3(&_vNormals[i]), worldMatrix));
 
+		// 벡터가 양수면 나간거고, 음수면 안 나간거다.
 		if (0 < ::XMVectorGetX(::XMVector3Dot(vSour, vDest)))
 		{
 			*pNeighborIndex = _neightborIndices[i];
 			// 현재 셀에서 빠져나갔다면 내가 이동한 셀의 위치를 업데이트 해주고 true 반환한다.
+			return true;
+		}
+	}
+
+	return false;
+}
+
+_bool Cell::IsSilde(XMVECTOR& vPoint, FXMVECTOR vLook, FXMMATRIX worldMatrix)
+{
+
+	for (uint32 i = 0; i < LINE_END; ++i)
+	{
+		Vec4 vSour = ::XMVector3Normalize(vPoint - ::XMLoadFloat3(&_vPoints_InWorld[i]));
+		Vec4 vDest = ::XMVector3Normalize(::XMVector3TransformNormal(::XMLoadFloat3(&_vNormals[i]), worldMatrix));
+		// 월드상의 노멀벡터.
+		// 이 선분의 노멀과 내가 이동하는 방향의 벡터를 계산하면.
+
+		if (0 < ::XMVectorGetX(::XMVector3Dot(vSour, vDest)))
+		{
+			Vec4 PlayerPosition = vPoint;
+
+			Vec3 Normal = Vec3(vDest.x, vDest.y, vDest.z);
+
+			Vec3 newDirection = PlayerPosition - Normal;
+			newDirection.Normalize();
+
+			Vec4 newPosition = PlayerPosition * -newDirection * 0.5f;
+
+			vPoint = ::XMVectorSet(newPosition.x, newPosition.y, newPosition.z, 1.f);
+
+
 			return true;
 		}
 	}

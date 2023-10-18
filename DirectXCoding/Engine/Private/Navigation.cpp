@@ -92,7 +92,7 @@ void Navigation::Update(FXMMATRIX worldMatrix)
 			pCell->Update(worldMatrix);
 }
 
-_bool Navigation::IsMove(XMVECTOR vPoint)
+_bool Navigation::IsMove(XMVECTOR& vPoint, FXMVECTOR look)
 {
 	int32 iNeighborIndex = 0;
 
@@ -120,6 +120,7 @@ _bool Navigation::IsMove(XMVECTOR vPoint)
 		}
 		else
 			return false;
+		// -1 일 때 동작.
 	}
 	else
 		return true;

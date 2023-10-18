@@ -4,7 +4,7 @@
 
 BEGIN(Engine)
 
-class Cell final : public Base
+class ENGINE_DLL Cell final : public Base
 {
 public:
 	enum POINTS { POINT_A, POINT_B, POINT_C, POINT_END,};
@@ -23,6 +23,7 @@ public:
 	void Update(FXMMATRIX worldMatrix);
 	_bool ComparePoints(const Vec3* pSourcePoint, const Vec3* pDestPoint);
 	_bool IsOut(FXMVECTOR vPoint, FXMMATRIX worldMatrix, int32* pNeighborIndex);
+	_bool IsSilde(XMVECTOR& vPoint, FXMVECTOR vLook, FXMMATRIX worldMatrix);
 
 #ifdef _DEBUG
 public:

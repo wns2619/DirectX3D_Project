@@ -5,6 +5,9 @@
 #include "Base.h"
 #include "GameObject.h"
 
+BEGIN(Engine)
+class Cell;
+END
 
 BEGIN(Client)
 
@@ -52,6 +55,7 @@ public: // Section
 public: // Binary
 	void BinaryModelSave(const string& fpxPath, const wstring& binaryDirectory);
 	void BinaryAnimModelSave(const string& fpxPath, const wstring& binaryDirectory);
+	void NavigationMeshSave(const wstring& binaryDirectory);
 
 private:
 	// Device && DeviceContext
@@ -126,6 +130,14 @@ private:
 
 	// Terrain
 	VIBufferTerrain::TERRAIN_DESC desc = {};
+
+	// Navigation
+	vector<class Cell*> _Cells;
+	Vec3 _vPoints[3] = {};
+	uint32 _iPointCount = 0;
+
+public:
+	_bool CompareVec3(const Vec3& a, const Vec3& b);
 
 public:
 	virtual void Free() override;

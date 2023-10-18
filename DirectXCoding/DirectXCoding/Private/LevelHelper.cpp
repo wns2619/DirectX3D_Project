@@ -288,6 +288,28 @@ HRESULT LevelHelper::LodingforLevelEdit()
     /* Column*/
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\Column.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\Column.dat", TEXT("ProtoTypeColumn"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* Drum */
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\Drum.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\Drum.dat", TEXT("ProtoTypeDrum"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* CoatRack */
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\CoatRack.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\CoatRack.dat", TEXT("ProtoTypeCoatRack"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* Basement Wall*/
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\BasementWall.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\BasementWall.dat", TEXT("ProtoTypeBasementWall"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* BasementDesk */
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\BasementDesk.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\BasementDesk.dat", TEXT("ProtoTypeBasementDesk"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* Electrical Box*/
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\electricalBox.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\electricalBox.dat", TEXT("ProtoTypeelectricalBox"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* OldSteelGridDoor */
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\OldSteelGridDoor.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\OldSteelGridDoor.dat", TEXT("ProtoTypeOldSteelGridDoor"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* Supply Stands*/
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\supplyStands.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\supplyStands.dat", TEXT("ProtoTypesupplyStands"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+
 
 #pragma endregion 2stProbs
 
@@ -393,7 +415,7 @@ HRESULT LevelHelper::LoadingMesh()
 
 
          if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelPlayer"),
-            BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\MyModels\\Player\\Player.dat", modelInitializMatrix))))
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\MyModels\\Player\\Player.dat", modelInitializMatrix))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
@@ -693,6 +715,57 @@ HRESULT LevelHelper::LoadingMesh()
              RELEASE_INSTANCE(GameInstance);
              return E_FAIL;
          }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeDrum"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\Drum.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeCoatRack"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\CoatRack.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeBasementWall"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\BasementWall.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeBasementDesk"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\BasementDesk.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeelectricalBox"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\electricalBox.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeOldSteelGridDoor"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\OldSteelGridDoor.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypesupplyStands"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\supplyStands.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+
     }
         break;
     default:

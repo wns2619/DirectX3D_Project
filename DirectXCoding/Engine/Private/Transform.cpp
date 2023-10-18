@@ -80,7 +80,7 @@ void Transform::Forward(const _float& timeDelta, class Navigation* pNavigation)
 
     // True 네비게이션에게 진짜 움직여도 되는 지 묻는다.
 
-    if(nullptr == pNavigation || true == pNavigation->IsMove(position))
+    if(nullptr == pNavigation || true == pNavigation->IsMove(position, look))
         SetState(STATE::POSITION, position);
 }
 
@@ -92,7 +92,7 @@ void Transform::Backward(const _float& timeDelta, class Navigation* pNavigation)
 
     position -= ::XMVector3Normalize(look) * _transformDesc.speedPerSec * timeDelta;
 
-    if (nullptr == pNavigation || true == pNavigation->IsMove(position))
+    if (nullptr == pNavigation || true == pNavigation->IsMove(position, look))
         SetState(STATE::POSITION, position);
 }
 
@@ -105,7 +105,7 @@ void Transform::Left(const _float& timeDelta, class Navigation* pNavigation)
     position -= ::XMVector3Normalize(right) * _transformDesc.speedPerSec * timeDelta;
 
 
-    if (nullptr == pNavigation || true == pNavigation->IsMove(position))
+    if (nullptr == pNavigation || true == pNavigation->IsMove(position, right))
         SetState(STATE::POSITION, position);
 }
 
@@ -117,7 +117,7 @@ void Transform::Right(const _float& timeDelta, class Navigation* pNavigation)
 
     position += ::XMVector3Normalize(right) * _transformDesc.speedPerSec * timeDelta;
 
-    if (nullptr == pNavigation || true == pNavigation->IsMove(position))
+    if (nullptr == pNavigation || true == pNavigation->IsMove(position, right))
         SetState(STATE::POSITION, position);
 }
 

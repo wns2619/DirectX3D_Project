@@ -22,7 +22,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	void Update(FXMMATRIX worldMatrix);
 
-	_bool IsMove(XMVECTOR vPoint);
+	_bool IsMove(XMVECTOR& vPoint, FXMVECTOR look);
 
 #ifdef _DEBUG
 public:
