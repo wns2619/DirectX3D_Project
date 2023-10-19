@@ -23,6 +23,7 @@
 #include "StaticObject.h"
 #include "BinaryMesh.h"
 #include "Cell.h"
+#include "DynamicObject.h"
 
 ImGui::FileBrowser g_fileDialog;
 
@@ -337,78 +338,84 @@ void ImGuiManager::MouseMove()
 	}
 
 
-	if (true == IsObjectPick)
+	if (gameinstance->KeyPressing(DIK_P))
 	{
-		map<const LAYER_TAG, Layer*>* EntireLayer = gameinstance->GetEntireObjectLayer();
-		int32 LevelIndex = gameinstance->GetCurrentLevelIndex();
-
-
-		Vec4 ObjectPos = Vec4(0.f, 0.f, 0.f, 1.f);
-
-
-		for (auto& layeriter : EntireLayer[LevelIndex])
+		if (true == IsObjectPick)
 		{
-			vector<GameObject*>* layerObjectList = layeriter.second->GetGameObject();
+			map<const LAYER_TAG, Layer*>* EntireLayer = gameinstance->GetEntireObjectLayer();
+			int32 LevelIndex = gameinstance->GetCurrentLevelIndex();
 
-			if (true == IsIntersects)
-				break;
 
-			for (auto& pObj : *layerObjectList)
+			Vec4 ObjectPos = Vec4(0.f, 0.f, 0.f, 1.f);
+
+
+			for (auto& layeriter : EntireLayer[LevelIndex])
 			{
-				// TODO
-				// picking에 pObj의 모델의 메쉬 넘기기.
-				BinaryModel* ObjectMesh = nullptr;
-				Transform* trans = nullptr;
-
-				if (pObj->GetObjectType() == OBJECT_TYPE::PLAYER)
-				{
-					vector<GameObject*>& playerPart = dynamic_cast<Player*>(pObj)->GetPlyaerPart();
-					ObjectMesh = playerPart[Player::PART::PART_BODY]->GetBinaryModelComponent();
-				}
-				else
-					ObjectMesh = pObj->GetBinaryModelComponent();
-
-
-				if (nullptr == ObjectMesh)
-					continue;
+				vector<GameObject*>* layerObjectList = layeriter.second->GetGameObject();
 
 				if (true == IsIntersects)
 					break;
 
-				vector<BinaryMesh*>* MeshList = ObjectMesh->GetMeshes();
-
-				for (auto& meshiter : *MeshList)
+				for (auto& pObj : *layerObjectList)
 				{
-					IsIntersects = gameinstance->PickObject(pt, pObj->GetTransform(), meshiter, ObjectPos);
-					
+					// TODO
+					// picking에 pObj의 모델의 메쉬 넘기기.
+					BinaryModel* ObjectMesh = nullptr;
+					Transform* trans = nullptr;
+
+					if (pObj->GetObjectType() == OBJECT_TYPE::PLAYER)
+					{
+						vector<GameObject*>& playerPart = dynamic_cast<Player*>(pObj)->GetPlyaerPart();
+						ObjectMesh = playerPart[Player::PART::PART_BODY]->GetBinaryModelComponent();
+					}
+					else
+						ObjectMesh = pObj->GetBinaryModelComponent();
+
+
+					if (nullptr == ObjectMesh)
+						continue;
+
 					if (true == IsIntersects)
 						break;
+
+
+
+					vector<BinaryMesh*>* MeshList = ObjectMesh->GetMeshes();
+
+					for (auto& meshiter : *MeshList)
+					{
+						IsIntersects = gameinstance->PickObject(pt, pObj->GetTransform(), meshiter, ObjectPos);
+
+						if (true == IsIntersects)
+							break;
+					}
+
 				}
-					
 			}
-		}
 
 
-		ImGui::Text("Object Pos X : %.f", ObjectPos.x);
-		ImGui::Spacing();
-		ImGui::Text("Object Pos Y : %.f", ObjectPos.y);
-		ImGui::Spacing();
-		ImGui::Text("Object Pos Z : %.f", ObjectPos.z);
-		ImGui::Spacing();
-		ImGui::Text("Object Pos W : %.f", ObjectPos.w);
-		ImGui::Spacing();
+			ImGui::Text("Object Pos X : %.2f", ObjectPos.x);
+			ImGui::Spacing();
+			ImGui::Text("Object Pos Y : %.2f", ObjectPos.y);
+			ImGui::Spacing();
+			ImGui::Text("Object Pos Z : %.2f", ObjectPos.z);
+			ImGui::Spacing();
+			ImGui::Text("Object Pos W : %.2f", ObjectPos.w);
+			ImGui::Spacing();
 
 
 
-		for (const auto& Selectiter : _SelectGameObject)
-		{
-			if (Selectiter.second.first == true)
+			for (const auto& Selectiter : _SelectGameObject)
 			{
-				if (gameinstance->Get_DIMouseState(DIMK::DIMK_RBUTTON))
-					Selectiter.second.second->GetTransform()->SetState(Transform::STATE::POSITION, ::XMLoadFloat4(&ObjectPos));
+				if (Selectiter.second.first == true)
+				{
+					if (gameinstance->Get_DIMouseState(DIMK::DIMK_RBUTTON))
+						Selectiter.second.second->GetTransform()->SetState(Transform::STATE::POSITION, ::XMLoadFloat4(&ObjectPos));
+				}
 			}
 		}
 	}
+
 
 	if (true == IsNavigation)
 	{
@@ -806,62 +813,57 @@ HRESULT ImGuiManager::ObjectsSection()
 			return E_FAIL;
 
 		// 전부 순회? 
-		for (uint32 i = 0; i < LevelIndex; ++i)
+
+		for (auto& pair : EntireLayer[static_cast<uint32>(LEVEL::EDIT)])
 		{
-			//if (i > 0)
-			//	ImGui::NewLine();
+			if (pair.second == nullptr)
+				continue;
 
-			for (auto& pair : EntireLayer[i])
+			vector<GameObject*>* gamevector = pair.second->GetGameObject();
+			if (nullptr == gamevector)
+				continue;
+
+			uint32 objectID = 0;
+
+			for (auto& pObjList : *gamevector)
 			{
-				if (pair.second == nullptr)
+				if (pObjList->GetObjectType() == OBJECT_TYPE::CAMERA)
 					continue;
 
-				vector<GameObject*>* gamevector = pair.second->GetGameObject();
-				if (nullptr == gamevector)
-					continue;
+				objectID++;
+				if (objectID > 1)
+					ImGui::NewLine();
 
-				uint32 objectID = 0;
+				ImGui::Text(pObjList->GetModelNameId().c_str());
 
-				for (auto& pObjList : *gamevector)
+
+				ImGui::PushID(pObjList->GetIdNumber());
+				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+				ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 24);
+
+				if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\baseline_delete_white_18dp.png"), ImVec2(20, 20)))
 				{
-					if (pObjList->GetObjectType() == OBJECT_TYPE::CAMERA)
-						continue;
+					int32 a = 0;
 
-					objectID++;
-					if (objectID > 1)
-						ImGui::NewLine();
-
-					ImGui::Text(pObjList->GetModelNameId().c_str());
-
-
-					ImGui::PushID("gameobject Uptate" + objectID);
-					ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
-					ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 24);
-
-					if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\baseline_delete_white_18dp.png"), ImVec2(20, 20)))
+					if (pObjList != nullptr)
 					{
-						int32 a = 0;
-
-						if (pObjList != nullptr)
-						{
-							if (FAILED(gameInstance->DeleteGameObject(static_cast<uint32>(LEVEL::EDIT), pair.second->GetLayerTag(), pObjList->GetIdNumber(), pObjList->GetModelName())))
-								return E_FAIL;
-						}
-
-
-						ImGui::PopStyleVar();
-					}
-					else
-					{
-						ImGui::PopStyleVar();
-
-
-						GameObjectUpdate(objectID, pObjList);
+						if (FAILED(gameInstance->DeleteGameObject(static_cast<uint32>(LEVEL::EDIT), pair.second->GetLayerTag(), pObjList->GetIdNumber(), pObjList->GetModelName())))
+							return E_FAIL;
 					}
 
-					ImGui::PopID();
 
+					ImGui::PopStyleVar();
 				}
+				else
+				{
+					ImGui::PopStyleVar();
+
+
+					GameObjectUpdate(objectID, pObjList);
+				}
+
+				ImGui::PopID();
+
 			}
 		}
 	}
@@ -1518,7 +1520,7 @@ void ImGuiManager::GameObjectUpdate(uint32 objectID, GameObject* pObj)
 					// TODO ratation은 고민 해봐야겠음.
 					// 
 		
-					ImGui::DragFloat3("Scale", &worldScale.m128_f32[0], 0.01f, 0.01f, 20.f);
+					ImGui::DragFloat3("Scale", &worldScale.m128_f32[0], 0.001f, 0.01f, 20.f);
 					ImGui::DragFloat3("Rotation", &worldRotation.m128_f32[0], 1.f);
 					ImGui::DragFloat3("Position", &worldPosition.m128_f32[0], 0.1f);
 		
@@ -2136,6 +2138,26 @@ HRESULT ImGuiManager::SceneSave(wstring& filePath)
 			}
 			break;
 		case Engine::LAYER_TAG::LAYER_DYNAMIC:
+			for (auto& LayerObjects : *LayerGameObjectList)
+			{
+				// 모델 타입.
+				OBJECT_TYPE modelType = LayerObjects->GetObjectType();
+				file->Write<uint32>(static_cast<uint32>(modelType));
+
+				// 모델 이름.
+				string modelName = LayerObjects->GetModelName();
+				file->Write<string>(modelName);
+
+				// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
+				DynamicObject::STATE_DESC DynamicComponentName = static_cast<DynamicObject*>(LayerObjects)->GetDynamicComponentsName();
+				file->Write<string>(Utils::ToString(DynamicComponentName._strModelComponentName));
+				file->Write<string>(Utils::ToString(DynamicComponentName._strShaderName));
+				file->Write<string>(Utils::ToString(DynamicComponentName._protoTypeTag));
+
+
+				Matrix DynamicObjectWorldMarix = LayerObjects->GetTransform()->GetWorldMatrix();
+				file->Write<Matrix>(DynamicObjectWorldMarix);
+			}
 			break;
 		case Engine::LAYER_TAG::LAYER_END:
 			break;
@@ -2232,6 +2254,41 @@ HRESULT ImGuiManager::SceneLoad(wstring& filePath)
 			}
 			break;
 		case Engine::LAYER_TAG::LAYER_DYNAMIC:
+			for (uint32 j = 0; j < GameObjectListSize; ++j)
+			{
+				// 모델 타입.
+				uint32 modelType;
+				file->Read<uint32>(modelType);
+
+
+				// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
+				ComponentNames DynamicComponentName;
+
+				// 모델 이름.
+				string modelName;
+				file->Read(modelName);
+				DynamicComponentName._strModelName = modelName;
+
+				string modelComponentName;
+				file->Read(modelComponentName);
+				DynamicComponentName._strModelComponentName = Utils::ToWString(modelComponentName);
+
+				string modelShaderName;
+				file->Read(modelShaderName);
+				DynamicComponentName._strShaderName = Utils::ToWString(modelShaderName);
+
+				string prototypeModelName;
+				file->Read(prototypeModelName);
+				DynamicComponentName._protoTypeName = Utils::ToWString(prototypeModelName);
+
+				Matrix staticObjectWorldMarix;
+				file->Read<Matrix>(staticObjectWorldMarix);
+				DynamicComponentName._saveWorldMatrix = staticObjectWorldMarix;
+
+				if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), static_cast<LAYER_TAG>(LayerTagType), DynamicComponentName._protoTypeName, &DynamicComponentName)))
+					return E_FAIL;
+
+			}
 			break;
 		case Engine::LAYER_TAG::LAYER_END:
 			break;

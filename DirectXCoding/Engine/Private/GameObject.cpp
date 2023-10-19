@@ -53,8 +53,6 @@ string GameObject::GetModelName() const
 string GameObject::GetModelNameId() const
 {
 	string label = _modelName + ", " + ::to_string(_id);
-	if (_modelName.empty())
-		label = ::to_string(_id);
 
 	return label;
 }

@@ -177,6 +177,7 @@ namespace Engine
 		string _strModelName;
 
 		Matrix _saveWorldMatrix;
+
 	};
 
 	struct KeyframeDesc

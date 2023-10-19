@@ -44,6 +44,19 @@ HRESULT GraphicsManager::Initialize(GRAPHIC_DESC desc, _Inout_ ID3D11Device** de
 	viewportDesc.MinDepth = 0.f;
 	viewportDesc.MaxDepth = 1.f;
 
+
+	ID3D11RasterizerState* pRasterizerState;
+
+	D3D11_RASTERIZER_DESC rasterizerDesc;
+	ZeroMemory(&rasterizerDesc, sizeof(rasterizerDesc));
+	rasterizerDesc.CullMode = D3D11_CULL_NONE; // 후면 컬링 비활성화
+
+
+	_device->CreateRasterizerState(&rasterizerDesc, &pRasterizerState);
+
+	_deviceContext->RSSetState(pRasterizerState);
+
+
 	_deviceContext->RSSetViewports(1, &viewportDesc);
 
 	SetViewport(static_cast<_float>(desc.iWinSizeX), static_cast<_float>(desc.iWinSizeY));

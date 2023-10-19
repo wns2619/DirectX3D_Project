@@ -180,14 +180,17 @@
     <ClInclude Include="..\Imgui\imstb_truetype.h" />
     <ClInclude Include="..\Public\App.h" />
     <ClInclude Include="..\Public\BackGround.h" />
+    <ClInclude Include="..\Public\BreakDoor.h" />
     <ClInclude Include="..\Public\CellDraw.h" />
     <ClInclude Include="..\Public\Client_Define.h" />
     <ClInclude Include="..\Public\dirent.h" />
+    <ClInclude Include="..\Public\DynamicObject.h" />
+    <ClInclude Include="..\Public\DynamicObjectGroup.h" />
     <ClInclude Include="..\Public\EditorTerrain.h" />
     <ClInclude Include="..\Public\EditScene.h" />
-    <ClInclude Include="..\Public\EmptyObject.h" />
     <ClInclude Include="..\Public\Game.h" />
     <ClInclude Include="..\Public\GameScene.h" />
+    <ClInclude Include="..\Public\HorrorMask.h" />
     <ClInclude Include="..\Public\ImGuiManager.h" />
     <ClInclude Include="..\Public\ImguiResourceHandler.h" />
     <ClInclude Include="..\Public\LevelHelper.h" />
@@ -238,12 +241,14 @@
     </ClCompile>
     <ClCompile Include="..\Private\App.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
+    <ClCompile Include="..\Private\BreakDoor.cpp" />
     <ClCompile Include="..\Private\CellDraw.cpp" />
+    <ClCompile Include="..\Private\DynamicObject.cpp" />
     <ClCompile Include="..\Private\EditorTerrain.cpp" />
     <ClCompile Include="..\Private\EditScene.cpp" />
-    <ClCompile Include="..\Private\EmptyObject.cpp" />
     <ClCompile Include="..\Private\Game.cpp" />
     <ClCompile Include="..\Private\GameScene.cpp" />
+    <ClCompile Include="..\Private\HorrorMask.cpp" />
     <ClCompile Include="..\Private\ImGuiManager.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>

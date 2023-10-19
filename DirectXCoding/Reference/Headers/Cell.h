@@ -23,7 +23,7 @@ public:
 	void Update(FXMMATRIX worldMatrix);
 	_bool ComparePoints(const Vec3* pSourcePoint, const Vec3* pDestPoint);
 	_bool IsOut(FXMVECTOR vPoint, FXMMATRIX worldMatrix, int32* pNeighborIndex);
-	_bool IsSilde(XMVECTOR& vPoint, FXMVECTOR vLook, FXMMATRIX worldMatrix);
+	Vec3 IsSilde(XMVECTOR& vPoint, FXMVECTOR vLook, FXMMATRIX worldMatrix);
 
 #ifdef _DEBUG
 public:

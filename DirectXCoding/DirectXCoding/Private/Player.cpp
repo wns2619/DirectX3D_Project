@@ -98,23 +98,22 @@ void Player::KeyInput(const _float& timeDelta)
 
 	if (gameInstance->KeyPressing(DIK_UP))
 	{
-		_transform->Forward(timeDelta, _pNavigation);
+		//_transform->Forward(timeDelta, _pNavigation);
 
 		/*if (animationcount < 2)
 			++animationcount;*/
 
-		//static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
+		static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
 	}
 
 	if (gameInstance->KeyPressing(DIK_DOWN))
 	{
-		_transform->Backward(timeDelta, _pNavigation);
+		//_transform->Backward(timeDelta, _pNavigation);
 
-		//_transform->Backward(timeDelta);
-		//if (animationcount > 0)
-		//	--animationcount;
+		if (animationcount > 0)
+			--animationcount;
 
-		//static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
+		static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
 	}
 
 	for (auto& pPart : m_pPlayerPart)

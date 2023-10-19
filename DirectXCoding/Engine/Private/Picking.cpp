@@ -14,31 +14,6 @@ _bool Picking::PickObject(POINT pt, Transform* trans, VIBuffer* objectBuffer, Ve
 {
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-	//Matrix projectionMatrix = gameInstance->GetTransformCalculator(CameraHelper::TRANSFORMSTATE::D3DTS_PROJ);
-	//
-	//Viewport& vp = gameInstance->GetViewPort();
-
-	//// 뷰포트에서 -> 투영 
-	//_float viewX = (+2.0f * pt.x / vp.GetWidth() - 1.f) / projectionMatrix(0, 0);
-	//_float viewY = (-2.0f * pt.y / vp.GetHeight() + 1.f) / projectionMatrix(1, 1);
-	//
-	//// 투영좌표에서 -> 뷰 스페이스 
-	//Matrix viewMatrix = gameInstance->GetTransformCalculator(CameraHelper::TRANSFORMSTATE::D3DTS_VIEW);
-	//Matrix viewMatrixInv = viewMatrix.Invert();
-
-	//// view space에서 Ray정의
-	//Vec4 rayOrigin, rayDir;
-	//rayOrigin = Vec4(0.f, 0.f, 0.f, 1.f);
-	//rayDir = Vec4(viewX, viewY, 1.f, 0.f);
-
-	//// world space에서 Ray 다시 정의
-	//Vec3 WorldRayOrigin = ::XMVector3TransformCoord(rayOrigin, viewMatrixInv);
-	//Vec3 worldRayDir = ::XMVector3TransformNormal(rayDir, viewMatrixInv);
-	//worldRayDir.Normalize();
-
-	//// WorldSpace에서 연산
-	//Ray ray = Ray(WorldRayOrigin, worldRayDir);
-
 	Vec3        vMousePos(pt.x, pt.y, 1.f);
 	RECT rc = { 0, 0, 1600, 900 };
 	SimpleMath::Viewport viewport(rc);
@@ -62,15 +37,15 @@ _bool Picking::PickObject(POINT pt, Transform* trans, VIBuffer* objectBuffer, Ve
 
 	Vec3* pVertex = static_cast<BinaryMesh*>(objectBuffer)->GetVertexPos();
 	_ulong* pIndices = static_cast<BinaryMesh*>(objectBuffer)->GetIndicesMeshBuffer();
-	uint32 NumVertices = static_cast<BinaryMesh*>(objectBuffer)->GetBufferDesc()->_numvertices;
 	uint32 NumIndices = static_cast<BinaryMesh*>(objectBuffer)->GetBufferDesc()->_numIndices;
 
-	const uint32 finalIndices = NumIndices / 3;
+	const uint32 finalIndices = NumIndices;
 
 	uint32		iNumIndices = 0;
 
-	for (uint32 i = 0; i < finalIndices; ++i)
+	for (uint32 i = 0; i < finalIndices;)
 	{
+
 		if (true == ray.Intersects(pVertex[pIndices[i++]], pVertex[pIndices[i++]], pVertex[pIndices[i++]], distance))
 		{
 			if (distance < minDistance)

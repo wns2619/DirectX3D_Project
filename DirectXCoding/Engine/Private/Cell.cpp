@@ -105,7 +105,7 @@ _bool Cell::IsOut(FXMVECTOR vPoint, FXMMATRIX worldMatrix, int32* pNeighborIndex
 	return false;
 }
 
-_bool Cell::IsSilde(XMVECTOR& vPoint, FXMVECTOR vLook, FXMMATRIX worldMatrix)
+Vec3 Cell::IsSilde(XMVECTOR& vPoint, FXMVECTOR vLook, FXMMATRIX worldMatrix)
 {
 
 	for (uint32 i = 0; i < LINE_END; ++i)
@@ -117,23 +117,11 @@ _bool Cell::IsSilde(XMVECTOR& vPoint, FXMVECTOR vLook, FXMMATRIX worldMatrix)
 
 		if (0 < ::XMVectorGetX(::XMVector3Dot(vSour, vDest)))
 		{
-			Vec4 PlayerPosition = vPoint;
-
-			Vec3 Normal = Vec3(vDest.x, vDest.y, vDest.z);
-
-			Vec3 newDirection = PlayerPosition - Normal;
-			newDirection.Normalize();
-
-			Vec4 newPosition = PlayerPosition * -newDirection * 0.5f;
-
-			vPoint = ::XMVectorSet(newPosition.x, newPosition.y, newPosition.z, 1.f);
-
-
-			return true;
+			return _vNormals[i];
 		}
 	}
 
-	return false;
+	return Vec3();
 }
 
 #ifdef _DEBUG

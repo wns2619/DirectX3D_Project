@@ -119,6 +119,7 @@ RasterizerState FillModeWireFrame
 
 RasterizerState FillModeSolid
 {
+    CullMode = NONE;
     FillMode = SOLID;
 };
 

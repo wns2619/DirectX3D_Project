@@ -74,9 +74,6 @@
     <Filter Include="소스 파일\02.GameObjects\02.Camera\ToolCamera">
       <UniqueIdentifier>{635e1a80-e02b-4d71-a09b-cd08b63fa8ab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\02.GameObjects\EmptyObject">
-      <UniqueIdentifier>{2342d57f-c4d6-4592-b445-be8b3b83840d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\02.GameObjects\04. Static">
       <UniqueIdentifier>{8d3c8ece-7e21-47ce-81cc-4ca8cbf84627}</UniqueIdentifier>
     </Filter>
@@ -91,6 +88,15 @@
     </Filter>
     <Filter Include="소스 파일\02.GameObjects\05. Cell Draw">
       <UniqueIdentifier>{9a452978-3d53-42d4-8086-19dd96905b7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\06. Dynamic">
+      <UniqueIdentifier>{47c2c90a-a132-4858-a051-fbfdc20ffc59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\06. Dynamic\BreakDoor">
+      <UniqueIdentifier>{a09f1b75-bc72-4d1f-aa71-e3d7404c8658}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\06. Dynamic\HorrorMask">
+      <UniqueIdentifier>{835fd095-9f5b-4430-9468-59303d4e86b1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -187,9 +193,6 @@
     <ClInclude Include="..\Public\ToolCamera.h">
       <Filter>소스 파일\02.GameObjects\02.Camera\ToolCamera</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\EmptyObject.h">
-      <Filter>소스 파일\02.GameObjects\EmptyObject</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\PlayerBody.h">
       <Filter>소스 파일\02.GameObjects\03.Player\PartObject\Body</Filter>
     </ClInclude>
@@ -204,6 +207,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\CellDraw.h">
       <Filter>소스 파일\02.GameObjects\05. Cell Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DynamicObject.h">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BreakDoor.h">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\BreakDoor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HorrorMask.h">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\HorrorMask</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DynamicObjectGroup.h">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -279,9 +294,6 @@
     <ClCompile Include="..\Private\ToolCamera.cpp">
       <Filter>소스 파일\02.GameObjects\02.Camera\ToolCamera</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\EmptyObject.cpp">
-      <Filter>소스 파일\02.GameObjects\EmptyObject</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\PlayerBody.cpp">
       <Filter>소스 파일\02.GameObjects\03.Player\PartObject\Body</Filter>
     </ClCompile>
@@ -296,6 +308,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\CellDraw.cpp">
       <Filter>소스 파일\02.GameObjects\05. Cell Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DynamicObject.cpp">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BreakDoor.cpp">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\BreakDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HorrorMask.cpp">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\HorrorMask</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

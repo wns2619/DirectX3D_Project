@@ -15,6 +15,7 @@
 #include "Surefire.h"
 #include "StaticObject.h"
 #include "Navigation.h"
+#include "DynamicObjectGroup.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -309,6 +310,51 @@ HRESULT LevelHelper::LodingforLevelEdit()
     /* Supply Stands*/
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\supplyStands.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\supplyStands.dat", TEXT("ProtoTypesupplyStands"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* 1st Bed */
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\1stBed.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\1stBed.dat", TEXT("ProtoType1stBed"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* Basement Bottom*/
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\BasementBottom.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\BasementBottom.dat", TEXT("ProtoTypeBasementBottom"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* Basement Open Door */
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\basementOpenDoor.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\basementOpenDoor.dat", TEXT("ProtoTypebasementOpenDoor"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* OldBookShelf */
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\OldBookShelf.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Basement\\OldBookShelf.dat", TEXT("ProtoTypeOldBookShelf"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* WasteGroup */
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\WasteGroup.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Basement\\WasteGroup.dat", TEXT("ProtoTypeWasteGroup"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* BasementChain*/
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\BasementChain.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Basement\\BasementChain.dat", TEXT("ProtoTypeBasementChain"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* BasementWoodDoorFrame */
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\BasementWoodDoorFrame.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Basement\\BasementWoodDoorFrame.dat", TEXT("ProtoTypeBasementWoodDoorFrame"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* BasementWoodDoorMain*/
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\BasementWoodDoorMain.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Basement\\BasementWoodDoorMain.dat", TEXT("ProtoTypeBasementWoodDoorMain"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* DoorFrame */
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\DoorFrame.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Basement\\DoorFrame.dat", TEXT("ProtoTypeDoorFrame"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* Door Piece*/
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\DoorPiece.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Basement\\DoorPiece.dat", TEXT("ProtoTypeDoorPiece"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* Main Door */
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\MainDoor.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeBreakDoor"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Basement\\MainDoor.dat", TEXT("ProtoTypeMainDoor"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* Valve Handler */
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\ValveHandler.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Basement\\ValveHandler.dat", TEXT("ProtoTypeValveHandler"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* BasementCeiling */
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\BasementCeiling.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\BasementCeiling.dat", TEXT("ProtoTypeBasementCeiling"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* HorrorMask */
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\HorrorMask.fbx", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeHorrorMask"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\HorrorMask.fbx", TEXT("ProtoTypeHorrorMask"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* CoatRackBar */
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\CoatRackBar.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\CoatRackBar.dat", TEXT("ProtoTypeCoatRackBar"), TEXT("ProtoTypeComponentDefaultMeshShader"));
 
 
 #pragma endregion 2stProbs
@@ -765,6 +811,113 @@ HRESULT LevelHelper::LoadingMesh()
              return E_FAIL;
          }
 
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeBasementBottom"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\BasementBottom.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoType1stBed"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\1stBed.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypebasementOpenDoor"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\basementOpenDoor.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeOldBookShelf"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Basement\\OldBookShelf.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeWasteGroup"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Basement\\WasteGroup.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeBasementChain"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Basement\\BasementChain.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeBasementWoodDoorFrame"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Basement\\BasementWoodDoorFrame.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         // Dynamic 으로 바꿀거임.
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeBasementWoodDoorMain"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Basement\\BasementWoodDoorMain.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeDoorFrame"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Basement\\DoorFrame.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeDoorPiece"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Basement\\DoorPiece.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeMainDoor"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Basement\\MainDoor.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         // 이것도 다이나믹으로 바꿀거임.
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeValveHandler"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Basement\\ValveHandler.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeBasementCeiling"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\BasementCeiling.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeCoatRackBar"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\CoatRackBar.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeHorrorMask"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\HorrorMask.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
 
     }
         break;
@@ -939,6 +1092,20 @@ HRESULT LevelHelper::LoadingObject()
 
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeStaticObject"),
             StaticObject::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeBreakDoor"),
+            BreakDoor::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeHorrorMask"),
+            HorrorMask::Create(_device, _deviceContext))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
