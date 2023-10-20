@@ -711,6 +711,7 @@ HRESULT ImGuiManager::ModelNameCardSection()
 
 
 					ComponentNames comNames;
+					ZeroMemory(&comNames, sizeof(ComponentNames));
 					{
 						size_t namePosition = _modelNames[i].first.find_last_of(".");
 						string useModelName;
@@ -2127,6 +2128,9 @@ HRESULT ImGuiManager::SceneSave(wstring& filePath)
 				string modelName = LayerObjects->GetModelName();
 				file->Write<string>(modelName);
 
+				uint32 modelID = LayerObjects->GetIdNumber();
+				file->Write<uint32>(modelID);
+
 				// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
 				StaticObject::STATE_DESC StaticComponentName = static_cast<StaticObject*>(LayerObjects)->GetStaticComponentsName();
 				file->Write<string>(Utils::ToString(StaticComponentName._strModelComponentName));
@@ -2148,6 +2152,9 @@ HRESULT ImGuiManager::SceneSave(wstring& filePath)
 				string modelName = LayerObjects->GetModelName();
 				file->Write<string>(modelName);
 
+				//uint32 modelID = LayerObjects->GetIdNumber();
+				//file->Write<uint32>(modelID);
+
 				// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
 				DynamicObject::STATE_DESC DynamicComponentName = static_cast<DynamicObject*>(LayerObjects)->GetDynamicComponentsName();
 				file->Write<string>(Utils::ToString(DynamicComponentName._strModelComponentName));
@@ -2157,6 +2164,30 @@ HRESULT ImGuiManager::SceneSave(wstring& filePath)
 
 				Matrix DynamicObjectWorldMarix = LayerObjects->GetTransform()->GetWorldMatrix();
 				file->Write<Matrix>(DynamicObjectWorldMarix);
+			}
+			break;
+		case Engine::LAYER_TAG::LAYER_PUZZLE:
+			for (auto& LayerObjects : *LayerGameObjectList)
+			{
+				// 모델 타입.
+				OBJECT_TYPE modelType = LayerObjects->GetObjectType();
+				file->Write<uint32>(static_cast<uint32>(modelType));
+
+				// 모델 이름.
+				string modelName = LayerObjects->GetModelName();
+				file->Write<string>(modelName);
+
+				uint32 modelID = LayerObjects->GetIdNumber();
+				file->Write<uint32>(modelID);
+
+				// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
+				StaticObject::STATE_DESC puzzleComponentName = static_cast<StaticObject*>(LayerObjects)->GetStaticComponentsName();
+				file->Write<string>(Utils::ToString(puzzleComponentName._strModelComponentName));
+				file->Write<string>(Utils::ToString(puzzleComponentName._strShaderName));
+				file->Write<string>(Utils::ToString(puzzleComponentName._protoTypeTag));
+
+				Matrix staticObjectWorldMarix = LayerObjects->GetTransform()->GetWorldMatrix();
+				file->Write<Matrix>(staticObjectWorldMarix);
 			}
 			break;
 		case Engine::LAYER_TAG::LAYER_END:
@@ -2232,6 +2263,10 @@ HRESULT ImGuiManager::SceneLoad(wstring& filePath)
 				file->Read(modelName);
 				StaticComponentName._strModelName = modelName;
 
+				uint32 modelID;
+				file->Read<uint32>(modelID);
+				StaticComponentName._modelID = modelID;
+
 				string modelComponentName;
 				file->Read(modelComponentName);
 				StaticComponentName._strModelComponentName = Utils::ToWString(modelComponentName);
@@ -2269,6 +2304,10 @@ HRESULT ImGuiManager::SceneLoad(wstring& filePath)
 				file->Read(modelName);
 				DynamicComponentName._strModelName = modelName;
 
+				//uint32 modelID;
+				//file->Read<uint32>(modelID);
+				//DynamicComponentName._modelID = modelID;
+
 				string modelComponentName;
 				file->Read(modelComponentName);
 				DynamicComponentName._strModelComponentName = Utils::ToWString(modelComponentName);
@@ -2286,6 +2325,47 @@ HRESULT ImGuiManager::SceneLoad(wstring& filePath)
 				DynamicComponentName._saveWorldMatrix = staticObjectWorldMarix;
 
 				if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), static_cast<LAYER_TAG>(LayerTagType), DynamicComponentName._protoTypeName, &DynamicComponentName)))
+					return E_FAIL;
+
+			}
+			break;
+		case Engine::LAYER_TAG::LAYER_PUZZLE:
+			for (uint32 j = 0; j < GameObjectListSize; ++j)
+			{
+				// 모델 타입.
+				uint32 modelType;
+				file->Read<uint32>(modelType);
+
+
+				// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
+				ComponentNames PuzzleComponentName;
+
+				// 모델 이름.
+				string modelName;
+				file->Read(modelName);
+				PuzzleComponentName._strModelName = modelName;
+
+				uint32 modelID;
+				file->Read<uint32>(modelID);
+				PuzzleComponentName._modelID = modelID;
+
+				string modelComponentName;
+				file->Read(modelComponentName);
+				PuzzleComponentName._strModelComponentName = Utils::ToWString(modelComponentName);
+
+				string modelShaderName;
+				file->Read(modelShaderName);
+				PuzzleComponentName._strShaderName = Utils::ToWString(modelShaderName);
+
+				string prototypeModelName;
+				file->Read(prototypeModelName);
+				PuzzleComponentName._protoTypeName = Utils::ToWString(prototypeModelName);
+
+				Matrix staticObjectWorldMarix;
+				file->Read<Matrix>(staticObjectWorldMarix);
+				PuzzleComponentName._saveWorldMatrix = staticObjectWorldMarix;
+
+				if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), static_cast<LAYER_TAG>(LayerTagType), PuzzleComponentName._protoTypeName, &PuzzleComponentName)))
 					return E_FAIL;
 
 			}

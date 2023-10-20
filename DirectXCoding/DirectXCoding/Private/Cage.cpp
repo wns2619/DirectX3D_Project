@@ -1,46 +1,46 @@
 #include "pch.h"
-#include "HorrorMask.h"
+#include "Cage.h"
 
 #include "GameInstance.h"
 
-HorrorMask::HorrorMask(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::MASK)
+Cage::Cage(ID3D11Device* device, ID3D11DeviceContext* deviceContext, CAGE_TYPE eType)
+	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::GRID_DOOR)
 {
-
+	_eType = eType;
+	// 밸브랑 연동할 케이지 타입.
 }
 
-HorrorMask::HorrorMask(const HorrorMask& rhs)
+Cage::Cage(const Cage& rhs)
 	: DynamicObject(rhs)
 {
-
 }
 
-HRESULT HorrorMask::InitializePrototype()
+HRESULT Cage::InitializePrototype()
 {
 	return S_OK;
 }
 
-HRESULT HorrorMask::Initialize(void* pArg)
+HRESULT Cage::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	return S_OK;
 }
 
-void HorrorMask::Tick(const _float& timeDelta)
+void Cage::Tick(const _float& timeDelta)
 {
 	if (!_enabled)
 		return;
 }
 
-void HorrorMask::LateTick(const _float& timeDelta)
+void Cage::LateTick(const _float& timeDelta)
 {
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
-
 }
 
-HRESULT HorrorMask::Render()
+HRESULT Cage::Render()
 {
 	if (_enabled)
 		return S_OK;
@@ -66,35 +66,36 @@ HRESULT HorrorMask::Render()
 
 
 	return S_OK;
+
 }
 
-HorrorMask* HorrorMask::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+Cage* Cage::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, CAGE_TYPE eType)
 {
-	HorrorMask* pInstance = new HorrorMask(device, deviceContext);
+	Cage* pInstance = new Cage(device, deviceContext, eType);
 
 	if (FAILED(pInstance->InitializePrototype()))
 	{
-		MSG_BOX("Create to Failed : HorrorMask");
-		Safe_Release<HorrorMask*>(pInstance);
+		MSG_BOX("Create to Failed : Cage");
+		Safe_Release<Cage*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-GameObject* HorrorMask::Clone(void* argument)
+GameObject* Cage::Clone(void* argument)
 {
-	HorrorMask* pInstance = new HorrorMask(*this);
+	Cage* pInstance = new Cage(*this);
 
 	if (FAILED(pInstance->Initialize(argument)))
 	{
-		MSG_BOX("Create to Failed : HorrorMask");
-		Safe_Release<HorrorMask*>(pInstance);
+		MSG_BOX("Create to Failed : Cage");
+		Safe_Release<Cage*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-void HorrorMask::Free()
+void Cage::Free()
 {
 	__super::Free();
 }

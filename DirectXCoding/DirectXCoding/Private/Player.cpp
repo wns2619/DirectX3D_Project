@@ -32,7 +32,7 @@ HRESULT Player::Initialize(void* pArg)
 		return E_FAIL;
 
 	animationcount = 2;
-	static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->StartAnimation(2, true);
+	static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->StartAnimation(1, true);
 
 	return S_OK;
 }
@@ -100,8 +100,8 @@ void Player::KeyInput(const _float& timeDelta)
 	{
 		//_transform->Forward(timeDelta, _pNavigation);
 
-		/*if (animationcount < 2)
-			++animationcount;*/
+		if (animationcount < 2)
+			++animationcount;
 
 		static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
 	}

@@ -1,46 +1,45 @@
 #include "pch.h"
-#include "HorrorMask.h"
+#include "GridDoor.h"
 
 #include "GameInstance.h"
 
-HorrorMask::HorrorMask(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::MASK)
+GridDoor::GridDoor(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::GRID_DOOR)
 {
 
 }
 
-HorrorMask::HorrorMask(const HorrorMask& rhs)
+GridDoor::GridDoor(const GridDoor& rhs)
 	: DynamicObject(rhs)
 {
-
 }
 
-HRESULT HorrorMask::InitializePrototype()
+HRESULT GridDoor::InitializePrototype()
 {
 	return S_OK;
 }
 
-HRESULT HorrorMask::Initialize(void* pArg)
+HRESULT GridDoor::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	return S_OK;
 }
 
-void HorrorMask::Tick(const _float& timeDelta)
+void GridDoor::Tick(const _float& timeDelta)
 {
 	if (!_enabled)
 		return;
 }
 
-void HorrorMask::LateTick(const _float& timeDelta)
+void GridDoor::LateTick(const _float& timeDelta)
 {
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
-
 }
 
-HRESULT HorrorMask::Render()
+HRESULT GridDoor::Render()
 {
 	if (_enabled)
 		return S_OK;
@@ -66,35 +65,36 @@ HRESULT HorrorMask::Render()
 
 
 	return S_OK;
+
 }
 
-HorrorMask* HorrorMask::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+GridDoor* GridDoor::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
-	HorrorMask* pInstance = new HorrorMask(device, deviceContext);
+	GridDoor* pInstance = new GridDoor(device, deviceContext);
 
 	if (FAILED(pInstance->InitializePrototype()))
 	{
-		MSG_BOX("Create to Failed : HorrorMask");
-		Safe_Release<HorrorMask*>(pInstance);
+		MSG_BOX("Create to Failed : GridDoor");
+		Safe_Release<GridDoor*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-GameObject* HorrorMask::Clone(void* argument)
+GameObject* GridDoor::Clone(void* argument)
 {
-	HorrorMask* pInstance = new HorrorMask(*this);
+	GridDoor* pInstance = new GridDoor(*this);
 
 	if (FAILED(pInstance->Initialize(argument)))
 	{
-		MSG_BOX("Create to Failed : HorrorMask");
-		Safe_Release<HorrorMask*>(pInstance);
+		MSG_BOX("Create to Failed : GridDoor");
+		Safe_Release<GridDoor*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-void HorrorMask::Free()
+void GridDoor::Free()
 {
 	__super::Free();
 }

@@ -272,13 +272,13 @@ HRESULT LevelHelper::LodingforLevelEdit()
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\2stPipeGroup2.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\2stPipeGroup2.dat", TEXT("ProtoType2stPipeGroup2"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* Cage */
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\Cage.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\Cage.dat", LAYER_TAG::LAYER_PUZZLE, TEXT("ProtoTypeStaticObject"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\Cage.dat", TEXT("ProtoTypeCage"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* Chain */
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\Chain.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\Chain.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeCeilingChain"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\Chain.dat", TEXT("ProtoTypeChain"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* Grid Door */
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\GridDoor.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\GridDoor.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeGridDoor"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\GridDoor.dat", TEXT("ProtoTypeGridDoor"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* Motor */
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\Motor.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
@@ -290,7 +290,7 @@ HRESULT LevelHelper::LodingforLevelEdit()
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\Column.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\Column.dat", TEXT("ProtoTypeColumn"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* Drum */
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\Drum.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\Drum.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeDrum"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\Drum.dat", TEXT("ProtoTypeDrum"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* CoatRack */
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\CoatRack.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
@@ -332,7 +332,7 @@ HRESULT LevelHelper::LodingforLevelEdit()
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\BasementWoodDoorFrame.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Basement\\BasementWoodDoorFrame.dat", TEXT("ProtoTypeBasementWoodDoorFrame"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* BasementWoodDoorMain*/
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\BasementWoodDoorMain.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\BasementWoodDoorMain.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeOldWoodDoor"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Basement\\BasementWoodDoorMain.dat", TEXT("ProtoTypeBasementWoodDoorMain"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* DoorFrame */
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\DoorFrame.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
@@ -344,18 +344,23 @@ HRESULT LevelHelper::LodingforLevelEdit()
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\MainDoor.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeBreakDoor"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Basement\\MainDoor.dat", TEXT("ProtoTypeMainDoor"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* Valve Handler */
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\ValveHandler.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\ValveHandler.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeValve"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Basement\\ValveHandler.dat", TEXT("ProtoTypeValveHandler"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* BasementCeiling */
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\BasementCeiling.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\BasementCeiling.dat", TEXT("ProtoTypeBasementCeiling"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* HorrorMask */
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\HorrorMask.fbx", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeHorrorMask"));
-    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\HorrorMask.fbx", TEXT("ProtoTypeHorrorMask"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\HorrorMask.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeHorrorMask"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\HorrorMask.dat", TEXT("ProtoTypeHorrorMask"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* CoatRackBar */
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\CoatRackBar.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\CoatRackBar.dat", TEXT("ProtoTypeCoatRackBar"), TEXT("ProtoTypeComponentDefaultMeshShader"));
-
+    /* Old Grid Steel Frame*/
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\OldSteelGridFrame.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\OldSteelGridFrame.dat", TEXT("ProtoTypeOldSteelGridFrame"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* Old Grid Steel Main*/
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\OldSteelGridMainWithKey.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeOldSteelGridMainWithKey"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\OldSteelGridMainWithKey.dat", TEXT("ProtoTypeOldSteelGridMainWithKey"), TEXT("ProtoTypeComponentDefaultMeshShader"));
 
 #pragma endregion 2stProbs
 
@@ -919,7 +924,23 @@ HRESULT LevelHelper::LoadingMesh()
              return E_FAIL;
          }
 
-    }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeOldSteelGridMainWithKey"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\OldSteelGridMainWithKey.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeOldSteelGridFrame"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\OldSteelGridFrame.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+    } 
         break;
     default:
         break;
@@ -1110,6 +1131,48 @@ HRESULT LevelHelper::LoadingObject()
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
         }
+
+        // 
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeCeilingChain"),
+            CeilingChain::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        // OK
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeDrum"),
+            Drum::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        // OK
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeOldWoodDoor"),
+            OldWoodDoor::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        // FAILED
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeOldSteelGridMainWithKey"),
+            GridDoor::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        // OK
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeValve"),
+            Valve::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+
         break;
     default:
         break;

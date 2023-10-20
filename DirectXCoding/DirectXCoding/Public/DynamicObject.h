@@ -14,7 +14,7 @@ BEGIN(Client)
 class DynamicObject abstract : public GameObject
 {
 public:
-	enum DYNAIMC_TYPE { STEEL_DOOR, BREAK_DOOR, MASK, CHAIN, DRUM, GRID_DOOR, VALVE, BASEMENT_WOOD, TYPE_END };
+	enum DYNAMIC_TYPE { STEEL_DOOR, BREAK_DOOR, MASK, CHAIN, DRUM, GRID_DOOR, OLD_DOOR, VALVE, BASEMENT_WOOD, TYPE_END };
 
 public:
 	struct STATE_DESC
@@ -25,7 +25,7 @@ public:
 	};
 
 protected:
-	explicit DynamicObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, DYNAIMC_TYPE eType);
+	explicit DynamicObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, DYNAMIC_TYPE eType);
 	explicit DynamicObject(const DynamicObject& rhs);
 	virtual ~DynamicObject() = default;
 
@@ -44,7 +44,7 @@ protected:
 	Shader* _shader = nullptr;
 
 	STATE_DESC _comNames;
-	DYNAIMC_TYPE _eDynamicType;
+	DYNAMIC_TYPE _eDynamicType;
 
 protected:
 	HRESULT ReadyComponents();

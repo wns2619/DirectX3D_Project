@@ -98,6 +98,24 @@
     <Filter Include="소스 파일\02.GameObjects\06. Dynamic\HorrorMask">
       <UniqueIdentifier>{835fd095-9f5b-4430-9468-59303d4e86b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\06. Dynamic\Chain">
+      <UniqueIdentifier>{839455b3-3730-44c0-86b3-db2028ca07f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\06. Dynamic\Drum">
+      <UniqueIdentifier>{bf94e7d3-732f-49b9-9a2a-79232bad446e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\06. Dynamic\WoodDoor">
+      <UniqueIdentifier>{4bb05288-226a-41ff-8953-c90a5a48f255}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\06. Dynamic\GridDoor">
+      <UniqueIdentifier>{6231654f-47f4-4ef1-b2cd-504eb24b86c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\06. Dynamic\Valve">
+      <UniqueIdentifier>{c6e77b78-1245-4ab0-8197-9a203b99fe8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\06. Dynamic\Cage">
+      <UniqueIdentifier>{141e8684-9a89-4b62-b0b3-10cd6969a6f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -220,6 +238,24 @@
     <ClInclude Include="..\Public\DynamicObjectGroup.h">
       <Filter>소스 파일\02.GameObjects\06. Dynamic</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CeilingChain.h">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\Chain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Drum.h">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\Drum</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\OldWoodDoor.h">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\WoodDoor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GridDoor.h">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\GridDoor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Valve.h">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\Valve</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Cage.h">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\Cage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -317,6 +353,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\HorrorMask.cpp">
       <Filter>소스 파일\02.GameObjects\06. Dynamic\HorrorMask</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CeilingChain.cpp">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\Chain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Drum.cpp">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\Drum</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\OldWoodDoor.cpp">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\WoodDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GridDoor.cpp">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\GridDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Valve.cpp">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\Valve</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Cage.cpp">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\Cage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,7 @@
 #include "DynamicObject.h"
 
 #include "GameInstance.h"
-DynamicObject::DynamicObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, DYNAIMC_TYPE eType)
+DynamicObject::DynamicObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, DYNAMIC_TYPE eType)
 	: GameObject(device, deviceContext, OBJECT_TYPE::DYNAMIC), _eDynamicType(eType)
 {
 	// Empty¿´´Ù°¡ 
@@ -29,6 +29,7 @@ HRESULT DynamicObject::Initialize(void* pArg)
 		_comNames._strModelComponentName = names->_strModelComponentName;
 		_modelName = names->_strModelName;
 		_comNames._strShaderName = names->_strShaderName;
+		_id = names->_modelID;
 	}
 
 	if (FAILED(ReadyComponents()))

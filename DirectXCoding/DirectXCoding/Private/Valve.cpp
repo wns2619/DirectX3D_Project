@@ -1,46 +1,45 @@
 #include "pch.h"
-#include "HorrorMask.h"
+#include "Valve.h"
 
 #include "GameInstance.h"
 
-HorrorMask::HorrorMask(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::MASK)
+Valve::Valve(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::VALVE)
 {
 
 }
 
-HorrorMask::HorrorMask(const HorrorMask& rhs)
+Valve::Valve(const Valve& rhs)
 	: DynamicObject(rhs)
 {
-
 }
 
-HRESULT HorrorMask::InitializePrototype()
+HRESULT Valve::InitializePrototype()
 {
 	return S_OK;
 }
 
-HRESULT HorrorMask::Initialize(void* pArg)
+HRESULT Valve::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	return S_OK;
 }
 
-void HorrorMask::Tick(const _float& timeDelta)
+void Valve::Tick(const _float& timeDelta)
 {
 	if (!_enabled)
 		return;
 }
 
-void HorrorMask::LateTick(const _float& timeDelta)
+void Valve::LateTick(const _float& timeDelta)
 {
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
-
 }
 
-HRESULT HorrorMask::Render()
+HRESULT Valve::Render()
 {
 	if (_enabled)
 		return S_OK;
@@ -66,35 +65,36 @@ HRESULT HorrorMask::Render()
 
 
 	return S_OK;
+
 }
 
-HorrorMask* HorrorMask::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+Valve* Valve::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
-	HorrorMask* pInstance = new HorrorMask(device, deviceContext);
+	Valve* pInstance = new Valve(device, deviceContext);
 
 	if (FAILED(pInstance->InitializePrototype()))
 	{
-		MSG_BOX("Create to Failed : HorrorMask");
-		Safe_Release<HorrorMask*>(pInstance);
+		MSG_BOX("Create to Failed : Valve");
+		Safe_Release<Valve*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-GameObject* HorrorMask::Clone(void* argument)
+GameObject* Valve::Clone(void* argument)
 {
-	HorrorMask* pInstance = new HorrorMask(*this);
+	Valve* pInstance = new Valve(*this);
 
 	if (FAILED(pInstance->Initialize(argument)))
 	{
-		MSG_BOX("Create to Failed : HorrorMask");
-		Safe_Release<HorrorMask*>(pInstance);
+		MSG_BOX("Create to Failed : BreakDoor");
+		Safe_Release<Valve*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-void HorrorMask::Free()
+void Valve::Free()
 {
 	__super::Free();
 }

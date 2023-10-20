@@ -1,46 +1,45 @@
 #include "pch.h"
-#include "HorrorMask.h"
+#include "Drum.h"
 
 #include "GameInstance.h"
 
-HorrorMask::HorrorMask(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::MASK)
+Drum::Drum(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::DRUM)
 {
 
 }
 
-HorrorMask::HorrorMask(const HorrorMask& rhs)
+Drum::Drum(const Drum& rhs)
 	: DynamicObject(rhs)
 {
-
 }
 
-HRESULT HorrorMask::InitializePrototype()
+HRESULT Drum::InitializePrototype()
 {
 	return S_OK;
 }
 
-HRESULT HorrorMask::Initialize(void* pArg)
+HRESULT Drum::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	return S_OK;
 }
 
-void HorrorMask::Tick(const _float& timeDelta)
+void Drum::Tick(const _float& timeDelta)
 {
 	if (!_enabled)
 		return;
 }
 
-void HorrorMask::LateTick(const _float& timeDelta)
+void Drum::LateTick(const _float& timeDelta)
 {
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
-
 }
 
-HRESULT HorrorMask::Render()
+HRESULT Drum::Render()
 {
 	if (_enabled)
 		return S_OK;
@@ -66,35 +65,36 @@ HRESULT HorrorMask::Render()
 
 
 	return S_OK;
+
 }
 
-HorrorMask* HorrorMask::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+Drum* Drum::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
-	HorrorMask* pInstance = new HorrorMask(device, deviceContext);
+	Drum* pInstance = new Drum(device, deviceContext);
 
 	if (FAILED(pInstance->InitializePrototype()))
 	{
-		MSG_BOX("Create to Failed : HorrorMask");
-		Safe_Release<HorrorMask*>(pInstance);
+		MSG_BOX("Create to Failed : Drum");
+		Safe_Release<Drum*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-GameObject* HorrorMask::Clone(void* argument)
+GameObject* Drum::Clone(void* argument)
 {
-	HorrorMask* pInstance = new HorrorMask(*this);
+	Drum* pInstance = new Drum(*this);
 
 	if (FAILED(pInstance->Initialize(argument)))
 	{
-		MSG_BOX("Create to Failed : HorrorMask");
-		Safe_Release<HorrorMask*>(pInstance);
+		MSG_BOX("Create to Failed : BreakDoor");
+		Safe_Release<Drum*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-void HorrorMask::Free()
+void Drum::Free()
 {
 	__super::Free();
 }

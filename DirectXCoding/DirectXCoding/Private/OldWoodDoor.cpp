@@ -1,26 +1,25 @@
 #include "pch.h"
-#include "BreakDoor.h"
+#include "OldWoodDoor.h"
 
 #include "GameInstance.h"
 
-BreakDoor::BreakDoor(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::BREAK_DOOR)
+OldWoodDoor::OldWoodDoor(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::OLD_DOOR)
 {
 
 }
 
-BreakDoor::BreakDoor(const BreakDoor& rhs)
+OldWoodDoor::OldWoodDoor(const OldWoodDoor& rhs)
 	: DynamicObject(rhs)
 {
-
 }
 
-HRESULT BreakDoor::InitializePrototype()
+HRESULT OldWoodDoor::InitializePrototype()
 {
 	return S_OK;
 }
 
-HRESULT BreakDoor::Initialize(void* pArg)
+HRESULT OldWoodDoor::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -28,20 +27,19 @@ HRESULT BreakDoor::Initialize(void* pArg)
 	return S_OK;
 }
 
-void BreakDoor::Tick(const _float& timeDelta)
+void OldWoodDoor::Tick(const _float& timeDelta)
 {
 	if (!_enabled)
 		return;
 }
 
-void BreakDoor::LateTick(const _float& timeDelta)
+void OldWoodDoor::LateTick(const _float& timeDelta)
 {
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
-
 }
 
-HRESULT BreakDoor::Render()
+HRESULT OldWoodDoor::Render()
 {
 	if (_enabled)
 		return S_OK;
@@ -67,35 +65,36 @@ HRESULT BreakDoor::Render()
 
 
 	return S_OK;
+
 }
 
-BreakDoor* BreakDoor::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+OldWoodDoor* OldWoodDoor::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
-	BreakDoor* pInstance = new BreakDoor(device, deviceContext);
+	OldWoodDoor* pInstance = new OldWoodDoor(device, deviceContext);
 
 	if (FAILED(pInstance->InitializePrototype()))
 	{
-		MSG_BOX("Create to Failed : BreakDoor");
-		Safe_Release<BreakDoor*>(pInstance);
+		MSG_BOX("Create to Failed : OldWoodDoor");
+		Safe_Release<OldWoodDoor*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-GameObject* BreakDoor::Clone(void* argument)
+GameObject* OldWoodDoor::Clone(void* argument)
 {
-	BreakDoor* pInstance = new BreakDoor(*this);
+	OldWoodDoor* pInstance = new OldWoodDoor(*this);
 
 	if (FAILED(pInstance->Initialize(argument)))
 	{
 		MSG_BOX("Create to Failed : BreakDoor");
-		Safe_Release<BreakDoor*>(pInstance);
+		Safe_Release<OldWoodDoor*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-void BreakDoor::Free()
+void OldWoodDoor::Free()
 {
 	__super::Free();
 }

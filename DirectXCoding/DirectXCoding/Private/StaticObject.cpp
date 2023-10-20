@@ -29,6 +29,7 @@ HRESULT StaticObject::Initialize(void* pArg)
 		_comNames._strModelComponentName = names->_strModelComponentName;
 		_modelName = names->_strModelName;
 		_comNames._strShaderName = names->_strShaderName;
+		_id = names->_modelID;
 	}
 
 	if (FAILED(ReadyComponents()))

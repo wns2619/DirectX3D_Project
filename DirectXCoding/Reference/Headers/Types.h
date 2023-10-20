@@ -42,7 +42,7 @@ namespace Engine
 	using Quaternion = DirectX::SimpleMath::Quaternion;
 	using Ray = DirectX::SimpleMath::Ray;
 
-	enum class LAYER_TAG { LAYER_PLAYER, LAYER_MONSTER, LAYER_TERRAIN, LAYER_CAMERA, LAYER_STATIC, LAYER_DYNAMIC, LAYER_END, };
+	enum class LAYER_TAG { LAYER_PLAYER, LAYER_MONSTER, LAYER_TERRAIN, LAYER_CAMERA, LAYER_STATIC, LAYER_DYNAMIC, LAYER_PUZZLE, LAYER_END, };
 
     enum TextureType
     {
