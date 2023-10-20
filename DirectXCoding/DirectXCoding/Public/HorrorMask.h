@@ -2,6 +2,8 @@
 
 #include "DynamicObject.h"
 
+BEGIN(Client)
+
 class HorrorMask final : public DynamicObject
 {
 private:
@@ -22,3 +24,4 @@ public:
 	virtual void Free() override;
 };
 
+END

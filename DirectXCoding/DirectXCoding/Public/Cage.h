@@ -2,6 +2,8 @@
 
 #include "DynamicObject.h"
 
+BEGIN(Client)
+
 class Cage final : public DynamicObject
 {
 public:
@@ -27,3 +29,5 @@ public:
 	virtual GameObject* Clone(void* argument) override;
 	virtual void Free() override;
 };
+
+END

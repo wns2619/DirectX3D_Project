@@ -4,6 +4,7 @@
 
 #include "GameInstance.h"
 #include "ToolCamera.h"
+#include "WallPainting.h"
 
 #include "ImGuiManager.h"
 #include "ImguiResourceHandler.h"
@@ -24,7 +25,7 @@ HRESULT EditScene::Initialize()
     if (FAILED(ReadyLayerEditCamera(LAYER_TAG::LAYER_CAMERA)))
         return E_FAIL;
 
-    //if (FAILED(ReadyTerrain(TEXT("LayerTerrain"))))
+    //if(FAILED(ReadyEnvironment(LAYER_TAG::LAYER_ENVIRONMENT)))
     //    return E_FAIL;
 
     if (FAILED(ReadyLight()))
@@ -41,6 +42,20 @@ HRESULT EditScene::Tick(const _float& timeDelta)
 HRESULT EditScene::LateTick(const _float& timeDelata)
 {
     return S_OK;
+}
+
+HRESULT EditScene::ReadyEnvironment(const LAYER_TAG layerTag)
+{
+    GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+    for (uint32 i = 0; i < WallPainting::PAINT_TYPE::PAINT_END; ++i)
+    {
+        if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), layerTag, TEXT("ProtoWallPaint"), &i)))
+            return E_FAIL;
+    }
+
+
+    RELEASE_INSTANCE(GameInstance);
 }
 
 HRESULT EditScene::ReadyLayerEditCamera(const LAYER_TAG layerTag)

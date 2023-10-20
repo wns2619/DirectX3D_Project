@@ -1,87 +1,33 @@
+#include "GlobalShader.fx"
+#include "LightHelper.fx"
 
-cbuffer MatrixBuffer
+
+
+VertexOut VS_MAIN(VertexTextureNormal input)
 {
-    matrix worldMatrix;
-    matrix viewMatrix;
-    matrix ProjMatrix;
-};
-
-struct VS_IN
-{
-    float3 postion : POSITION;
-    float2 uv : TEXCOORD0;
-};
-
-struct VS_OUT
-{
-    float4 position : SV_Position;
-    float2 uv : TEXCOORD0;
-};
-
-
-VS_OUT VS_MAIN(VS_IN input)
-{
-    VS_OUT output;
+    VertexOut output = (VertexOut) 0;
     
-    matrix matWV, matWVP;
     
-    matWV = mul(worldMatrix, viewMatrix);
-    matWVP = mul(matWV, ProjMatrix);
+    Matrix WVP = ComputeTransformMatrix(W, V, P);
     
-    output.position = mul(float4(input.postion, 1.f), matWVP);
+    output.position = mul(float4(input.position, 1.f), WVP);
     output.uv = input.uv;
-
+    output.normal = mul(float4(input.normal, 0.f), W);
+    output.worldPosition = mul(float4(input.position, 1.f), W);
+    
     return output;
 }
 
-struct PS_IN
+PixelOut PS_MAIN(VertexOut input)
 {
-    float4 postion : SV_Position;
-    float2 uv : TEXCOORD0;
-};
-
-struct PS_OUT
-{
-    float4 Color : SV_Target0;
-};
-
-
-sampler LinearSampler = sampler_state
-{
-    Filter = MIN_MAG_MIP_LINEAR;
-};
-
-sampler PointSampler = sampler_state
-{
-    Filter = MIN_MAG_MIP_POINT;
-};
-
-
-
-Texture2D ShadersTexture;
-Texture2D ShadersTextures[2];
-
-PS_OUT PS_MAIN(PS_IN input)
-{
-    PS_OUT Out = (PS_OUT)0;
+    PixelOut Out = (PixelOut) 0;
    
-    vector sourColor = ShadersTextures[0].Sample(PointSampler, input.uv);
-    vector destColor = ShadersTextures[1].Sample(PointSampler, input.uv);
-    
-    Out.Color = sourColor + destColor;
+    Out.Color = ComputeTeacherLight(input.normal, input.uv, input.worldPosition.xyz);
     
     return Out;
 }
 
 technique11 DefaultTechnique
 {
-    pass UI
-    {
-        VertexShader = compile vs_5_0 VS_MAIN();
-        GeometryShader = NULL;
-        HullShader = NULL;
-        DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN();
-
-    }
+    SOLID_PASS_VP(Rect, VS_MAIN, PS_MAIN)
 }

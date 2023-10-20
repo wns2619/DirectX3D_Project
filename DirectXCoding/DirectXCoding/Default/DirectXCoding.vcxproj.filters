@@ -116,6 +116,9 @@
     <Filter Include="소스 파일\02.GameObjects\06. Dynamic\Cage">
       <UniqueIdentifier>{141e8684-9a89-4b62-b0b3-10cd6969a6f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\04. Static\00. WallPainting">
+      <UniqueIdentifier>{1f4831b3-3bf9-40e8-81fd-4d0af57e64a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -256,6 +259,9 @@
     <ClInclude Include="..\Public\Cage.h">
       <Filter>소스 파일\02.GameObjects\06. Dynamic\Cage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\WallPainting.h">
+      <Filter>소스 파일\02.GameObjects\04. Static\00. WallPainting</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -371,6 +377,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Cage.cpp">
       <Filter>소스 파일\02.GameObjects\06. Dynamic\Cage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WallPainting.cpp">
+      <Filter>소스 파일\02.GameObjects\04. Static\00. WallPainting</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

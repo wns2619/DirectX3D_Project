@@ -16,6 +16,7 @@
 #include "StaticObject.h"
 #include "Navigation.h"
 #include "DynamicObjectGroup.h"
+#include "WallPainting.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -361,6 +362,9 @@ HRESULT LevelHelper::LodingforLevelEdit()
     /* Old Grid Steel Main*/
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\OldSteelGridMainWithKey.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeOldSteelGridMainWithKey"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\OldSteelGridMainWithKey.dat", TEXT("ProtoTypeOldSteelGridMainWithKey"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    /* Graffiti */
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\graffiti.dat", LAYER_TAG::LAYER_ENVIRONMENT, TEXT("ProtoWallPaint"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\graffiti.dat", TEXT("ProtoTypegraffiti"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
 
 #pragma endregion 2stProbs
 
@@ -420,12 +424,6 @@ HRESULT LevelHelper::LoadingMesh()
     switch (_nextLevel)
     {
     case Client::LEVEL::LOGO:
-        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::LOGO), TEXT("ProtoTypeComponentTextureBackGround"),
-            Texture::Create(_device, _deviceContext, TEXT("../Binaries/Resources/Textures/Default%d.jpg"), 2))))
-        {
-            RELEASE_INSTANCE(GameInstance);
-            return E_FAIL;
-        }
         break;
     case Client::LEVEL::GAME:
         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentVIBufferTerrain"),
@@ -940,6 +938,13 @@ HRESULT LevelHelper::LoadingMesh()
              return E_FAIL;
          }
 
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypegraffiti"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\graffiti.dat", modelInitializMatrix))))
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
     } 
         break;
     default:
@@ -1014,6 +1019,11 @@ HRESULT LevelHelper::LoadingShader()
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
         }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentShaderVertexTextureData"),
+            Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/Shader_VtxPosTex.fx"), VertexTextureNormalData::Elements,
+                VertexTextureNormalData::numElements))))
+            return E_FAIL;
         break;
     default:
         break;
@@ -1172,7 +1182,12 @@ HRESULT LevelHelper::LoadingObject()
             return E_FAIL;
         }
 
-
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoWallPaint"),
+            WallPainting::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
         break;
     default:
         break;

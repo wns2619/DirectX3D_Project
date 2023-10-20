@@ -14,7 +14,7 @@ VIBufferRect::VIBufferRect(const VIBufferRect& rhs)
 
 HRESULT VIBufferRect::InitializePrototype()
 {
-	_BufferDesc._stride = sizeof(VertexTextureData);
+	_BufferDesc._stride = sizeof(VertexTextureNormalData);
 	_BufferDesc._numvertices = 4;
 	_BufferDesc._indexStride = 2;
 	_BufferDesc._numIndices = 6;
@@ -34,28 +34,30 @@ HRESULT VIBufferRect::InitializePrototype()
 		_BufferDesc._bufferDesc.StructureByteStride = _BufferDesc._stride;
 	}
 
-	VertexTextureData* vertices = new VertexTextureData[_BufferDesc._numvertices];
-	ZeroMemory(vertices, sizeof(VertexTextureData) * _BufferDesc._numvertices);
+	VertexTextureNormalData* vertices = new VertexTextureNormalData[_BufferDesc._numvertices];
+	ZeroMemory(vertices, sizeof(VertexTextureNormalData) * _BufferDesc._numvertices);
 
 	vertices[0].position = Vec3(-0.5f, 0.5f, 0.f);
 	vertices[0].uv		 = Vec2(0.f, 0.f);
+	vertices[0].normal	 = Vec3(0.f, 0.f, 0.f);
 
 	vertices[1].position = Vec3(0.5f, 0.5f, 0.f);
 	vertices[1].uv		 = Vec2(1.f, 0.f);
+	vertices[1].normal	 = Vec3(0.f, 0.f, 0.f);
 
 	vertices[2].position = Vec3(0.5f, -0.5f, 0.f);
 	vertices[2].uv		 = Vec2(1.f, 1.f);
+	vertices[2].normal	 = Vec3(0.f, 0.f, 0.f);
 
 	vertices[3].position = Vec3(-0.5f, -0.5f, 0.f);
 	vertices[3].uv		 = Vec2(0.f, 1.f);
+	vertices[3].normal	 = Vec3(0.f, 0.f, 0.f);
 
 	ZeroMemory(&_BufferDesc._subResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	_BufferDesc._subResourceData.pSysMem = vertices;
 
 	if (FAILED(__super::CreateBuffer(&_vertexBuffer)))
 		return E_FAIL;
-
-	Safe_Delete_Array<VertexTextureData*>(vertices);
 
 #pragma endregion
 
@@ -74,13 +76,35 @@ HRESULT VIBufferRect::InitializePrototype()
 	_ushort* Indices = new _ushort[_BufferDesc._numIndices];
 	ZeroMemory(Indices, sizeof(_ushort) * _BufferDesc._numIndices);
 
+
+	Vec4 vSourDir, vDestDir, vNormal;
+
+
 	Indices[0] = 0;
 	Indices[1] = 1;
 	Indices[2] = 2;
 
+	vSourDir = Vec4(vertices[Indices[1]].position - vertices[Indices[0]].position);
+	vDestDir = Vec4(vertices[Indices[2]].position - vertices[Indices[1]].position);
+
+	vNormal = ::XMVector3Normalize(::XMVector3Cross(vSourDir, vDestDir));
+
+	vertices[Indices[0]].normal = vertices[Indices[0]].normal + vNormal;
+	vertices[Indices[1]].normal = vertices[Indices[1]].normal + vNormal;
+	vertices[Indices[2]].normal = vertices[Indices[2]].normal + vNormal;
+
 	Indices[3] = 0;
 	Indices[4] = 2;
 	Indices[5] = 3;
+
+	vSourDir = Vec4(vertices[Indices[4]].position - vertices[Indices[3]].position);
+	vDestDir = Vec4(vertices[Indices[5]].position - vertices[Indices[4]].position);
+
+	vNormal = ::XMVector3Normalize(::XMVector3Cross(vSourDir, vDestDir));
+
+	vertices[Indices[3]].normal = vertices[Indices[3]].normal + vNormal;
+	vertices[Indices[4]].normal = vertices[Indices[4]].normal + vNormal;
+	vertices[Indices[5]].normal = vertices[Indices[5]].normal + vNormal;
 
 	ZeroMemory(&_BufferDesc._subResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	_BufferDesc._subResourceData.pSysMem = Indices;
@@ -88,6 +112,7 @@ HRESULT VIBufferRect::InitializePrototype()
 	if (FAILED(__super::CreateBuffer(&_indexBuffer)))
 		return E_FAIL;
 
+	Safe_Delete_Array<VertexTextureNormalData*>(vertices);
 	Safe_Delete_Array<_ushort*>(Indices);
 #pragma endregion
 

@@ -679,30 +679,12 @@ HRESULT ImGuiManager::ModelNameCardSection()
 			{
 				if (false == _modelNames[i].second)
 				{
-
-					// 지정한 아이템을 클릭 했을 때 해당 FBX를 불러오려면 해당 FBX를 눌렀을 때 그 위치를 Model한테 쏴준 다음에 불러내야함.
 					size_t position = _currentDirectoryPath.find_first_of('\\/') + 1;
 					string modelPath = _currentDirectoryPath + _modelNames[i].first;
-					//modelPath.erase(0, position);
 
-					// 모델 경로를 받아오는 코드. 경로를 받아서 어떻게 할 것인가. Loading에서 미리 불러올 것인지. 아니면 누를 때마다 생성되게 만들 것인지.
-					// 눌렀을 때 경로를 반환하니까. 이 경로랑 ProtoType 경로랑 비교해서 게임오브젝트를 생성하자.
-					// 그렇다면 ObjectManager에 있는 prototype find를 사용해서. 비교 한 뒤에 생성하면 될 것 같은데.
 
-					// 불러내고 EDIT에 만든다. 다른 곳에서 불러 올 때는 레이어 위치만 바꿔주면 됨.
 					Matrix modelInitializMatrix = ::XMMatrixIdentity();
 					modelInitializMatrix = ::XMMatrixRotationY(::XMConvertToRadians(180.f));
-
-					// 누를 때 생성해야 되니까 IMGUI에서 ProtoType을 만들고 AddObject까지 전부 수행시키는게 맞을 것 같다.
-					// Model 생성을 도와줄 Helper 클래스를 만들어서 내부에서 ProtoType 만들고 그 즉시 Clone까지 해주자.
-					// 그러면 받을 인자 값은 Layer 위치 + ProtoTypeTag
-
-					// dat 파일용
-					size_t modelPathPosition = modelPath.find_last_of(".");
-					if (modelPathPosition != std::string::npos && modelPathPosition > 0)
-						modelPath = modelPath.substr(0, modelPathPosition);
-
-					modelPath += ".dat";
 
 					// 여기까지
 
@@ -711,7 +693,6 @@ HRESULT ImGuiManager::ModelNameCardSection()
 
 
 					ComponentNames comNames;
-					ZeroMemory(&comNames, sizeof(ComponentNames));
 					{
 						size_t namePosition = _modelNames[i].first.find_last_of(".");
 						string useModelName;
@@ -1201,6 +1182,7 @@ void ImGuiManager::BinaryAnimModelSave(const string& fpxPath, const wstring& bin
 	Safe_Release<Model*>(pBinaryModel);
 }
 
+
 void ImGuiManager::NavigationMeshSave(const wstring& binaryDirectory)
 {
 }
@@ -1521,7 +1503,7 @@ void ImGuiManager::GameObjectUpdate(uint32 objectID, GameObject* pObj)
 					// TODO ratation은 고민 해봐야겠음.
 					// 
 		
-					ImGui::DragFloat3("Scale", &worldScale.m128_f32[0], 0.001f, 0.01f, 20.f);
+					ImGui::DragFloat3("Scale", &worldScale.m128_f32[0], 0.001f, 0.001f, 20.f);
 					ImGui::DragFloat3("Rotation", &worldRotation.m128_f32[0], 1.f);
 					ImGui::DragFloat3("Position", &worldPosition.m128_f32[0], 0.1f);
 		
@@ -1547,29 +1529,24 @@ void ImGuiManager::UpdateModelUI(uint32 objectID, GameObject* pObj)
 {
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-	vector<GameObject*>* gameObject = gameInstance->GetCurrentObjectList(LAYER_TAG::LAYER_PLAYER);
 
 	if (ImGui::CollapsingHeader("Mesh List"))
 	{
-		if (nullptr != gameObject)
+		ImGui::PushID(string(::to_string(pObj->GetIdNumber()) + pObj->GetModelName()).c_str());
+
+		if (nullptr != pObj->GetBinaryModelComponent())
 		{
-			ImGui::PushID(string(::to_string(pObj->GetIdNumber()) + pObj->GetModelName()).c_str());
 
-
-			if (nullptr != pObj->GetBinaryModelComponent())
+			if (ImGui::TreeNodeEx(string("PBR").c_str()))
 			{
-
-				if (ImGui::TreeNodeEx(string("PBR").c_str()))
-				{
-					UpdateMaterialUI(objectID, pObj);
-					
-
-					ImGui::TreePop();
-				}
+				UpdateMaterialUI(objectID, pObj);
 				
+
+				ImGui::TreePop();
 			}
-			ImGui::PopID();
+			
 		}
+		ImGui::PopID();
 	}
 
 	RELEASE_INSTANCE(GameInstance);
@@ -2045,7 +2022,7 @@ void ImGuiManager::LoadModelList(string path)
 					// string은 파인드 함수는 문자열을 찾지 못하면 npos를 리턴함.
 					fileExtension = name.substr(i + 1, name.length() - 1);
 					// substr(), str의 n번 째 index부터 k개의 문자를 부분 문자열로 반환함.
-					if (fileExtension == "obj" || fileExtension == "FBX" || fileExtension == "fbx")
+					if (fileExtension == "obj" || fileExtension == "DAT" || fileExtension == "dat")
 					{
 						modelNames.push_back(name);
 					}
@@ -2112,6 +2089,30 @@ HRESULT ImGuiManager::SceneSave(wstring& filePath)
 			}
 			break;
 		case Engine::LAYER_TAG::LAYER_MONSTER:
+			break;
+		case Engine::LAYER_TAG::LAYER_ENVIRONMENT:
+			for (auto& LayerObjects : *LayerGameObjectList)
+			{
+				// 모델 타입.
+				OBJECT_TYPE modelType = LayerObjects->GetObjectType();
+				file->Write<uint32>(static_cast<uint32>(modelType));
+
+				// 모델 이름.
+				string modelName = LayerObjects->GetModelName();
+				file->Write<string>(modelName);
+
+				uint32 modelID = LayerObjects->GetIdNumber();
+				file->Write<uint32>(modelID);
+
+				// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
+				StaticObject::STATE_DESC StaticComponentName = static_cast<StaticObject*>(LayerObjects)->GetStaticComponentsName();
+				file->Write<string>(Utils::ToString(StaticComponentName._strModelComponentName));
+				file->Write<string>(Utils::ToString(StaticComponentName._strShaderName));
+				file->Write<string>(Utils::ToString(StaticComponentName._protoTypeTag));
+
+				Matrix staticObjectWorldMarix = LayerObjects->GetTransform()->GetWorldMatrix();
+				file->Write<Matrix>(staticObjectWorldMarix);
+			}
 			break;
 		case Engine::LAYER_TAG::LAYER_TERRAIN:
 			break;
@@ -2242,6 +2243,48 @@ HRESULT ImGuiManager::SceneLoad(wstring& filePath)
 			}
 			break;
 		case Engine::LAYER_TAG::LAYER_MONSTER:
+			break;
+		case Engine::LAYER_TAG::LAYER_ENVIRONMENT:
+			for (uint32 j = 0; j < GameObjectListSize; ++j)
+			{
+				//// 모델 타입.
+				//uint32 modelType;
+				//file->Read<uint32>(modelType);
+
+
+				//// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
+				//ComponentNames EnvironmentComponentName;
+
+				//// 모델 이름.
+				//string modelName;
+				//file->Read(modelName);
+				//EnvironmentComponentName._strModelName = modelName;
+
+				//uint32 modelID;
+				//file->Read<uint32>(modelID);
+				//EnvironmentComponentName._modelID = modelID;
+
+				//string modelComponentName;
+				//file->Read(modelComponentName);
+				//EnvironmentComponentName._strModelComponentName = Utils::ToWString(modelComponentName);
+
+				//string modelShaderName;
+				//file->Read(modelShaderName);
+				//EnvironmentComponentName._strShaderName = Utils::ToWString(modelShaderName);
+
+				//string prototypeModelName;
+				//file->Read(prototypeModelName);
+				//EnvironmentComponentName._protoTypeName = Utils::ToWString(prototypeModelName);
+
+				//Matrix staticObjectWorldMarix;
+				//file->Read<Matrix>(staticObjectWorldMarix);
+				//EnvironmentComponentName._saveWorldMatrix = staticObjectWorldMarix;
+
+				//if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), static_cast<LAYER_TAG>(LayerTagType), StaticComponentName._protoTypeName, &StaticComponentName)))
+				//	return E_FAIL;
+
+			}
+			break;
 			break;
 		case Engine::LAYER_TAG::LAYER_TERRAIN:
 			break;

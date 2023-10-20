@@ -16,6 +16,7 @@ public:
 	virtual HRESULT LateTick(const _float& timeDelata)	override;
 
 public:
+	HRESULT ReadyEnvironment(const LAYER_TAG layerTag);
 	HRESULT ReadyLayerEditCamera(const LAYER_TAG layerTag);
 	HRESULT ReadyLayerEntire(const LAYER_TAG layerTage);
 	HRESULT ReadyTerrain(const LAYER_TAG layerTag);

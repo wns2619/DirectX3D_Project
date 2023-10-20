@@ -171,14 +171,13 @@ namespace Engine
 
 	struct ENGINE_DLL ComponentNames
 	{
-		wstring _strShaderName;
-		wstring _strModelComponentName;
-		wstring _protoTypeName;
-		string _strModelName;
-
 		uint32 _modelID;
-
 		Matrix _saveWorldMatrix;
+		string _strModelName;
+		wstring _strModelComponentName;
+		wstring _strShaderName;
+		wstring _protoTypeName;
+
 
 	};
 

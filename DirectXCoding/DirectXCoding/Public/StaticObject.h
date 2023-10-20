@@ -11,7 +11,7 @@ BEGIN(Client)
 
 
 // 해당 파일의 정보를 읽어들이자..
-class StaticObject final : public GameObject
+class StaticObject : public GameObject
 {
 public:
 	struct STATE_DESC
@@ -21,7 +21,7 @@ public:
 		wstring _protoTypeTag;
 	};
 
-private:
+protected:
 	explicit StaticObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	explicit StaticObject(const StaticObject& rhs);
 	virtual ~StaticObject() = default;
@@ -36,13 +36,14 @@ public:
 public:
 	STATE_DESC& GetStaticComponentsName() { return _comNames; }
 
-private:
+protected:
 	Renderer* _render = nullptr;
 	Shader* _shader = nullptr;
 
+protected:
 	STATE_DESC _comNames;
 
-private:
+protected:
 	HRESULT ReadyComponents();
 	HRESULT BindShaderResource();
 

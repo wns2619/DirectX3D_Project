@@ -2,6 +2,8 @@
 
 #include "DynamicObject.h"
 
+BEGIN(Client)
+
 class CeilingChain final : public DynamicObject
 {
 private:
@@ -21,3 +23,5 @@ public:
 	virtual GameObject* Clone(void* argument) override;
 	virtual void Free() override;
 };
+
+END

@@ -13,7 +13,7 @@ class Transform;
 class Model;
 class BinaryModel;
 
-enum class OBJECT_TYPE { PLAYER, TERRAIN, STATIC, DYNAMIC, CAMERA, BACKGROUND, OBJECT_END };
+enum class OBJECT_TYPE { PLAYER, PAINT, TERRAIN, STATIC, DYNAMIC, CAMERA, BACKGROUND, OBJECT_END };
 
 class ENGINE_DLL GameObject abstract : public Base
 {

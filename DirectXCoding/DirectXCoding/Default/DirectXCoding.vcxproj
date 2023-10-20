@@ -210,6 +210,7 @@
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\ToolCamera.h" />
     <ClInclude Include="..\Public\Valve.h" />
+    <ClInclude Include="..\Public\WallPainting.h" />
     <ClInclude Include="DirectXCoding.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
@@ -279,6 +280,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\ToolCamera.cpp" />
     <ClCompile Include="..\Private\Valve.cpp" />
+    <ClCompile Include="..\Private\WallPainting.cpp" />
     <ClCompile Include="DirectXCoding.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
