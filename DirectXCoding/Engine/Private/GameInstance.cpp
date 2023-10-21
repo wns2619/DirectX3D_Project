@@ -270,6 +270,14 @@ GameObject* GameInstance::CloneGameObject(const wstring& strPrototypeTag, void* 
     return _objectManager->CloneGameObject(strPrototypeTag, pArg);
 }
 
+Component* GameInstance::GetComponent(uint32 iLevelIndex, const LAYER_TAG eLayerTag, const wstring& strComponentTag, const string& strModelName, uint32 iIndex)
+{
+    if (nullptr == _objectManager)
+        return nullptr;
+
+    return _objectManager->GetComponent(iLevelIndex, eLayerTag, strComponentTag, strModelName, iIndex);
+}
+
 
 HRESULT GameInstance::AddProtoType(uint32 levelIndex, const wstring& PrototypeTag, Component* protoType)
 {

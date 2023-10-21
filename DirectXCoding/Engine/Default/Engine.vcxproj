@@ -28,6 +28,7 @@
     <ClInclude Include="..\Public\BinaryChannel.h" />
     <ClInclude Include="..\Public\BinaryMesh.h" />
     <ClInclude Include="..\Public\BinaryModel.h" />
+    <ClInclude Include="..\Public\BinaryNavi.h" />
     <ClInclude Include="..\Public\Bone.h" />
     <ClInclude Include="..\Public\Camera.h" />
     <ClInclude Include="..\Public\CameraHelper.h" />
@@ -49,6 +50,7 @@
     <ClInclude Include="..\Public\InputManager.h" />
     <ClInclude Include="..\Public\KeyBoardHandler.h" />
     <ClInclude Include="..\Public\KeyCodes.h" />
+    <ClInclude Include="..\Public\LandObject.h" />
     <ClInclude Include="..\Public\Layer.h" />
     <ClInclude Include="..\Public\Level.h" />
     <ClInclude Include="..\Public\LevelManager.h" />
@@ -108,6 +110,7 @@
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
     </ClCompile>
+    <ClCompile Include="..\Private\BinaryNavi.cpp" />
     <ClCompile Include="..\Private\Bone.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
@@ -132,6 +135,7 @@
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
     <ClCompile Include="..\Private\InputManager.cpp" />
+    <ClCompile Include="..\Private\LandObject.cpp" />
     <ClCompile Include="..\Private\Layer.cpp" />
     <ClCompile Include="..\Private\Level.cpp" />
     <ClCompile Include="..\Private\LevelManager.cpp" />

@@ -115,7 +115,7 @@ HRESULT EditorTerrain::Ready_Components()
 
 	/* VIBuffer Component */
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentEditVIBufferTerrain"),
-		TEXT("Com_ViBuffer"), reinterpret_cast<Component**>(&_viBuffer), &TerrainDesc)))
+		TEXT("Com_ViBuffer"), reinterpret_cast<Component**>(&_viBuffer))))
 		return E_FAIL;
 
 	/* Transform Component */

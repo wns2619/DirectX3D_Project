@@ -16,6 +16,9 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
+	XMVECTOR SetUp_OnCell(class Transform* cellTransform, FXMVECTOR vWorldPos);
+
+public:
 	static VIBufferCell* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const Vec3* pPoints);
 	virtual Component* Clone(void* pArg) override;
 	virtual void Free() override;

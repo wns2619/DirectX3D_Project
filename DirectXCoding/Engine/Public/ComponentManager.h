@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "VIBufferRect.h"
 #include "VIBufferTerrain.h"
+#include "VIBufferCell.h"
 #include "Texture.h"
 #include "Transform.h"
 #include "ConstantBuffer.h"
@@ -13,6 +14,7 @@
 #include "Physics.h"
 #include "BinaryModel.h"
 #include "Navigation.h"
+#include "BinaryNavi.h"
 
 //#include "OBBBoxCollider.h"
 //#include "AABBBoxCollider.h"

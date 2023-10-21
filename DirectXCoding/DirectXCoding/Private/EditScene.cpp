@@ -5,6 +5,7 @@
 #include "GameInstance.h"
 #include "ToolCamera.h"
 #include "WallPainting.h"
+#include "LandObject.h"
 
 #include "ImGuiManager.h"
 #include "ImguiResourceHandler.h"
@@ -27,6 +28,12 @@ HRESULT EditScene::Initialize()
 
     //if(FAILED(ReadyEnvironment(LAYER_TAG::LAYER_ENVIRONMENT)))
     //    return E_FAIL;
+
+    if(FAILED(ReadyTerrain(LAYER_TAG::LAYER_STATIC)))
+        return E_FAIL;
+        
+    if (FAILED(ReadyLandObject(LAYER_TAG::LAYER_STATIC)))
+        return E_FAIL;
 
     if (FAILED(ReadyLight()))
         return E_FAIL;
@@ -95,10 +102,42 @@ HRESULT EditScene::ReadyTerrain(const LAYER_TAG layerTag)
 {
     GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-    if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), layerTag, TEXT("ProtoTypeGameObjectEditTerrain"))))
+    ComponentNames comNames;
+
+    comNames._protoTypeName = TEXT("ProtoTypeStaticObject");
+    comNames._strModelComponentName = TEXT("ProtoType2stBottom");
+    comNames._strShaderName = TEXT("ProtoTypeComponentDefaultMeshShader");
+    comNames._strModelName = "2stBottom";
+    Matrix ScaleMatrix;
+    comNames._saveWorldMatrix *= ScaleMatrix.CreateScale(Vec3(0.1, 0.1f, 0.1f));
+
+
+    if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), layerTag, TEXT("ProtoTypeStaticObject"),&comNames)))
         return E_FAIL;
 
     RELEASE_INSTANCE(GameInstance);
+}
+
+HRESULT EditScene::ReadyLandObject(const LAYER_TAG layerTag)
+{
+    LandObject::LANDOBJET_DESC LandObjectDesc = {};
+
+    GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+    Transform* pTransform = static_cast<Transform*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::EDIT), layerTag, TEXT("ComponentTransform"), 0));
+    VIBufferCell* pCellBuffer = static_cast<VIBufferCell*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::EDIT), layerTag, TEXT("ComponentVIBuffer"), 0));
+
+
+    LandObjectDesc.pCellBuffer = pCellBuffer;
+    LandObjectDesc.pCellTransform = pTransform;
+
+    RELEASE_INSTANCE(GameInstance);
+
+
+    if (FAILED(pGameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ProtoTypeGameObjectPlayer"), &LandObjectDesc)))
+        return E_FAIL;
+
+    return S_OK;
 }
 
 HRESULT EditScene::ReadyLight()

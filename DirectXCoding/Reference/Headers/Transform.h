@@ -56,10 +56,10 @@ public:
 	HRESULT	BindShaderResources(class Shader* shader, const _char* constantName);
 
 public:
-	void Forward(const _float& timeDelta, class Navigation* pNavigation = nullptr);
-	void Backward(const _float& timeDelta, class Navigation* pNavigation = nullptr);
-	void Left(const _float& timeDelta, class Navigation* pNavigation = nullptr);
-	void Right(const _float& timeDelta, class Navigation* pNavigation = nullptr);
+	void Forward(const _float& timeDelta, class BinaryNavi* pNavigation = nullptr);
+	void Backward(const _float& timeDelta, class BinaryNavi* pNavigation = nullptr);
+	void Left(const _float& timeDelta, class BinaryNavi* pNavigation = nullptr);
+	void Right(const _float& timeDelta, class BinaryNavi* pNavigation = nullptr);
 	void FixRotation(XMVECTOR axis, const _float radian);
 	void FixRotation(_float x, _float y, _float z);
 	void Turn(XMVECTOR axis, const _float& timeDelta);

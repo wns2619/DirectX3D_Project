@@ -14,6 +14,7 @@ VIBuffer::VIBuffer(const VIBuffer& rhs)
 	, _vertexBuffer(rhs._vertexBuffer)
 	, _indexBuffer(rhs._indexBuffer)
 	, _BufferDesc(rhs._BufferDesc)
+	, _pVerticesPos(rhs._pVerticesPos)
 {
 	Safe_AddRef<ID3D11Buffer*>(_vertexBuffer);
 	Safe_AddRef<ID3D11Buffer*>(_indexBuffer);
@@ -71,6 +72,9 @@ HRESULT VIBuffer::CreateBuffer(_Inout_ ID3D11Buffer** bufferOut)
 void VIBuffer::Free()
 {
 	__super::Free();
+
+	if (false == _isCloned)
+		Safe_Delete_Array<Vec3*>(_pVerticesPos);
 
 	Safe_Release<ID3D11Buffer*>(_vertexBuffer);
 	Safe_Release<ID3D11Buffer*>(_indexBuffer);

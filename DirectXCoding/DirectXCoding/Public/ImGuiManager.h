@@ -6,7 +6,7 @@
 #include "GameObject.h"
 
 BEGIN(Engine)
-class Cell;
+class BinaryNavi;
 END
 
 BEGIN(Client)
@@ -132,12 +132,11 @@ private:
 	VIBufferTerrain::TERRAIN_DESC desc = {};
 
 	// Navigation
-	vector<class Cell*> _Cells;
-	Vec3 _vPoints[3] = {};
+	BinaryNavi* _pNaviGation = nullptr;
+	Vec3   _vPoints[3] = {};
 	uint32 _iPointCount = 0;
 
-public:
-	_bool CompareVec3(const Vec3& a, const Vec3& b);
+	_float DistanceBetewwinPoints(const Vec3& point1, const Vec3& point2);
 
 public:
 	virtual void Free() override;

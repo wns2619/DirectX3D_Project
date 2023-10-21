@@ -45,7 +45,19 @@ HRESULT WallPainting::Render()
 	if (FAILED(__super::BindShaderResource()))
 		return E_FAIL;
 
+	Color vColor = Color(1.f,1.f,1.f,1.f);
+
+	if (_modelName == "EvilGraffiti" || _modelName == "ShootGraffiti")
+		vColor = Color(0.5f, 0.f, 0.f, 1.f);
+	else if (_modelName == "HumanGraffiti")
+		vColor = Color(0.f, 0.9f, 0.f, 1.f);
+	else if (_modelName == "WayGraffiti")
+		vColor = Color(0.1, 0.6f, 0.f, 1.f);
+
+	_shader->BindRawValue("NewColor", &vColor, sizeof(Color));
+
 	uint32 numMeshes = _binaryModel->GetNumMeshes();
+
 
 	for (size_t i = 0; i < numMeshes; i++)
 	{

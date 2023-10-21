@@ -1,17 +1,18 @@
 #pragma once
 
-#include "GameObject.h"
+#include "LandObject.h"
 
 BEGIN(Engine)
 class Shader;
 class Renderer;
+class BinaryNavi;
 END
 
 BEGIN(Client)
 
 
 // 해당 파일의 정보를 읽어들이자..
-class StaticObject : public GameObject
+class StaticObject : public LandObject
 {
 public:
 	struct STATE_DESC
@@ -27,11 +28,12 @@ protected:
 	virtual ~StaticObject() = default;
 
 public:
-	virtual HRESULT InitializePrototype()			override;
-	virtual HRESULT Initialize(void* pArg)			override;
-	virtual void Tick(const _float& timeDelta)		override;
-	virtual void LateTick(const _float& timeDelta)	override;
-	virtual HRESULT Render()						override;
+	virtual HRESULT InitializePrototype()				override;
+	virtual HRESULT Initialize(void* pArg)				override;
+	virtual void PriorityTick(const _float& timeDelta)	override;
+	virtual void Tick(const _float& timeDelta)			override;
+	virtual void LateTick(const _float& timeDelta)		override;
+	virtual HRESULT Render()							override;
 	
 public:
 	STATE_DESC& GetStaticComponentsName() { return _comNames; }
@@ -42,7 +44,7 @@ protected:
 
 protected:
 	STATE_DESC _comNames;
-
+	BinaryNavi* _pNavigation = nullptr;
 protected:
 	HRESULT ReadyComponents();
 	HRESULT BindShaderResource();

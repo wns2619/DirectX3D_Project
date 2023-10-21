@@ -33,7 +33,8 @@ public:
 
 	GameObject* CloneGameObject(const wstring& strPrototypeTag, void* pArg);
 
-
+public:
+	Component* GetComponent(uint32 iLevelIndex, const LAYER_TAG eTag, const wstring& strComponentTag, const string& modelName, uint32 iIndex);
 
 public: // IMGUI ¿ëµµ
 	HRESULT ComparisonAddObject(int32 levelIndex, const string& addObjectfile = "", LAYER_TAG layertag = LAYER_TAG::LAYER_END , void* argument = nullptr);

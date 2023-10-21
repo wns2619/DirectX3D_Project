@@ -24,7 +24,7 @@ public:
 	// ImGuI
 	HRESULT ChangeShaderResourceView(ID3D11ShaderResourceView* changeResource, uint32 textureIndex, uint32 numTextures = 1);
 	ID3D11ShaderResourceView** GetShaderResourceViews() { return _shaderResourceViews; }
-	void SelfDelete(Texture* self);
+	void SelfDelete(uint32 number);
 	wstring& GetTexturePath() { return _texturePath; }
 private:
 	ID3D11ShaderResourceView** _shaderResourceViews = nullptr;

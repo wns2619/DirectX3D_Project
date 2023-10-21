@@ -188,6 +188,15 @@ GameObject* ObjectManager::CloneGameObject(const wstring& strPrototypeTag, void*
 	return pGameObject;
 }
 
+Component* ObjectManager::GetComponent(uint32 iLevelIndex, const LAYER_TAG eTag, const wstring& strComponentTag, const string& modelName, uint32 iIndex)
+{
+	Layer* pLayer = FindLayer(iLevelIndex, eTag);
+	if (nullptr == pLayer)
+		return nullptr;
+
+	return pLayer->GetComponent(strComponentTag, modelName, iIndex);
+}
+
 HRESULT ObjectManager::ComparisonAddObject(int32 levelIndex, const string& addObjectfile, LAYER_TAG layertag, void* argument)
 {
 	if (levelIndex >= _levelNumber)

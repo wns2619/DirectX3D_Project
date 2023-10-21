@@ -73,6 +73,22 @@ HRESULT Layer::DeleteLayerObject(uint32 objectNumber, const string& modelName)
 	return S_OK;
 }
 
+Component* Layer::GetComponent(const wstring& strComponentTag, const string& modelName, uint32 iIndex)
+{
+
+	for (auto& pGameObject : _gameObjects)
+	{
+		if (nullptr == pGameObject)
+			continue;
+
+		if (pGameObject->GetModelName() == modelName)
+			return pGameObject->FindComponent(strComponentTag);
+
+	}
+
+	return nullptr;
+}
+
 Layer* Layer::Create()
 {
 	Layer* layer = new Layer();

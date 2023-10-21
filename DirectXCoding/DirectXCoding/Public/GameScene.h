@@ -16,9 +16,11 @@ public:
 	virtual HRESULT LateTick(const _float& timeDelata)	override;
 
 public:
+	HRESULT ReadyMyMap();
+	HRESULT ReadyLandObjects(const LAYER_TAG layerTag);
 	HRESULT	ReadyLayerTerrain(const LAYER_TAG layerTag);
 	HRESULT ReadyLayerCamera(const LAYER_TAG layerTag);
-	HRESULT ReadyLayerPlayer(const LAYER_TAG layerTag);
+	HRESULT ReadyLayerPlayer(const LAYER_TAG layerTag, void* pArg);
 	HRESULT ReadyLight();
 
 public:

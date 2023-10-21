@@ -5,7 +5,7 @@
 #include "GameInstance.h"
 
 Player::Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: GameObject(device, deviceContext, OBJECT_TYPE::PLAYER)
+	: LandObject(device, deviceContext, OBJECT_TYPE::PLAYER)
 {
 	_objectType = OBJECT_TYPE::PLAYER;
 	_modelName = "Player";
@@ -13,7 +13,7 @@ Player::Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 }
 
 Player::Player(const Player& rhs)
-	: GameObject(rhs)
+	: LandObject(rhs)
 {
 	
 }
@@ -25,6 +25,8 @@ HRESULT Player::InitializePrototype()
 
 HRESULT Player::Initialize(void* pArg)
 {
+	//__super::Initialize(pArg);
+
 	if (FAILED(ReadyComponents()))
 		return E_FAIL;
 
@@ -75,7 +77,7 @@ HRESULT Player::Render()
 	}
 
 #ifdef _DEBUG
-	_pNavigation->Render();
+	//_pNavigation->Render();
 #endif // _DEBUG
 
 
@@ -122,6 +124,10 @@ void Player::KeyInput(const _float& timeDelta)
 			pPart->Tick(timeDelta);
 	}
 
+	//XMVECTOR vPosition = __super::SetUp_OnTerrain(_transform->GetState(Transform::STATE::POSITION));
+
+	//_transform->SetState(Transform::STATE::POSITION, vPosition);
+
 	RELEASE_INSTANCE(GameInstance);
 }
 
@@ -150,9 +156,9 @@ HRESULT Player::ReadyComponents()
 	Navigation::NAVIGATION_DESC NavigationDesc;
 	NavigationDesc._iCurrentIndex = 0;
 
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeNavigation"),
-		TEXT("ComponentNavigation"), reinterpret_cast<Component**>(&_pNavigation), &NavigationDesc)))
-		return E_FAIL;
+	//if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeNavigation"),
+	//	TEXT("ComponentNavigation"), reinterpret_cast<Component**>(&_pNavigation), &NavigationDesc)))
+	//	return E_FAIL;
 
 
 	RELEASE_INSTANCE(GameInstance);
@@ -241,5 +247,5 @@ void Player::Free()
 
 	Safe_Release<Shader*>(_shader);
 	Safe_Release<Renderer*>(_render);
-	Safe_Release<Navigation*>(_pNavigation);
+	Safe_Release<BinaryNavi*>(_pNavigation);
 }

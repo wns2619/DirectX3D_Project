@@ -1,7 +1,7 @@
 #include "GlobalShader.fx"
 #include "LightHelper.fx"
 
-
+vector NewColor = vector(1.f, 1.f, 1.f, 1.f);
 
 VertexOut VS_MAIN(VertexTextureNormal input)
 {
@@ -21,10 +21,27 @@ VertexOut VS_MAIN(VertexTextureNormal input)
 PixelOut PS_MAIN(VertexOut input)
 {
     PixelOut Out = (PixelOut) 0;
-   
-    Out.Color = ComputeTeacherLight(input.normal, input.uv, input.worldPosition.xyz);
+    
+    vector vMaterialDiffuse = DiffuseMap.Sample(LinearSampler, input.uv) * NewColor;
+    
+    if (vMaterialDiffuse.a < 0.3f)
+        discard;
+    
+    // Diffuse + ambient
+    vector shade = max(dot(normalize(-GlobalLight.Direction), normalize(input.normal)), 0.f) +
+    GlobalLight.Ambient * Material.Ambient;
+    
+    // Specular
+    float3 reflection = reflect(normalize(GlobalLight.Direction), normalize(input.normal));
+    float3 eyelook = input.worldPosition.xyz - CameraPosition();
+    
+    float specular = pow(max(dot(normalize(eyelook), normalize(reflection)), 0.f), 30.f);
+    
+    Out.Color = (GlobalLight.Diffuse * vMaterialDiffuse) * saturate(shade) + (GlobalLight.Specular * Material.Specular) * specular;
     
     return Out;
+   
+    //Out.Color = ComputeTeacherLight(input.normal, input.uv, input.worldPosition.xyz);
 }
 
 technique11 DefaultTechnique

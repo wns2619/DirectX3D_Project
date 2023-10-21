@@ -1,16 +1,16 @@
 #pragma once
 
-#include "GameObject.h"
+#include "LandObject.h"
 
 BEGIN(Engine)
 class Renderer;
 class Transform;
-class Navigation;
+class BinaryNavi;
 END
 
 BEGIN(Client)
 
-class Player final : public GameObject
+class Player final : public LandObject
 {
 public:
 	enum PART { PART_BODY, PART_SURFIRE, PART_END };
@@ -39,7 +39,7 @@ private:
 private:
 	Renderer* _render			= nullptr;
 	Shader* _shader				= nullptr;
-	Navigation* _pNavigation	= nullptr;
+	BinaryNavi* _pNavigation	= nullptr;
 
 	uint32 animationcount = 0;
 private:

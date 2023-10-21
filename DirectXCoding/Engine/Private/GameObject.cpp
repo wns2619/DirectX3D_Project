@@ -70,7 +70,7 @@ HRESULT GameObject::AddComponent(uint32 levelIndex, const wstring& prototypeTag,
 	if (nullptr == component)
 		return E_FAIL;
 
-	_Components.emplace(prototypeTag, component);
+	_Components.emplace(ComponentTag, component);
 
 	*componentout = component;
 

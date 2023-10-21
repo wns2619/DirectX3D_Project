@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Transform.h"
 #include "Shader.h"
-#include "Navigation.h"
+#include "BinaryNavi.h"
 
 Transform::Transform(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : Component(device, deviceContext, COMPONENT_TYPE::TRANSFORM), _worldMatrix(::XMMatrixIdentity())
@@ -70,7 +70,7 @@ HRESULT Transform::BindShaderResources(Shader* shader, const _char* constantName
     return shader->BindMatrix(constantName, &_worldMatrix);
 }
 
-void Transform::Forward(const _float& timeDelta, class Navigation* pNavigation)
+void Transform::Forward(const _float& timeDelta, class BinaryNavi* pNavigation)
 {
     XMVECTOR look = GetState(STATE::LOOK);
 
@@ -84,7 +84,7 @@ void Transform::Forward(const _float& timeDelta, class Navigation* pNavigation)
         SetState(STATE::POSITION, position);
 }
 
-void Transform::Backward(const _float& timeDelta, class Navigation* pNavigation)
+void Transform::Backward(const _float& timeDelta, class BinaryNavi* pNavigation)
 {
     XMVECTOR look = GetState(STATE::LOOK);
     
@@ -96,7 +96,7 @@ void Transform::Backward(const _float& timeDelta, class Navigation* pNavigation)
         SetState(STATE::POSITION, position);
 }
 
-void Transform::Left(const _float& timeDelta, class Navigation* pNavigation)
+void Transform::Left(const _float& timeDelta, class BinaryNavi* pNavigation)
 {
     XMVECTOR right = GetState(STATE::RIGHT);
 
@@ -109,7 +109,7 @@ void Transform::Left(const _float& timeDelta, class Navigation* pNavigation)
         SetState(STATE::POSITION, position);
 }
 
-void Transform::Right(const _float& timeDelta, class Navigation* pNavigation)
+void Transform::Right(const _float& timeDelta, class BinaryNavi* pNavigation)
 {
     XMVECTOR right = GetState(STATE::RIGHT);
     

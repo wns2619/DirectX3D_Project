@@ -25,13 +25,13 @@ public:
 	virtual HRESULT	Initialize(void* argument) override;	
 
 public:
+	XMVECTOR SetUp_OnTerrain(class Transform* pTerrainTransform, FXMVECTOR vWorldPos);
 
-	Vec3* GetVerticesPosition() { return _vertices; }
+public:
 	TERRAIN_DESC GetTerranDesc() { return _terrainDesc; }
 
 private:
 	TERRAIN_DESC				_terrainDesc = {};
-	Vec3* _vertices							 = nullptr;
 
 public:
 	static VIBufferTerrain* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wstring& heightMapPath = L"");

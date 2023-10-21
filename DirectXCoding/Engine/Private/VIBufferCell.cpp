@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "VIBufferCell.h"
+#include "Transform.h"
 
 VIBufferCell::VIBufferCell(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: VIBuffer(device, deviceContext)
@@ -36,9 +37,11 @@ HRESULT VIBufferCell::InitializePrototype(const Vec3* pPoints)
 	}
 
 	VertexPos* vertices = new VertexPos[_BufferDesc._numvertices];
+	_pVerticesPos = new Vec3[_BufferDesc._numvertices];
 	ZeroMemory(vertices, sizeof(VertexPos) * _BufferDesc._numvertices);
 
 	::memcpy(vertices, pPoints, sizeof(Vec3) * _BufferDesc._numvertices);
+	::memcpy(_pVerticesPos, pPoints, sizeof(Vec3) * _BufferDesc._numvertices);
 
 	ZeroMemory(&_BufferDesc._subResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	_BufferDesc._subResourceData.pSysMem = vertices;
@@ -87,6 +90,34 @@ HRESULT VIBufferCell::Initialize(void* pArg)
 	return S_OK;
 }
 
+XMVECTOR VIBufferCell::SetUp_OnCell(Transform* cellTransform, FXMVECTOR vWorldPos)
+{
+	// 셀의 정점 정보를 가지고와서..
+	///*vWorldPos *  지형 월드 행렬의 역 => vWorldPos의 위치를 지형의 로컬 스페이스 상의 정보로 변환한다. */
+	XMVECTOR		vLocalPos = XMVector3TransformCoord(vWorldPos, cellTransform->GetInverseMatrixCaculator());
+
+	uint32 Iindex[4] =
+	{
+		0, 1, 2, 0,
+	};
+
+	XMVECTOR vVertex1 = ::XMLoadFloat3(&_pVerticesPos[Iindex[0]]);
+	XMVECTOR vVertex2 = ::XMLoadFloat3(&_pVerticesPos[Iindex[1]]);
+	XMVECTOR vVertex3 = ::XMLoadFloat3(&_pVerticesPos[Iindex[2]]);
+	XMVECTOR vVertex4 = ::XMLoadFloat3(&_pVerticesPos[Iindex[3]]);
+
+	XMVECTOR vPlane;
+	vPlane = ::XMPlaneFromPoints(vVertex1, vVertex2, vVertex3);
+
+	_float x = ::XMVectorGetX(vLocalPos);
+	_float z = ::XMVectorGetZ(vLocalPos);
+	_float y = ((-::XMVectorGetX(vPlane) * x) - (::XMVectorGetZ(vPlane) * z) - ::XMVectorGetW(vPlane)) / ::XMVectorGetY(vPlane);
+
+	vLocalPos = ::XMVectorSetY(vLocalPos, y);
+
+	return ::XMVector3TransformCoord(vLocalPos, cellTransform->GetWorldMatrixCaculator());
+}
+
 VIBufferCell* VIBufferCell::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const Vec3* pPoints)
 {
 	VIBufferCell* pInstance = new VIBufferCell(device, deviceContext);
@@ -116,4 +147,6 @@ Component* VIBufferCell::Clone(void* pArg)
 void VIBufferCell::Free()
 {
 	__super::Free();
+
+	Safe_Delete_Array<Vec3*>(_pVerticesPos);
 }

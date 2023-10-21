@@ -3,13 +3,13 @@
 
 #include "GameInstance.h"
 StaticObject::StaticObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: GameObject(device, deviceContext, OBJECT_TYPE::STATIC)
+	: LandObject(device, deviceContext, OBJECT_TYPE::STATIC)
 {
 	// Empty였다가 
 }
 
 StaticObject::StaticObject(const StaticObject& rhs)
-	: GameObject(rhs)
+	: LandObject(rhs)
 {
 }
 
@@ -47,8 +47,17 @@ HRESULT StaticObject::Initialize(void* pArg)
 	return S_OK;
 }
 
+void StaticObject::PriorityTick(const _float& timeDelta)
+{
+	// 스태틱 오브젝트 중에 모델 네임이 바닥일 때만 업데이트.
+	if(_modelName == "2stBottom")
+		_pNavigation->Update(_transform->GetWorldMatrixCaculator());
+}
+
 void StaticObject::Tick(const _float& timeDelta)
 {
+	if (_enabled)
+		return;
 }
 
 void StaticObject::LateTick(const _float& timeDelta)
@@ -80,6 +89,13 @@ HRESULT StaticObject::Render()
 			return E_FAIL;
 	}
 
+#ifdef _DEBUG
+	// 바닥일 때만 네비 렌더.
+	if (_modelName == "2stBottom")
+		_pNavigation->Render();
+#endif // _DEBUG
+
+
 
 	return S_OK;
 }
@@ -97,7 +113,7 @@ HRESULT StaticObject::ReadyComponents()
 		TEXT("ComponentRenderer"), reinterpret_cast<Component**>(&_render))))
 		return E_FAIL;
 
-	if (FAILED(__super::AddComponent(level,
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT),
 		_comNames._strShaderName,
 		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
@@ -108,9 +124,16 @@ HRESULT StaticObject::ReadyComponents()
 		return E_FAIL;
 
 
-	if (FAILED(__super::AddComponent(level, _comNames._strModelComponentName,
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), _comNames._strModelComponentName,
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
+
+	if (_modelName == "2stBottom")
+	{
+		if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeNavigation"),
+			TEXT("ComponentNavigation"), reinterpret_cast<Component**>(&_pNavigation))))
+			return E_FAIL;
+	}
 
 
 	RELEASE_INSTANCE(GameInstance);

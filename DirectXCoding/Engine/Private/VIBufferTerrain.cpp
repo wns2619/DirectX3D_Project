@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "VIBufferTerrain.h"
+#include "Transform.h"
 
 VIBufferTerrain::VIBufferTerrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : VIBuffer(device, deviceContext)
@@ -52,10 +53,10 @@ HRESULT VIBufferTerrain::InitializePrototype(const wstring& heightMapPath)
     VertexTextureNormalData* vertices = new VertexTextureNormalData[_BufferDesc._numvertices];
     ::ZeroMemory(vertices, sizeof(VertexTextureNormalData) * _BufferDesc._numvertices);
 
-    _vertices = new Vec3[_BufferDesc._numvertices];
+    _pVerticesPos = new Vec3[_BufferDesc._numvertices];
 
     for(_ulong i = 0; i < _terrainDesc.numVerticesZ; ++i)
-        for (_ulong j = 0; j < _terrainDesc.numVerticesZ; ++j)
+        for (_ulong j = 0; j < _terrainDesc.numVerticesX; ++j)
         {
             _ulong index = i * _terrainDesc.numVerticesX + j;
 
@@ -63,7 +64,7 @@ HRESULT VIBufferTerrain::InitializePrototype(const wstring& heightMapPath)
             vertices[index].normal = Vec3(0.f, 0.f, 0.f);
             vertices[index].uv = Vec2(j / (_terrainDesc.numVerticesX - 1.f), i / (_terrainDesc.numVerticesZ - 1.f));
 
-            _vertices[index] = vertices[index].position;
+            _pVerticesPos[index] = vertices[index].position;
         }
 
     Safe_Delete_Array<_ulong*>(pixel);
@@ -184,7 +185,7 @@ HRESULT VIBufferTerrain::Initialize(void* argument)
         VertexTextureNormalData* vertices = new VertexTextureNormalData[_BufferDesc._numvertices];
         ::ZeroMemory(vertices, sizeof(VertexTextureNormalData) * _BufferDesc._numvertices);
 
-        _vertices = new Vec3[_BufferDesc._numvertices];
+        _pVerticesPos = new Vec3[_BufferDesc._numvertices];
 
         for (_ulong i = 0; i < _terrainDesc.numVerticesZ; ++i)
             for (_ulong j = 0; j < _terrainDesc.numVerticesX; ++j)
@@ -196,7 +197,7 @@ HRESULT VIBufferTerrain::Initialize(void* argument)
                 vertices[index].normal = Vec3(0.f, 0.f, 0.f);
                 vertices[index].uv = Vec2(j / (_terrainDesc.numVerticesX - 1.f), i / (_terrainDesc.numVerticesZ - 1.f));
            
-                _vertices[index] = vertices[index].position;
+                _pVerticesPos[index] = vertices[index].position;
             }
 
         uint32* indices = new uint32[_BufferDesc._numIndices];
@@ -294,6 +295,56 @@ HRESULT VIBufferTerrain::Initialize(void* argument)
     return S_OK;
 }
 
+XMVECTOR VIBufferTerrain::SetUp_OnTerrain(Transform* pTerrainTransform, FXMVECTOR vWorldPos)
+{
+    /*vWorldPos *  지형 월드 행렬의 역 => vWorldPos의 위치를 지형의 로컬 스페이스 상의 정보로 변환한다. */
+    XMVECTOR		vLocalPos = XMVector3TransformCoord(vWorldPos, pTerrainTransform->GetInverseMatrixCaculator());
+
+    /* 현재 플레이어가 존재하고 있는 네모 영역의 왼쪽 하단 정점의 인덱스를 구했다. */
+    uint32		iIndex = static_cast<uint32>((XMVectorGetZ(vLocalPos))) * 
+        _terrainDesc.numVerticesX + static_cast<uint32>((XMVectorGetX(vLocalPos)));
+
+    uint32		iIndices[4] = {
+        iIndex + _terrainDesc.numVerticesX,
+        iIndex + _terrainDesc.numVerticesX + 1,
+        iIndex + 1,
+        iIndex
+    };
+
+    _float		fWidth = XMVectorGetX(vLocalPos) - _pVerticesPos[iIndices[0]].x;
+    _float		fDepth = _pVerticesPos[iIndices[0]].z - XMVectorGetZ(vLocalPos);
+
+    XMVECTOR		vPlane;
+
+    /* 오른쪽 위 삼각형 */
+    if (fWidth >= fDepth)
+    {
+        vPlane = XMPlaneFromPoints(XMLoadFloat3(&_pVerticesPos[iIndices[0]]),
+            XMLoadFloat3(&_pVerticesPos[iIndices[1]]),
+            XMLoadFloat3(&_pVerticesPos[iIndices[2]]));
+    }
+    /* 왼쪽 하단 삼각형 */
+    else
+    {
+        vPlane = XMPlaneFromPoints(XMLoadFloat3(&_pVerticesPos[iIndices[0]]),
+            XMLoadFloat3(&_pVerticesPos[iIndices[2]]),
+            XMLoadFloat3(&_pVerticesPos[iIndices[3]]));
+    }
+
+    /* 평면 방정식에 a, b, c, d 다 구했다. */
+    /* 내 위치 x, y, z */
+    // ax + by + cz + d = 0
+    // y = (-ax - cz - d) / b
+
+    /* 평면 상에 존재할 수 있도록하는 y를 구하자. */
+    /* 평면상에 존재하면 되는 것이기 때문에 x, z는 변할 이유가 없다. */
+    _float	fY = ((-XMVectorGetX(vPlane) * XMVectorGetX(vLocalPos) - (XMVectorGetZ(vPlane) * XMVectorGetZ(vLocalPos)) - XMVectorGetW(vPlane))) / XMVectorGetY(vPlane);
+
+    vLocalPos = XMVectorSetY(vLocalPos, fY);
+
+    return XMVector3TransformCoord(vLocalPos, pTerrainTransform->GetWorldMatrixCaculator());
+}
+
 
 VIBufferTerrain* VIBufferTerrain::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wstring& heightMapPath)
 {
@@ -324,7 +375,4 @@ Component* VIBufferTerrain::Clone(void* argument)
 void VIBufferTerrain::Free()
 {
     __super::Free();
-    
-    if(nullptr != _vertices)
-     Safe_Delete_Array<Vec3*>(_vertices);
 }

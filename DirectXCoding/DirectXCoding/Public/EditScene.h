@@ -20,6 +20,7 @@ public:
 	HRESULT ReadyLayerEditCamera(const LAYER_TAG layerTag);
 	HRESULT ReadyLayerEntire(const LAYER_TAG layerTage);
 	HRESULT ReadyTerrain(const LAYER_TAG layerTag);
+	HRESULT ReadyLandObject(const LAYER_TAG layerTag);
 	HRESULT ReadyLight();
 
 public:

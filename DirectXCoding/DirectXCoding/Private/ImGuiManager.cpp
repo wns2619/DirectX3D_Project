@@ -59,7 +59,9 @@ HRESULT ImGuiManager::Initialize(ID3D11Device* device, ID3D11DeviceContext* devi
 	GuiStyle();
 	LoadModelList();
 
-
+	_pNaviGation = BinaryNavi::Create(_device, _deviceContext);
+	if (nullptr == _pNaviGation)
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -88,10 +90,12 @@ HRESULT ImGuiManager::Render()
 	if (!_windowResizeFlag)
 		windowFlags |= ImGuiWindowFlags_None;
 	if (!_windowMoveFlag)
-		windowFlags |= ImGuiWindowFlags_None;
+		windowFlags |= ImGuiWindowFlags_NoMove;
 
 	{
 		MainSection();
+		if (false == _pNaviGation->GetCell().empty())
+			_pNaviGation->Render();
 	}
 
 	 // Model Card Window
@@ -435,7 +439,7 @@ void ImGuiManager::MouseMove()
 			{
 				// TODO
 				// picking에 pObj의 모델의 메쉬 넘기기.
-				if (pObj->GetModelName() == "2stBottom" || pObj->GetModelName() == "2stwall")
+				if (pObj->GetModelName() == "2stBottom" || pObj->GetModelName() == "2stwall" || pObj->GetModelName() == "2stStair")
 				{
 					BinaryModel* ObjectMesh = pObj->GetBinaryModelComponent();
 
@@ -456,29 +460,18 @@ void ImGuiManager::MouseMove()
 		}
 
 
-		ImGui::Text("NavigationPos Pos X : %.f", NavigationPos.x);
+		ImGui::Text("NavigationPos Pos X : %.2f", NavigationPos.x);
 		ImGui::Spacing();
-		ImGui::Text("NavigationPos Pos Y : %.f", NavigationPos.y);
+		ImGui::Text("NavigationPos Pos Y : %.2f", NavigationPos.y);
 		ImGui::Spacing();
-		ImGui::Text("NavigationPos Pos Z : %.f", NavigationPos.z);
+		ImGui::Text("NavigationPos Pos Z : %.2f", NavigationPos.z);
 		ImGui::Spacing();
-		ImGui::Text("NavigationPos Pos W : %.f", NavigationPos.w);
+		ImGui::Text("NavigationPos Pos W : %.2f", NavigationPos.w);
 		ImGui::Spacing();
 
 		if (_iPointCount > 2)
 		{
-			// 소팅 한 후에 넣기?
-			//for (uint32 i = 0; i < _iPointCount; ++i)
-			//{
-			//	for (uint32 j = 0; j < _iPointCount - i - 1; ++j)
-			//	{
-			//		if (CompareVec3(_vPoints[j], _vPoints[j + 1]))
-			//		{
-			//			std::swap(_vPoints[j], _vPoints[j + 1]);
-			//		}
-			//	}
-			//}
-
+			// 시계방향 공식을 이용.
 			_float Value1 = _vPoints[0].x * _vPoints[1].z + _vPoints[1].x * _vPoints[2].z + _vPoints[2].x * _vPoints[0].z;
 			_float Value2 = _vPoints[1].x * _vPoints[0].z + _vPoints[2].x * _vPoints[1].z + _vPoints[0].x * _vPoints[2].z;
 			_float Result = Value1 - Value2;
@@ -490,13 +483,17 @@ void ImGuiManager::MouseMove()
 
 				_vPoints[0] = dest;
 				_vPoints[2] = temp;
-
 			}
 
 
-			Cell* pCell = Cell::Create(_device, _deviceContext, _vPoints, _Cells.size());
-
-			_Cells.push_back(pCell);
+			_pNaviGation->SetUp_Neighbors();
+			Cell* pCell = Cell::Create(_device, _deviceContext, _vPoints, _pNaviGation->GetCell().size());
+			if (pCell == nullptr)
+			{
+				MSG_BOX("Create To Failed Cell");
+				return;
+			}
+			_pNaviGation->GetCell().push_back(pCell);
 
 			_iPointCount = 0;
 		}
@@ -506,28 +503,32 @@ void ImGuiManager::MouseMove()
 		{
 			_vPoints[_iPointCount] = Vec3(NavigationPos.x, NavigationPos.y, NavigationPos.z);
 
+			vector<Cell*>& NaviCells = _pNaviGation->GetCell();
 
+			if (!NaviCells.empty())
+			{
+				for (uint32 i = 0; i < NaviCells.size(); ++i)
+				{
+					const Vec3* vPointA = NaviCells[i]->GetPoint(Cell::POINT_A);
+					const Vec3* vPointB = NaviCells[i]->GetPoint(Cell::POINT_B);
+					const Vec3* vPointC = NaviCells[i]->GetPoint(Cell::POINT_C);
 
-			_float x;
-			_float y;
-			_float z;
+					_float distanceToA = DistanceBetewwinPoints(_vPoints[_iPointCount], *vPointA);
+					_float distanceToB = DistanceBetewwinPoints(_vPoints[_iPointCount], *vPointB);
+					_float distanceToC = DistanceBetewwinPoints(_vPoints[_iPointCount], *vPointC);
+
+					if (distanceToA < 0.5f)
+						_vPoints[_iPointCount] = *vPointA;
+					else if (distanceToB < 0.5f)
+						_vPoints[_iPointCount] = *vPointB;
+					else if (distanceToC < 0.5f)
+						_vPoints[_iPointCount] = *vPointC;
+				}
+			}
 
 			++_iPointCount;
 		}
-
-
-
 	}
-
-
-
-
-
-
-
-
-
-
 	RELEASE_INSTANCE(GameInstance);
 
 	ImGui::End();
@@ -557,15 +558,11 @@ void ImGuiManager::MainSection()
 
 		if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"\\Icon\\save_white_18dp.png"), ImVec2(20, 20)))
 		{
-			// 한 Layer에 포함시켜서 전부 관리함.
-			//vector<GameObject*>* currentLayerOwnObject = gameInstance->GetCurrentObjectList(_editlayerTag);
-			//uint32 layerSize = gameInstance->GetLayerObjectCount();
-	
-			// 이 레이어를 전부 돌면서 파일 Save
 			wstring filepath = L"..\\Binaries\\Resources\\MapData\\";
 			SceneSave(filepath);
 			
-			
+			wstring Navipath = L"..\\Binaries\\Data\\";
+			NavigationMeshSave(Navipath);
 		}
 
 		ImGui::SameLine(ImGui::GetWindowWidth() - 56);
@@ -1185,6 +1182,36 @@ void ImGuiManager::BinaryAnimModelSave(const string& fpxPath, const wstring& bin
 
 void ImGuiManager::NavigationMeshSave(const wstring& binaryDirectory)
 {
+	auto path = filesystem::path(binaryDirectory);
+
+	filesystem::create_directory(path.parent_path());
+
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+
+	wstring finalPath = binaryDirectory + L"Navigation.dat";
+
+	file->Open(finalPath, FileMode::Write);
+
+	vector<Cell*>& Cells = _pNaviGation->GetCell();
+
+	uint32 Cellsize = Cells.size();
+	file->Write<uint32>(Cellsize);
+
+	Vec3 vPoint;
+
+	for (auto& pCell : Cells)
+	{
+		// 셀의 A,B,C 선분 순서대로 저장.
+		// 셀의 사이즈가 곧. 이웃을 결정한다.
+		if (nullptr == pCell)
+			continue;
+
+		for (uint32 i = 0; i < Cell::POINTS::POINT_END; ++i)
+		{
+			vPoint = *pCell->GetPoint(static_cast<Cell::POINTS>(i));
+			file->Write<Vec3>(vPoint);
+		}
+	}
 }
 
 void ImGuiManager::AddLightSection()
@@ -1564,9 +1591,6 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 	// 이 밑에 부터는 메쉬가 따로 돌아야함. 그니까 vectorIndex는 여기까지만 사용하고 메쉬 인덱스를 다시 돌아야함.
 	// 콤보박스에서 인덱스 지정해주고 그 인덱스번호에 있는 메쉬 텍스쳐 불러와서 텍스쳐 변경하면 될 듯.
 
-	//if (vectorIndex >= vectorMesh->size()) 
-	//	return;
-
 
 	if (ImGui::TreeNodeEx("Material", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -1590,6 +1614,7 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 				if (ImGui::Selectable(label, isSelected))
 				{
 					selectIndex = i;
+					break;
 				}
 
 				if (isSelected)
@@ -1909,7 +1934,6 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 			case TextureType_NONE:
 				break;
 			case TextureType_DIFFUSE:
-				(*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE]->SelfDelete((*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE]);
 				(*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE] = Texture::Create(_device, _deviceContext, path);
 				(*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.diffusePath = wstring(strPath.begin(), strPath.end());
@@ -1919,7 +1943,6 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 			case TextureType_AMBIENT:
 				break;
 			case TextureType_EMISSIVE:
-				(*vectorMesh)[selectIndex]._texture[TextureType_EMISSIVE]->SelfDelete((*vectorMesh)[selectIndex]._texture[TextureType_EMISSIVE]);
 				(*vectorMesh)[selectIndex]._texture[TextureType_EMISSIVE] = Texture::Create(_device, _deviceContext, path);
 				(*vectorMesh)[selectIndex]._texture[TextureType_EMISSIVE]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.emissivePath = wstring(strPath.begin(), strPath.end());
@@ -1927,7 +1950,6 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 			case TextureType_HEIGHT:
 				break;
 			case TextureType_NORMALS:
-				(*vectorMesh)[selectIndex]._texture[TextureType_NORMALS]->SelfDelete((*vectorMesh)[selectIndex]._texture[TextureType_NORMALS]);
 				(*vectorMesh)[selectIndex]._texture[TextureType_NORMALS] = Texture::Create(_device, _deviceContext, path);
 				(*vectorMesh)[selectIndex]._texture[TextureType_NORMALS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.normalPath = wstring(strPath.begin(), strPath.end());
@@ -1937,7 +1959,6 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 			case TextureType_OPACITY:
 				break;
 			case TextureType_DISPLACEMENT:
-				(*vectorMesh)[selectIndex]._texture[TextureType_DISPLACEMENT]->SelfDelete((*vectorMesh)[selectIndex]._texture[TextureType_DISPLACEMENT]);
 				(*vectorMesh)[selectIndex]._texture[TextureType_DISPLACEMENT] = Texture::Create(_device, _deviceContext, path);
 				(*vectorMesh)[selectIndex]._texture[TextureType_DISPLACEMENT]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.displacmentPath = wstring(strPath.begin(), strPath.end());
@@ -1953,22 +1974,20 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 			case TextureType_EMISSION_COLOR:
 				break;
 			case TextureType_METALNESS:
-				(*vectorMesh)[selectIndex]._texture[TextureType_METALNESS]->SelfDelete((*vectorMesh)[selectIndex]._texture[TextureType_METALNESS]);
 				(*vectorMesh)[selectIndex]._texture[TextureType_METALNESS] = Texture::Create(_device, _deviceContext, path);
 				(*vectorMesh)[selectIndex]._texture[TextureType_METALNESS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.metallicPath = wstring(strPath.begin(), strPath.end());
 				break;
 			case TextureType_DIFFUSE_ROUGHNESS:
-				(*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE_ROUGHNESS]->SelfDelete((*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE_ROUGHNESS]);
 				(*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE_ROUGHNESS] = Texture::Create(_device, _deviceContext, path);
 				(*vectorMesh)[selectIndex]._texture[TextureType_DIFFUSE_ROUGHNESS]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
 				_texturePath.roughnessPath = wstring(strPath.begin(), strPath.end());
 				break;
 			case TextureType_AMBIENT_OCCLUSION:
-				(*vectorMesh)[selectIndex]._texture[TextureType_AMBIENT_OCCLUSION]->SelfDelete((*vectorMesh)[selectIndex]._texture[TextureType_AMBIENT_OCCLUSION]);
-				(*vectorMesh)[selectIndex]._texture[TextureType_AMBIENT_OCCLUSION] = Texture::Create(_device, _deviceContext, path);
-				(*vectorMesh)[selectIndex]._texture[TextureType_AMBIENT_OCCLUSION]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
-				_texturePath.ambientOcclusionPath = wstring(strPath.begin(), strPath.end());
+				//(*vectorMesh)[selectIndex]._texture[TextureType_AMBIENT_OCCLUSION]->SelfDelete((*vectorMesh)[selectIndex]._texture[TextureType_AMBIENT_OCCLUSION]);
+				//(*vectorMesh)[selectIndex]._texture[TextureType_AMBIENT_OCCLUSION] = Texture::Create(_device, _deviceContext, path);
+				//(*vectorMesh)[selectIndex]._texture[TextureType_AMBIENT_OCCLUSION]->GetShaderResourceViews()[0]->SetPrivateData(WKPDID_D3DDebugObjectNameW, 64, path.c_str());
+				//_texturePath.ambientOcclusionPath = wstring(strPath.begin(), strPath.end());
 				break;
 			case TextureType_UNKNOWN:
 				break;
@@ -2088,32 +2107,6 @@ HRESULT ImGuiManager::SceneSave(wstring& filePath)
 
 			}
 			break;
-		case Engine::LAYER_TAG::LAYER_MONSTER:
-			break;
-		case Engine::LAYER_TAG::LAYER_ENVIRONMENT:
-			for (auto& LayerObjects : *LayerGameObjectList)
-			{
-				// 모델 타입.
-				OBJECT_TYPE modelType = LayerObjects->GetObjectType();
-				file->Write<uint32>(static_cast<uint32>(modelType));
-
-				// 모델 이름.
-				string modelName = LayerObjects->GetModelName();
-				file->Write<string>(modelName);
-
-				uint32 modelID = LayerObjects->GetIdNumber();
-				file->Write<uint32>(modelID);
-
-				// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
-				StaticObject::STATE_DESC StaticComponentName = static_cast<StaticObject*>(LayerObjects)->GetStaticComponentsName();
-				file->Write<string>(Utils::ToString(StaticComponentName._strModelComponentName));
-				file->Write<string>(Utils::ToString(StaticComponentName._strShaderName));
-				file->Write<string>(Utils::ToString(StaticComponentName._protoTypeTag));
-
-				Matrix staticObjectWorldMarix = LayerObjects->GetTransform()->GetWorldMatrix();
-				file->Write<Matrix>(staticObjectWorldMarix);
-			}
-			break;
 		case Engine::LAYER_TAG::LAYER_TERRAIN:
 			break;
 		case Engine::LAYER_TAG::LAYER_CAMERA:
@@ -2191,6 +2184,30 @@ HRESULT ImGuiManager::SceneSave(wstring& filePath)
 				file->Write<Matrix>(staticObjectWorldMarix);
 			}
 			break;
+		case Engine::LAYER_TAG::LAYER_ENVIRONMENT:
+			for (auto& LayerObjects : *LayerGameObjectList)
+			{
+				// 모델 타입.
+				OBJECT_TYPE modelType = LayerObjects->GetObjectType();
+				file->Write<uint32>(static_cast<uint32>(modelType));
+
+				// 모델 이름.
+				string modelName = LayerObjects->GetModelName();
+				file->Write<string>(modelName);
+
+				uint32 modelID = LayerObjects->GetIdNumber();
+				file->Write<uint32>(modelID);
+
+				// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
+				StaticObject::STATE_DESC StaticComponentName = static_cast<StaticObject*>(LayerObjects)->GetStaticComponentsName();
+				file->Write<string>(Utils::ToString(StaticComponentName._strModelComponentName));
+				file->Write<string>(Utils::ToString(StaticComponentName._strShaderName));
+				file->Write<string>(Utils::ToString(StaticComponentName._protoTypeTag));
+
+				Matrix staticObjectWorldMarix = LayerObjects->GetTransform()->GetWorldMatrix();
+				file->Write<Matrix>(staticObjectWorldMarix);
+			}
+			break;
 		case Engine::LAYER_TAG::LAYER_END:
 			break;
 		default:
@@ -2241,50 +2258,6 @@ HRESULT ImGuiManager::SceneLoad(wstring& filePath)
 			{
 				//TODO
 			}
-			break;
-		case Engine::LAYER_TAG::LAYER_MONSTER:
-			break;
-		case Engine::LAYER_TAG::LAYER_ENVIRONMENT:
-			for (uint32 j = 0; j < GameObjectListSize; ++j)
-			{
-				//// 모델 타입.
-				//uint32 modelType;
-				//file->Read<uint32>(modelType);
-
-
-				//// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
-				//ComponentNames EnvironmentComponentName;
-
-				//// 모델 이름.
-				//string modelName;
-				//file->Read(modelName);
-				//EnvironmentComponentName._strModelName = modelName;
-
-				//uint32 modelID;
-				//file->Read<uint32>(modelID);
-				//EnvironmentComponentName._modelID = modelID;
-
-				//string modelComponentName;
-				//file->Read(modelComponentName);
-				//EnvironmentComponentName._strModelComponentName = Utils::ToWString(modelComponentName);
-
-				//string modelShaderName;
-				//file->Read(modelShaderName);
-				//EnvironmentComponentName._strShaderName = Utils::ToWString(modelShaderName);
-
-				//string prototypeModelName;
-				//file->Read(prototypeModelName);
-				//EnvironmentComponentName._protoTypeName = Utils::ToWString(prototypeModelName);
-
-				//Matrix staticObjectWorldMarix;
-				//file->Read<Matrix>(staticObjectWorldMarix);
-				//EnvironmentComponentName._saveWorldMatrix = staticObjectWorldMarix;
-
-				//if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), static_cast<LAYER_TAG>(LayerTagType), StaticComponentName._protoTypeName, &StaticComponentName)))
-				//	return E_FAIL;
-
-			}
-			break;
 			break;
 		case Engine::LAYER_TAG::LAYER_TERRAIN:
 			break;
@@ -2413,6 +2386,47 @@ HRESULT ImGuiManager::SceneLoad(wstring& filePath)
 
 			}
 			break;
+		case LAYER_TAG::LAYER_ENVIRONMENT:
+			for (uint32 j = 0; j < GameObjectListSize; ++j)
+			{
+				// 모델 타입.
+				uint32 modelType;
+				file->Read<uint32>(modelType);
+
+
+				// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
+				ComponentNames environmentComponentName;
+
+				// 모델 이름.
+				string modelName;
+				file->Read(modelName);
+				environmentComponentName._strModelName = modelName;
+
+				uint32 modelID;
+				file->Read<uint32>(modelID);
+				environmentComponentName._modelID = modelID;
+
+				string modelComponentName;
+				file->Read(modelComponentName);
+				environmentComponentName._strModelComponentName = Utils::ToWString(modelComponentName);
+
+				string modelShaderName;
+				file->Read(modelShaderName);
+				environmentComponentName._strShaderName = Utils::ToWString(modelShaderName);
+
+				string prototypeModelName;
+				file->Read(prototypeModelName);
+				environmentComponentName._protoTypeName = Utils::ToWString(prototypeModelName);
+
+				Matrix staticObjectWorldMarix;
+				file->Read<Matrix>(staticObjectWorldMarix);
+				environmentComponentName._saveWorldMatrix = staticObjectWorldMarix;
+
+				if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), static_cast<LAYER_TAG>(LayerTagType), environmentComponentName._protoTypeName, &environmentComponentName)))
+					return E_FAIL;
+
+			}
+			break;
 		case Engine::LAYER_TAG::LAYER_END:
 			break;
 		default:
@@ -2425,27 +2439,25 @@ HRESULT ImGuiManager::SceneLoad(wstring& filePath)
 	return S_OK;
 }
 
+_float ImGuiManager::DistanceBetewwinPoints(const Vec3& point1, const Vec3& point2)
+{
+	_float deltaX = point1.x - point2.x;
+	_float deltaY = point1.y - point2.y;
+	_float deltaZ = point1.z - point2.z;
+
+	// 유클리드 거리 계산
+	_float distance = sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+
+	return distance;
+}
+
 void ImGuiManager::Free()
 {
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 
-
-	for (auto& pCell : _Cells)
-		Safe_Release<Cell*>(pCell);
-
-
+	Safe_Release<BinaryNavi*>(_pNaviGation);
 	Safe_Release<ID3D11Device*>(_device);
 	Safe_Release<ID3D11DeviceContext*>(_deviceContext);
-}
-
-_bool ImGuiManager::CompareVec3(const Vec3& a, const Vec3& b)
-{
-	if (a.x == std::min(a.x, b.x) && a.z == std::max(a.z, b.z))
-		return true;
-	else if (a.x == std::max(a.x, b.x) && a.z == std::min(a.z, b.z))
-		return true;
-
-	return false;
 }

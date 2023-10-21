@@ -13,7 +13,7 @@ class Transform;
 class Model;
 class BinaryModel;
 
-enum class OBJECT_TYPE { PLAYER, PAINT, TERRAIN, STATIC, DYNAMIC, CAMERA, BACKGROUND, OBJECT_END };
+enum class OBJECT_TYPE { PLAYER, MONSTER, PAINT, TERRAIN, STATIC, DYNAMIC, CAMERA, BACKGROUND, OBJECT_END };
 
 class ENGINE_DLL GameObject abstract : public Base
 {
@@ -35,7 +35,11 @@ public:
 	OBJECT_TYPE GetObjectType() { return _objectType; }
 	Collider* GetCollider() { return _owner; }
 
+public:
+	Component* FindComponent(const wstring& componentTag);
 
+
+public:
 	// IMGUI
 	string GetModelName() const;
 	string GetModelNameId() const;
@@ -75,7 +79,6 @@ protected:
 		_Inout_ Component** componentout, void* argument = nullptr);
 	//HRESULT AddLightComponent(uint32 levelIndex, const Light::LightType type, const wstring& ComponentTag,
 	//	_Inout_ Component** componentout, void* argument = nullptr);
-	Component* FindComponent(const wstring& componentTag);
 public:
 	virtual GameObject* Clone(void* argument) = 0;
 	virtual void Free() override;

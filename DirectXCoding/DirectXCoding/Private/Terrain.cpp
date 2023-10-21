@@ -37,12 +37,12 @@ HRESULT Terrain::Render()
 		return S_OK;
 
 
-	//if (FAILED(Bind_ShaderResources()))
-	//	return E_FAIL;
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
 
-	//_shader->Begin(0);
+	_shader->Begin(0);
 
-	//_viBuffer->Render();
+	_viBuffer->Render();
 
 #ifdef _DEBUG
 	_pNavigation->Render();
@@ -178,7 +178,6 @@ void Terrain::Free()
 	Safe_Release<Shader*>(_shader);
 	Safe_Release<Texture*>(_texture);
 	Safe_Release<Navigation*>(_pNavigation);
-	//Safe_Release<Light*>(_light);
 	Safe_Release<VIBufferTerrain*>(_viBuffer);
 	Safe_Release<Renderer*>(_renderComponent);
 

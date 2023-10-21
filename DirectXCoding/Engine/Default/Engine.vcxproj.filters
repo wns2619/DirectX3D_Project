@@ -172,6 +172,12 @@
     <Filter Include="01.Utility\04.Component\Navigation\ShaderFiles">
       <UniqueIdentifier>{77d9f6f0-30f7-4cd2-b57a-4508712d947a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.GameObject\LandObject">
+      <UniqueIdentifier>{bcc1505f-2155-4419-9344-7e62042fbaf7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Navigation\BinaryNavi">
+      <UniqueIdentifier>{740297c9-7c6f-43f1-9f53-af69f520cf97}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -375,6 +381,12 @@
     <ClInclude Include="..\Public\VIBufferCell.h">
       <Filter>01.Utility\04.Component\VIBuffer\Cell</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\LandObject.h">
+      <Filter>01.Utility\03.GameObject\LandObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BinaryNavi.h">
+      <Filter>01.Utility\04.Component\Navigation\BinaryNavi</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -535,6 +547,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBufferCell.cpp">
       <Filter>01.Utility\04.Component\VIBuffer\Cell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LandObject.cpp">
+      <Filter>01.Utility\03.GameObject\LandObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BinaryNavi.cpp">
+      <Filter>01.Utility\04.Component\Navigation\BinaryNavi</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

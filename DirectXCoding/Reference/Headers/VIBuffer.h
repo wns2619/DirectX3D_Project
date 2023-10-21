@@ -30,10 +30,14 @@ public:
 
 public:
 	BUFFER_DESC* GetBufferDesc() { return &_BufferDesc; }
+	Vec3* GetVerticesPosition() { return _pVerticesPos; }
+
 
 protected:
 	ID3D11Buffer*				_vertexBuffer		= nullptr;
 	ID3D11Buffer*				_indexBuffer		= nullptr;
+
+	Vec3* _pVerticesPos = nullptr;
 
 	BUFFER_DESC _BufferDesc = {};
 protected:
