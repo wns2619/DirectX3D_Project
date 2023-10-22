@@ -33,31 +33,31 @@ BinaryNavi::BinaryNavi(const BinaryNavi& rhs)
 
 HRESULT BinaryNavi::InitializePrototype()
 {
-	// TODO 
-	// 파일 경로 읽어오면 됨 
-	shared_ptr<FileUtils> file = make_shared<FileUtils>();
-	file->Open(L"..\\Binaries\\Data\\Navigation.dat", FileMode::Read);
+	//// TODO 
+	//// 파일 경로 읽어오면 됨 
+	//shared_ptr<FileUtils> file = make_shared<FileUtils>();
+	//file->Open(L"..\\Binaries\\Data\\Navigation.dat", FileMode::Read);
 
-	uint32 CellSize;
-	file->Read<uint32>(CellSize);
+	//uint32 CellSize;
+	//file->Read<uint32>(CellSize);
 
-	for (uint32 i = 0; i < CellSize; ++i)
-	{
-		Vec3 vPoint[3] = {};
+	//for (uint32 i = 0; i < CellSize; ++i)
+	//{
+	//	Vec3 vPoint[3] = {};
 
-		for (uint32 j = 0; j < Cell::POINTS::POINT_END; ++j)
-			file->Read<Vec3>(vPoint[j]);
+	//	for (uint32 j = 0; j < Cell::POINTS::POINT_END; ++j)
+	//		file->Read<Vec3>(vPoint[j]);
 
-		Cell* pCell = Cell::Create(_device, _deviceContext, vPoint, _cells.size());
-		if (nullptr == pCell)
-			return E_FAIL;
+	//	Cell* pCell = Cell::Create(_device, _deviceContext, vPoint, _cells.size());
+	//	if (nullptr == pCell)
+	//		return E_FAIL;
 
-		_cells.push_back(pCell);
-	}
+	//	_cells.push_back(pCell);
+	//}
 
-	if (FAILED(SetUp_Neighbors()))
-		return E_FAIL;
-	
+	//if (FAILED(SetUp_Neighbors()))
+	//	return E_FAIL;
+	//
 
 #ifdef _DEBUG
 	_shader = Shader::Create(_device, _deviceContext, TEXT("..\\Binaries\\Shaders\\Shader_Cell.fx"), VertexPos::Elements, VertexPos::VertexPosElementCount);
@@ -143,12 +143,42 @@ HRESULT BinaryNavi::Render()
 
 	RELEASE_INSTANCE(CameraHelper);
 
-	if (FAILED(_shader->Begin(0)))
-		return E_FAIL;
+	if (-1 == _iCurrentIndex)
+	{
+		Color vColor = Color(0.f, 1.f, 0.f, 1.f);
 
-	for (auto& pCell : _cells)
-		if (nullptr != pCell)
-			pCell->Render();
+		if (FAILED(_shader->BindRawValue("vLineColor", &vColor, sizeof(Color))))
+			return E_FAIL;
+		
+		_float fHeight = 0.f;
+
+		if(FAILED(_shader->BindRawValue("fHeight", &fHeight, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(_shader->Begin(0)))
+			return E_FAIL;
+
+		for (auto& pCell : _cells)
+			if (nullptr != pCell)
+				pCell->Render();
+	}
+	else
+	{
+		Color vColor = Color(1.f, 0.f, 0.f, 1.f);
+
+		if (FAILED(_shader->BindRawValue("vLineColor", &vColor, sizeof(Color))))
+			return E_FAIL;
+
+		_float fHeight = 0.1f;
+
+		if (FAILED(_shader->BindRawValue("fHeight", &fHeight, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(_shader->Begin(0)))
+			return E_FAIL;
+
+		_cells[_iCurrentIndex]->Render();
+	}
 
 
 	return S_OK;
@@ -215,7 +245,6 @@ void BinaryNavi::Free()
 #ifdef _DEBUG
 	Safe_Release<Shader*>(_shader);
 #endif // _DEBUG
-
 
 	for (auto& pCell : _cells)
 		Safe_Release<Cell*>(pCell);

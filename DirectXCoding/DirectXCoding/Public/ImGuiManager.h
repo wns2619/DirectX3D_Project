@@ -136,6 +136,8 @@ private:
 	Vec3   _vPoints[3] = {};
 	uint32 _iPointCount = 0;
 
+	void SortPoints();
+
 	_float DistanceBetewwinPoints(const Vec3& point1, const Vec3& point2);
 
 public:

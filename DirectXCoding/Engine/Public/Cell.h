@@ -27,6 +27,13 @@ public:
 
 #ifdef _DEBUG
 public:
+	class VIBufferCell* GetCellBuffer() { return _viBuffer; }
+#endif // _DEBUG
+
+
+
+#ifdef _DEBUG
+public:
 	HRESULT Render();
 #endif // !_DEBUG
 

@@ -3,6 +3,7 @@
 
 #include "Transform.h"
 #include "VIBufferCell.h"
+#include "Cell.h"
 
 LandObject::LandObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, OBJECT_TYPE etype)
 	: GameObject(device, deviceContext, etype)
@@ -27,11 +28,12 @@ HRESULT LandObject::Initialize(void* argument)
 	LANDOBJET_DESC* pDesc = static_cast<LANDOBJET_DESC*>(argument);
 
 	_pCellTransform = pDesc->pCellTransform;
-	_pCellBuffer = pDesc->pCellBuffer;
+	// 이건 바닥메쉬의 트랜스폼.
+	_pCells = pDesc->pCells;
+	// 이건 네비셀의 벡터를 들고와야함.
 
 	Safe_AddRef<Transform*>(_pCellTransform);
-	Safe_AddRef<VIBufferCell*>(_pCellBuffer);
-
+	
 	return S_OK;
 }
 
@@ -52,9 +54,12 @@ HRESULT LandObject::Render()
 	return S_OK;
 }
 
-XMVECTOR LandObject::SetUp_OnCell(FXMVECTOR vWorldPos)
+XMVECTOR LandObject::SetUp_OnCell(FXMVECTOR vWorldPos, int32 currentIndex)
 {
-	return _pCellBuffer->SetUp_OnCell(_pCellTransform, vWorldPos);
+	if (currentIndex == -1)
+		return XMVECTOR();
+
+	return (*_pCells)[currentIndex]->GetCellBuffer()->SetUp_OnCell(_pCellTransform, vWorldPos);
 }
 
 void LandObject::Free()
@@ -62,5 +67,4 @@ void LandObject::Free()
 	__super::Free();
 
 	Safe_Release<Transform*>(_pCellTransform);
-	Safe_Release<VIBufferCell*>(_pCellBuffer);
 }

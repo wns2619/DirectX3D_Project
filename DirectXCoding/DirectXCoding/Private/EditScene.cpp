@@ -26,14 +26,17 @@ HRESULT EditScene::Initialize()
     if (FAILED(ReadyLayerEditCamera(LAYER_TAG::LAYER_CAMERA)))
         return E_FAIL;
 
+    ImGuiManager::GetInstance()->Initialize(_device, _deviceContext);
+    ImGuiResourceHandler::GetInstance()->Initialize(_device, _deviceContext);
+
     //if(FAILED(ReadyEnvironment(LAYER_TAG::LAYER_ENVIRONMENT)))
     //    return E_FAIL;
 
-    if(FAILED(ReadyTerrain(LAYER_TAG::LAYER_STATIC)))
-        return E_FAIL;
-        
-    if (FAILED(ReadyLandObject(LAYER_TAG::LAYER_STATIC)))
-        return E_FAIL;
+    //if(FAILED(ReadyTerrain(LAYER_TAG::LAYER_STATIC)))
+    //    return E_FAIL;
+    //    
+    //if (FAILED(ReadyLandObject(LAYER_TAG::LAYER_STATIC)))
+    //    return E_FAIL;
 
     if (FAILED(ReadyLight()))
         return E_FAIL;
@@ -111,6 +114,7 @@ HRESULT EditScene::ReadyTerrain(const LAYER_TAG layerTag)
     Matrix ScaleMatrix;
     comNames._saveWorldMatrix *= ScaleMatrix.CreateScale(Vec3(0.1, 0.1f, 0.1f));
 
+  
 
     if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), layerTag, TEXT("ProtoTypeStaticObject"),&comNames)))
         return E_FAIL;
@@ -124,17 +128,20 @@ HRESULT EditScene::ReadyLandObject(const LAYER_TAG layerTag)
 
     GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
-    Transform* pTransform = static_cast<Transform*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::EDIT), layerTag, TEXT("ComponentTransform"), 0));
-    VIBufferCell* pCellBuffer = static_cast<VIBufferCell*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::EDIT), layerTag, TEXT("ComponentVIBuffer"), 0));
+    Transform* pTransform = static_cast<Transform*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::EDIT), layerTag, TEXT("ComponentTransform"), "2stBottom", 0));
+    BinaryNavi* pNavi = static_cast<BinaryNavi*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::EDIT), layerTag, TEXT("ComponentNavigation"), "2stBottom", 0));
 
+    // Navigation이 만들어질 때. 버퍼의 Cell의 정보를 들고있다면..그냥 pNavi의 버퍼를 가지고오면 될 듯..?
 
-    LandObjectDesc.pCellBuffer = pCellBuffer;
+    vector<Cell*>& vecCells = pNavi->GetCell();
+
+    LandObjectDesc.pCells = &vecCells;
     LandObjectDesc.pCellTransform = pTransform;
 
     RELEASE_INSTANCE(GameInstance);
 
 
-    if (FAILED(pGameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ProtoTypeGameObjectPlayer"), &LandObjectDesc)))
+    if (FAILED(pGameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), layerTag, TEXT("ProtoTypeGameObjectPlayer"), &LandObjectDesc)))
         return E_FAIL;
 
     return S_OK;

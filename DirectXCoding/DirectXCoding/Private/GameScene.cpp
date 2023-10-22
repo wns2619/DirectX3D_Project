@@ -271,7 +271,7 @@ HRESULT GameScene::ReadyMyMap()
 
 HRESULT GameScene::ReadyLandObjects(const LAYER_TAG layerTag)
 {
-    LandObject::LANDOBJET_DESC LandObjectDesc = {};
+  /*  LandObject::LANDOBJET_DESC LandObjectDesc = {};
 
     GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
@@ -284,7 +284,7 @@ HRESULT GameScene::ReadyLandObjects(const LAYER_TAG layerTag)
     RELEASE_INSTANCE(GameInstance);
 
     if (FAILED(ReadyLayerPlayer(LAYER_TAG::LAYER_PLAYER, &LandObjectDesc)))
-        return E_FAIL;
+        return E_FAIL;*/
 
     return S_OK;
 }

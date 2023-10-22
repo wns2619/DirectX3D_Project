@@ -93,7 +93,7 @@ HRESULT Surefire::Ready_Components()
 		level = static_cast<uint32>(LEVEL::EDIT);
 
 	/* Shader Component */
-	if (FAILED(__super::AddComponent(level,
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT),
 		TEXT("ProtoTypeComponentDefaultMeshShader"),
 		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
@@ -108,7 +108,7 @@ HRESULT Surefire::Ready_Components()
 		return E_FAIL;
 
 	/* Model Component */
-	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeModelsurefire"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelsurefire"),
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
 

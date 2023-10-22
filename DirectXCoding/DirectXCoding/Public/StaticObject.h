@@ -12,7 +12,7 @@ BEGIN(Client)
 
 
 // 해당 파일의 정보를 읽어들이자..
-class StaticObject : public LandObject
+class StaticObject : public GameObject
 {
 public:
 	struct STATE_DESC
@@ -45,6 +45,10 @@ protected:
 protected:
 	STATE_DESC _comNames;
 	BinaryNavi* _pNavigation = nullptr;
+
+private:
+	VIBufferCell* _pVIBuffer = nullptr;
+
 protected:
 	HRESULT ReadyComponents();
 	HRESULT BindShaderResource();

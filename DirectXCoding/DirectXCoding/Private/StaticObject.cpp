@@ -3,13 +3,13 @@
 
 #include "GameInstance.h"
 StaticObject::StaticObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: LandObject(device, deviceContext, OBJECT_TYPE::STATIC)
+	: GameObject(device, deviceContext, OBJECT_TYPE::STATIC)
 {
 	// Empty였다가 
 }
 
 StaticObject::StaticObject(const StaticObject& rhs)
-	: LandObject(rhs)
+	: GameObject(rhs)
 {
 }
 
@@ -50,8 +50,8 @@ HRESULT StaticObject::Initialize(void* pArg)
 void StaticObject::PriorityTick(const _float& timeDelta)
 {
 	// 스태틱 오브젝트 중에 모델 네임이 바닥일 때만 업데이트.
-	if(_modelName == "2stBottom")
-		_pNavigation->Update(_transform->GetWorldMatrixCaculator());
+	//if(_modelName == "2stBottom")
+	//	_pNavigation->Update(_transform->GetWorldMatrixCaculator());
 }
 
 void StaticObject::Tick(const _float& timeDelta)
@@ -206,4 +206,6 @@ void StaticObject::Free()
 
 	Safe_Release<Renderer*>(_render);
 	Safe_Release<Shader*>(_shader);
+	Safe_Release<BinaryNavi*>(_pNavigation);
+	Safe_Release<VIBufferCell*>(_pVIBuffer);
 }

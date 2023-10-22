@@ -10,7 +10,7 @@ public:
 	struct LANDOBJET_DESC
 	{
 		class Transform* pCellTransform = nullptr;
-		class VIBufferCell* pCellBuffer = nullptr;
+		vector<class Cell*>* pCells = nullptr;
 	};
 
 protected:
@@ -27,11 +27,13 @@ public:
 	virtual HRESULT Render();
 
 protected:
-	XMVECTOR SetUp_OnCell(FXMVECTOR vWorldPos);
+	XMVECTOR SetUp_OnCell(FXMVECTOR vWorldPos, int32 currentIndex);
 
 private:
 	class Transform* _pCellTransform = nullptr;
-	class VIBufferCell* _pCellBuffer = nullptr;
+
+	// 셀의 벡터를 들고와서 현재 커런트 셀을 받아서. 셀을 태우자.?
+	vector<class Cell*>* _pCells = nullptr;
 
 public:
 	virtual GameObject* Clone(void* pArg) = 0;

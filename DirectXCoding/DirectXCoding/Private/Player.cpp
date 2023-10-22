@@ -3,6 +3,7 @@
 #include "PlayerBody.h"
 #include "Surefire.h"
 #include "GameInstance.h"
+#include "BinaryNavi.h"
 
 Player::Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: LandObject(device, deviceContext, OBJECT_TYPE::PLAYER)
@@ -25,13 +26,17 @@ HRESULT Player::InitializePrototype()
 
 HRESULT Player::Initialize(void* pArg)
 {
-	//__super::Initialize(pArg);
+	__super::Initialize(pArg);
 
 	if (FAILED(ReadyComponents()))
 		return E_FAIL;
 
 	if (FAILED(ReadyPlayerPart()))
 		return E_FAIL;
+
+
+
+	_transform->SetState(Transform::STATE::POSITION, ::XMVectorSet(10.5f, 0.f, -44.4f, 1.f));
 
 	animationcount = 2;
 	static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->StartAnimation(1, true);
@@ -77,7 +82,7 @@ HRESULT Player::Render()
 	}
 
 #ifdef _DEBUG
-	//_pNavigation->Render();
+	_pNavigation->Render();
 #endif // _DEBUG
 
 
@@ -100,22 +105,22 @@ void Player::KeyInput(const _float& timeDelta)
 
 	if (gameInstance->KeyPressing(DIK_UP))
 	{
-		//_transform->Forward(timeDelta, _pNavigation);
+		_transform->Forward(timeDelta, _pNavigation);
 
 		if (animationcount < 2)
 			++animationcount;
 
-		static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
+		//static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
 	}
 
 	if (gameInstance->KeyPressing(DIK_DOWN))
 	{
-		//_transform->Backward(timeDelta, _pNavigation);
+		_transform->Backward(timeDelta, _pNavigation);
 
 		if (animationcount > 0)
 			--animationcount;
 
-		static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
+		//static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
 	}
 
 	for (auto& pPart : m_pPlayerPart)
@@ -124,9 +129,9 @@ void Player::KeyInput(const _float& timeDelta)
 			pPart->Tick(timeDelta);
 	}
 
-	//XMVECTOR vPosition = __super::SetUp_OnTerrain(_transform->GetState(Transform::STATE::POSITION));
+	XMVECTOR vPosition = __super::SetUp_OnCell(_transform->GetState(Transform::STATE::POSITION), _pNavigation->GetCurrentIndex());
 
-	//_transform->SetState(Transform::STATE::POSITION, vPosition);
+	_transform->SetState(Transform::STATE::POSITION, vPosition);
 
 	RELEASE_INSTANCE(GameInstance);
 }
@@ -154,11 +159,11 @@ HRESULT Player::ReadyComponents()
 		return E_FAIL;
 
 	Navigation::NAVIGATION_DESC NavigationDesc;
-	NavigationDesc._iCurrentIndex = 0;
+	NavigationDesc._iCurrentIndex = 3;
 
-	//if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeNavigation"),
-	//	TEXT("ComponentNavigation"), reinterpret_cast<Component**>(&_pNavigation), &NavigationDesc)))
-	//	return E_FAIL;
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeNavigation"),
+		TEXT("ComponentNavigation"), reinterpret_cast<Component**>(&_pNavigation), &NavigationDesc)))
+		return E_FAIL;
 
 
 	RELEASE_INSTANCE(GameInstance);

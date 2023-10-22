@@ -89,7 +89,7 @@ _bool Cell::IsOut(FXMVECTOR vPoint, FXMMATRIX worldMatrix, int32* pNeighborIndex
 	for (uint32 i = 0; i < LINE_END; ++i)
 	{
 		// 월드의 위치에서의 선분과 계산.
-		Vec4 vSour = ::XMVector3Normalize(vPoint - ::XMLoadFloat3(&_vPoints_InWorld[i]));
+		Vec4 vSour = ::XMVector3Normalize(vPoint - ::XMLoadFloat3(&_vPoints_Original[i]));
 		// 노말을 로컬에서 만들었으니 월드행렬을 곱해서 월드에서의 노멀로 바꾼다.
 		Vec4 vDest = ::XMVector3Normalize(::XMVector3TransformNormal(::XMLoadFloat3(&_vNormals[i]), worldMatrix));
 

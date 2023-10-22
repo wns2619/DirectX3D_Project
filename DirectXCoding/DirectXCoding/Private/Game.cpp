@@ -33,10 +33,6 @@ HRESULT Game::Initialize(HWND hwnd)
 		return E_FAIL;
 
 
-	ImGuiManager::GetInstance()->Initialize(_device, _devicecontext);
-	ImGuiResourceHandler::GetInstance()->Initialize(_device, _devicecontext);
-
-
 	//if (FAILED(ReadyGara()))
 	//	return E_FAIL;
 

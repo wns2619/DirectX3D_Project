@@ -25,6 +25,9 @@ public:
 	_bool IsMove(XMVECTOR& vPoint, FXMVECTOR look);
 
 public:
+	int32 GetCurrentIndex() { return _iCurrentIndex; }
+
+public:
 	vector<class Cell*>& GetCell() { return _cells; }
 	HRESULT SetUp_Neighbors();
 

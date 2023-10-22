@@ -6,6 +6,7 @@ cbuffer PipeLineBuffer
 cbuffer LineColor
 {
     vector vLineColor = vector(0.f, 1.f, 0.f, 1.f);
+    float fHeight = 0.f;
 };
 
 struct VS_IN
@@ -24,10 +25,13 @@ VS_OUT VS_MAIN(VS_IN In)
     
     matrix matWV, matWVP;
     
-    matWV = mul(W, V);
-    matWVP = mul(matWV, P);
+    vector vPosition = mul(float4(In.vPosition, 1.f), W);
+    vPosition.y += fHeight;
     
-    Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
+    vPosition = mul(vPosition, V);
+    vPosition = mul(vPosition, P);
+    
+    Out.vPosition = vPosition;
     
     return Out;
 }

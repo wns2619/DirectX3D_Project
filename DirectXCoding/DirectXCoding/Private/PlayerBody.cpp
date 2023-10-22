@@ -113,7 +113,7 @@ HRESULT PlayerBody::Ready_Components()
 		level = static_cast<uint32>(LEVEL::EDIT);
 
 	/* Shader Component */
-	if (FAILED(__super::AddComponent(level,
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT),
 		TEXT("ProtoTypeComponentAnimMesh"),
 		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
@@ -129,7 +129,7 @@ HRESULT PlayerBody::Ready_Components()
 		return E_FAIL;
 
 	/* Model Component */
-	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeModelPlayer"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelPlayer"),
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
 

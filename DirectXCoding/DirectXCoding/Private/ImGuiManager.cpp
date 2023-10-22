@@ -94,8 +94,13 @@ HRESULT ImGuiManager::Render()
 
 	{
 		MainSection();
-		if (false == _pNaviGation->GetCell().empty())
-			_pNaviGation->Render();
+
+		if (_pNaviGation != nullptr)
+		{
+			if (false == _pNaviGation->GetCell().empty())
+				_pNaviGation->Render();
+		}
+
 	}
 
 	 // Model Card Window
@@ -423,6 +428,18 @@ void ImGuiManager::MouseMove()
 
 	if (true == IsNavigation)
 	{
+
+		if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\previous_folder_icon.png"), ImVec2(20, 20)))
+		{
+			vector<Cell*>& NaviCells = _pNaviGation->GetCell();
+
+			if (false == NaviCells.empty())
+			{
+				Safe_Release<Cell*>(NaviCells.back());
+				NaviCells.pop_back();
+			}
+		}
+
 		map<const LAYER_TAG, Layer*>* EntireLayer = gameinstance->GetEntireObjectLayer();
 		int32 LevelIndex = gameinstance->GetCurrentLevelIndex();
 
@@ -471,20 +488,8 @@ void ImGuiManager::MouseMove()
 
 		if (_iPointCount > 2)
 		{
-			// 시계방향 공식을 이용.
-			_float Value1 = _vPoints[0].x * _vPoints[1].z + _vPoints[1].x * _vPoints[2].z + _vPoints[2].x * _vPoints[0].z;
-			_float Value2 = _vPoints[1].x * _vPoints[0].z + _vPoints[2].x * _vPoints[1].z + _vPoints[0].x * _vPoints[2].z;
-			_float Result = Value1 - Value2;
 
-			if (Result > 0)
-			{
-				Vec3 temp = _vPoints[0];
-				Vec3 dest = _vPoints[2];
-
-				_vPoints[0] = dest;
-				_vPoints[2] = temp;
-			}
-
+			SortPoints();
 
 			_pNaviGation->SetUp_Neighbors();
 			Cell* pCell = Cell::Create(_device, _deviceContext, _vPoints, _pNaviGation->GetCell().size());
@@ -517,11 +522,11 @@ void ImGuiManager::MouseMove()
 					_float distanceToB = DistanceBetewwinPoints(_vPoints[_iPointCount], *vPointB);
 					_float distanceToC = DistanceBetewwinPoints(_vPoints[_iPointCount], *vPointC);
 
-					if (distanceToA < 0.5f)
+					if (distanceToA < 0.2f)
 						_vPoints[_iPointCount] = *vPointA;
-					else if (distanceToB < 0.5f)
+					else if (distanceToB < 0.2f)
 						_vPoints[_iPointCount] = *vPointB;
-					else if (distanceToC < 0.5f)
+					else if (distanceToC < 0.2f)
 						_vPoints[_iPointCount] = *vPointC;
 				}
 			}
@@ -561,8 +566,8 @@ void ImGuiManager::MainSection()
 			wstring filepath = L"..\\Binaries\\Resources\\MapData\\";
 			SceneSave(filepath);
 			
-			wstring Navipath = L"..\\Binaries\\Data\\";
-			NavigationMeshSave(Navipath);
+			//wstring Navipath = L"..\\Binaries\\Data\\";
+			//NavigationMeshSave(Navipath);
 		}
 
 		ImGui::SameLine(ImGui::GetWindowWidth() - 56);
@@ -575,6 +580,9 @@ void ImGuiManager::MainSection()
 		{
 			wstring filepath = L"..\\Binaries\\Resources\\MapData\\";
 			SceneLoad(filepath);
+
+			_pNaviGation = dynamic_cast<BinaryNavi*>(gameInstance->GetComponent(static_cast<uint32>(LEVEL::EDIT), LAYER_TAG::LAYER_STATIC,
+				TEXT("ComponentNavigation"), "2stBottom", 0));
 		}
 
 		ImGui::PopStyleVar();
@@ -2437,6 +2445,58 @@ HRESULT ImGuiManager::SceneLoad(wstring& filePath)
 
 	RELEASE_INSTANCE(GameInstance);
 	return S_OK;
+}
+
+void ImGuiManager::SortPoints()
+{
+	// 시계방향 공식을 이용.
+/*	_float Value1 = _vPoints[0].x * _vPoints[1].z + _vPoints[1].x * _vPoints[2].z + _vPoints[2].x * _vPoints[0].z;
+	_float Value2 = _vPoints[1].x * _vPoints[0].z + _vPoints[2].x * _vPoints[1].z + _vPoints[0].x * _vPoints[2].z;
+	_float Result = Value1 - Value2;
+
+	if (Result > 0)
+	{
+		Vec3 temp = _vPoints[0];
+		Vec3 dest = _vPoints[2];
+
+		_vPoints[0] = dest;
+		_vPoints[2] = temp;
+	}*/
+
+	Vec3 center((_vPoints[0].x + _vPoints[1].x + _vPoints[2].x) / 3.f,
+		(_vPoints[0].y + _vPoints[1].y + _vPoints[2].y) / 3.f,
+		(_vPoints[0].z + _vPoints[1].z + _vPoints[2].z) / 3.f);
+
+
+	list<Vec3> sortList;
+	sortList.push_back(_vPoints[0]);
+	sortList.push_back(_vPoints[1]);
+	sortList.push_back(_vPoints[2]);
+
+
+	sortList.sort([&center](Vec3 pDst, Vec3 pSrc) {
+		_float angle1 = atan2(pDst.x - center.x, pDst.z - center.z);
+		_float angle2 = atan2(pSrc.x - center.x, pSrc.z - center.z);
+		return angle1 < angle2;
+		}
+	);
+
+
+	auto iter = sortList.begin();
+
+	_vPoints[0].x = iter->x;
+	_vPoints[0].y = iter->y;
+	_vPoints[0].z = iter->z;
+	++iter;
+
+	_vPoints[1].x = iter->x;
+	_vPoints[1].y = iter->y;
+	_vPoints[1].z = iter->z;
+	++iter;
+
+	_vPoints[2].x = iter->x;
+	_vPoints[2].y = iter->y;
+	_vPoints[2].z = iter->z;
 }
 
 _float ImGuiManager::DistanceBetewwinPoints(const Vec3& point1, const Vec3& point2)
