@@ -6,6 +6,8 @@
 #include "LandObject.h"
 #include "Utils.h"
 #include "FileUtils.h"
+#include "Player.h"
+#include "PlayerBody.h"
 
 GameScene::GameScene(ID3D11Device* _device, ID3D11DeviceContext* _deviceConetxt)
     : Level(_device, _deviceConetxt)
@@ -23,17 +25,18 @@ HRESULT GameScene::Initialize()
 	if (FAILED(ReadyMyMap()))
 		return E_FAIL;
 
-    if (FAILED(ReadyLayerTerrain(LAYER_TAG::LAYER_TERRAIN)))
-        return E_FAIL;
+    //if (FAILED(ReadyLayerTerrain(LAYER_TAG::LAYER_STATIC)))
+    //    return E_FAIL;
 
-    if (FAILED(ReadyLayerCamera(LAYER_TAG::LAYER_CAMERA)))
-        return E_FAIL;
-
-    if (FAILED(ReadyLandObjects(LAYER_TAG::LAYER_TERRAIN)))
+    if (FAILED(ReadyLandObjects(LAYER_TAG::LAYER_STATIC)))
         return E_FAIL;
 
     if (FAILED(ReadyLight()))
         return E_FAIL;
+
+	//if (FAILED(ReadyLayerCamera(LAYER_TAG::LAYER_CAMERA)))
+	//	return E_FAIL;
+
 
     return S_OK;
 }
@@ -271,37 +274,51 @@ HRESULT GameScene::ReadyMyMap()
 
 HRESULT GameScene::ReadyLandObjects(const LAYER_TAG layerTag)
 {
-  /*  LandObject::LANDOBJET_DESC LandObjectDesc = {};
+	LandObject::LANDOBJET_DESC LandObjectDesc = {};
 
-    GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
-    Transform* pTransform = static_cast<Transform*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ComponentTransform"), 0));
-    VIBufferCell* pCellBuffer = static_cast<VIBufferCell*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ComponentVIBuffer"), 0));
+	Transform* pTransform = static_cast<Transform*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ComponentTransform"), "2stBottom", 0));
+	BinaryNavi* pNavi = static_cast<BinaryNavi*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ComponentNavigation"), "2stBottom", 0));
 
-	LandObjectDesc.pCellBuffer = pCellBuffer;
+	// Navigation이 만들어질 때. 버퍼의 Cell의 정보를 들고있다면..그냥 pNavi의 버퍼를 가지고오면 될 듯..?
+
+	vector<Cell*>& vecCells = pNavi->GetCell();
+
+	LandObjectDesc.pCells = &vecCells;
 	LandObjectDesc.pCellTransform = pTransform;
 
-    RELEASE_INSTANCE(GameInstance);
+	RELEASE_INSTANCE(GameInstance);
 
-    if (FAILED(ReadyLayerPlayer(LAYER_TAG::LAYER_PLAYER, &LandObjectDesc)))
-        return E_FAIL;*/
 
-    return S_OK;
+	if (FAILED(pGameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ProtoTypeGameObjectPlayer"), &LandObjectDesc)))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT GameScene::ReadyLayerTerrain(const LAYER_TAG layerTag)
 {
 
-    GameInstance* gameInstance = GameInstance::GetInstance();
-    Safe_AddRef<GameInstance*>(gameInstance);
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-    if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ProtoTypeGameObjectTerrain"))))
-        return E_FAIL;
+	ComponentNames comNames;
 
-    Safe_Release<GameInstance*>(gameInstance);
+	comNames._protoTypeName = TEXT("ProtoTypeStaticObject");
+	comNames._strModelComponentName = TEXT("ProtoType2stBottom");
+	comNames._strShaderName = TEXT("ProtoTypeComponentDefaultMeshShader");
+	comNames._strModelName = "2stBottom";
+	Matrix ScaleMatrix;
+	comNames._saveWorldMatrix *= ScaleMatrix.CreateScale(Vec3(0.1, 0.1f, 0.1f));
 
 
-    return S_OK;
+
+	if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), layerTag, TEXT("ProtoTypeStaticObject"), &comNames)))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(GameInstance);
+	return S_OK;
+
 }
 
 HRESULT GameScene::ReadyLayerCamera(const LAYER_TAG layerTag)
@@ -319,7 +336,7 @@ HRESULT GameScene::ReadyLayerCamera(const LAYER_TAG layerTag)
         cameraDesc._aspect = g_iWinSizeX / static_cast<_float>(g_iWinSizeY);
         cameraDesc._near = 0.2f;
         cameraDesc._far = 300.f;
-        cameraDesc.speedPerSec = 10.f;
+        cameraDesc.speedPerSec = 5.f;
         cameraDesc.rotationRadianPerSec = ::XMConvertToRadians(90.f);
     }
 

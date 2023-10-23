@@ -6,7 +6,7 @@ BEGIN(Engine)
 
 class Transform;
 
-class CameraHelper : public Base
+class ENGINE_DLL CameraHelper : public Base
 {
 	DECLARE_SINGLETON(CameraHelper)
 

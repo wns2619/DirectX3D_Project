@@ -131,7 +131,7 @@ float4 ComputeLight(float3 normal, float2 uv, float3 worldPosition)
         float3 E = normalize(cameraPosition - worldPosition);
         
         float value = saturate(dot(R, E));
-        float specular = pow(value, 10);
+        float specular = pow(value, 30);
 
         specularColor = GlobalLight.Specular * Material.Specular * specular;
     }
@@ -155,7 +155,7 @@ float4 ComputeLight(float3 normal, float2 uv, float3 worldPosition)
     return ambientColor + diffuseColor + specularColor + emissiveColor;
 }
 
-float4 ComputeTeacherLight(float3 normal, float2 uv, float3 worldPosition)
+float4 ComputeTeacherLight(float4 normal, float2 uv, float4 worldPosition)
 {
     vector vMaterialDiffuse = DiffuseMap.Sample(LinearSampler, uv);
 
@@ -164,16 +164,17 @@ float4 ComputeTeacherLight(float3 normal, float2 uv, float3 worldPosition)
         discard;
     
     // Diffuse + ambient
-    vector shade = max(dot(normalize(-GlobalLight.Direction), normalize(normal)), 0.f) + 
+    vector shade = max(dot(normalize(float4(-GlobalLight.Direction, 0.f)), normalize(normal)), 0.f) +
     GlobalLight.Ambient * Material.Ambient;
     
     // Specular
-    float3 reflection = reflect(normalize(GlobalLight.Direction), normalize(normal));
-    float3 eyelook = worldPosition - CameraPosition();
+    vector reflection = reflect(normalize(float4(GlobalLight.Direction, 0.f)), normalize(normal));
+    vector eyelook = worldPosition - float4(CameraPosition(), 1.f);
     
-    float specular = pow(max(dot(normalize(eyelook), normalize(reflection)), 0.f), 30.f);
+    float specular = pow(max(dot(normalize(-eyelook), normalize(reflection)), 0.f), 30.f);
     
-    return (GlobalLight.Diffuse * vMaterialDiffuse) * saturate(shade) + (GlobalLight.Specular * Material.Specular) * specular;
+    return (GlobalLight.Diffuse * vMaterialDiffuse) * saturate(shade) + 
+    (GlobalLight.Specular * Material.Specular) * specular;
 
 }
 

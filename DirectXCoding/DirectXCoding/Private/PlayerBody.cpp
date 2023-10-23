@@ -8,7 +8,7 @@ PlayerBody::PlayerBody(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 }
 
-PlayerBody::PlayerBody(const PartObject& rhs)
+PlayerBody::PlayerBody(const PlayerBody& rhs)
 	: PartObject(rhs)
 {
 
@@ -113,7 +113,7 @@ HRESULT PlayerBody::Ready_Components()
 		level = static_cast<uint32>(LEVEL::EDIT);
 
 	/* Shader Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME),
 		TEXT("ProtoTypeComponentAnimMesh"),
 		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
@@ -121,7 +121,7 @@ HRESULT PlayerBody::Ready_Components()
 	/* Transform Component */
 	
 	Transform::TRANSFORM_DESC transformDesc;
-	transformDesc.speedPerSec = 10.f;
+	transformDesc.speedPerSec = 5.f;
 	transformDesc.rotationRadianPerSec = ::XMConvertToRadians(90.f);
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
@@ -129,7 +129,7 @@ HRESULT PlayerBody::Ready_Components()
 		return E_FAIL;
 
 	/* Model Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelPlayer"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelPlayer"),
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
 

@@ -16,9 +16,9 @@ public:
 
 protected:
 	/* 원형을 생성할 때 */
-	Surefire(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	explicit Surefire(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	/* 사본을 생성할 때 */
-	Surefire(const PartObject& rhs); /* 복사 생성자. */
+	explicit Surefire(const Surefire& rhs); /* 복사 생성자. */
 
 	virtual ~Surefire() = default;
 

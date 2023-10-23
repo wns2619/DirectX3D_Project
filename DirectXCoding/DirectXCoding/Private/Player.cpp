@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "PlayerBody.h"
 #include "Surefire.h"
+#include "BodyCam.h"
 #include "GameInstance.h"
 #include "BinaryNavi.h"
 
@@ -36,10 +37,10 @@ HRESULT Player::Initialize(void* pArg)
 
 
 
-	_transform->SetState(Transform::STATE::POSITION, ::XMVectorSet(10.5f, 0.f, -44.4f, 1.f));
+	_transform->SetState(Transform::STATE::POSITION, ::XMVectorSet(11.f, 0.f, -45.5f, 1.f));
 
 	animationcount = 2;
-	static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->StartAnimation(1, true);
+	static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->StartAnimation(2, true);
 
 	return S_OK;
 }
@@ -94,16 +95,7 @@ void Player::KeyInput(const _float& timeDelta)
 {
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-	if (gameInstance->Get_DIKeyState(DIK_Z) & 0x80)
-		_transform->Forward(timeDelta);
-
-	if (gameInstance->Get_DIKeyState(DIK_Q) & 0x80)
-		_transform->Turn(Vec4(0.f, 1.f, 0.f, 0.f), timeDelta * -1.f);
-
-	if (gameInstance->Get_DIKeyState(DIK_E) & 0x80)
-		_transform->Turn(Vec4(0.f, 1.f, 0.f, 0.f), timeDelta);
-
-	if (gameInstance->KeyPressing(DIK_UP))
+	if (gameInstance->KeyPressing(DIK_W))
 	{
 		_transform->Forward(timeDelta, _pNavigation);
 
@@ -112,8 +104,7 @@ void Player::KeyInput(const _float& timeDelta)
 
 		//static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
 	}
-
-	if (gameInstance->KeyPressing(DIK_DOWN))
+	else if (gameInstance->KeyPressing(DIK_S))
 	{
 		_transform->Backward(timeDelta, _pNavigation);
 
@@ -122,6 +113,29 @@ void Player::KeyInput(const _float& timeDelta)
 
 		//static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
 	}
+
+	if (gameInstance->KeyPressing(DIK_A))
+		_transform->Left(timeDelta, _pNavigation);
+	else if (gameInstance->KeyPressing(DIK_D))
+		_transform->Right(timeDelta, _pNavigation);
+
+
+	POINT		pt{ g_iWinSizeX >> 1, g_iWinSizeY >> 1 };
+
+	ClientToScreen(g_hWnd, &pt);
+	SetCursorPos(pt.x, pt.y);
+
+
+
+	_long mouseMove = 0l;
+
+	if (mouseMove = gameInstance->Get_DIMouseMove(DIMM::DIMM_X))
+		_transform->Turn(::XMVectorSet(0.f, 1.f, 0.f, 0.f), mouseMove * 0.1f * timeDelta);
+
+	if (mouseMove = gameInstance->Get_DIMouseMove(DIMM::DIMM_Y))
+		_transform->Turn(_transform->GetState(Transform::STATE::RIGHT), mouseMove * 0.1f * timeDelta);
+
+
 
 	for (auto& pPart : m_pPlayerPart)
 	{
@@ -151,7 +165,7 @@ HRESULT Player::ReadyComponents()
 
 	/* Transform Component */
 	Transform::TRANSFORM_DESC transformDesc;
-	transformDesc.speedPerSec = 5.f;
+	transformDesc.speedPerSec = 2.f;
 	transformDesc.rotationRadianPerSec = ::XMConvertToRadians(90.f);
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
@@ -159,9 +173,9 @@ HRESULT Player::ReadyComponents()
 		return E_FAIL;
 
 	Navigation::NAVIGATION_DESC NavigationDesc;
-	NavigationDesc._iCurrentIndex = 3;
+	NavigationDesc._iCurrentIndex = 2;
 
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeNavigation"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeNavigation"),
 		TEXT("ComponentNavigation"), reinterpret_cast<Component**>(&_pNavigation), &NavigationDesc)))
 		return E_FAIL;
 
@@ -206,6 +220,25 @@ HRESULT Player::ReadyPlayerPart()
 	if (nullptr == pPlayerPart)
 		return E_FAIL;
 	m_pPlayerPart.push_back(pPlayerPart);
+
+
+	BodyCam::BODYCAM_DESC BodyCamDesc;
+	BodyCamDesc.pParentTransform = _transform;
+	BodyCamDesc.SocketMatrix = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketBonePtr("Head_Cam");
+	BodyCamDesc.SocketPivot = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketPivotMatrix();
+	BodyCamDesc.vEye = Vec4(0.f, 10.f, -8.f, 1.f);
+	BodyCamDesc.vAt = Vec4(0.f, 0.f, 0.f, 1.f);
+	BodyCamDesc.fFov = ::XMConvertToRadians(60.f);
+	BodyCamDesc.fAspect = g_iWinSizeX / static_cast<_float>(g_iWinSizeY);
+	BodyCamDesc.fNear = 0.1f;
+	BodyCamDesc.fFar = 300.f;
+
+
+	pPlayerPart = gameInstance->CloneGameObject(TEXT("ProtoTypeGameObjectBodyCam"), &BodyCamDesc);
+	if (nullptr == pPlayerPart)
+		return E_FAIL;
+	m_pPlayerPart.push_back(pPlayerPart);
+
 
 	RELEASE_INSTANCE(GameInstance);
 

@@ -13,7 +13,7 @@ BEGIN(Client)
 class Player final : public LandObject
 {
 public:
-	enum PART { PART_BODY, PART_SURFIRE, PART_END };
+	enum PART { PART_BODY, PART_SURFIRE, PART_CAMERA, PART_END };
 
 private:
 	explicit Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext);

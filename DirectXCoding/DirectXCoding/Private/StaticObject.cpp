@@ -40,7 +40,7 @@ HRESULT StaticObject::Initialize(void* pArg)
 	if (nullptr != pArg)
 		_transform->SetWorldMatrix(static_cast<ComponentNames*>(pArg)->_saveWorldMatrix);
 
-	_transform->SetScaling(Vec3(0.01f, 0.01f, 0.01f));
+	//_transform->SetScaling(Vec3(0.01f, 0.01f, 0.01f));
 
 	//_transform->SetWorldMatrix()
 	//_transform->FixRotation(Vec3(0.f, 1.f, 0.f), ::XMConvertToRadians(90.f));
@@ -50,8 +50,8 @@ HRESULT StaticObject::Initialize(void* pArg)
 void StaticObject::PriorityTick(const _float& timeDelta)
 {
 	// 스태틱 오브젝트 중에 모델 네임이 바닥일 때만 업데이트.
-	//if(_modelName == "2stBottom")
-	//	_pNavigation->Update(_transform->GetWorldMatrixCaculator());
+	if(_modelName == "2stBottom")
+		_pNavigation->Update(Matrix::Identity);
 }
 
 void StaticObject::Tick(const _float& timeDelta)
@@ -128,7 +128,7 @@ HRESULT StaticObject::ReadyComponents()
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
 
-	if (_modelName == "2stBottom")
+	if (_modelName == "2stBottom"  || _modelName == "BasementBottom")
 	{
 		if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeNavigation"),
 			TEXT("ComponentNavigation"), reinterpret_cast<Component**>(&_pNavigation))))

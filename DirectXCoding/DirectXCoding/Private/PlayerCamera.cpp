@@ -38,6 +38,8 @@ HRESULT PlayerCamera::Initialize(void* argument)
 	if(FAILED(__super::Initialize(argument)))
 		return E_FAIL;
 
+
+
 	return S_OK;
 }
 
@@ -70,15 +72,13 @@ void PlayerCamera::Tick(const _float& timeDelta)
 	//if (gameInstance->Get_DIKeyState(DIK_R) & 0x80)
 	//	_mousePause = false;
 
-	//if (false == _mousePause)
-	//{
-		if (mouseMove = gameInstance->Get_DIMouseMove(DIMM::DIMM_X))
-			_transform->Turn(::XMVectorSet(0.f, 1.f, 0.f, 0.f), mouseMove * _playerCameraDesc._mouseSensitive * timeDelta);
 
-		if (mouseMove = gameInstance->Get_DIMouseMove(DIMM::DIMM_Y))
-			_transform->Turn(_transform->GetState(Transform::STATE::RIGHT), mouseMove * _playerCameraDesc._mouseSensitive * timeDelta);
-//
-	//}
+	if (mouseMove = gameInstance->Get_DIMouseMove(DIMM::DIMM_X))
+		_transform->Turn(::XMVectorSet(0.f, 1.f, 0.f, 0.f), mouseMove * _playerCameraDesc._mouseSensitive * timeDelta);
+
+	if (mouseMove = gameInstance->Get_DIMouseMove(DIMM::DIMM_Y))
+		_transform->Turn(_transform->GetState(Transform::STATE::RIGHT), mouseMove * _playerCameraDesc._mouseSensitive * timeDelta);
+
 
 
 	RELEASE_INSTANCE(GameInstance);

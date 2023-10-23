@@ -8,7 +8,7 @@ Surefire::Surefire(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	_modelName = "Surefire";
 }
 
-Surefire::Surefire(const PartObject& rhs)
+Surefire::Surefire(const Surefire& rhs)
 	: PartObject(rhs)
 {
 
@@ -55,6 +55,7 @@ void Surefire::Tick(const _float& fTimeDelta)
 
 void Surefire::LateTick(const _float& fTimeDelta)
 {
+
 }
 
 HRESULT Surefire::Render()
@@ -93,14 +94,14 @@ HRESULT Surefire::Ready_Components()
 		level = static_cast<uint32>(LEVEL::EDIT);
 
 	/* Shader Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME),
 		TEXT("ProtoTypeComponentDefaultMeshShader"),
 		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
 
 	/* Transform Component */
 	Transform::TRANSFORM_DESC transformDesc;
-	transformDesc.speedPerSec = 10.f;
+	transformDesc.speedPerSec = 5.f;
 	transformDesc.rotationRadianPerSec = ::XMConvertToRadians(90.f);
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
@@ -108,7 +109,7 @@ HRESULT Surefire::Ready_Components()
 		return E_FAIL;
 
 	/* Model Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelsurefire"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelsurefire"),
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
 

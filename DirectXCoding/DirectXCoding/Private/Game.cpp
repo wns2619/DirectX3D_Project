@@ -32,6 +32,9 @@ HRESULT Game::Initialize(HWND hwnd)
 	if (FAILED(_gameInstance->Initialize_Engine(static_cast<uint32>(LEVEL::LEVEL_END), g_hInstance, desc, &_device, &_devicecontext)))
 		return E_FAIL;
 
+	ImGuiManager::GetInstance()->Initialize(_device, _devicecontext);
+	ImGuiResourceHandler::GetInstance()->Initialize(_device, _devicecontext);
+
 
 	//if (FAILED(ReadyGara()))
 	//	return E_FAIL;

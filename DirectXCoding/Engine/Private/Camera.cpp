@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Transform.h"
 #include "CameraHelper.h"
+#include "GameInstance.h"
 
 Camera::Camera(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: GameObject(device, deviceContext, OBJECT_TYPE::CAMERA)
@@ -35,6 +36,7 @@ HRESULT Camera::Initialize(void* argument)
 		_cameraDesc._aspect = desc->_aspect;
 		_cameraDesc._near = desc->_near;
 		_cameraDesc._far = desc->_far;
+
 	}
 
 	_transform = Transform::Create(_device, _deviceContext);
@@ -55,8 +57,6 @@ void Camera::Tick(const _float& timeDelta)
 	if (nullptr == _cameraHelper)
 		return;
 
-	//XMMATRIX world = _transform->CustomGetWorldMatrix();
-	//XMMATRIX worldInv = ::XMMatrixInverse(nullptr, world);
 
 	_cameraHelper->SetTransform(CameraHelper::TRANSFORMSTATE::D3DTS_VIEW, _transform->GetInverseMatrixCaculator());
 	_cameraHelper->SetTransform(CameraHelper::TRANSFORMSTATE::D3DTS_PROJ,

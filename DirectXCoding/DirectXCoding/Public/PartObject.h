@@ -33,7 +33,6 @@ protected:
 
 
 protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
-	Transform* _transform = nullptr;
 	Shader* _shader = nullptr;
 
 protected:

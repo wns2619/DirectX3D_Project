@@ -59,10 +59,6 @@ HRESULT ImGuiManager::Initialize(ID3D11Device* device, ID3D11DeviceContext* devi
 	GuiStyle();
 	LoadModelList();
 
-	_pNaviGation = BinaryNavi::Create(_device, _deviceContext);
-	if (nullptr == _pNaviGation)
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -456,7 +452,7 @@ void ImGuiManager::MouseMove()
 			{
 				// TODO
 				// picking에 pObj의 모델의 메쉬 넘기기.
-				if (pObj->GetModelName() == "2stBottom" || pObj->GetModelName() == "2stwall" || pObj->GetModelName() == "2stStair")
+				if (pObj->GetModelName() == "2stBottom" || pObj->GetModelName() == "2stwall" || pObj->GetModelName() == "2stStair" || pObj->GetModelName() == "BasementBottom")
 				{
 					BinaryModel* ObjectMesh = pObj->GetBinaryModelComponent();
 
@@ -566,8 +562,8 @@ void ImGuiManager::MainSection()
 			wstring filepath = L"..\\Binaries\\Resources\\MapData\\";
 			SceneSave(filepath);
 			
-			//wstring Navipath = L"..\\Binaries\\Data\\";
-			//NavigationMeshSave(Navipath);
+			wstring Navipath = L"..\\Binaries\\Data\\";
+			NavigationMeshSave(Navipath);
 		}
 
 		ImGui::SameLine(ImGui::GetWindowWidth() - 56);
@@ -2450,7 +2446,7 @@ HRESULT ImGuiManager::SceneLoad(wstring& filePath)
 void ImGuiManager::SortPoints()
 {
 	// 시계방향 공식을 이용.
-/*	_float Value1 = _vPoints[0].x * _vPoints[1].z + _vPoints[1].x * _vPoints[2].z + _vPoints[2].x * _vPoints[0].z;
+	_float Value1 = _vPoints[0].x * _vPoints[1].z + _vPoints[1].x * _vPoints[2].z + _vPoints[2].x * _vPoints[0].z;
 	_float Value2 = _vPoints[1].x * _vPoints[0].z + _vPoints[2].x * _vPoints[1].z + _vPoints[0].x * _vPoints[2].z;
 	_float Result = Value1 - Value2;
 
@@ -2461,9 +2457,9 @@ void ImGuiManager::SortPoints()
 
 		_vPoints[0] = dest;
 		_vPoints[2] = temp;
-	}*/
+	}
 
-	Vec3 center((_vPoints[0].x + _vPoints[1].x + _vPoints[2].x) / 3.f,
+	/*Vec3 center((_vPoints[0].x + _vPoints[1].x + _vPoints[2].x) / 3.f,
 		(_vPoints[0].y + _vPoints[1].y + _vPoints[2].y) / 3.f,
 		(_vPoints[0].z + _vPoints[1].z + _vPoints[2].z) / 3.f);
 
@@ -2496,7 +2492,7 @@ void ImGuiManager::SortPoints()
 
 	_vPoints[2].x = iter->x;
 	_vPoints[2].y = iter->y;
-	_vPoints[2].z = iter->z;
+	_vPoints[2].z = iter->z;*/
 }
 
 _float ImGuiManager::DistanceBetewwinPoints(const Vec3& point1, const Vec3& point2)

@@ -26,9 +26,6 @@ HRESULT EditScene::Initialize()
     if (FAILED(ReadyLayerEditCamera(LAYER_TAG::LAYER_CAMERA)))
         return E_FAIL;
 
-    ImGuiManager::GetInstance()->Initialize(_device, _deviceContext);
-    ImGuiResourceHandler::GetInstance()->Initialize(_device, _deviceContext);
-
     //if(FAILED(ReadyEnvironment(LAYER_TAG::LAYER_ENVIRONMENT)))
     //    return E_FAIL;
 
@@ -120,6 +117,8 @@ HRESULT EditScene::ReadyTerrain(const LAYER_TAG layerTag)
         return E_FAIL;
 
     RELEASE_INSTANCE(GameInstance);
+
+    return S_OK;
 }
 
 HRESULT EditScene::ReadyLandObject(const LAYER_TAG layerTag)

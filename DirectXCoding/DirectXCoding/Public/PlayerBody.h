@@ -15,9 +15,9 @@ public:
 
 protected:
 	/* 원형을 생성할 때 */
-	PlayerBody(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	explicit PlayerBody(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	/* 사본을 생성할 때 */
-	PlayerBody(const PartObject& rhs); /* 복사 생성자. */
+	explicit PlayerBody(const PlayerBody& rhs); /* 복사 생성자. */
 
 	virtual ~PlayerBody() = default;
 
