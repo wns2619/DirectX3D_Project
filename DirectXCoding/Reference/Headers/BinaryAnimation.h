@@ -33,6 +33,7 @@ public:
 	ANIMATION_DESC& GetAnimationDesc() { return _animationDesc; }
 	vector<uint32>& GetCurrentKeyFrame() { return _CurrentKeyFrame; }
 	vector<class BinaryChannel*>& GetChannels() { return _channels; }
+	_bool GetFinished() { return _isFinished; }
 
 private:
 	ANIMATION_DESC _animationDesc;

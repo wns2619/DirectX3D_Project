@@ -26,11 +26,6 @@ public:
 	Matrix Get_SocketPivotMatrix();
 
 public:
-	void Set_AnimationIndex(uint32 iAnimIndex, _bool isLoop);
-	void StartAnimation(uint32 startIndex, _bool isLoop);
-
-
-public:
 	virtual HRESULT InitializePrototype()			override;
 	virtual HRESULT Initialize(void* pArg)			override;
 	virtual void Tick(const _float& fTimeDelta)		override;

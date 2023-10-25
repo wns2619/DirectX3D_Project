@@ -4,6 +4,8 @@
 #include "Transform.h"
 #include "VIBufferCell.h"
 #include "Cell.h"
+#include "BinaryNavi.h"
+
 
 LandObject::LandObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, OBJECT_TYPE etype)
 	: GameObject(device, deviceContext, etype)
@@ -67,4 +69,5 @@ void LandObject::Free()
 	__super::Free();
 
 	Safe_Release<Transform*>(_pCellTransform);
+	Safe_Release<BinaryNavi*>(_pNavigation);
 }

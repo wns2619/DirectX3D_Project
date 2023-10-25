@@ -15,6 +15,8 @@
 #include "BinaryModel.h"
 #include "Navigation.h"
 #include "BinaryNavi.h"
+#include "StateMachine.h"
+#include "Animator.h"
 
 //#include "OBBBoxCollider.h"
 //#include "AABBBoxCollider.h"

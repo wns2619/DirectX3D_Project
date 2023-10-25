@@ -5,6 +5,11 @@
 #include "BodyCam.h"
 #include "GameInstance.h"
 #include "BinaryNavi.h"
+#include "PlayerWalk.h"
+#include "PlayerFire.h"
+#include "PlayerReload.h"
+#include "BinaryAnimation.h"
+#include "BinaryBone.h"
 
 Player::Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: LandObject(device, deviceContext, OBJECT_TYPE::PLAYER)
@@ -35,12 +40,26 @@ HRESULT Player::Initialize(void* pArg)
 	if (FAILED(ReadyPlayerPart()))
 		return E_FAIL;
 
+	State* pState = PlayerWalk::Create(_device, _deviceContext, this);
+	_pStateMachine->AddState(State::STATE::IDLE, pState);
+	pState = PlayerFire::Create(_device, _deviceContext, this);
+	_pStateMachine->AddState(State::STATE::SHOOT, pState);
+	pState = PlayerReload::Create(_device, _deviceContext, this);
+	_pStateMachine->AddState(State::STATE::RELOAD, pState);
+	
+	vector<BinaryAnimation*>& vecAnim = 
+		static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->GetBinaryModelComponent()->GetBinaryAnimation();
+	vector<BinaryBone*>& pVecBone = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->GetBinaryModelComponent()->GetBinaryBones();
+
+	_pAnimator->AddAnimation(State::STATE::SHOOT, vecAnim[0], &pVecBone);
+	_pAnimator->AddAnimation(State::STATE::RELOAD, vecAnim[1], &pVecBone);
+	_pAnimator->AddAnimation(State::STATE::IDLE, vecAnim[2], &pVecBone, true);
 
 
+	_pStateMachine->SetAnimator(_pAnimator);
+	_pStateMachine->SetState(State::STATE::IDLE);
 	_transform->SetState(Transform::STATE::POSITION, ::XMVectorSet(11.f, 0.f, -45.5f, 1.f));
 
-	animationcount = 2;
-	static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->StartAnimation(2, true);
 
 	return S_OK;
 }
@@ -51,11 +70,22 @@ void Player::Tick(const _float& fTimeDelta)
 		return;
 
 	KeyInput(fTimeDelta);
+	_pStateMachine->UpdateStateMachine(fTimeDelta);
+
+
+	for (auto& pPart : m_pPlayerPart)
+	{
+		if (nullptr != pPart)
+			pPart->Tick(fTimeDelta);
+	}
+
 }
 
 void Player::LateTick(const _float& fTimeDelta)
 {
+	_pStateMachine->UpdateLateStateMachine(fTimeDelta);
 
+	
 	for (auto& pPart : m_pPlayerPart)
 	{
 		if (nullptr != pPart)
@@ -82,6 +112,8 @@ HRESULT Player::Render()
 			pPart->Render();
 	}
 
+
+
 #ifdef _DEBUG
 	_pNavigation->Render();
 #endif // _DEBUG
@@ -95,37 +127,10 @@ void Player::KeyInput(const _float& timeDelta)
 {
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-	if (gameInstance->KeyPressing(DIK_W))
-	{
-		_transform->Forward(timeDelta, _pNavigation);
-
-		if (animationcount < 2)
-			++animationcount;
-
-		//static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
-	}
-	else if (gameInstance->KeyPressing(DIK_S))
-	{
-		_transform->Backward(timeDelta, _pNavigation);
-
-		if (animationcount > 0)
-			--animationcount;
-
-		//static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Set_AnimationIndex(animationcount, true);
-	}
-
-	if (gameInstance->KeyPressing(DIK_A))
-		_transform->Left(timeDelta, _pNavigation);
-	else if (gameInstance->KeyPressing(DIK_D))
-		_transform->Right(timeDelta, _pNavigation);
-
-
 	POINT		pt{ g_iWinSizeX >> 1, g_iWinSizeY >> 1 };
 
 	ClientToScreen(g_hWnd, &pt);
 	SetCursorPos(pt.x, pt.y);
-
-
 
 	_long mouseMove = 0l;
 
@@ -134,14 +139,6 @@ void Player::KeyInput(const _float& timeDelta)
 
 	if (mouseMove = gameInstance->Get_DIMouseMove(DIMM::DIMM_Y))
 		_transform->Turn(_transform->GetState(Transform::STATE::RIGHT), mouseMove * 0.1f * timeDelta);
-
-
-
-	for (auto& pPart : m_pPlayerPart)
-	{
-		if (nullptr != pPart)
-			pPart->Tick(timeDelta);
-	}
 
 	XMVECTOR vPosition = __super::SetUp_OnCell(_transform->GetState(Transform::STATE::POSITION), _pNavigation->GetCurrentIndex());
 
@@ -179,6 +176,13 @@ HRESULT Player::ReadyComponents()
 		TEXT("ComponentNavigation"), reinterpret_cast<Component**>(&_pNavigation), &NavigationDesc)))
 		return E_FAIL;
 
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeStateMachine"),
+		TEXT("ComponentStateMachine"), reinterpret_cast<Component**>(&_pStateMachine))))
+		return E_FAIL;
+
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAnimator"),
+		TEXT("ComponentAnimator"), reinterpret_cast<Component**>(&_pAnimator))))
+		return E_FAIL;
 
 	RELEASE_INSTANCE(GameInstance);
 
@@ -228,10 +232,10 @@ HRESULT Player::ReadyPlayerPart()
 	BodyCamDesc.SocketPivot = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketPivotMatrix();
 	BodyCamDesc.vEye = Vec4(0.f, 10.f, -8.f, 1.f);
 	BodyCamDesc.vAt = Vec4(0.f, 0.f, 0.f, 1.f);
-	BodyCamDesc.fFov = ::XMConvertToRadians(60.f);
+	BodyCamDesc.fFov = ::XMConvertToRadians(70.f);
 	BodyCamDesc.fAspect = g_iWinSizeX / static_cast<_float>(g_iWinSizeY);
-	BodyCamDesc.fNear = 0.1f;
-	BodyCamDesc.fFar = 300.f;
+	BodyCamDesc.fNear = 0.001f;
+	BodyCamDesc.fFar = 50.f;
 
 
 	pPlayerPart = gameInstance->CloneGameObject(TEXT("ProtoTypeGameObjectBodyCam"), &BodyCamDesc);
@@ -285,5 +289,6 @@ void Player::Free()
 
 	Safe_Release<Shader*>(_shader);
 	Safe_Release<Renderer*>(_render);
-	Safe_Release<BinaryNavi*>(_pNavigation);
+	Safe_Release<StateMachine*>(_pStateMachine);
+	Safe_Release<Animator*>(_pAnimator);
 }

@@ -31,16 +31,6 @@ Matrix PlayerBody::Get_SocketPivotMatrix()
 	return _binaryModel->GetPivotMatrix();
 }
 
-void PlayerBody::Set_AnimationIndex(uint32 iAnimIndex, _bool isLoop)
-{
-	_binaryModel->SetAnimation(iAnimIndex, isLoop);
-}
-
-void PlayerBody::StartAnimation(uint32 startIndex, _bool isLoop)
-{
-	_binaryModel->SetFirstAnimation(startIndex, isLoop);
-}
-
 HRESULT PlayerBody::InitializePrototype()
 {
 	return S_OK;
@@ -55,16 +45,11 @@ HRESULT PlayerBody::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	//_binaryModel->SetUp_Animation(true, 0);
-	//_binaryModel->SetFirstAnimation(2, true);
-
 	return S_OK;
 }
 
 void PlayerBody::Tick(const _float& fTimeDelta)
 {
-	_binaryModel->PlayAnimation(fTimeDelta);
-
 
 	Compute_RenderMatrix(_transform->GetWorldMatrix());
 }

@@ -6,6 +6,8 @@ BEGIN(Engine)
 class Renderer;
 class Transform;
 class BinaryNavi;
+class StateMachine;
+class Animator;
 END
 
 BEGIN(Client)
@@ -29,17 +31,17 @@ public:
 
 public:
 	void KeyInput(const _float& timeDelta);
-
 public:
 	vector<class GameObject*>& GetPlyaerPart() { return m_pPlayerPart; }
-
+	StateMachine* GetStateMachine() { return _pStateMachine; }
 private:
 	vector<class GameObject*> m_pPlayerPart;
 
 private:
-	Renderer* _render			= nullptr;
-	Shader* _shader				= nullptr;
-	BinaryNavi* _pNavigation	= nullptr;
+	Renderer* _render				= nullptr;
+	Shader* _shader					= nullptr;
+	StateMachine* _pStateMachine	= nullptr;
+	Animator* _pAnimator			= nullptr;
 
 	uint32 animationcount = 0;
 private:

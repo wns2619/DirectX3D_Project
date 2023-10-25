@@ -70,7 +70,6 @@ void BinaryAnimation::Reset()
 {
 	_animationDesc._trackPosition = 0.f;
 	_isFinished = false;
-	_isLoop = false;
 
 
 	for (auto& pChannel : _CurrentKeyFrame)

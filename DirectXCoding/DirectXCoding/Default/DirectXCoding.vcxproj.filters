@@ -122,6 +122,9 @@
     <Filter Include="소스 파일\02.GameObjects\03.Player\PartObject\BodyCam">
       <UniqueIdentifier>{a82f8676-8ee9-4c1d-bba3-551bb96e87ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\03.Player\State">
+      <UniqueIdentifier>{962ee82d-5f06-4f8d-95d8-36101419f432}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -268,6 +271,15 @@
     <ClInclude Include="..\Public\BodyCam.h">
       <Filter>소스 파일\02.GameObjects\03.Player\PartObject\BodyCam</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PlayerWalk.h">
+      <Filter>소스 파일\02.GameObjects\03.Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerFire.h">
+      <Filter>소스 파일\02.GameObjects\03.Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerReload.h">
+      <Filter>소스 파일\02.GameObjects\03.Player\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -389,6 +401,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\BodyCam.cpp">
       <Filter>소스 파일\02.GameObjects\03.Player\PartObject\BodyCam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerWalk.cpp">
+      <Filter>소스 파일\02.GameObjects\03.Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerFire.cpp">
+      <Filter>소스 파일\02.GameObjects\03.Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerReload.cpp">
+      <Filter>소스 파일\02.GameObjects\03.Player\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

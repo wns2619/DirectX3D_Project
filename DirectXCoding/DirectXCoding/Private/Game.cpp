@@ -43,7 +43,7 @@ HRESULT Game::Initialize(HWND hwnd)
 		return E_FAIL;
 
 
-	if (FAILED(OpenLevel(LEVEL::EDIT)))
+	if (FAILED(OpenLevel(LEVEL::GAME)))
 		return E_FAIL;
 	
 	
@@ -114,7 +114,7 @@ HRESULT Game::ReadyProtoTypeComponents()
 		Transform::Create(_device, _devicecontext))))
 		return E_FAIL;
 
-
+	
 	Safe_AddRef<Renderer*>(_renderer);
 
 	return S_OK;

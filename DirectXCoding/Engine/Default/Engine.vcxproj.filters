@@ -178,6 +178,9 @@
     <Filter Include="01.Utility\04.Component\Navigation\BinaryNavi">
       <UniqueIdentifier>{740297c9-7c6f-43f1-9f53-af69f520cf97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Component\StateMachine">
+      <UniqueIdentifier>{7d9e460a-ed7a-4e93-b344-b0b2c6ef96b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -387,6 +390,15 @@
     <ClInclude Include="..\Public\BinaryNavi.h">
       <Filter>01.Utility\04.Component\Navigation\BinaryNavi</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State.h">
+      <Filter>01.Utility\04.Component\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StateMachine.h">
+      <Filter>01.Utility\04.Component\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Animator.h">
+      <Filter>01.Utility\04.Component\StateMachine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -553,6 +565,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\BinaryNavi.cpp">
       <Filter>01.Utility\04.Component\Navigation\BinaryNavi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State.cpp">
+      <Filter>01.Utility\04.Component\StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StateMachine.cpp">
+      <Filter>01.Utility\04.Component\StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Animator.cpp">
+      <Filter>01.Utility\04.Component\StateMachine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

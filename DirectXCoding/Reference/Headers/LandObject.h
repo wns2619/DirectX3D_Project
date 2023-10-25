@@ -26,6 +26,9 @@ public:
 	virtual void LateTick(const _float& timeDelta);
 	virtual HRESULT Render();
 
+public:
+	BinaryNavi* GetNavigation() { return _pNavigation; }
+
 protected:
 	XMVECTOR SetUp_OnCell(FXMVECTOR vWorldPos, int32 currentIndex);
 
@@ -34,6 +37,9 @@ private:
 
 	// 셀의 벡터를 들고와서 현재 커런트 셀을 받아서. 셀을 태우자.?
 	vector<class Cell*>* _pCells = nullptr;
+
+protected:
+	class BinaryNavi* _pNavigation = nullptr;
 
 public:
 	virtual GameObject* Clone(void* pArg) = 0;

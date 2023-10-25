@@ -129,19 +129,6 @@ HRESULT BinaryModel::BindMaterialTexture(Shader* shader, const char* constantNam
 	return _materials[iMaterialIndex]._texture[type]->BindShaderResource(shader, constantName, 0);
 }
 
-HRESULT BinaryModel::PlayAnimation(const _float& timeDelta)
-{
-	if (true == _animationChange)
-		ChangeAnimation(0.2f, timeDelta);
-	if (false == _animationChange)
-		_animations[_currentAnimIndex]->UpdateTransformationMatrix(_bones, timeDelta);
-	
-
-	for (auto& bone : _bones)
-		bone->UpdateCombinedTransformMatrix(_bones);
-
-	return S_OK;
-}
 
 HRESULT BinaryModel::Render(uint32 meshIndex)
 {
@@ -482,91 +469,8 @@ HRESULT BinaryModel::BinaryModelDynamic(shared_ptr<FileUtils> file, const string
 	return S_OK;
 }
 
-HRESULT BinaryModel::SetFirstAnimation(uint32 first, _bool loop)
-{
-	if (first >= _numAnimations &&
-		first == _currentAnimIndex)
-		return S_OK;
-
-	_currentAnimIndex = first;
-
-	_animations[_currentAnimIndex]->Reset();
-	_animations[_currentAnimIndex]->SetLoop(loop);
-	
-
-	return S_OK;
-}
-
-HRESULT BinaryModel::SetAnimation(uint32 next, _bool loop)
-{
-	if (next >= _numAnimations &&
-		next == _currentAnimIndex)
-		return S_OK;
-
-	_animationChange = true;
-	_nextAnimationIndex = next;
-	_ChangeTrackPosition = 0.f;
-	
-	_curChannels = _animations[_currentAnimIndex]->GetChannels();
-	_nextChannels = _animations[_nextAnimationIndex]->GetChannels();
-
-	return S_OK;
-}
-
-HRESULT BinaryModel::ChangeAnimation(_float duration, const _float& timeDelta)
-{
-	_ChangeTrackPosition += timeDelta;
-
-	Vec3 vScale;
-	Vec4 vRotation;
-	Vec4 vTranslation;
-
-	for (auto& pCurChannel : _curChannels)
-	{
-		for (auto& pNextChannel : _nextChannels)
-		{
-			if (pCurChannel->GetChannelDesc()._boneIndex == pNextChannel->GetChannelDesc()._boneIndex)
-			{
-				KEYFRAME curKeyFrame = pCurChannel->GetCurrentKeyFrame();
-				KEYFRAME nextKeyFrame = pNextChannel->GetKeyFrame().front();
-
-				while (_ChangeTrackPosition >= duration)
-				{
-					_animationChange = false;
-					_currentAnimIndex = _nextAnimationIndex;
-					_animations[_currentAnimIndex]->Reset();
-					_animations[_currentAnimIndex]->SetLoop(_nextAnimationLoop);
-
-					return S_OK;
-				}
-
-				_float ratio = (_ChangeTrackPosition - 0.f) / duration;
-
-				// 스케일 로테이션 트렌슬레이션도 보간한다.
-				Vec4 sourScale = ::XMLoadFloat3(&curKeyFrame.scale);
-				Vec4 destScale = ::XMLoadFloat3(&nextKeyFrame.scale);
-				::XMStoreFloat3(&vScale, ::XMVectorLerp(sourScale, destScale, ratio));
-
-				Vec4 sourRotation = ::XMLoadFloat4(&curKeyFrame.rotation);
-				Vec4 destRotation = ::XMLoadFloat4(&nextKeyFrame.rotation);
-				::XMStoreFloat4(&vRotation, ::XMQuaternionSlerp(sourRotation, destRotation, ratio));
-
-				Vec4 sourTranslation = ::XMLoadFloat4(&curKeyFrame.translation);
-				Vec4 destTranslation = ::XMLoadFloat4(&nextKeyFrame.translation);
-				::XMStoreFloat4(&vTranslation, ::XMVectorLerp(sourTranslation, destTranslation, ratio));
 
 
-				Matrix TransformationMatrix = ::XMMatrixAffineTransformation(::XMLoadFloat3(&vScale),
-					::XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&vRotation), ::XMLoadFloat4(&vTranslation));
-
-				_bones[pCurChannel->GetChannelDesc()._boneIndex]->SetTransformationMatrix(TransformationMatrix);
-			}
-		}
-	}
-
-
-	return S_OK;
-}
 
 BinaryModel* BinaryModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL_TYPE type, const string& pBinaryModelFilePath, FXMMATRIX pivotMat)
 {
