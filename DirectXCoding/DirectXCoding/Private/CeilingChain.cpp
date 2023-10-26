@@ -2,6 +2,7 @@
 #include "CeilingChain.h"
 
 #include "GameInstance.h"
+#include "BoundingOBB.h"
 
 CeilingChain::CeilingChain(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : DynamicObject(device, deviceContext, DYNAMIC_TYPE::CHAIN)
@@ -24,13 +25,19 @@ HRESULT CeilingChain::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
+	if (FAILED(ReadyCollider()))
+		return E_FAIL;
+
+
     return S_OK;
 }
 
 void CeilingChain::Tick(const _float& timeDelta)
 {
-    if (!_enabled)
+    if (_enabled)
         return;
+
+	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
 
 void CeilingChain::LateTick(const _float& timeDelta)
@@ -63,9 +70,32 @@ HRESULT CeilingChain::Render()
 			return E_FAIL;
 	}
 
+#ifdef _DEBUG
+	_pCollider->Render();
+#endif // _DEBUG
 
 	return S_OK;
 
+}
+
+HRESULT CeilingChain::ReadyCollider()
+{
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	BoundingOBB::BOUNDING_OBB_DESC obbDesc;
+	{
+		obbDesc.vCenter = Vec3(-2.5f, 0.f, 2.5f);
+		obbDesc.vExtents = Vec3(5.f, 70.f, 5.f);
+		obbDesc.vRotation = Quaternion(0.f, 0.f, 0.f, 1.f);
+	}
+
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeOBBCollider"),
+		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &obbDesc)))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(GameInstance);
+
+	return S_OK;
 }
 
 CeilingChain* CeilingChain::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)

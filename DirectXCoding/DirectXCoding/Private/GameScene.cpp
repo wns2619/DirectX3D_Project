@@ -151,9 +151,9 @@ HRESULT GameScene::ReadyMyMap()
 				file->Read(modelName);
 				DynamicComponentName._strModelName = modelName;
 
-				//uint32 modelID;
-				//file->Read<uint32>(modelID);
-				//DynamicComponentName._modelID = modelID;
+				uint32 modelID;
+				file->Read<uint32>(modelID);
+				DynamicComponentName._modelID = modelID;
 
 				string modelComponentName;
 				file->Read(modelComponentName);

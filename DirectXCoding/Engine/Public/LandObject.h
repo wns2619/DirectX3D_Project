@@ -27,7 +27,7 @@ public:
 	virtual HRESULT Render();
 
 public:
-	BinaryNavi* GetNavigation() { return _pNavigation; }
+	class BinaryNavi* GetNavigation() { return _pNavigation; }
 
 protected:
 	XMVECTOR SetUp_OnCell(FXMVECTOR vWorldPos, int32 currentIndex);

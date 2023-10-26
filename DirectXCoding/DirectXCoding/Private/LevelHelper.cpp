@@ -7,9 +7,6 @@
 #include "EditorTerrain.h"
 #include "Player.h"
 #include "ImguiResourceHandler.h"
-#include "OBBBoxCollider.h"
-#include "AABBboxCollider.h"
-#include "SphereCollider.h"
 #include "ToolCamera.h"
 #include "PlayerBody.h"
 #include "Surefire.h"
@@ -143,6 +140,17 @@ HRESULT LevelHelper::LodingforLevelGame()
         Animator::Create(_device, _deviceContext))))
         return E_FAIL;
 
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeOBBCollider"),
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::OBB))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAABBColider"),
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::AABB))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeSphereColider"),
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::SPHERE))))
+        return E_FAIL;
 
     RELEASE_INSTANCE(GameInstance);
     return S_OK;
@@ -166,6 +174,26 @@ HRESULT LevelHelper::LodingforLevelEdit()
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeNavigation"),
         BinaryNavi::Create(_device, _deviceContext))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeOBBCollider"),
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::OBB))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeAABBColider"),
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::AABB))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeSphereColider"),
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::SPHERE))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeStateMachine"),
+        StateMachine::Create(_device, _deviceContext))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeAnimator"),
+        Animator::Create(_device, _deviceContext))))
         return E_FAIL;
 
 
@@ -282,14 +310,14 @@ HRESULT LevelHelper::LodingforLevelEdit()
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\2stPipeGroup2.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\2stPipeGroup2.dat", TEXT("ProtoType2stPipeGroup2"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* Cage */
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\Cage.dat", LAYER_TAG::LAYER_PUZZLE, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\Cage.dat", LAYER_TAG::LAYER_PUZZLE, TEXT("ProtoTypeCage"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\Cage.dat", TEXT("ProtoTypeCage"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* Chain */
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\Chain.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeCeilingChain"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\Chain.dat", TEXT("ProtoTypeChain"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* Grid Door */
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\GridDoor.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
-    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\GridDoor.dat", TEXT("ProtoTypeGridDoor"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    //ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\GridDoor.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeOldSteelGridMainWithKey"));
+    //ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\GridDoor.dat", TEXT("ProtoTypeGridDoor"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* Motor */
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\Motor.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\Motor.dat", TEXT("ProtoTypeMotor"), TEXT("ProtoTypeComponentDefaultMeshShader"));
@@ -315,7 +343,7 @@ HRESULT LevelHelper::LodingforLevelEdit()
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\electricalBox.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\electricalBox.dat", TEXT("ProtoTypeelectricalBox"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* OldSteelGridDoor */
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\OldSteelGridDoor.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\OldSteelGridDoor.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeStaticObject"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\OldSteelGridDoor.dat", TEXT("ProtoTypeOldSteelGridDoor"), TEXT("ProtoTypeComponentDefaultMeshShader"));
     /* Supply Stands*/
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\supplyStands.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
@@ -1838,6 +1866,14 @@ HRESULT LevelHelper::LoadingObject()
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
         }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeCage"),
+            Cage::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
         break;
     case Client::LEVEL::EDIT:
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectEditTerrain"),
@@ -1938,6 +1974,13 @@ HRESULT LevelHelper::LoadingObject()
 
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoWallPaint"),
             WallPainting::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeCage"),
+            Cage::Create(_device, _deviceContext))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

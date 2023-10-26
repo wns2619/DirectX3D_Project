@@ -25,10 +25,9 @@ public:
 	_bool IsOut(FXMVECTOR vPoint, FXMMATRIX worldMatrix, int32* pNeighborIndex);
 	Vec3 IsSilde(XMVECTOR& vPoint, FXMVECTOR vLook, FXMMATRIX worldMatrix);
 
-#ifdef _DEBUG
 public:
 	class VIBufferCell* GetCellBuffer() { return _viBuffer; }
-#endif // _DEBUG
+
 
 
 
@@ -41,10 +40,10 @@ public:
 private:
 	ID3D11Device* _device = nullptr;
 	ID3D11DeviceContext* _deviceContext = nullptr;
-#ifdef _DEBUG
+
 private:
 	class VIBufferCell* _viBuffer = nullptr;
-#endif // _DEBUG
+
 
 
 private:

@@ -5,6 +5,7 @@
 BEGIN(Engine)
 class Shader;
 class Renderer;
+class Collider;
 END
 
 BEGIN(Client)
@@ -14,7 +15,7 @@ BEGIN(Client)
 class DynamicObject abstract : public GameObject
 {
 public:
-	enum DYNAMIC_TYPE { STEEL_DOOR, BREAK_DOOR, MASK, CHAIN, DRUM, GRID_DOOR, OLD_DOOR, VALVE, BASEMENT_WOOD, TYPE_END };
+	enum DYNAMIC_TYPE { STEEL_DOOR, BREAK_DOOR, MASK, CHAIN, DRUM, GRID_DOOR, CAGE, OLD_DOOR, VALVE, BASEMENT_WOOD, TYPE_END };
 
 public:
 	struct STATE_DESC
@@ -35,6 +36,9 @@ public:
 	virtual void Tick(const _float& timeDelta)		override;
 	virtual void LateTick(const _float& timeDelta)	override;
 	virtual HRESULT Render()						override;
+
+public:
+	virtual HRESULT ReadyCollider() = 0;
 	
 public:
 	STATE_DESC& GetDynamicComponentsName() { return _comNames; }
@@ -42,6 +46,7 @@ public:
 protected:
 	Renderer* _render = nullptr;
 	Shader* _shader = nullptr;
+	Collider* _pCollider = nullptr;
 
 	STATE_DESC _comNames;
 	DYNAMIC_TYPE _eDynamicType;

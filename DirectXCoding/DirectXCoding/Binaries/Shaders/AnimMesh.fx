@@ -33,8 +33,8 @@ PixelOut PS_MAIN(MeshOut input)
     PixelOut Out = (PixelOut) 0;
     
     // 조명 + 내 마테리얼로 나온 최종 색깔 값.
-    Out.Color = ComputeTeacherLight(float4(input.normal, 1.f), input.uv, input.worldPosition);
-    
+    //Out.Color = ComputeTeacherLight(float4(input.normal, 1.f), input.uv, input.worldPosition);
+    Out.Color = float4(CalcAmbient(float4(input.normal, 0.f), input.uv), 1.f);
     
     //// TODO Color  * @@ 
     //float2 fCenter = float2(0.5f, 0.5f);

@@ -10,6 +10,7 @@
 #include "PlayerReload.h"
 #include "BinaryAnimation.h"
 #include "BinaryBone.h"
+#include "BoundingOBB.h"
 
 Player::Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: LandObject(device, deviceContext, OBJECT_TYPE::PLAYER)
@@ -71,6 +72,7 @@ void Player::Tick(const _float& fTimeDelta)
 
 	KeyInput(fTimeDelta);
 	_pStateMachine->UpdateStateMachine(fTimeDelta);
+	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 
 
 	for (auto& pPart : m_pPlayerPart)
@@ -112,6 +114,11 @@ HRESULT Player::Render()
 			pPart->Render();
 	}
 
+
+
+#ifdef _DEBUG
+	_pCollider->Render();
+#endif // _DEBUG
 
 
 #ifdef _DEBUG
@@ -182,6 +189,17 @@ HRESULT Player::ReadyComponents()
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAnimator"),
 		TEXT("ComponentAnimator"), reinterpret_cast<Component**>(&_pAnimator))))
+		return E_FAIL;
+
+	BoundingOBB::BOUNDING_OBB_DESC obbDesc;
+	{
+		obbDesc.vCenter = Vec3(0.f, -0.3f, 0.2f);
+		obbDesc.vExtents = Vec3(0.3f, 0.8f, 0.3f);
+		obbDesc.vRotation = Quaternion(0.f, 0.f, 0.f, 1.f);
+	}
+
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeOBBCollider"),
+		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &obbDesc)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(GameInstance);
@@ -291,4 +309,5 @@ void Player::Free()
 	Safe_Release<Renderer*>(_render);
 	Safe_Release<StateMachine*>(_pStateMachine);
 	Safe_Release<Animator*>(_pAnimator);
+	Safe_Release<Collider*>(_pCollider);
 }

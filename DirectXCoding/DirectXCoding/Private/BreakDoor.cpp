@@ -2,6 +2,7 @@
 #include "BreakDoor.h"
 
 #include "GameInstance.h"
+#include "BoundingOBB.h"
 
 BreakDoor::BreakDoor(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::BREAK_DOOR)
@@ -25,13 +26,18 @@ HRESULT BreakDoor::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (FAILED(ReadyCollider()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 void BreakDoor::Tick(const _float& timeDelta)
 {
-	if (!_enabled)
+	if (_enabled)
 		return;
+
+	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
 
 void BreakDoor::LateTick(const _float& timeDelta)
@@ -65,6 +71,29 @@ HRESULT BreakDoor::Render()
 			return E_FAIL;
 	}
 
+#ifdef _DEBUG
+	_pCollider->Render();
+#endif // _DEBUG
+
+	return S_OK;
+}
+
+HRESULT BreakDoor::ReadyCollider()
+{
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	BoundingOBB::BOUNDING_OBB_DESC obbDesc;
+	{
+		obbDesc.vCenter = Vec3(-2.5f, 0.f, -45.f);
+		obbDesc.vExtents = Vec3(7.5f, 100.f, 37.5f);
+		obbDesc.vRotation = Quaternion(0.f, 0.f, 0.f, 1.f);
+	}
+
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeOBBCollider"),
+		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &obbDesc)))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(GameInstance);
 
 	return S_OK;
 }

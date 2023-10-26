@@ -113,7 +113,7 @@ XMVECTOR VIBufferCell::SetUp_OnCell(Transform* cellTransform, FXMVECTOR vWorldPo
 	//_float z = ::XMVectorGetZ(vLocalPos);
 	//_float y = (( - ::XMVectorGetX(vPlane) * x - ::XMVectorGetZ(vPlane) * z) - ::XMVectorGetW(vPlane)) / ::XMVectorGetY(vPlane);
 
-	_float Test = ((-XMVectorGetX(vPlane) * ::XMVectorGetX(vWorldPos) - (XMVectorGetZ(vPlane) * XMVectorGetZ(vWorldPos)) - XMVectorGetW(vPlane)));
+	//_float Test = ((-XMVectorGetX(vPlane) * ::XMVectorGetX(vWorldPos) - (XMVectorGetZ(vPlane) * XMVectorGetZ(vWorldPos)) - XMVectorGetW(vPlane)));
 
 	_float fY = ((-XMVectorGetX(vPlane) * ::XMVectorGetX(vWorldPos) - (XMVectorGetZ(vPlane) * XMVectorGetZ(vWorldPos)) - XMVectorGetW(vPlane))) / XMVectorGetY(vPlane);
 

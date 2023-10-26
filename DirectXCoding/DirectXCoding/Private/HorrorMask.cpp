@@ -2,6 +2,7 @@
 #include "HorrorMask.h"
 
 #include "GameInstance.h"
+#include "Bounding_Sphere.h"
 
 HorrorMask::HorrorMask(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::MASK)
@@ -25,12 +26,18 @@ HRESULT HorrorMask::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (FAILED(ReadyCollider()))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 void HorrorMask::Tick(const _float& timeDelta)
 {
-	if (!_enabled)
+	if (_enabled)
 		return;
+
+	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
 
 void HorrorMask::LateTick(const _float& timeDelta)
@@ -64,6 +71,28 @@ HRESULT HorrorMask::Render()
 			return E_FAIL;
 	}
 
+#ifdef _DEBUG
+	_pCollider->Render();
+#endif // _DEBUG
+
+	return S_OK;
+}
+
+HRESULT HorrorMask::ReadyCollider()
+{
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
+	{
+		sphereDesc.vCenter = Vec3(0.f, 0.f, 0.f);
+		sphereDesc.fRadius = 20.f;
+	}
+
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeSphereColider"),
+		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &sphereDesc)))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(GameInstance);
 
 	return S_OK;
 }

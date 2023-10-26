@@ -8,6 +8,7 @@
 //--------------------------------------------------------------------------------------
 
 #pragma once
+#include "pch.h"
 
 #if defined(_XBOX_ONE) && defined(_TITLE)
 #include <d3d11_x.h>

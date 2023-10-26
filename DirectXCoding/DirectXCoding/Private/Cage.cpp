@@ -2,12 +2,11 @@
 #include "Cage.h"
 
 #include "GameInstance.h"
+#include "BoundingAABB.h"
 
-Cage::Cage(ID3D11Device* device, ID3D11DeviceContext* deviceContext, CAGE_TYPE eType)
-	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::GRID_DOOR)
+Cage::Cage(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::CAGE)
 {
-	_eType = eType;
-	// 밸브랑 연동할 케이지 타입.
 }
 
 Cage::Cage(const Cage& rhs)
@@ -25,13 +24,18 @@ HRESULT Cage::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (FAILED(ReadyCollider()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 void Cage::Tick(const _float& timeDelta)
 {
-	if (!_enabled)
+	if (_enabled)
 		return;
+
+	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
 
 void Cage::LateTick(const _float& timeDelta)
@@ -64,14 +68,34 @@ HRESULT Cage::Render()
 			return E_FAIL;
 	}
 
+#ifdef _DEBUG
+	_pCollider->Render();
+#endif // _DEBUG
 
 	return S_OK;
 
 }
 
-Cage* Cage::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, CAGE_TYPE eType)
+HRESULT Cage::ReadyCollider()
 {
-	Cage* pInstance = new Cage(device, deviceContext, eType);
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	BoundingAABB::BOUNDING_AABB_DESC aabbDesc;
+	{
+		aabbDesc.vCenter = Vec3(0.f, 120.f, 0.f);
+		aabbDesc.vExtents = Vec3(80.f, 120.f, 5.f);
+	}
+
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAABBColider"),
+		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &aabbDesc)))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(GameInstance);
+}
+
+Cage* Cage::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+{
+	Cage* pInstance = new Cage(device, deviceContext);
 
 	if (FAILED(pInstance->InitializePrototype()))
 	{

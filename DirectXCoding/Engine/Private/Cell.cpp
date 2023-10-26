@@ -28,11 +28,11 @@ HRESULT Cell::Initialize(const Vec3* pPoints, uint32 iIndex)
 		XMStoreFloat3(&_vNormals[i], XMVector3Normalize(XMLoadFloat3(&_vNormals[i])));
 	}
 
-#ifdef _DEBUG
+
 	_viBuffer = VIBufferCell::Create(_device, _deviceContext, _vPoints_Original);
 	if (nullptr == _viBuffer)
 		return E_FAIL;
-#endif // _DEBUG
+
 
 
 	return S_OK;

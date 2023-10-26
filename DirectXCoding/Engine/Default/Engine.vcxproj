@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Public\AABBBoxCollider.h" />
     <ClInclude Include="..\Public\Animation.h" />
     <ClInclude Include="..\Public\Animator.h" />
     <ClInclude Include="..\Public\AsTypes.h" />
@@ -31,6 +30,10 @@
     <ClInclude Include="..\Public\BinaryModel.h" />
     <ClInclude Include="..\Public\BinaryNavi.h" />
     <ClInclude Include="..\Public\Bone.h" />
+    <ClInclude Include="..\Public\Bounding.h" />
+    <ClInclude Include="..\Public\BoundingAABB.h" />
+    <ClInclude Include="..\Public\BoundingOBB.h" />
+    <ClInclude Include="..\Public\Bounding_Sphere.h" />
     <ClInclude Include="..\Public\Camera.h" />
     <ClInclude Include="..\Public\CameraHelper.h" />
     <ClInclude Include="..\Public\Cell.h" />
@@ -39,6 +42,7 @@
     <ClInclude Include="..\Public\Component.h" />
     <ClInclude Include="..\Public\ComponentManager.h" />
     <ClInclude Include="..\Public\ConstantBuffer.h" />
+    <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Defines.h" />
     <ClInclude Include="..\Public\dirent.h" />
     <ClInclude Include="..\Public\FileUtils.h" />
@@ -64,7 +68,6 @@
     <ClInclude Include="..\Public\Model.h" />
     <ClInclude Include="..\Public\MouseHandler.h" />
     <ClInclude Include="..\Public\Navigation.h" />
-    <ClInclude Include="..\Public\OBBBoxCollider.h" />
     <ClInclude Include="..\Public\ObjectManager.h" />
     <ClInclude Include="..\Public\OtherLight.h" />
     <ClInclude Include="..\Public\Physics.h" />
@@ -73,7 +76,6 @@
     <ClInclude Include="..\Public\ResourceBase.h" />
     <ClInclude Include="..\Public\Shader.h" />
     <ClInclude Include="..\Public\SimpleMath.h" />
-    <ClInclude Include="..\Public\SphereCollider.h" />
     <ClInclude Include="..\Public\State.h" />
     <ClInclude Include="..\Public\StateMachine.h" />
     <ClInclude Include="..\Public\StringUtilities.h" />
@@ -93,10 +95,6 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Private\AABBBoxCollider.cpp">
-      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
-      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
-    </ClCompile>
     <ClCompile Include="..\Private\Animation.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
@@ -119,6 +117,18 @@
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
     </ClCompile>
+    <ClCompile Include="..\Private\Bounding.cpp">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
+    </ClCompile>
+    <ClCompile Include="..\Private\BoundingAABB.cpp">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
+    </ClCompile>
+    <ClCompile Include="..\Private\BoundingOBB.cpp">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bounding_Sphere.cpp">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
+    </ClCompile>
     <ClCompile Include="..\Private\Camera.cpp" />
     <ClCompile Include="..\Private\CameraHelper.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IncludeInUnityFile>
@@ -131,6 +141,7 @@
     <ClCompile Include="..\Private\Component.cpp" />
     <ClCompile Include="..\Private\ComponentManager.cpp" />
     <ClCompile Include="..\Private\ConstantBuffer.cpp" />
+    <ClCompile Include="..\Private\DebugDraw.cpp" />
     <ClCompile Include="..\Private\FileUtils.cpp" />
     <ClCompile Include="..\Private\GameInstance.cpp" />
     <ClCompile Include="..\Private\GameObject.cpp" />
@@ -152,7 +163,6 @@
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IncludeInUnityFile>
     </ClCompile>
     <ClCompile Include="..\Private\Navigation.cpp" />
-    <ClCompile Include="..\Private\OBBBoxCollider.cpp" />
     <ClCompile Include="..\Private\ObjectManager.cpp" />
     <ClCompile Include="..\Private\OtherLight.cpp" />
     <ClCompile Include="..\Private\Physics.cpp" />
@@ -163,7 +173,6 @@
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IncludeInUnityFile>
     </ClCompile>
     <ClCompile Include="..\Private\SimpleMath.cpp" />
-    <ClCompile Include="..\Private\SphereCollider.cpp" />
     <ClCompile Include="..\Private\State.cpp" />
     <ClCompile Include="..\Private\StateMachine.cpp" />
     <ClCompile Include="..\Private\Struct.cpp" />

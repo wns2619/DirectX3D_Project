@@ -43,7 +43,7 @@ HRESULT Game::Initialize(HWND hwnd)
 		return E_FAIL;
 
 
-	if (FAILED(OpenLevel(LEVEL::EDIT)))
+	if (FAILED(OpenLevel(LEVEL::GAME)))
 		return E_FAIL;
 	
 	

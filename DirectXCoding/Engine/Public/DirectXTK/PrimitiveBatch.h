@@ -24,7 +24,7 @@ namespace DirectX
 {
     namespace Internal
     {
-        // Base class, not to be used directly: clients should access this via the derived PrimitiveBatch<T>.
+         //Base class, not to be used directly: clients should access this via the derived PrimitiveBatch<T>.
         class PrimitiveBatchBase
         {
         protected:

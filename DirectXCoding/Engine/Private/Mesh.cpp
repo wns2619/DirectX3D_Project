@@ -127,6 +127,7 @@ HRESULT Mesh::ReadyVertexBufferNoneAnim(const aiMesh* mesh, FXMMATRIX pivotMat)
         memcpy(&_pVertices[i].texcoord, &mesh->mTextureCoords[0][i], sizeof(Vec2));
         memcpy(&_pVertices[i].tangent, &mesh->mTangents[i], sizeof(Vec3));
         memcpy(&_pVertices[i].bitangent, &mesh->mBitangents[i], sizeof(Vec3));
+       
 
         _pVertexPos[i] = _pVertices[i].position;
     }

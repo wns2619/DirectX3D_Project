@@ -19,7 +19,13 @@
 #include <DirectXTex\DirectXTex.inl>
 #include <DirectXTK\ScreenGrab.h>
 #include <DirectXCollision.h>
-#include <DirectXColors.h>
+
+#include <DirectXTK\PrimitiveBatch.h>
+#include <DirectXTK\VertexTypes.h>
+#include <DirectXTK\Effects.h>
+
+#include <DirectXTK\SpriteBatch.h>
+#include <DirectXTK\SpriteFont.h>
 
 
 // Assimp
@@ -36,13 +42,6 @@ using namespace Microsoft::WRL;
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
-
-//#ifdef _DEBUG
-//#pragma comment(lib, "assimp-vc140-mtd.lib")
-//#else
-//#pragma comment(lib, "assimp-vc140-mt.lib")
-//#endif
-//
 
 #include <vector>
 #include <list>

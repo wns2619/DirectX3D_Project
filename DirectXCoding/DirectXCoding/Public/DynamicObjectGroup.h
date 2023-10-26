@@ -6,3 +6,4 @@
 #include "OldWoodDoor.h"
 #include "GridDoor.h"
 #include "Valve.h"
+#include "Cage.h"

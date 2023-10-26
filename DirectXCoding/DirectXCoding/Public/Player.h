@@ -8,6 +8,7 @@ class Transform;
 class BinaryNavi;
 class StateMachine;
 class Animator;
+class Collider;
 END
 
 BEGIN(Client)
@@ -42,6 +43,7 @@ private:
 	Shader* _shader					= nullptr;
 	StateMachine* _pStateMachine	= nullptr;
 	Animator* _pAnimator			= nullptr;
+	Collider* _pCollider			= nullptr;
 
 	uint32 animationcount = 0;
 private:

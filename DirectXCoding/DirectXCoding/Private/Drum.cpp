@@ -29,7 +29,7 @@ HRESULT Drum::Initialize(void* pArg)
 
 void Drum::Tick(const _float& timeDelta)
 {
-	if (!_enabled)
+	if (_enabled)
 		return;
 }
 
@@ -66,6 +66,11 @@ HRESULT Drum::Render()
 
 	return S_OK;
 
+}
+
+HRESULT Drum::ReadyCollider()
+{
+	return S_OK;
 }
 
 Drum* Drum::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)

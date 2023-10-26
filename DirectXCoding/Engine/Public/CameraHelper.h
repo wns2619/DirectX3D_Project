@@ -27,8 +27,8 @@ public:
 	Vec4 GetCameraPosition()										const;
 
 public:
-	HRESULT BindTransformToShader(Shader* shader, const char* constantName, CameraHelper::TRANSFORMSTATE state);
-	HRESULT BindCameraPosition(Shader* shader, const _char* constantName, uint32 legnth);
+	HRESULT BindTransformToShader(class Shader* shader, const char* constantName, CameraHelper::TRANSFORMSTATE state);
+	HRESULT BindCameraPosition(class Shader* shader, const _char* constantName, uint32 legnth);
 
 public:
 	void Tick();

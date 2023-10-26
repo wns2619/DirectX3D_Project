@@ -103,9 +103,6 @@
     <Filter Include="01.Utility\04.Component\Light">
       <UniqueIdentifier>{d2a58286-bc7e-46c1-b232-42e437613960}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\04.Component\VIBuffer\ConstantBuffer">
-      <UniqueIdentifier>{46b8bbaf-ae0f-4b4f-bd28-8de67cabe7b7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\04.Component\Model">
       <UniqueIdentifier>{3dd797b0-d6a0-43b0-b506-4b5c52348e84}</UniqueIdentifier>
     </Filter>
@@ -180,6 +177,21 @@
     </Filter>
     <Filter Include="01.Utility\04.Component\StateMachine">
       <UniqueIdentifier>{7d9e460a-ed7a-4e93-b344-b0b2c6ef96b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\VIBuffer\Cell\ConstantBuffer">
+      <UniqueIdentifier>{46b8bbaf-ae0f-4b4f-bd28-8de67cabe7b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Collider\Base\AABB">
+      <UniqueIdentifier>{110a4cdd-98a5-4b9c-8937-0eb177c99737}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Collider\Base\OBB">
+      <UniqueIdentifier>{3dfa5453-0fe8-4c3b-bb0e-757daa072a88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Collider\Base\Sphere">
+      <UniqueIdentifier>{1b2f7527-7142-4add-b57f-86b4c5dbbcdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\Collider\DebugDraw">
+      <UniqueIdentifier>{de67ac64-dbad-4492-951f-4126d2723a20}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -286,7 +298,7 @@
       <Filter>01.Utility\98.Manager\Light</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ConstantBuffer.h">
-      <Filter>01.Utility\04.Component\VIBuffer\ConstantBuffer</Filter>
+      <Filter>01.Utility\04.Component\VIBuffer\Cell\ConstantBuffer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Model.h">
       <Filter>01.Utility\04.Component\Model</Filter>
@@ -296,18 +308,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Picking.h">
       <Filter>01.Utility\04.Component\Picking</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Collider.h">
-      <Filter>01.Utility\04.Component\Collider\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\AABBBoxCollider.h">
-      <Filter>01.Utility\04.Component\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\SphereCollider.h">
-      <Filter>01.Utility\04.Component\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\OBBBoxCollider.h">
-      <Filter>01.Utility\04.Component\Collider</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MathHelper.h">
       <Filter>02.Defines\99.Headers\Default</Filter>
@@ -399,6 +399,24 @@
     <ClInclude Include="..\Public\Animator.h">
       <Filter>01.Utility\04.Component\StateMachine</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Collider.h">
+      <Filter>01.Utility\04.Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Bounding.h">
+      <Filter>01.Utility\04.Component\Collider\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BoundingAABB.h">
+      <Filter>01.Utility\04.Component\Collider\Base\AABB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DebugDraw.h">
+      <Filter>01.Utility\04.Component\Collider\DebugDraw</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BoundingOBB.h">
+      <Filter>01.Utility\04.Component\Collider\Base\OBB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Bounding_Sphere.h">
+      <Filter>01.Utility\04.Component\Collider\Base\Sphere</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -480,7 +498,7 @@
       <Filter>01.Utility\98.Manager\Light</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ConstantBuffer.cpp">
-      <Filter>01.Utility\04.Component\VIBuffer\ConstantBuffer</Filter>
+      <Filter>01.Utility\04.Component\VIBuffer\Cell\ConstantBuffer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Model.cpp">
       <Filter>01.Utility\04.Component\Model</Filter>
@@ -490,18 +508,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Picking.cpp">
       <Filter>01.Utility\04.Component\Picking</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Collider.cpp">
-      <Filter>01.Utility\04.Component\Collider\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\AABBBoxCollider.cpp">
-      <Filter>01.Utility\04.Component\Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\SphereCollider.cpp">
-      <Filter>01.Utility\04.Component\Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\OBBBoxCollider.cpp">
-      <Filter>01.Utility\04.Component\Collider</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Viewport.cpp">
       <Filter>00.System\Manager\Device\ViewPort</Filter>
@@ -574,6 +580,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\Animator.cpp">
       <Filter>01.Utility\04.Component\StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Collider.cpp">
+      <Filter>01.Utility\04.Component\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bounding.cpp">
+      <Filter>01.Utility\04.Component\Collider\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BoundingAABB.cpp">
+      <Filter>01.Utility\04.Component\Collider\Base\AABB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DebugDraw.cpp">
+      <Filter>01.Utility\04.Component\Collider\DebugDraw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BoundingOBB.cpp">
+      <Filter>01.Utility\04.Component\Collider\Base\OBB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bounding_Sphere.cpp">
+      <Filter>01.Utility\04.Component\Collider\Base\Sphere</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

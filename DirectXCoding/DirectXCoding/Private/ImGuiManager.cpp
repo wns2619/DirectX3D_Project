@@ -90,13 +90,13 @@ HRESULT ImGuiManager::Render()
 
 	{
 		MainSection();
-
+#ifdef _DEBUG
 		if (_pNaviGation != nullptr)
 		{
 			if (false == _pNaviGation->GetCell().empty())
 				_pNaviGation->Render();
 		}
-
+#endif // _DEBUG
 	}
 
 	 // Model Card Window
@@ -711,11 +711,11 @@ HRESULT ImGuiManager::ModelNameCardSection()
 	
 
 
-					//if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), findPrototypename.first, findPrototypename.second, &comNames)))
-					//{
-					//	RELEASE_INSTANCE(GameInstance);
-					//	return E_FAIL;
-					//}
+					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), findPrototypename.first, findPrototypename.second, &comNames)))
+					{
+						RELEASE_INSTANCE(GameInstance);
+						return E_FAIL;
+					}
 
 					size_t dotPosition = modelPath.find_last_of(".");
 					string fileExtension = "";
@@ -2150,8 +2150,8 @@ HRESULT ImGuiManager::SceneSave(wstring& filePath)
 				string modelName = LayerObjects->GetModelName();
 				file->Write<string>(modelName);
 
-				//uint32 modelID = LayerObjects->GetIdNumber();
-				//file->Write<uint32>(modelID);
+				uint32 modelID = LayerObjects->GetIdNumber();
+				file->Write<uint32>(modelID);
 
 				// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
 				DynamicObject::STATE_DESC DynamicComponentName = static_cast<DynamicObject*>(LayerObjects)->GetDynamicComponentsName();
@@ -2179,7 +2179,7 @@ HRESULT ImGuiManager::SceneSave(wstring& filePath)
 				file->Write<uint32>(modelID);
 
 				// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
-				StaticObject::STATE_DESC puzzleComponentName = static_cast<StaticObject*>(LayerObjects)->GetStaticComponentsName();
+				DynamicObject::STATE_DESC puzzleComponentName = static_cast<DynamicObject*>(LayerObjects)->GetDynamicComponentsName();
 				file->Write<string>(Utils::ToString(puzzleComponentName._strModelComponentName));
 				file->Write<string>(Utils::ToString(puzzleComponentName._strShaderName));
 				file->Write<string>(Utils::ToString(puzzleComponentName._protoTypeTag));
@@ -2324,9 +2324,9 @@ HRESULT ImGuiManager::SceneLoad(wstring& filePath)
 				file->Read(modelName);
 				DynamicComponentName._strModelName = modelName;
 
-				//uint32 modelID;
-				//file->Read<uint32>(modelID);
-				//DynamicComponentName._modelID = modelID;
+				uint32 modelID;
+				file->Read<uint32>(modelID);
+				DynamicComponentName._modelID = modelID;
 
 				string modelComponentName;
 				file->Read(modelComponentName);

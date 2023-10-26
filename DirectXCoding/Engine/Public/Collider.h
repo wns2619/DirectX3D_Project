@@ -3,26 +3,25 @@
 
 BEGIN(Engine)
 
-class GameObject;
-
-enum class COLLIDER_TYPE { SPHERE, AABB, OBB, COLLIDER_END, };
-
-
-class ENGINE_DLL Collider abstract : public Component
+class ENGINE_DLL Collider final : public Component
 {
-protected:
-	explicit Collider(ID3D11Device* device, ID3D11DeviceContext* deviceContext, COLLIDER_TYPE type);
+public:
+	enum COLLIDER_TYPE { AABB, OBB, SPHERE, TYPE_END };
+
+private:
+	explicit Collider(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	explicit Collider(const Collider& rhs);
 	virtual ~Collider() = default;
 public:
-	virtual HRESULT InitializePrototype();
+	virtual HRESULT InitializePrototype(COLLIDER_TYPE eType);
 	virtual HRESULT Initialize(void* argument);
 
-	virtual HRESULT Tick(const _float& timeDelta);
+#ifdef _DEBUG
 	virtual HRESULT Render();
+#endif
 
-	virtual _bool Intersects(Ray& ray, OUT _float& distance) = 0;
-	virtual _bool Intersects(Collider* other) = 0;
+	virtual _bool Intersects(Ray& ray, OUT _float& distance);
+	virtual _bool Intersects(Collider* other);
 
 public:
 	virtual void OnCollisionEnter(Collider* other);
@@ -30,20 +29,25 @@ public:
 	virtual void OnCollisionExit(Collider* other);
 
 public:
-	COLLIDER_TYPE GetColliderType() { return _colliderType; }
+	class Bounding* GetBounding() { return _pBounding; }
 
-protected:
-	COLLIDER_TYPE _colliderType = COLLIDER_TYPE::COLLIDER_END;
+private:
+	COLLIDER_TYPE _eColliderType = COLLIDER_TYPE::TYPE_END;
+	class Bounding* _pBounding = nullptr;
 
-	GameObject* _owner = nullptr;
-	int32 _ColCount = 0;
+#ifdef _DEBUG
+private:
+	/* Vertex, IndexBuffer를 생성하고 그리는 기능을 제공해주는 객체*/
+	PrimitiveBatch<DirectX::VertexPositionColor>* _pBatch = nullptr;
+	BasicEffect* _pEffect = nullptr;
 
-	// Com //
-	ID3D11Buffer* _vertexBuffer = nullptr;
-	ID3D11Buffer* _indexBuffer	= nullptr;
+
+#endif // _DEBUG
+
 
 public:
-	virtual Component* Clone(void* argument) = 0;
+	static Collider* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, COLLIDER_TYPE eType);
+	virtual Component* Clone(void* pArg) override;
 	virtual void Free() override;
 };
 

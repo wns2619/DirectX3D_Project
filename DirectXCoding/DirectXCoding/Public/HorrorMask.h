@@ -19,6 +19,9 @@ public:
 	virtual HRESULT Render()						override;
 
 public:
+	virtual HRESULT ReadyCollider()					override;
+
+public:
 	static HorrorMask* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	virtual GameObject* Clone(void* argument) override;
 	virtual void Free() override;

@@ -6,6 +6,7 @@ BEGIN(Engine)
 class Shader;
 class Renderer;
 class BinaryNavi;
+class VIBufferCell;
 END
 
 BEGIN(Client)

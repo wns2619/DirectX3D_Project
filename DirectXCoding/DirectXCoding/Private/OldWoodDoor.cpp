@@ -2,6 +2,7 @@
 #include "OldWoodDoor.h"
 
 #include "GameInstance.h"
+#include "BoundingOBB.h"
 
 OldWoodDoor::OldWoodDoor(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::OLD_DOOR)
@@ -24,13 +25,18 @@ HRESULT OldWoodDoor::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (FAILED(ReadyCollider()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 void OldWoodDoor::Tick(const _float& timeDelta)
 {
-	if (!_enabled)
+	if (_enabled)
 		return;
+
+	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
 
 void OldWoodDoor::LateTick(const _float& timeDelta)
@@ -63,9 +69,33 @@ HRESULT OldWoodDoor::Render()
 			return E_FAIL;
 	}
 
+#ifdef _DEBUG
+	_pCollider->Render();
+#endif // _DEBUG
+
 
 	return S_OK;
 
+}
+
+HRESULT OldWoodDoor::ReadyCollider()
+{
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	BoundingOBB::BOUNDING_OBB_DESC obbDesc;
+	{
+		obbDesc.vCenter = Vec3(40.f, 100.f, 0.f);
+		obbDesc.vExtents = Vec3(37.5f, 100.f, 7.5f);
+		obbDesc.vRotation = Quaternion(0.f, 0.f, 0.f, 1.f);
+	}
+
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeOBBCollider"),
+		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &obbDesc)))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(GameInstance);
+
+	return S_OK;
 }
 
 OldWoodDoor* OldWoodDoor::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)

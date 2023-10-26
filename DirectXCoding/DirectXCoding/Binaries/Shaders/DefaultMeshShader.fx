@@ -49,9 +49,9 @@ PS_OUT PS_MAIN(PS_IN input)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    Out.color = ComputeTeacherLight(input.normal, input.texcoord, input.worldPos);
+    ///Out.color = ComputeTeacherLight(input.normal, input.texcoord, input.worldPos);
     
-    //Out.color = float4(CalcAmbient(input.normal, input.texcoord), 1.f);
+    Out.color = float4(CalcAmbient(input.normal, input.texcoord), 1.f);
     
     //Out.color += CalcDirectional(input.worldPos, input.texcoord, input.normal);
     

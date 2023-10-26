@@ -157,4 +157,5 @@ void DynamicObject::Free()
 
 	Safe_Release<Renderer*>(_render);
 	Safe_Release<Shader*>(_shader);
+	Safe_Release<Collider*>(_pCollider);
 }
