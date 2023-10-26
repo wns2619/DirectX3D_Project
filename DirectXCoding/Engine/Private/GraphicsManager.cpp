@@ -30,7 +30,9 @@ HRESULT GraphicsManager::Initialize(GRAPHIC_DESC desc, _Inout_ ID3D11Device** de
 	if (FAILED(CreateDepthStencilView(desc)))
 		return E_FAIL;
 
-	ID3D11RenderTargetView* rtv[1] = { _renderTargetView, };
+
+
+	ID3D11RenderTargetView* rtv[2] = { _renderTargetView, _vignetteTargetView };
 
 	_deviceContext->OMSetRenderTargets(1, rtv, _depthStencilView);
 
@@ -206,11 +208,42 @@ HRESULT GraphicsManager::CreateDepthStencilView(GRAPHIC_DESC desc)
 
 }
 
+HRESULT GraphicsManager::CreateVignetteView()
+{
+	if (nullptr == _device)
+		return E_FAIL;
+
+	ID3D11Texture2D* bufferTexture = nullptr;
+
+	D3D11_TEXTURE2D_DESC textureDesc = {};
+	{
+		textureDesc.Width = _vp.GetWidth();
+		textureDesc.Height = _vp.GetHeight();
+		textureDesc.MipLevels = 1;
+		textureDesc.ArraySize = 1;
+		textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		textureDesc.SampleDesc.Count = 1;
+		textureDesc.Usage = D3D11_USAGE_DEFAULT;
+		textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET;
+	}
+
+	if (FAILED(_device->CreateTexture2D(&textureDesc, nullptr, &bufferTexture)))
+		return E_FAIL;
+
+	if (FAILED(_device->CreateRenderTargetView(bufferTexture, nullptr, &_vignetteTargetView)))
+		return E_FAIL;
+
+	Safe_Release<ID3D11Texture2D*>(bufferTexture);
+
+	return S_OK;
+}
+
 void GraphicsManager::Free()
 {
 	Safe_Release<IDXGISwapChain*>(_swapChain);
 	Safe_Release<ID3D11DepthStencilView*>(_depthStencilView);
 	Safe_Release<ID3D11RenderTargetView*>(_renderTargetView);
+	Safe_Release<ID3D11RenderTargetView*>(_vignetteTargetView);
 	Safe_Release<ID3D11DeviceContext*>(_deviceContext);
 
 //	#if defined(DEBUG) || defined(_DEBUG)

@@ -172,8 +172,8 @@ HRESULT LevelHelper::LodingforLevelEdit()
 #pragma region 2stProbs
     
     // PLAYER
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", LAYER_TAG::LAYER_PLAYER, TEXT("ProtoTypeGameObjectPlayer"));
-    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", TEXT("ProtoTypeModelPlayer"), TEXT("ProtoTypeComponentAnimMesh"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\Player.dat", LAYER_TAG::LAYER_PLAYER, TEXT("ProtoTypeGameObjectPlayer"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\Player.dat", TEXT("ProtoTypeModelPlayer"), TEXT("ProtoTypeComponentAnimMesh"));
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", LAYER_TAG::LAYER_PLAYER, TEXT("ProtoTypeGameObjectPlayer"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", TEXT("ProtoTypeModelPlayer"), TEXT("ProtoTypeComponentAnimMesh"));
    
@@ -1054,7 +1054,7 @@ HRESULT LevelHelper::LoadingMesh()
 
 
          if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelPlayer"),
-            Model::Create(_device, _deviceContext, Model::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", modelInitializMatrix))))
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\MyModels\\Player\\Player.dat", modelInitializMatrix))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

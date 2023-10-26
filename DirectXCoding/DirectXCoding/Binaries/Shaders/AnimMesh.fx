@@ -36,7 +36,18 @@ PixelOut PS_MAIN(MeshOut input)
     Out.Color = ComputeTeacherLight(float4(input.normal, 1.f), input.uv, input.worldPosition);
     
     
-    // TODO Color  * @@ 
+    //// TODO Color  * @@ 
+    //float2 fCenter = float2(0.5f, 0.5f);
+    
+    //float strength = 0.01f;
+    
+    //float fdistance = distance(input.uv, fCenter);
+    
+    //// 비네트효과 적용
+    //float4 vignette = float4(0.f, 0.f, 0.f, 0.f);
+    //float4 vignetteColor = 1.0 - saturate(strength * fdistance * fdistance);
+    
+    //Out.Color.rgb = lerp(Out.Color.rgb, Out.Color.rgb * vignetteColor.rgb, vignetteColor.a * 2.0);
     
     return Out;
 }

@@ -724,7 +724,7 @@ HRESULT ImGuiManager::ModelNameCardSection()
 						fileExtension = modelPath.substr(0, dotPosition);
 
 					//BinaryModelSave(modelPath, Utils::ToWString(fileExtension));
-					BinaryAnimModelSave(modelPath, Utils::ToWString(fileExtension));
+					//BinaryAnimModelSave(modelPath, Utils::ToWString(fileExtension));
 		
 				}
 				else
@@ -2045,7 +2045,7 @@ void ImGuiManager::LoadModelList(string path)
 					// string은 파인드 함수는 문자열을 찾지 못하면 npos를 리턴함.
 					fileExtension = name.substr(i + 1, name.length() - 1);
 					// substr(), str의 n번 째 index부터 k개의 문자를 부분 문자열로 반환함.
-					if (fileExtension == "obj" || fileExtension == "FBX" || fileExtension == "fbx")
+					if (fileExtension == "obj" || fileExtension == "DAT" || fileExtension == "dat")
 					{
 						modelNames.push_back(name);
 					}

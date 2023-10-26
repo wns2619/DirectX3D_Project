@@ -49,25 +49,24 @@ PS_OUT PS_MAIN(PS_IN input)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    //vector vMaterialdiffuse = DiffuseMap.Sample(LinearSampler, input.texcoord);
-    ////vector vMaterialdiffuse = vector(1.f, 1.f, 1.f, 1.f);
-    
-    //if (vMaterialdiffuse.a < 0.3f)
-    //    discard;
-    
-    //vector shade = max(dot(normalize(-GlobalLight.Direction), normalize((float3) input.normal)), 0.f) +
-    //GlobalLight.Ambient * Material.Ambient;
-    
-    //vector _reflect = reflect(normalize(float4(GlobalLight.Direction, 1.f)), normalize(input.normal));
-    //vector _look = input.worldPos - float4(CameraPosition(), 1.f);
-    
-    //float _specular = pow(max(dot(normalize(-_look), normalize(_reflect)), 0.f), 30.f);
-    
-    //Out.color = (GlobalLight.Diffuse * vMaterialdiffuse) * saturate(shade) +
-    //(GlobalLight.Specular * Material.Specular) * _specular;
-    
-    //Out.color = ComputeLight(input.normal.xyz, input.texcoord, input.worldPos.xyz);
     Out.color = ComputeTeacherLight(input.normal, input.texcoord, input.worldPos);
+    
+    //Out.color = float4(CalcAmbient(input.normal, input.texcoord), 1.f);
+    
+    //Out.color += CalcDirectional(input.worldPos, input.texcoord, input.normal);
+    
+    //float2 fCenter = float2(0.5, 0.5); // 화면 중심의 정규화된 좌표
+    //float strength = 3.0f;
+
+    //float2 uv = input.texcoord; // 정규화된 텍스처 좌표
+
+    //// 비네트 효과 적용 (화면 전체에)
+    //float distanceFromCenter = distance(uv, fCenter);
+    //float4 vignetteColor = 1.0 - saturate(strength * distanceFromCenter * distanceFromCenter);
+
+    
+    //Out.color.rgb = lerp(Out.color.rgb, Out.color.rgb * vignetteColor.rgb, vignetteColor.a * 2.0);
+    
     
     return Out;
 }

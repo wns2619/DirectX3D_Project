@@ -28,12 +28,15 @@ private:
 	IDXGISwapChain* _swapChain = nullptr;
 
 	ID3D11RenderTargetView* _renderTargetView = nullptr;
+	ID3D11RenderTargetView* _vignetteTargetView = nullptr;
+
 	ID3D11DepthStencilView* _depthStencilView = nullptr;
 
 private:
 	HRESULT	CreateSwapChain(GRAPHIC_DESC desc);
 	HRESULT CreateRenderTargetView();
 	HRESULT CreateDepthStencilView(GRAPHIC_DESC desc);
+	HRESULT CreateVignetteView();
 
 public:
 	virtual void Free() override;

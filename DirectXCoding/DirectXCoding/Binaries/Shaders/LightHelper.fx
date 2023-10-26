@@ -91,6 +91,11 @@ Texture2D SpecularMap;
 Texture2D NormalMap;
 
 // Function
+float3 GammaToLinear(float3 color)
+{
+    return float3(color.x * color.x, color.y * color.y, color.z * color.z);
+}
+
 
 matrix ComputeTransformMatrix(matrix world, matrix view, matrix proj)
 {
@@ -200,6 +205,42 @@ void ComputeNormalMapping(inout float3 normal, float3 tangent, float2 uv)
     
     normal = worldNormal;
 }
+
+float4 CalcDirectional(float4 WorldPosition, float2 uv, float4 normal)
+{
+    vector vMaterialDiffuse = DiffuseMap.Sample(LinearSampler, uv);
+    
+    // Æþ(Phong) Diffuse
+    float NDotL = dot(normalize(float4(GlobalLight.Direction, 0.f)), normalize(normal));
+    float4 finalColor = GlobalLight.Diffuse * saturate(NDotL);
+    
+    //// ºí¸°(Blinn) ½ºÆåÅ§·¯
+    float3 ToEye = normalize(float4(CameraPosition(), 1.f) - WorldPosition);
+    ToEye = normalize(ToEye);
+    float3 HalfWay = normalize(ToEye + GlobalLight.Direction);
+    float NDotH = saturate(dot(float4(HalfWay, 0.f), normal));
+    finalColor += GlobalLight.Diffuse * pow(NDotH, 16.f) * 0.5f;
+    
+    return finalColor * vMaterialDiffuse;
+}
+
+float3 CalcAmbient(float4 normal, float2 uv)
+{
+    vector vMaterialDiffuse = DiffuseMap.Sample(LinearSampler, uv);
+    
+    float up = normal.y * 0.5 + 0.5;
+    
+    float3 Lower = float3(0.5f, 0.5f, 0.5f);
+    
+    float3 ambientLowerColor = GammaToLinear(Lower);
+    float3 ambientRange = GammaToLinear(float3(0.7f, 0.7f, 0.7f)) - GammaToLinear(Lower);
+    
+    float3 ambient = ambientLowerColor + up * ambientRange;
+    
+    return ambient * vMaterialDiffuse.rgb;
+}
+
+
 
 
 #endif
