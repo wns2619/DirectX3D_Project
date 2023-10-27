@@ -27,6 +27,9 @@ HRESULT Cage::Initialize(void* pArg)
 	if (FAILED(ReadyCollider()))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+		_transform->SetWorldMatrix(static_cast<ComponentNames*>(pArg)->_saveWorldMatrix);
+
 	return S_OK;
 }
 
@@ -84,10 +87,15 @@ HRESULT Cage::ReadyCollider()
 	{
 		aabbDesc.vCenter = Vec3(0.f, 120.f, 0.f);
 		aabbDesc.vExtents = Vec3(80.f, 120.f, 5.f);
+		aabbDesc.pOwner = this;
 	}
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAABBColider"),
 		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &aabbDesc)))
+		return E_FAIL;
+
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
+		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(GameInstance);

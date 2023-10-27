@@ -2,6 +2,9 @@
 #include "BoundingAABB.h"
 #include "DebugDraw.h"
 
+#include "BoundingOBB.h"
+#include "Bounding_Sphere.h"
+
 BoundingAABB::BoundingAABB()
 {
 }
@@ -21,10 +24,40 @@ HRESULT BoundingAABB::Initialize(BOUNDING_DESC* pDesc)
 
 void BoundingAABB::Update(FXMMATRIX TransformMatrix)
 {
-	_pAABB_Original->Transform(*_pAABB, TransformMatrix);
+	XMMATRIX Matrix = TransformMatrix;
+
+	Matrix.r[0] = XMVectorSet(1.f, 0.f, 0.f, 0.f) * XMVectorGetX(XMVector3Length(TransformMatrix.r[0]));
+	Matrix.r[1] = XMVectorSet(0.f, 1.f, 0.f, 0.f) * XMVectorGetX(XMVector3Length(TransformMatrix.r[1]));
+	Matrix.r[2] = XMVectorSet(0.f, 0.f, 1.f, 0.f) * XMVectorGetX(XMVector3Length(TransformMatrix.r[2]));
+
+	_pAABB_Original->Transform(*_pAABB, Matrix);
+}
+
+
+_bool BoundingAABB::IsCollision(Collider::COLLIDER_TYPE eType, Bounding* pBounding)
+{
+	_IsColl = false;
+
+	switch (eType)
+	{
+	case Engine::Collider::AABB:
+		_IsColl = _pAABB->Intersects(*dynamic_cast<BoundingAABB*>(pBounding)->GetBounding());
+		break;
+	case Engine::Collider::OBB:
+		_IsColl = _pAABB->Intersects(*dynamic_cast<BoundingOBB*>(pBounding)->GetBounding());
+		break;
+	case Engine::Collider::SPHERE:
+		_IsColl = _pAABB->Intersects(*dynamic_cast<Bounding_Sphere*>(pBounding)->GetBounding());
+		break;
+	default:
+		break;
+	}
+
+	return _IsColl;
 }
 
 #ifdef _DEBUG
+
 HRESULT BoundingAABB::Render(PrimitiveBatch<VertexPositionColor>* pBatch)
 {
 	DX::Draw(pBatch, *_pAABB);

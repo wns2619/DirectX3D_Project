@@ -28,6 +28,9 @@ HRESULT Valve::Initialize(void* pArg)
 	if (FAILED(ReadyCollider()))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+		_transform->SetWorldMatrix(static_cast<ComponentNames*>(pArg)->_saveWorldMatrix);
+
 	return S_OK;
 }
 
@@ -85,10 +88,15 @@ HRESULT Valve::ReadyCollider()
 	{
 		sphereDesc.vCenter = Vec3(0.f, 0.f, 0.f);
 		sphereDesc.fRadius = 35.f;
+		sphereDesc.pOwner = this;
 	}
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeSphereColider"),
 		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &sphereDesc)))
+		return E_FAIL;
+
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
+		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(GameInstance);

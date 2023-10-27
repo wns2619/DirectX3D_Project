@@ -291,7 +291,7 @@ HRESULT GameScene::ReadyLandObjects(const LAYER_TAG layerTag)
 	RELEASE_INSTANCE(GameInstance);
 
 
-	if (FAILED(pGameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ProtoTypeGameObjectPlayer"), &LandObjectDesc)))
+	if (FAILED(pGameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), LAYER_TAG::LAYER_PLAYER, TEXT("ProtoTypeGameObjectPlayer"), &LandObjectDesc)))
 		return E_FAIL;
 
 	return S_OK;

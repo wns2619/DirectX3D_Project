@@ -4,6 +4,7 @@
 #include "GraphicsManager.h"
 #include "LevelManager.h"
 #include "Picking.h"
+#include "CollisionManager.h"
 
 IMPLEMENT_SINGLETON(GameInstance)
 
@@ -12,7 +13,7 @@ GameInstance::GameInstance()
     _levelManager(LevelManager::GetInstance()), _objectManager(ObjectManager::GetInstance()),
     _componentManager(ComponentManager::GetInstance()), _cameraHelper(CameraHelper::GetInstance())
     , _inputManager(InputManager::GetInstance()), _lightManager(LightManager::GetInstance())
-    , _picking(Picking::GetInstance()), _inputHandler(InputHandler::GetInstance())
+    , _picking(Picking::GetInstance()), _inputHandler(InputHandler::GetInstance()), _collisionManager(CollisionManager::GetInstance())
 {
     Safe_AddRef<InputHandler*>(_inputHandler);
     Safe_AddRef<InputManager*>(_inputManager);
@@ -21,6 +22,7 @@ GameInstance::GameInstance()
     Safe_AddRef<LightManager*>(_lightManager);
     Safe_AddRef<ComponentManager*>(_componentManager);
     Safe_AddRef<ObjectManager*>(_objectManager);
+    Safe_AddRef<CollisionManager*>(_collisionManager);
     Safe_AddRef<LevelManager*>(_levelManager);
     Safe_AddRef<TimeManager*>(_timeManager);
     Safe_AddRef<GraphicsManager*>(_graphicManager);
@@ -58,6 +60,7 @@ void GameInstance::Tick(_float fTimeDelta)
     _cameraHelper->Tick();
 
     _objectManager->LateTick(fTimeDelta);
+    _collisionManager->LateTick(fTimeDelta);
     _levelManager->LateTick(fTimeDelta);
 }
 
@@ -419,6 +422,7 @@ void GameInstance::Release_Engine()
     GameInstance::GetInstance()->DestroyInstance();
     LevelManager::GetInstance()->DestroyInstance();
     ObjectManager::GetInstance()->DestroyInstance();
+    CollisionManager::GetInstance()->DestroyInstance();
     ComponentManager::GetInstance()->DestroyInstance();
     TimeManager::GetInstance()->DestroyInstance();
     CameraHelper::GetInstance()->DestroyInstance();
@@ -436,6 +440,7 @@ void GameInstance::Free()
     Safe_Release<CameraHelper*>(_cameraHelper);
     Safe_Release<ComponentManager*>(_componentManager);
     Safe_Release<ObjectManager*>(_objectManager);
+    Safe_Release<CollisionManager*>(_collisionManager);
     Safe_Release<LevelManager*>(_levelManager);
     Safe_Release<TimeManager*>(_timeManager);
     Safe_Release<InputHandler*>(_inputHandler);

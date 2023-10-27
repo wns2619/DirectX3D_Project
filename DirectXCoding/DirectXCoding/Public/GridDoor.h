@@ -19,7 +19,15 @@ public:
 	virtual HRESULT Render()						override;
 
 public:
+	virtual void OnCollisionEnter(class  Collider* pOther);
+	virtual void OnCollisionStay(class Collider* pOther);
+	virtual void OnCollisionExit(class Collider* pOther);
+
+public:
 	virtual HRESULT ReadyCollider()					override;
+
+private:
+	Vec3 vPrepareVector[3] = {};
 
 public:
 	static GridDoor* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);

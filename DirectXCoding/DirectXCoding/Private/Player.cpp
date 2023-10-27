@@ -114,20 +114,32 @@ HRESULT Player::Render()
 			pPart->Render();
 	}
 
-
-
 #ifdef _DEBUG
 	_pCollider->Render();
 #endif // _DEBUG
-
 
 #ifdef _DEBUG
 	_pNavigation->Render();
 #endif // _DEBUG
 
 
-
 	return S_OK;
+}
+
+void Player::OnCollisionEnter(Collider* pOther)
+{
+	
+
+}
+
+void Player::OnCollisionStay(Collider* pOther)
+{
+
+}
+
+void Player::OnCollisionExit(Collider* pOther)
+{
+
 }
 
 void Player::KeyInput(const _float& timeDelta)
@@ -196,6 +208,7 @@ HRESULT Player::ReadyComponents()
 		obbDesc.vCenter = Vec3(0.f, -0.3f, 0.2f);
 		obbDesc.vExtents = Vec3(0.3f, 0.8f, 0.3f);
 		obbDesc.vRotation = Quaternion(0.f, 0.f, 0.f, 1.f);
+		obbDesc.pOwner = this;
 	}
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeOBBCollider"),
@@ -309,5 +322,4 @@ void Player::Free()
 	Safe_Release<Renderer*>(_render);
 	Safe_Release<StateMachine*>(_pStateMachine);
 	Safe_Release<Animator*>(_pAnimator);
-	Safe_Release<Collider*>(_pCollider);
 }

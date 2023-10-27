@@ -32,12 +32,20 @@ public:
 
 public:
 	void SetObjectType(OBJECT_TYPE type) { _objectType = type; }
+	void SetDead(_bool IsDead) { _IsDead = IsDead; }
+	
 	OBJECT_TYPE GetObjectType() { return _objectType; }
-	Collider* GetCollider() { return _owner; }
+	Collider* GetCollider() { return _pCollider; }
+
+	const _bool& IsDead() const { return _IsDead; }
 
 public:
 	Component* FindComponent(const wstring& componentTag);
 
+public:
+	virtual void OnCollisionEnter(class  Collider* pOther) {};
+	virtual void OnCollisionStay(class Collider* pOther) {};
+	virtual void OnCollisionExit(class Collider* pOther) {};
 
 public:
 	// IMGUI
@@ -57,8 +65,10 @@ protected:
 	ID3D11Device* _device = nullptr;
 	ID3D11DeviceContext* _deviceContext = nullptr;
 	OBJECT_TYPE _objectType = OBJECT_TYPE::OBJECT_END;
+	_bool _IsDead = false;
 
-	Collider* _owner = nullptr;
+
+	Collider* _pCollider = nullptr;
 	Transform* _transform = nullptr;
 	Model* _model = nullptr;
 	BinaryModel* _binaryModel = nullptr;

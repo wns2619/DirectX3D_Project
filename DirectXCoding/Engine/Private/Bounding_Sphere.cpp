@@ -2,6 +2,9 @@
 #include "Bounding_Sphere.h"
 #include "DebugDraw.h"
 
+#include "BoundingAABB.h"
+#include "BoundingOBB.h"
+
 Bounding_Sphere::Bounding_Sphere()
 {
 }
@@ -22,6 +25,28 @@ HRESULT Bounding_Sphere::Initialize(BOUNDING_DESC* pDesc)
 void Bounding_Sphere::Update(FXMMATRIX TransformMatrix)
 {
 	_pSphere_Original->Transform(*_pSphere, TransformMatrix);
+}
+
+_bool Bounding_Sphere::IsCollision(Collider::COLLIDER_TYPE eType, Bounding* pBounding)
+{
+	_IsColl = false;
+
+	switch (eType)
+	{
+	case Engine::Collider::AABB:
+		_IsColl = _pSphere->Intersects(*dynamic_cast<BoundingAABB*>(pBounding)->GetBounding());
+		break;
+	case Engine::Collider::OBB:
+		_IsColl = _pSphere->Intersects(*dynamic_cast<BoundingOBB*>(pBounding)->GetBounding());
+		break;
+	case Engine::Collider::SPHERE:
+		_IsColl = _pSphere->Intersects(*dynamic_cast<Bounding_Sphere*>(pBounding)->GetBounding());
+		break;
+	default:
+		break;
+	}
+
+	return _IsColl;
 }
 
 #ifdef _DEBUG

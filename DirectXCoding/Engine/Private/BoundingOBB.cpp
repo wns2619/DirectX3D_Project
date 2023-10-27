@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "BoundingOBB.h"
 #include "DebugDraw.h"
+#include "BoundingAABB.h"
+#include "Bounding_Sphere.h"
 
 BoundingOBB::BoundingOBB()
 {
@@ -24,10 +26,36 @@ void BoundingOBB::Update(FXMMATRIX TransformMatrix)
 	_pOBB_Original->Transform(*_pOBB, TransformMatrix);
 }
 
+
+_bool BoundingOBB::IsCollision(Collider::COLLIDER_TYPE eType, Bounding* pBounding)
+{
+	_bool testfalse = false;
+
+	switch (eType)
+	{
+	case Engine::Collider::AABB:
+		testfalse = _pOBB->Intersects(*dynamic_cast<BoundingAABB*>(pBounding)->GetBounding());
+		break;
+	case Engine::Collider::OBB:
+		testfalse = _pOBB->Intersects(*dynamic_cast<BoundingOBB*>(pBounding)->GetBounding());
+		break;
+	case Engine::Collider::SPHERE:
+		testfalse = _pOBB->Intersects(*dynamic_cast<Bounding_Sphere*>(pBounding)->GetBounding());
+		break;
+	default:
+		break;
+	}
+
+	return testfalse;
+}
+
 #ifdef _DEBUG
+
 HRESULT BoundingOBB::Render(PrimitiveBatch<VertexPositionColor>* pBatch)
 {
-	DX::Draw(pBatch, *_pOBB);
+	Color vColor = _IsColl == true ? Color(1.f, 0.f, 0.f, 1.f) : Color(0.f, 1.f, 0.f, 1.f);
+
+	DX::Draw(pBatch, *_pOBB, ::XMLoadFloat4(&vColor));
 
 	return S_OK;
 }

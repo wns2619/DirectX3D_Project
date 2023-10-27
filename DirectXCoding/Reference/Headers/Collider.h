@@ -3,10 +3,21 @@
 
 BEGIN(Engine)
 
+union COLLIDER_ID
+{
+	struct
+	{
+		uint32 LeftID;
+		uint32 RightID;
+	};
+	uint64 ID;
+};
+
 class ENGINE_DLL Collider final : public Component
 {
 public:
 	enum COLLIDER_TYPE { AABB, OBB, SPHERE, TYPE_END };
+
 
 private:
 	explicit Collider(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
@@ -19,9 +30,8 @@ public:
 #ifdef _DEBUG
 	virtual HRESULT Render();
 #endif
-
-	virtual _bool Intersects(Ray& ray, OUT _float& distance);
-	virtual _bool Intersects(Collider* other);
+public:
+	_bool IsCollisition(Collider* pTargetCol);
 
 public:
 	virtual void OnCollisionEnter(Collider* other);
@@ -30,10 +40,17 @@ public:
 
 public:
 	class Bounding* GetBounding() { return _pBounding; }
-
+	class GameObject* GetOwner() { return _pOwner; }
+	uint32 GetID() { return _iID; }
 private:
 	COLLIDER_TYPE _eColliderType = COLLIDER_TYPE::TYPE_END;
 	class Bounding* _pBounding = nullptr;
+	class GameObject* _pOwner = nullptr;
+
+	uint32 _iID = 0;
+	static uint32 _giNextID;
+
+	int32 _iCol = 0;
 
 #ifdef _DEBUG
 private:

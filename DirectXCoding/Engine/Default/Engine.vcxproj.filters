@@ -40,9 +40,6 @@
     <Filter Include="03.Pipeline">
       <UniqueIdentifier>{7a8683dc-a612-4b21-ac63-68c987552041}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04.Resource">
-      <UniqueIdentifier>{ea2b697d-1a85-4924-b761-b7081d05113a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\02.Level">
       <UniqueIdentifier>{fca59a7a-d21d-418d-8c6d-b3e9fe3e4bce}</UniqueIdentifier>
     </Filter>
@@ -192,6 +189,12 @@
     </Filter>
     <Filter Include="01.Utility\04.Component\Collider\DebugDraw">
       <UniqueIdentifier>{de67ac64-dbad-4492-951f-4126d2723a20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\98.Manager\Collision">
+      <UniqueIdentifier>{13207e9b-73de-4e13-b176-2fe9fcb3612b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Resource">
+      <UniqueIdentifier>{ea2b697d-1a85-4924-b761-b7081d05113a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -417,6 +420,9 @@
     <ClInclude Include="..\Public\Bounding_Sphere.h">
       <Filter>01.Utility\04.Component\Collider\Base\Sphere</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CollisionManager.h">
+      <Filter>01.Utility\98.Manager\Collision</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -598,6 +604,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Bounding_Sphere.cpp">
       <Filter>01.Utility\04.Component\Collider\Base\Sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CollisionManager.cpp">
+      <Filter>01.Utility\98.Manager\Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

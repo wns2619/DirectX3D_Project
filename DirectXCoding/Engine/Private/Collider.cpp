@@ -4,6 +4,9 @@
 #include "BoundingAABB.h"
 #include "BoundingOBB.h"
 #include "Bounding_Sphere.h"
+#include "GameObject.h"
+
+uint32 Collider::_giNextID = 0;
 
 Collider::Collider(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : Component(device, deviceContext, COMPONENT_TYPE::COLLIDER)
@@ -41,6 +44,10 @@ HRESULT Collider::InitializePrototype(COLLIDER_TYPE eType)
 HRESULT Collider::Initialize(void* argument)
 {
     Bounding::BOUNDING_DESC* pBoundingDesc = static_cast<Bounding::BOUNDING_DESC*>(argument);
+
+    _iID = _giNextID++;
+
+    _pOwner = pBoundingDesc->pOwner;
 
     switch (_eColliderType)
     {
@@ -88,26 +95,32 @@ HRESULT Collider::Render()
 
 #endif // _DEBUG
 
-_bool Collider::Intersects(Ray& ray, OUT _float& distance)
+_bool Collider::IsCollisition(Collider* pTargetCol)
 {
-    return _bool();
-}
-
-_bool Collider::Intersects(Collider* other)
-{
-    return _bool();
+    return _pBounding->IsCollision(pTargetCol->_eColliderType, pTargetCol->_pBounding);
 }
 
 void Collider::OnCollisionEnter(Collider* other)
 {
+    ++_iCol;
+
+    _pOwner->OnCollisionEnter(other);
+
 }
 
 void Collider::OnCollisionStay(Collider* other)
 {
+
+    _pOwner->OnCollisionStay(other);
+
 }
 
 void Collider::OnCollisionExit(Collider* other)
 {
+
+    _pOwner->OnCollisionExit(other);
+
+    --_iCol;
 }
 
 Collider* Collider::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, COLLIDER_TYPE eType)

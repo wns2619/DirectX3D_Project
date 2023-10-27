@@ -46,7 +46,6 @@ public:
 protected:
 	Renderer* _render = nullptr;
 	Shader* _shader = nullptr;
-	Collider* _pCollider = nullptr;
 
 	STATE_DESC _comNames;
 	DYNAMIC_TYPE _eDynamicType;

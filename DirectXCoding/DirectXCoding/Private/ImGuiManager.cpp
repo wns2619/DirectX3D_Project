@@ -2458,41 +2458,6 @@ void ImGuiManager::SortPoints()
 		_vPoints[0] = dest;
 		_vPoints[2] = temp;
 	}
-
-	/*Vec3 center((_vPoints[0].x + _vPoints[1].x + _vPoints[2].x) / 3.f,
-		(_vPoints[0].y + _vPoints[1].y + _vPoints[2].y) / 3.f,
-		(_vPoints[0].z + _vPoints[1].z + _vPoints[2].z) / 3.f);
-
-
-	list<Vec3> sortList;
-	sortList.push_back(_vPoints[0]);
-	sortList.push_back(_vPoints[1]);
-	sortList.push_back(_vPoints[2]);
-
-
-	sortList.sort([&center](Vec3 pDst, Vec3 pSrc) {
-		_float angle1 = atan2(pDst.x - center.x, pDst.z - center.z);
-		_float angle2 = atan2(pSrc.x - center.x, pSrc.z - center.z);
-		return angle1 < angle2;
-		}
-	);
-
-
-	auto iter = sortList.begin();
-
-	_vPoints[0].x = iter->x;
-	_vPoints[0].y = iter->y;
-	_vPoints[0].z = iter->z;
-	++iter;
-
-	_vPoints[1].x = iter->x;
-	_vPoints[1].y = iter->y;
-	_vPoints[1].z = iter->z;
-	++iter;
-
-	_vPoints[2].x = iter->x;
-	_vPoints[2].y = iter->y;
-	_vPoints[2].z = iter->z;*/
 }
 
 _float ImGuiManager::DistanceBetewwinPoints(const Vec3& point1, const Vec3& point2)

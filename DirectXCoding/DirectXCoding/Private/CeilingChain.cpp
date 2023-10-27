@@ -28,6 +28,8 @@ HRESULT CeilingChain::Initialize(void* pArg)
 	if (FAILED(ReadyCollider()))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+		_transform->SetWorldMatrix(static_cast<ComponentNames*>(pArg)->_saveWorldMatrix);
 
     return S_OK;
 }
@@ -87,10 +89,15 @@ HRESULT CeilingChain::ReadyCollider()
 		obbDesc.vCenter = Vec3(-2.5f, 0.f, 2.5f);
 		obbDesc.vExtents = Vec3(5.f, 70.f, 5.f);
 		obbDesc.vRotation = Quaternion(0.f, 0.f, 0.f, 1.f);
+		obbDesc.pOwner = this;
 	}
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeOBBCollider"),
 		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &obbDesc)))
+		return E_FAIL;
+
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
+		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(GameInstance);

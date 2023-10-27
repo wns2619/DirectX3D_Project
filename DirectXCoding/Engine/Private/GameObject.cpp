@@ -123,7 +123,7 @@ void GameObject::Free()
 
 	_Components.clear();
 
-	Safe_Release<Collider*>(_owner);
+	Safe_Release<Collider*>(_pCollider);
 	Safe_Release<Model*>(_model);
 	Safe_Release<BinaryModel*>(_binaryModel);
 	Safe_Release<Transform*>(_transform);

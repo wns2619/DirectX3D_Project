@@ -20,6 +20,12 @@ public:
 	virtual HRESULT Initialize(BOUNDING_DESC* pDesc) override;
 	virtual void Update(FXMMATRIX TransformMatrix) override;
 
+public:
+	const BoundingSphere* GetBounding() const { return _pSphere; }
+
+public:
+	virtual _bool IsCollision(Collider::COLLIDER_TYPE eType, Bounding* pBounding);
+
 #ifdef _DEBUG
 public:
 	virtual HRESULT Render(PrimitiveBatch<VertexPositionColor>* pBatch) override;

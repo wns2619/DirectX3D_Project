@@ -24,6 +24,9 @@ HRESULT Drum::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+		_transform->SetWorldMatrix(static_cast<ComponentNames*>(pArg)->_saveWorldMatrix);
+
 	return S_OK;
 }
 
@@ -70,6 +73,8 @@ HRESULT Drum::Render()
 
 HRESULT Drum::ReadyCollider()
 {
+
+
 	return S_OK;
 }
 

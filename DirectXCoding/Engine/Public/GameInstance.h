@@ -107,6 +107,7 @@ private:
 	class LightManager* _lightManager = nullptr;
 	class Picking* _picking = nullptr;
 	class InputHandler* _inputHandler = nullptr;
+	class CollisionManager* _collisionManager = nullptr;
 
 public:
 	static void Release_Engine();

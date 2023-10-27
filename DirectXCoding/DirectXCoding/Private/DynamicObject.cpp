@@ -37,10 +37,7 @@ HRESULT DynamicObject::Initialize(void* pArg)
 
 	//_transform->SetScaling(Vec3(0.01f, 0.01f, 0.01f));
 
-	if (nullptr != pArg)
-		_transform->SetWorldMatrix(static_cast<ComponentNames*>(pArg)->_saveWorldMatrix);
-
-	_transform->SetScaling(Vec3(0.01f, 0.01f, 0.01f));
+	//_transform->SetScaling(Vec3(0.01f, 0.01f, 0.01f));
 
 	//_transform->SetWorldMatrix()
 	//_transform->FixRotation(Vec3(0.f, 1.f, 0.f), ::XMConvertToRadians(90.f));
@@ -103,11 +100,6 @@ HRESULT DynamicObject::ReadyComponents()
 		return E_FAIL;
 
 
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
-		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform))))
-		return E_FAIL;
-
-
 	if (FAILED(__super::AddComponent(level, _comNames._strModelComponentName,
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
@@ -157,5 +149,4 @@ void DynamicObject::Free()
 
 	Safe_Release<Renderer*>(_render);
 	Safe_Release<Shader*>(_shader);
-	Safe_Release<Collider*>(_pCollider);
 }

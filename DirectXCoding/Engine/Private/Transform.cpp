@@ -60,6 +60,8 @@ HRESULT Transform::Initialize(void* argument)
 
         _transformDesc.speedPerSec = desc.speedPerSec;
         _transformDesc.rotationRadianPerSec = desc.rotationRadianPerSec;
+
+        // 로테이션값 미리 저장.
     }
 
     return S_OK;
@@ -172,23 +174,6 @@ void Transform::FixRotation(_float x, _float y, _float z)
 
 void Transform::Turn(XMVECTOR axis, const _float& timeDelta)
 {
-
-    //Vec4		vRight = GetState(STATE::RIGHT);
-    //Vec4		vUp = GetState(STATE::UP);
-    //Vec4		vLook = GetState(STATE::LOOK);
-
-    //Matrix		RotationMatrix = XMMatrixRotationAxis(axis, _transformDesc.rotationRadianPerSec * timeDelta);
-    //Vec4		vQuaternionData = XMQuaternionRotationMatrix(RotationMatrix);
-    //Matrix		QuaternionMatrix = XMMatrixRotationQuaternion(vQuaternionData);
-
-    //vRight = XMVector4Transform(vRight, QuaternionMatrix);
-    //vUp = XMVector4Transform(vUp, QuaternionMatrix);
-    //vLook = XMVector4Transform(vLook, QuaternionMatrix);
-
-    //SetState(STATE::RIGHT, vRight);
-    //SetState(STATE::UP, vUp);
-    //SetState(STATE::LOOK, vLook);
-    // 
     XMVECTOR right = GetState(STATE::RIGHT);
     XMVECTOR up = GetState(STATE::UP);
     XMVECTOR look = GetState(STATE::LOOK);

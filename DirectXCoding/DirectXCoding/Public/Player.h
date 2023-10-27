@@ -31,6 +31,11 @@ public:
 	virtual HRESULT Render()						override;
 
 public:
+	virtual void OnCollisionEnter(class  Collider* pOther);
+	virtual void OnCollisionStay(class Collider* pOther);
+	virtual void OnCollisionExit(class Collider* pOther);
+
+public:
 	void KeyInput(const _float& timeDelta);
 public:
 	vector<class GameObject*>& GetPlyaerPart() { return m_pPlayerPart; }
@@ -43,7 +48,6 @@ private:
 	Shader* _shader					= nullptr;
 	StateMachine* _pStateMachine	= nullptr;
 	Animator* _pAnimator			= nullptr;
-	Collider* _pCollider			= nullptr;
 
 	uint32 animationcount = 0;
 private:
