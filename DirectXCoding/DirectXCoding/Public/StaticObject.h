@@ -51,8 +51,8 @@ private:
 	VIBufferCell* _pVIBuffer = nullptr;
 
 protected:
-	HRESULT ReadyComponents();
-	HRESULT BindShaderResource();
+	virtual HRESULT ReadyComponents();
+	virtual HRESULT BindShaderResource();
 
 public:
 	static StaticObject* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);

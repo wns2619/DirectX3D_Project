@@ -1,26 +1,26 @@
 #include "pch.h"
-#include "Valve.h"
+#include "Key.h"
 
 #include "GameInstance.h"
 #include "Bounding_Sphere.h"
 
-Valve::Valve(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::VALVE)
+Key::Key(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::KEY)
 {
-
 }
 
-Valve::Valve(const Valve& rhs)
+Key::Key(const Key& rhs)
 	: DynamicObject(rhs)
 {
+
 }
 
-HRESULT Valve::InitializePrototype()
+HRESULT Key::InitializePrototype()
 {
 	return S_OK;
 }
 
-HRESULT Valve::Initialize(void* pArg)
+HRESULT Key::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -34,29 +34,23 @@ HRESULT Valve::Initialize(void* pArg)
 	return S_OK;
 }
 
-void Valve::Tick(const _float& timeDelta)
+void Key::Tick(const _float& timeDelta)
 {
-	if (_enabled)
-		return;
-
-	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
 
-void Valve::LateTick(const _float& timeDelta)
+void Key::LateTick(const _float& timeDelta)
 {
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
 }
 
-HRESULT Valve::Render()
+HRESULT Key::Render()
 {
 	if (_enabled)
 		return S_OK;
 
-
 	if (FAILED(__super::BindShaderResource()))
 		return E_FAIL;
-
 
 	uint32 numMeshes = _binaryModel->GetNumMeshes();
 
@@ -76,19 +70,13 @@ HRESULT Valve::Render()
 	_pCollider->Render();
 #endif // _DEBUG
 
-	return S_OK;
 
+	return S_OK;
 }
 
-HRESULT Valve::ReadyCollider()
+HRESULT Key::ReadyCollider()
 {
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
-
-	uint32 level = static_cast<uint32>(LEVEL::GAME);
-
-	if (static_cast<uint32>(LEVEL::EDIT) == pGameInstance->GetCurrentLevelIndex())
-		level = static_cast<uint32>(LEVEL::EDIT);
-
 
 	Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
 	{
@@ -97,7 +85,7 @@ HRESULT Valve::ReadyCollider()
 		sphereDesc.pOwner = this;
 	}
 
-	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeSphereCollider"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeSphereColider"),
 		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &sphereDesc)))
 		return E_FAIL;
 
@@ -106,35 +94,37 @@ HRESULT Valve::ReadyCollider()
 		return E_FAIL;
 
 	RELEASE_INSTANCE(GameInstance);
+
+	return S_OK;
 }
 
-Valve* Valve::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+Key* Key::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
-	Valve* pInstance = new Valve(device, deviceContext);
+	Key* pInstance = Key::Create(device, deviceContext);
 
 	if (FAILED(pInstance->InitializePrototype()))
 	{
-		MSG_BOX("Create to Failed : Valve");
-		Safe_Release<Valve*>(pInstance);
+		MSG_BOX("Failed to Create : KEY");
+		Safe_Release<Key*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-GameObject* Valve::Clone(void* argument)
+GameObject* Key::Clone(void* pArg)
 {
-	Valve* pInstance = new Valve(*this);
+	Key* pInstance = new Key(*this);
 
-	if (FAILED(pInstance->Initialize(argument)))
+	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Create to Failed : BreakDoor");
-		Safe_Release<Valve*>(pInstance);
+		MSG_BOX("Failed to Create : KEY");
+		Safe_Release<Key*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-void Valve::Free()
+void Key::Free()
 {
 	__super::Free();
 }

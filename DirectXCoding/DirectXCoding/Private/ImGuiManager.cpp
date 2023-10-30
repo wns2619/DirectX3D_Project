@@ -711,17 +711,17 @@ HRESULT ImGuiManager::ModelNameCardSection()
 	
 
 
-					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), findPrototypename.first, findPrototypename.second, &comNames)))
+					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), findPrototypename.first, findPrototypename.second)))
 					{
 						RELEASE_INSTANCE(GameInstance);
 						return E_FAIL;
 					}
 
-					size_t dotPosition = modelPath.find_last_of(".");
+		/*			size_t dotPosition = modelPath.find_last_of(".");
 					string fileExtension = "";
 
 					if (dotPosition != std::string::npos && dotPosition > 0)
-						fileExtension = modelPath.substr(0, dotPosition);
+						fileExtension = modelPath.substr(0, dotPosition);*/
 
 					//BinaryModelSave(modelPath, Utils::ToWString(fileExtension));
 					//BinaryAnimModelSave(modelPath, Utils::ToWString(fileExtension));
@@ -2212,6 +2212,16 @@ HRESULT ImGuiManager::SceneSave(wstring& filePath)
 				file->Write<Matrix>(staticObjectWorldMarix);
 			}
 			break;
+		case Engine::LAYER_TAG::LAYER_COLLIDER:
+			for (auto& LayerObjects : *LayerGameObjectList)
+			{
+				OBJECT_TYPE modelType = LayerObjects->GetObjectType();
+				file->Write<uint32>(static_cast<uint32>(modelType));
+
+				Matrix colliderMatrix = LayerObjects->GetTransform()->GetWorldMatrix();
+				file->Write<Matrix>(colliderMatrix);
+			}
+			break;
 		case Engine::LAYER_TAG::LAYER_END:
 			break;
 		default:
@@ -2427,6 +2437,23 @@ HRESULT ImGuiManager::SceneLoad(wstring& filePath)
 				environmentComponentName._saveWorldMatrix = staticObjectWorldMarix;
 
 				if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), static_cast<LAYER_TAG>(LayerTagType), environmentComponentName._protoTypeName, &environmentComponentName)))
+					return E_FAIL;
+
+			}
+			break;
+		case Engine::LAYER_TAG::LAYER_COLLIDER:
+			for (uint32 j = 0; j < GameObjectListSize; ++j)
+			{
+				uint32 modelType;
+				file->Read<uint32>(modelType);
+				//// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
+				ComponentNames ColliderComponentName;
+
+				Matrix staticObjectWorldMarix;
+				file->Read<Matrix>(staticObjectWorldMarix);
+				ColliderComponentName._saveWorldMatrix = staticObjectWorldMarix;
+
+				if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), static_cast<LAYER_TAG>(LayerTagType), TEXT("ProtoTypeDoorCol"), &ColliderComponentName)))
 					return E_FAIL;
 
 			}

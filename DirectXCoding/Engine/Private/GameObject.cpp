@@ -129,5 +129,5 @@ void GameObject::Free()
 	Safe_Release<Transform*>(_transform);
 	Safe_Release<ID3D11Device*>(_device);
 	Safe_Release<ID3D11DeviceContext*>(_deviceContext);
-
+	Safe_Release<Collider*>(_pAssistCollider);
 }

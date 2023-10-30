@@ -281,6 +281,15 @@ Component* GameInstance::GetComponent(uint32 iLevelIndex, const LAYER_TAG eLayer
     return _objectManager->GetComponent(iLevelIndex, eLayerTag, strComponentTag, strModelName, iIndex);
 }
 
+Component* GameInstance::GetComponentFromID(uint32 iLevelIndex, const LAYER_TAG tag, const wstring& strComponentTag, const string& modelName, uint32 id)
+{
+    if (nullptr == _objectManager)
+        return nullptr;
+
+
+    return _objectManager->GetComponentFromID(iLevelIndex, tag, strComponentTag, modelName, id);
+}
+
 
 HRESULT GameInstance::AddProtoType(uint32 levelIndex, const wstring& PrototypeTag, Component* protoType)
 {

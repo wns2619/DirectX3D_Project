@@ -125,6 +125,12 @@
     <Filter Include="소스 파일\02.GameObjects\03.Player\State">
       <UniqueIdentifier>{962ee82d-5f06-4f8d-95d8-36101419f432}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\99. DoorCollision">
+      <UniqueIdentifier>{68d29e5e-1394-48ed-91ed-705440fd8113}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\04. Static\Key">
+      <UniqueIdentifier>{ba472975-940e-423c-a357-0f72ef58489c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -280,6 +286,12 @@
     <ClInclude Include="..\Public\PlayerReload.h">
       <Filter>소스 파일\02.GameObjects\03.Player\State</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\DoorCollision.h">
+      <Filter>소스 파일\02.GameObjects\99. DoorCollision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Key.h">
+      <Filter>소스 파일\02.GameObjects\04. Static\Key</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -410,6 +422,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\PlayerReload.cpp">
       <Filter>소스 파일\02.GameObjects\03.Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DoorCollision.cpp">
+      <Filter>소스 파일\02.GameObjects\99. DoorCollision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Key.cpp">
+      <Filter>소스 파일\02.GameObjects\04. Static\Key</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

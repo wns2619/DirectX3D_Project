@@ -2,7 +2,7 @@
 #include "Cage.h"
 
 #include "GameInstance.h"
-#include "BoundingAABB.h"
+#include "BoundingOBB.h"
 
 Cage::Cage(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::CAGE)
@@ -76,22 +76,28 @@ HRESULT Cage::Render()
 #endif // _DEBUG
 
 	return S_OK;
-
+	
 }
 
 HRESULT Cage::ReadyCollider()
 {
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
-	BoundingAABB::BOUNDING_AABB_DESC aabbDesc;
+	uint32 level = static_cast<uint32>(LEVEL::GAME);
+
+	if (static_cast<uint32>(LEVEL::EDIT) == pGameInstance->GetCurrentLevelIndex())
+		level = static_cast<uint32>(LEVEL::EDIT);
+
+	BoundingOBB::BOUNDING_OBB_DESC obbDesc;
 	{
-		aabbDesc.vCenter = Vec3(0.f, 120.f, 0.f);
-		aabbDesc.vExtents = Vec3(80.f, 120.f, 5.f);
-		aabbDesc.pOwner = this;
+		obbDesc.vCenter = Vec3(0.f, 120.f, 0.f);
+		obbDesc.vExtents = Vec3(80.f, 120.f, 5.f);
+		obbDesc.vRotation = Quaternion(0.f, 0.f, 0.f, 1.f);
+		obbDesc.pOwner = this;
 	}
 
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAABBColider"),
-		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &aabbDesc)))
+	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeOBBCollider"),
+		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &obbDesc)))
 		return E_FAIL;
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),

@@ -35,6 +35,7 @@ public:
 
 public:
 	Component* GetComponent(uint32 iLevelIndex, const LAYER_TAG eTag, const wstring& strComponentTag, const string& modelName, uint32 iIndex);
+	Component* GetComponentFromID(uint32 iLevelIndex, const LAYER_TAG tag, const wstring& strComponentTag, const string& modelName, uint32 id);
 
 public: // IMGUI ¿ëµµ
 	HRESULT ComparisonAddObject(int32 levelIndex, const string& addObjectfile = "", LAYER_TAG layertag = LAYER_TAG::LAYER_END , void* argument = nullptr);

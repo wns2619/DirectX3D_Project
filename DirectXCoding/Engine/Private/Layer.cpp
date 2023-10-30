@@ -89,6 +89,21 @@ Component* Layer::GetComponent(const wstring& strComponentTag, const string& mod
 	return nullptr;
 }
 
+Component* Layer::GetComponentFromID(const wstring& strComponentTag, const string& modelName, uint32 iD)
+{
+	for (auto& pGameObject : _gameObjects)
+	{
+		if (nullptr == pGameObject)
+			continue;
+
+		if (pGameObject->GetModelName() == modelName && pGameObject->GetIdNumber() == iD)
+			return pGameObject->FindComponent(strComponentTag);
+
+	}
+
+	return nullptr;
+}
+
 Layer* Layer::Create()
 {
 	Layer* layer = new Layer();

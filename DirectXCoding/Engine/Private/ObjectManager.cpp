@@ -197,6 +197,15 @@ Component* ObjectManager::GetComponent(uint32 iLevelIndex, const LAYER_TAG eTag,
 	return pLayer->GetComponent(strComponentTag, modelName, iIndex);
 }
 
+Component* ObjectManager::GetComponentFromID(uint32 iLevelIndex, const LAYER_TAG tag, const wstring& strComponentTag, const string& modelName, uint32 id)
+{
+	Layer* pLayer = FindLayer(iLevelIndex, tag);
+	if (nullptr == pLayer)
+		return nullptr;
+
+	return pLayer->GetComponentFromID(strComponentTag, modelName, id);
+}
+
 HRESULT ObjectManager::ComparisonAddObject(int32 levelIndex, const string& addObjectfile, LAYER_TAG layertag, void* argument)
 {
 	if (levelIndex >= _levelNumber)

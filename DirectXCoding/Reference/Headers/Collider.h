@@ -41,6 +41,7 @@ public:
 public:
 	class Bounding* GetBounding() { return _pBounding; }
 	class GameObject* GetOwner() { return _pOwner; }
+	COLLIDER_TYPE& GetColliderType() { return _eColliderType; }
 	uint32 GetID() { return _iID; }
 private:
 	COLLIDER_TYPE _eColliderType = COLLIDER_TYPE::TYPE_END;
@@ -57,6 +58,7 @@ private:
 	/* Vertex, IndexBuffer를 생성하고 그리는 기능을 제공해주는 객체*/
 	PrimitiveBatch<DirectX::VertexPositionColor>* _pBatch = nullptr;
 	BasicEffect* _pEffect = nullptr;
+	ID3D11InputLayout* _pInputLayOut = nullptr;
 
 
 #endif // _DEBUG

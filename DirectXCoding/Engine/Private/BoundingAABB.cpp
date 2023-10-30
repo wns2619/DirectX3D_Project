@@ -36,32 +36,33 @@ void BoundingAABB::Update(FXMMATRIX TransformMatrix)
 
 _bool BoundingAABB::IsCollision(Collider::COLLIDER_TYPE eType, Bounding* pBounding)
 {
-	_IsColl = false;
+	_bool bIntersects = false;
 
 	switch (eType)
 	{
 	case Engine::Collider::AABB:
-		_IsColl = _pAABB->Intersects(*dynamic_cast<BoundingAABB*>(pBounding)->GetBounding());
+		bIntersects = _pAABB->Intersects(*dynamic_cast<BoundingAABB*>(pBounding)->GetBounding());
 		break;
 	case Engine::Collider::OBB:
-		_IsColl = _pAABB->Intersects(*dynamic_cast<BoundingOBB*>(pBounding)->GetBounding());
+		bIntersects = _pAABB->Intersects(*dynamic_cast<BoundingOBB*>(pBounding)->GetBounding());
 		break;
 	case Engine::Collider::SPHERE:
-		_IsColl = _pAABB->Intersects(*dynamic_cast<Bounding_Sphere*>(pBounding)->GetBounding());
+		bIntersects = _pAABB->Intersects(*dynamic_cast<Bounding_Sphere*>(pBounding)->GetBounding());
 		break;
 	default:
 		break;
 	}
 
-	return _IsColl;
+	return bIntersects;
 }
 
 #ifdef _DEBUG
 
 HRESULT BoundingAABB::Render(PrimitiveBatch<VertexPositionColor>* pBatch)
 {
-	DX::Draw(pBatch, *_pAABB);
+	Color vColor = _IsColl == true ? Color(1.f, 0.f, 0.f, 1.f) : Color(0.f, 1.f, 0.f, 1.f);
 
+	DX::Draw(pBatch, *_pAABB, ::XMLoadFloat4(&vColor));
 	return S_OK;
 }
 

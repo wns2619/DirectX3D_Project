@@ -85,6 +85,11 @@ HRESULT HorrorMask::ReadyCollider()
 {
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
+	uint32 level = static_cast<uint32>(LEVEL::GAME);
+
+	if (static_cast<uint32>(LEVEL::EDIT) == pGameInstance->GetCurrentLevelIndex())
+		level = static_cast<uint32>(LEVEL::EDIT);
+
 	Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
 	{
 		sphereDesc.vCenter = Vec3(0.f, 0.f, 0.f);
@@ -92,7 +97,7 @@ HRESULT HorrorMask::ReadyCollider()
 		sphereDesc.pOwner = this;
 	}
 
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeSphereColider"),
+	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeSphereCollider"),
 		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &sphereDesc)))
 		return E_FAIL;
 

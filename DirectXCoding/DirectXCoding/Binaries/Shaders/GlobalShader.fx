@@ -115,21 +115,45 @@ SamplerState PointSampler : register(s1)
 RasterizerState FillModeWireFrame
 {
     FillMode = WireFrame;
+    FrontCounterClockwise = false;
 };
 
 RasterizerState FillModeSolid
 {
     CullMode = NONE;
     FillMode = SOLID;
+    FrontCounterClockwise = false;
 };
 
+DepthStencilState DSS_None
+{
+    DepthEnable = false;
+    DepthWriteMask = zero;
 
+};
+
+DepthStencilState DSS_Default
+{
+    DepthEnable = true;
+    DepthWriteMask = all;
+    DepthFunc = LESS_EQUAL;
+};
 
 
 #define SOLID_PASS_VP(name, vs, ps)                 \
 pass name                                           \
 {                                                   \
     SetRasterizerState(FillModeSolid);              \
+    SetDepthStencilState(DSS_Default, 0);           \
+    SetVertexShader(CompileShader(vs_5_0, vs()));   \
+    SetPixelShader(CompileShader(ps_5_0, ps()));    \
+}
+
+#define SOLID_PASS_VPDEPTH(name, vs, ps)            \
+pass name                                           \
+{                                                   \
+    SetRasterizerState(FillModeSolid);              \
+    SetDepthStencilState(DSS_None, 0);              \
     SetVertexShader(CompileShader(vs_5_0, vs()));   \
     SetPixelShader(CompileShader(ps_5_0, ps()));    \
 }
@@ -138,6 +162,7 @@ pass name                                           \
 pass name                                           \
 {                                                   \
     SetRasterizerState(FillModeWireFrame);          \
+    SetDepthStencilState(DSS_Default, 0);           \
     SetVertexShader(CompileShader(vs_5_0, vs()));   \
     SetPixelShader(CompileShader(ps_5_0, ps()));    \
 }

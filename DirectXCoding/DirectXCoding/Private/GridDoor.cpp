@@ -2,7 +2,6 @@
 #include "GridDoor.h"
 
 #include "GameInstance.h"
-#include "BoundingOBB.h"
 #include "Player.h"
 
 GridDoor::GridDoor(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
@@ -32,14 +31,6 @@ HRESULT GridDoor::Initialize(void* pArg)
 	if (nullptr != pArg)
 		_transform->SetWorldMatrix(static_cast<ComponentNames*>(pArg)->_saveWorldMatrix);
 
-	XMVECTOR vLook = _transform->GetState(Transform::STATE::LOOK);
-
-	vPrepareVector[0] = vLook;
-	Matrix matY = Matrix::CreateRotationY(::XMConvertToRadians(90.f));
-	vPrepareVector[1] = ::XMVector3TransformCoord(vLook, matY);
-	matY = Matrix::CreateRotationY(::XMConvertToRadians(-90.f));
-	vPrepareVector[2] = ::XMVector3TransformCoord(vLook, matY);
-
 	return S_OK;
 }
 
@@ -48,7 +39,11 @@ void GridDoor::Tick(const _float& timeDelta)
 	if (_enabled)
 		return;
 
-	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
+	if (_bIsOpen == false)
+	{
+		_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
+		_pAssistCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
+	}
 }
 
 void GridDoor::LateTick(const _float& timeDelta)
@@ -83,6 +78,7 @@ HRESULT GridDoor::Render()
 
 #ifdef _DEBUG
 	_pCollider->Render();
+	_pAssistCollider->Render();
 #endif // _DEBUG
 
 
@@ -98,118 +94,139 @@ void GridDoor::OnCollisionEnter(Collider* pOther)
 
 void GridDoor::OnCollisionStay(Collider* pOther)
 {
-	if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER)
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	if (false == _bIsOpen)
 	{
-		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
-
-		// 플레이어의 Navi가 필요?
-		BinaryNavi* pNavi = dynamic_cast<Player*>(pOther->GetOwner())->GetNavigation();
-		_float timeDelta = pGameInstance->ComputeTimeDelta(TEXT("Timer_60"));
-
-		RELEASE_INSTANCE(GameInstance);
-
-		Vec3 vCenter = static_cast<BoundingOBB*>(pOther->GetBounding())->GetBounding()->Center;
-		Vec3 vthisCenter = static_cast<BoundingOBB*>(_pCollider->GetBounding())->GetBounding()->Center;
-
-		Vec3 vFinalCenter = vCenter - vthisCenter;
-		Vec3 extents = 0.5f * Vec3(::fabs(vFinalCenter.x), ::fabs(vFinalCenter.y), ::fabs(vFinalCenter.z));
-
-		if (extents.x >= extents.y && extents.x >= extents.z)
+		if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER)
 		{
-			// 충돌이 X 축에서 발생.
 
-			// TODO -> Left or Right
-			int a = 0;
+			Vec3 vPlayerCenter = static_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding()->Center;
+			Vec3 vthisCenter = static_cast<BoundingAABB*>(_pCollider->GetBounding())->GetBounding()->Center;
 
-			if (vCenter.x > vthisCenter.x)
+
+			Vec3 vFinalCenter = vPlayerCenter - vthisCenter;
+
+			Vec3 vPlayerExtents = static_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding()->Extents;
+			Vec3 vThisExtents = static_cast<BoundingAABB*>(_pCollider->GetBounding())->GetBounding()->Extents;
+
+			Vec3 extents = 0.5f * Vec3(::fabs(vFinalCenter.x), ::fabs(vFinalCenter.y), ::fabs(vFinalCenter.z));
+
+			_float xOverlap = extents.x - fabs(vFinalCenter.x);
+			_float yOverlap = extents.y - fabs(vFinalCenter.y);
+			_float zOverlap = extents.z - fabs(vFinalCenter.z);
+
+			_float minOverlap = std::min(std::min(xOverlap, yOverlap), zOverlap);
+
+			if (extents.x >= extents.y && extents.x >= extents.z)
 			{
-				// 충돌 객체 X 좌표가 충돌체 X 좌표보다 크다면 충돌은 충돌체 왼쪽에서 오른쪽으로 발생한 것.
-				a = 0;
+				// 충돌이 X 축에서 발생.
 
-			}
-			else
-			{
-				a = 0;
-			}
-		}
-		else if (extents.y >= extents.x && extents.y >= extents.z)
-		{
-			// Y축 발생.
+				// TODO -> Left or Right
 
-			// TODO -> Top or Bottom
-
-			int b = 0;
-
-			if (vCenter.y > vthisCenter.y)
-			{
-
-			}
-			else
-			{
-
-			}
-		}
-		else
-		{
-			// Z축에서 발생. 
-			int c = 0;
-
-			// TODO -> Back or Front.
-			if (vCenter.z > vthisCenter.z)
-			{
-				Vec3 vLook = _transform->GetState(Transform::STATE::LOOK);
-
-				_float test1 = vLook.Dot(vPrepareVector[2]);
-
-				if(0 < vLook.Dot(vPrepareVector[2]))
-					_transform->Turn(Vec4(0.f, -1.f, 0.f, 1.f), timeDelta);
-			}
-			else
-			{
-				c = 0;
-				// y축 회전하는데 플레이어 z축 방향으로 .
-				Vec3 vLook = _transform->GetState(Transform::STATE::LOOK);
-
-				_float test1 = vLook.Dot(vPrepareVector[1]);
-
-				if (0 > vLook.Dot(vPrepareVector[1]))
+				if (vPlayerCenter.x > vthisCenter.x)
 				{
-					_transform->Turn(Vec4(0.f, 1.f, 0.f, 1.f), timeDelta);
+					_float vFinalExtents = fabs((vPlayerExtents.x + vThisExtents.x)) - fabs(vFinalCenter.x);
+
+					Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
+					vPos.x += vFinalExtents;
+
+					pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+				}
+				else
+				{
+					_float vFinalExtents = fabs((vPlayerExtents.x + vThisExtents.x)) - fabs(vFinalCenter.x);
+
+					Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
+					vPos.x -= vFinalExtents;
+
+					pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+				}
+			}
+			else if (extents.y >= extents.x && extents.y >= extents.z)
+			{
+				if (vPlayerCenter.y > vthisCenter.y)
+				{
+				}
+				else
+				{
+
+				}
+			}
+			else
+			{
+				// Z축에서 발생. 
+
+				// TODO -> Back or Front.
+				if (vPlayerCenter.z > vthisCenter.z)
+				{
+					_float vFinalExtents = fabs((vPlayerExtents.z + vThisExtents.z)) - fabs(vFinalCenter.z);
+
+					Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
+					vPos.z += vFinalExtents;
+
+					pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+				}
+				else
+				{
+					_float vFinalExtents = fabs((vPlayerExtents.z + vThisExtents.z)) - fabs(vFinalCenter.z);
+
+					Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
+					vPos.z -= vFinalExtents;
+
+					pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
 				}
 			}
 		}
-
-		//pOther->GetOwner()->_transform.
 	}
+	
 
-	// 설정된 각에서 -90 ~ 90 이상 못 가게 .
+	RELEASE_INSTANCE(GameInstance);
 }
 
 void GridDoor::OnCollisionExit(Collider* pOther)
 {
-
+	if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER)
+	{
+		// F UI 사라지게.
+	}
 }
 
 HRESULT GridDoor::ReadyCollider()
 {
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
-	BoundingOBB::BOUNDING_OBB_DESC obbDesc;
+	uint32 level = static_cast<uint32>(LEVEL::GAME);
+
+	if (static_cast<uint32>(LEVEL::EDIT) == pGameInstance->GetCurrentLevelIndex())
+		level = static_cast<uint32>(LEVEL::EDIT);
+
+	BoundingAABB::BOUNDING_AABB_DESC aabbDesc;
 	{
-		obbDesc.vCenter = Vec3(45.f, 110.f, 0.f);
-		obbDesc.vExtents = Vec3(37.5f, 100.f, 5.f);
-		obbDesc.vRotation = Quaternion(0.f, 0.f, 0.f, 1.f); 
-		obbDesc.pOwner = this;
+		aabbDesc.vCenter = Vec3(45.f, 110.f, 0.f);
+		aabbDesc.vExtents = Vec3(37.5f, 100.f, 5.f);
+		aabbDesc.pOwner = this;
 	}
 
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME),TEXT("ProtoTypeOBBCollider"),
-		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &obbDesc)))
+	if (FAILED(__super::AddComponent(level,TEXT("ProtoTypeAABBCollider"),
+		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &aabbDesc)))
+		return E_FAIL;
+
+	Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
+	{
+		sphereDesc.fRadius = 5.f;
+		sphereDesc.vCenter = Vec3(45.f, sphereDesc.fRadius * 10, 0.f);
+		sphereDesc.pOwner = this;
+	}
+
+ 	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeSphereCollider"),
+		TEXT("ComponentSphereCollider"), reinterpret_cast<Component**>(&_pAssistCollider), &sphereDesc)))
 		return E_FAIL;
 
 	Transform::TRANSFORM_DESC transDesc;
 	{
-		transDesc.speedPerSec = 2.f;
-		transDesc.rotationRadianPerSec = ::XMConvertToRadians(720.f);
+		transDesc.speedPerSec = 0.f;
+		transDesc.rotationRadianPerSec = ::XMConvertToRadians(720.f) * 20.f;
 	}
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),

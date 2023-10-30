@@ -37,9 +37,14 @@ public:
 
 public:
 	void KeyInput(const _float& timeDelta);
+
+public:
+	void SetInteration(_bool interaction) { _bInteraction = interaction; }
+
 public:
 	vector<class GameObject*>& GetPlyaerPart() { return m_pPlayerPart; }
 	StateMachine* GetStateMachine() { return _pStateMachine; }
+	_bool GetInteraction() { return _bInteraction; }
 private:
 	vector<class GameObject*> m_pPlayerPart;
 
@@ -50,6 +55,9 @@ private:
 	Animator* _pAnimator			= nullptr;
 
 	uint32 animationcount = 0;
+
+private:
+	_bool _bInteraction = false;
 private:
 	HRESULT ReadyComponents();
 	HRESULT BindShaderResuorces();

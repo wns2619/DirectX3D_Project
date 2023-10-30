@@ -26,8 +26,6 @@ public:
 public:
 	virtual HRESULT ReadyCollider()					override;
 
-private:
-	Vec3 vPrepareVector[3] = {};
 
 public:
 	static GridDoor* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);

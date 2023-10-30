@@ -27,6 +27,7 @@ public:
 public:
 	vector<GameObject*>* GetGameObject() { return &_gameObjects; }
 	Component* GetComponent(const wstring& strComponentTag, const string& modelName, uint32 iIndex);
+	Component* GetComponentFromID(const wstring& strComponentTag, const string& modelName, uint32 iD);
 public:
 	void SetLayerTag(LAYER_TAG type) { _layerTag = type; }
 	LAYER_TAG GetLayerTag() { return _layerTag; }

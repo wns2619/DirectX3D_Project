@@ -15,6 +15,7 @@
 #include "DynamicObjectGroup.h"
 #include "WallPainting.h"
 #include "BodyCam.h"
+#include "DoorCollision.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -144,11 +145,11 @@ HRESULT LevelHelper::LodingforLevelGame()
         Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::OBB))))
         return E_FAIL;
 
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAABBColider"),
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAABBCollider"),
         Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::AABB))))
         return E_FAIL;
 
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeSphereColider"),
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeSphereCollider"),
         Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::SPHERE))))
         return E_FAIL;
 
@@ -180,11 +181,11 @@ HRESULT LevelHelper::LodingforLevelEdit()
         Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::OBB))))
         return E_FAIL;
 
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeAABBColider"),
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeAABBCollider"),
         Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::AABB))))
         return E_FAIL;
 
-    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeSphereColider"),
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeSphereCollider"),
         Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::SPHERE))))
         return E_FAIL;
 
@@ -438,6 +439,10 @@ HRESULT LevelHelper::LodingforLevelEdit()
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle7.dat", TEXT("ProtoTypeWayGraffiti"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
 
 #pragma endregion 2stProbs
+
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\WallCollider.dat", LAYER_TAG::LAYER_COLLIDER, TEXT("ProtoTypeDoorCol"));
+    //ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle7.dat", TEXT("ProtoTypeDoorCol"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
+
 
     _title = TEXT("Loading Successed");
     _IsFinished = true;
@@ -1874,6 +1879,13 @@ HRESULT LevelHelper::LoadingObject()
             return E_FAIL;
         }
 
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeDoorCol"),
+            DoorCollision::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
         break;
     case Client::LEVEL::EDIT:
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectEditTerrain"),
@@ -1985,6 +1997,14 @@ HRESULT LevelHelper::LoadingObject()
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
         }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeDoorCol"),
+            DoorCollision::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
         break;
     default:
         break;

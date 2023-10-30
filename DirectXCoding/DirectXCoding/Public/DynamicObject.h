@@ -15,7 +15,8 @@ BEGIN(Client)
 class DynamicObject abstract : public GameObject
 {
 public:
-	enum DYNAMIC_TYPE { STEEL_DOOR, BREAK_DOOR, MASK, CHAIN, DRUM, GRID_DOOR, CAGE, OLD_DOOR, VALVE, BASEMENT_WOOD, TYPE_END };
+	enum DYNAMIC_TYPE { STEEL_DOOR, BREAK_DOOR, MASK, CHAIN, DRUM, 
+		GRID_DOOR, CAGE, OLD_DOOR, VALVE, BASEMENT_WOOD, KEY, COLLIDER, TYPE_END };
 
 public:
 	struct STATE_DESC
@@ -43,6 +44,17 @@ public:
 public:
 	STATE_DESC& GetDynamicComponentsName() { return _comNames; }
 
+public:
+	_bool CheckOBBOverlap(class Collider* pOther);
+	void CheckAABBOverlap(class Collider* pOther);
+
+public:
+	_bool GetIsOpen() { return _bIsOpen; }
+	_bool GetIsRotatate() { return _bIsRotation; }
+
+	void SetOpen(_bool open) { _bIsOpen = open; }
+	void SetRotate(_bool rotate) { _bIsRotation = rotate; }
+
 protected:
 	Renderer* _render = nullptr;
 	Shader* _shader = nullptr;
@@ -50,9 +62,17 @@ protected:
 	STATE_DESC _comNames;
 	DYNAMIC_TYPE _eDynamicType;
 
+
+	Vec3 vOverlapMin;
+	Vec3 vOverlapMax;
+
+	_bool _bIsOpen = false;
+	_bool _bIsRotation = false;
+	_bool _bHalt = false;
+
 protected:
-	HRESULT ReadyComponents();
-	HRESULT BindShaderResource();
+	virtual HRESULT ReadyComponents();
+	virtual HRESULT BindShaderResource();
 
 public:
 	virtual GameObject* Clone(void* argument) = 0;

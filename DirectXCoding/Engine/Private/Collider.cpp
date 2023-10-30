@@ -20,6 +20,7 @@ Collider::Collider(const Collider& rhs)
 #ifdef _DEBUG
     , _pBatch(rhs._pBatch)
     , _pEffect(rhs._pEffect)
+    , _pInputLayOut(rhs._pInputLayOut)
 #endif // _DEBUG
 {
 
@@ -35,6 +36,15 @@ HRESULT Collider::InitializePrototype(COLLIDER_TYPE eType)
     //
     _pEffect = new BasicEffect(_device);
     _pEffect->SetVertexColorEnabled(true);
+
+    const void* pShaderByteCode = nullptr;
+    size_t iShaderByteCodeLength = 0;
+
+    _pEffect->GetVertexShaderBytecode(&pShaderByteCode, &iShaderByteCodeLength);
+
+    if (FAILED(_device->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderByteCode, iShaderByteCodeLength, &_pInputLayOut)))
+        return E_FAIL;
+
 #endif // _DEBUG
 
 
@@ -82,6 +92,7 @@ HRESULT Collider::Render()
 
    RELEASE_INSTANCE(CameraHelper);
 
+   _deviceContext->IASetInputLayout(_pInputLayOut);
    _pEffect->Apply(_deviceContext);
 
    _pBatch->Begin();
@@ -156,6 +167,7 @@ void Collider::Free()
 #ifdef _DEBUG
     if (false == _isCloned)
     {
+        Safe_Release<ID3D11InputLayout*>(_pInputLayOut);
         Safe_Delete<DirectX::PrimitiveBatch<VertexPositionColor>*>(_pBatch);
         Safe_Delete<BasicEffect*>(_pEffect);
     }

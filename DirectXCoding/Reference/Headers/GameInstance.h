@@ -68,6 +68,7 @@ public: // ObjectManager
 	GameObject* CloneGameObject(const wstring& strPrototypeTag, void* pArg);
 
 	class Component* GetComponent(uint32 iLevelIndex, const LAYER_TAG eLayerTag, const wstring& strComponentTag, const string& strModelName, uint32 iIndex = 0);
+	class Component* GetComponentFromID(uint32 iLevelIndex, const LAYER_TAG tag, const wstring& strComponentTag, const string& modelName, uint32 id);
 
 public: // Component Manager
 	HRESULT	AddProtoType(uint32 levelIndex, const wstring& PrototypeTag, class Component* protoType);

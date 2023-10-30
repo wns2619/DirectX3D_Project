@@ -10,7 +10,7 @@
 #include "PlayerReload.h"
 #include "BinaryAnimation.h"
 #include "BinaryBone.h"
-#include "BoundingOBB.h"
+#include "DynamicObject.h"
 
 Player::Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: LandObject(device, deviceContext, OBJECT_TYPE::PLAYER)
@@ -134,7 +134,20 @@ void Player::OnCollisionEnter(Collider* pOther)
 
 void Player::OnCollisionStay(Collider* pOther)
 {
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
+	if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::DYNAMIC)
+	{
+		if (pOther->GetOwner()->GetModelName() == "OldSteelGridMainWithKey")
+		{
+			_float timeDelta = pGameInstance->ComputeTimeDelta(TEXT("Timer_60"));
+
+			if(false == dynamic_cast<DynamicObject*>(pOther->GetOwner())->GetIsOpen())
+				pOther->GetOwner()->GetTransform()->Turn(Vec4(0.f, -1.f, 0.f, 1.f), timeDelta);
+		}
+	}
+
+	RELEASE_INSTANCE(GameInstance);
 }
 
 void Player::OnCollisionExit(Collider* pOther)
@@ -189,7 +202,7 @@ HRESULT Player::ReadyComponents()
 		return E_FAIL;
 
 	Navigation::NAVIGATION_DESC NavigationDesc;
-	NavigationDesc._iCurrentIndex = 2;
+	NavigationDesc._iCurrentIndex = 3;
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeNavigation"),
 		TEXT("ComponentNavigation"), reinterpret_cast<Component**>(&_pNavigation), &NavigationDesc)))
@@ -203,16 +216,28 @@ HRESULT Player::ReadyComponents()
 		TEXT("ComponentAnimator"), reinterpret_cast<Component**>(&_pAnimator))))
 		return E_FAIL;
 
-	BoundingOBB::BOUNDING_OBB_DESC obbDesc;
+	//BoundingOBB::BOUNDING_OBB_DESC obbDesc;
+	//{
+	//	obbDesc.vCenter = Vec3(0.f, -0.3f, 0.2f);
+	//	obbDesc.vExtents = Vec3(0.3f, 0.6f, 0.3f);
+	//	obbDesc.vRotation = Quaternion(0.f, 0.f, 0.f, 1.f);
+	//	obbDesc.pOwner = this;
+	//}
+
+	//Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
+	//sphereDesc.pOwner = this;
+	//sphereDesc.vCenter = Vec3(0.f, 0.f, 0.f);
+	//sphereDesc.fRadius = 0.5f;
+
+	BoundingAABB::BOUNDING_AABB_DESC aabbDesc;
 	{
-		obbDesc.vCenter = Vec3(0.f, -0.3f, 0.2f);
-		obbDesc.vExtents = Vec3(0.3f, 0.8f, 0.3f);
-		obbDesc.vRotation = Quaternion(0.f, 0.f, 0.f, 1.f);
-		obbDesc.pOwner = this;
+		aabbDesc.pOwner = this;
+		aabbDesc.vCenter = Vec3(0.f, 0.f, 0.f);
+		aabbDesc.vExtents = Vec3(0.3f, 0.5f, 0.5f);
 	}
 
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeOBBCollider"),
-		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &obbDesc)))
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAABBCollider"),
+		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &aabbDesc)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(GameInstance);

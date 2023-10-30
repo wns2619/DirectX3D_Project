@@ -55,4 +55,5 @@ PixelOut PS_MAIN(MeshOut input)
 technique11 MeshTechnique
 {
     SOLID_PASS_VP(AnimMesh, VS_MAIN, PS_MAIN)
+    SOLID_PASS_VPDEPTH(PlayerMesh, VS_MAIN, PS_MAIN)
 }

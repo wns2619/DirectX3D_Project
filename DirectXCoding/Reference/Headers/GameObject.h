@@ -36,6 +36,7 @@ public:
 	
 	OBJECT_TYPE GetObjectType() { return _objectType; }
 	Collider* GetCollider() { return _pCollider; }
+	Collider* GetAssistCollider() { return _pAssistCollider; }
 
 	const _bool& IsDead() const { return _IsDead; }
 
@@ -69,6 +70,7 @@ protected:
 
 
 	Collider* _pCollider = nullptr;
+	Collider* _pAssistCollider = nullptr;
 	Transform* _transform = nullptr;
 	Model* _model = nullptr;
 	BinaryModel* _binaryModel = nullptr;

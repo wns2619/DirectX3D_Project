@@ -17,6 +17,9 @@
 #include "BinaryNavi.h"
 #include "StateMachine.h"
 #include "Animator.h"
+#include "BoundingOBB.h"
+#include "BoundingAABB.h"
+#include "Bounding_Sphere.h"
 
 
 BEGIN(Engine)

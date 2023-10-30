@@ -22,6 +22,8 @@ private:
 	_bool IsCollision(Collider* pDesc, Collider* pSour);
 	void CheckCollisionByType(LAYER_TAG eLayerTagLeft, LAYER_TAG eLayerTagRight);
 	void CheckGroup(LAYER_TAG eLeft, LAYER_TAG eRight);
+	
+	void CheckDoorCollision();
 
 private:
 	map<uint64, _bool> _mapColInfo;

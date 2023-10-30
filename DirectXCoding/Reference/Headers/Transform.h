@@ -66,6 +66,7 @@ public:
 	void LookAt(FXMVECTOR point);
 	void Chase(FXMVECTOR point, _float const& timeDelta, _float distance = 0.1f);
 
+	void Translate(Vec3& vTranslation);
 
 public: // custom Movement
 	void Move(XMVECTOR moveVector);

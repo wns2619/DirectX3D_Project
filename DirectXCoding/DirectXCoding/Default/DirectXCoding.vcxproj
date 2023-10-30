@@ -187,6 +187,7 @@
     <ClInclude Include="..\Public\CellDraw.h" />
     <ClInclude Include="..\Public\Client_Define.h" />
     <ClInclude Include="..\Public\dirent.h" />
+    <ClInclude Include="..\Public\DoorCollision.h" />
     <ClInclude Include="..\Public\Drum.h" />
     <ClInclude Include="..\Public\DynamicObject.h" />
     <ClInclude Include="..\Public\DynamicObjectGroup.h" />
@@ -198,6 +199,7 @@
     <ClInclude Include="..\Public\HorrorMask.h" />
     <ClInclude Include="..\Public\ImGuiManager.h" />
     <ClInclude Include="..\Public\ImguiResourceHandler.h" />
+    <ClInclude Include="..\Public\Key.h" />
     <ClInclude Include="..\Public\LevelHelper.h" />
     <ClInclude Include="..\Public\LevelLoading.h" />
     <ClInclude Include="..\Public\Logo.h" />
@@ -259,6 +261,7 @@
     <ClCompile Include="..\Private\Cage.cpp" />
     <ClCompile Include="..\Private\CeilingChain.cpp" />
     <ClCompile Include="..\Private\CellDraw.cpp" />
+    <ClCompile Include="..\Private\DoorCollision.cpp" />
     <ClCompile Include="..\Private\Drum.cpp" />
     <ClCompile Include="..\Private\DynamicObject.cpp" />
     <ClCompile Include="..\Private\EditorTerrain.cpp" />
@@ -272,6 +275,7 @@
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
     <ClCompile Include="..\Private\ImguiResourceHandler.cpp" />
+    <ClCompile Include="..\Private\Key.cpp" />
     <ClCompile Include="..\Private\LevelHelper.cpp" />
     <ClCompile Include="..\Private\LevelLoading.cpp" />
     <ClCompile Include="..\Private\Logo.cpp" />

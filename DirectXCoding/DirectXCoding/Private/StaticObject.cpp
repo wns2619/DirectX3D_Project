@@ -113,7 +113,7 @@ HRESULT StaticObject::ReadyComponents()
 		TEXT("ComponentRenderer"), reinterpret_cast<Component**>(&_render))))
 		return E_FAIL;
 
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME),
+	if (FAILED(__super::AddComponent(level,
 		_comNames._strShaderName,
 		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
@@ -124,13 +124,13 @@ HRESULT StaticObject::ReadyComponents()
 		return E_FAIL;
 
 
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), _comNames._strModelComponentName,
+	if (FAILED(__super::AddComponent(level, _comNames._strModelComponentName,
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
 
 	if (_modelName == "2stBottom"  || _modelName == "BasementBottom")
 	{
-		if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeNavigation"),
+		if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeNavigation"),
 			TEXT("ComponentNavigation"), reinterpret_cast<Component**>(&_pNavigation))))
 			return E_FAIL;
 	}

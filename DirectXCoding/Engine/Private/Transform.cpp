@@ -218,6 +218,11 @@ void Transform::Chase(FXMVECTOR point, _float const& timeDelta, _float distance)
     SetState(STATE::POSITION, position);
 }
 
+void Transform::Translate(Vec3& vTranslation)
+{
+    SetState(STATE::POSITION, vTranslation);
+}
+
 void Transform::Move(XMVECTOR moveVector)
 {
     _position = ::XMVectorAdd(moveVector, _position);

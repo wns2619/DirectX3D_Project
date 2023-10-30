@@ -84,6 +84,11 @@ HRESULT CeilingChain::ReadyCollider()
 {
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
+	uint32 level = static_cast<uint32>(LEVEL::GAME);
+
+	if (static_cast<uint32>(LEVEL::EDIT) == pGameInstance->GetCurrentLevelIndex())
+		level = static_cast<uint32>(LEVEL::EDIT);
+
 	BoundingOBB::BOUNDING_OBB_DESC obbDesc;
 	{
 		obbDesc.vCenter = Vec3(-2.5f, 0.f, 2.5f);
@@ -92,7 +97,7 @@ HRESULT CeilingChain::ReadyCollider()
 		obbDesc.pOwner = this;
 	}
 
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeOBBCollider"),
+	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeOBBCollider"),
 		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &obbDesc)))
 		return E_FAIL;
 

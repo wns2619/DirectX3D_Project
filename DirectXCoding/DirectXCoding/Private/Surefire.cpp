@@ -74,7 +74,7 @@ HRESULT Surefire::Render()
 		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
 			return E_FAIL;
 
-		if (FAILED(_shader->Begin(0)))
+		if (FAILED(_shader->Begin(1)))
 			return E_FAIL;
 
 		if (FAILED(_binaryModel->Render(i)))

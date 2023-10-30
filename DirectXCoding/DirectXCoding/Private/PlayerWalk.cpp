@@ -67,6 +67,7 @@ State::STATE PlayerWalk::KeyInput(const _float& timeDelta)
 		eState = STATE::IDLE;
 	}
 
+
 	if (pGameInstance->mouseDown(DIMK::DIMK_LBUTTON))
 		eState = STATE::SHOOT;
 	else if (pGameInstance->keyDown(DIK_R))
