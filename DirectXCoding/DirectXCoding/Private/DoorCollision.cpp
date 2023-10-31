@@ -70,22 +70,11 @@ void DoorCollision::OnCollisionStay(Collider* pOther)
 {
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
-	Vec3 vPlayerCenter = static_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding()->Center;
+	Vec3 vPlayerCenter = static_cast<Bounding_Sphere*>(pOther->GetBounding())->GetBounding()->Center;
 	Vec3 vthisCenter = static_cast<BoundingAABB*>(_pCollider->GetBounding())->GetBounding()->Center;
 
-
 	Vec3 vFinalCenter = vPlayerCenter - vthisCenter;
-
-	Vec3 vPlayerExtents = static_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding()->Extents;
-	Vec3 vThisExtents = static_cast<BoundingAABB*>(_pCollider->GetBounding())->GetBounding()->Extents;
-
 	Vec3 extents = 0.5f * Vec3(::fabs(vFinalCenter.x), ::fabs(vFinalCenter.y), ::fabs(vFinalCenter.z));
-
-	_float xOverlap = extents.x - fabs(vFinalCenter.x);
-	_float yOverlap = extents.y - fabs(vFinalCenter.y);
-	_float zOverlap = extents.z - fabs(vFinalCenter.z);
-
-	_float minOverlap = std::min(std::min(xOverlap, yOverlap), zOverlap);
 
 	if (extents.x >= extents.y && extents.x >= extents.z)
 		dynamic_cast<DynamicObject*>(pOther->GetOwner())->SetOpen(true);
@@ -133,16 +122,8 @@ HRESULT DoorCollision::ReadyComponents()
 		aabbDesc.pOwner = this;
 	}
 
-	BoundingOBB::BOUNDING_OBB_DESC obbDesc;
-	{
-		obbDesc.pOwner = this;
-		obbDesc.vCenter = Vec3(0.f, 120.f, 0.f);
-		obbDesc.vExtents = Vec3(80.f, 120.f, 5.f);
-		obbDesc.vRotation = Quaternion(0.f, 0.f, 0.f, 1.f);
-	}
-
-	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeOBBCollider"),
-		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &obbDesc)))
+	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeAABBCollider"),
+		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &aabbDesc)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(GameInstance);

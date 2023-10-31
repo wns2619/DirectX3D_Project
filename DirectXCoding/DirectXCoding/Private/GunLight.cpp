@@ -1,26 +1,26 @@
 #include "pch.h"
-#include "Key.h"
+#include "GunLight.h"
 
 #include "GameInstance.h"
 #include "Bounding_Sphere.h"
 
-Key::Key(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::KEY)
+GunLight::GunLight(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::GUN_LIGHT)
 {
 }
 
-Key::Key(const Key& rhs)
+GunLight::GunLight(const GunLight& rhs)
 	: DynamicObject(rhs)
 {
 
 }
 
-HRESULT Key::InitializePrototype()
+HRESULT GunLight::InitializePrototype()
 {
 	return S_OK;
 }
 
-HRESULT Key::Initialize(void* pArg)
+HRESULT GunLight::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -34,30 +34,20 @@ HRESULT Key::Initialize(void* pArg)
 	return S_OK;
 }
 
-void Key::Tick(const _float& timeDelta)
+void GunLight::Tick(const _float& timeDelta)
 {
-	if (true == _IsDead)
-		return;
-
-
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
 
-void Key::LateTick(const _float& timeDelta)
+void GunLight::LateTick(const _float& timeDelta)
 {
-	if (true == _IsDead)
-		return;
-
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
 }
 
-HRESULT Key::Render()
+HRESULT GunLight::Render()
 {
 	if (_enabled)
-		return S_OK;
-
-	if (true == _IsDead)
 		return S_OK;
 
 	if (FAILED(__super::BindShaderResource()))
@@ -85,7 +75,7 @@ HRESULT Key::Render()
 	return S_OK;
 }
 
-HRESULT Key::ReadyCollider()
+HRESULT GunLight::ReadyCollider()
 {
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
@@ -97,7 +87,7 @@ HRESULT Key::ReadyCollider()
 	Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
 	{
 		sphereDesc.vCenter = Vec3(0.f, 0.f, 0.f);
-		sphereDesc.fRadius = 10.f;
+		sphereDesc.fRadius = 1600.f;
 		sphereDesc.pOwner = this;
 	}
 
@@ -114,33 +104,33 @@ HRESULT Key::ReadyCollider()
 	return S_OK;
 }
 
-Key* Key::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+GunLight* GunLight::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
-	Key* pInstance = new Key(device, deviceContext);
+	GunLight* pInstance = new GunLight(device, deviceContext);
 
 	if (FAILED(pInstance->InitializePrototype()))
 	{
-		MSG_BOX("Failed to Create : KEY");
-		Safe_Release<Key*>(pInstance);
+		MSG_BOX("Failed to Create : GunLight");
+		Safe_Release<GunLight*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-GameObject* Key::Clone(void* pArg)
+GameObject* GunLight::Clone(void* pArg)
 {
-	Key* pInstance = new Key(*this);
+	GunLight* pInstance = new GunLight(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Create : KEY");
-		Safe_Release<Key*>(pInstance);
+		MSG_BOX("Failed to Create : GunLight");
+		Safe_Release<GunLight*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-void Key::Free()
+void GunLight::Free()
 {
 	__super::Free();
 }

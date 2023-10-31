@@ -1,26 +1,26 @@
 #include "pch.h"
-#include "Key.h"
+#include "Gun.h"
 
 #include "GameInstance.h"
 #include "Bounding_Sphere.h"
 
-Key::Key(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::KEY)
+Gun::Gun(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::GUN)
 {
 }
 
-Key::Key(const Key& rhs)
+Gun::Gun(const Gun& rhs)
 	: DynamicObject(rhs)
 {
 
 }
 
-HRESULT Key::InitializePrototype()
+HRESULT Gun::InitializePrototype()
 {
 	return S_OK;
 }
 
-HRESULT Key::Initialize(void* pArg)
+HRESULT Gun::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -34,30 +34,29 @@ HRESULT Key::Initialize(void* pArg)
 	return S_OK;
 }
 
-void Key::Tick(const _float& timeDelta)
+void Gun::Tick(const _float& timeDelta)
 {
-	if (true == _IsDead)
+	if (_IsDead)
 		return;
-
 
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
 
-void Key::LateTick(const _float& timeDelta)
+void Gun::LateTick(const _float& timeDelta)
 {
-	if (true == _IsDead)
+	if (_IsDead)
 		return;
 
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
 }
 
-HRESULT Key::Render()
+HRESULT Gun::Render()
 {
 	if (_enabled)
 		return S_OK;
 
-	if (true == _IsDead)
+	if (_IsDead)
 		return S_OK;
 
 	if (FAILED(__super::BindShaderResource()))
@@ -85,7 +84,7 @@ HRESULT Key::Render()
 	return S_OK;
 }
 
-HRESULT Key::ReadyCollider()
+HRESULT Gun::ReadyCollider()
 {
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
@@ -96,8 +95,8 @@ HRESULT Key::ReadyCollider()
 
 	Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
 	{
-		sphereDesc.vCenter = Vec3(0.f, 0.f, 0.f);
-		sphereDesc.fRadius = 10.f;
+		sphereDesc.vCenter = Vec3(0.2f, 0.f, 0.f);
+		sphereDesc.fRadius = 0.3f;
 		sphereDesc.pOwner = this;
 	}
 
@@ -114,33 +113,48 @@ HRESULT Key::ReadyCollider()
 	return S_OK;
 }
 
-Key* Key::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+void Gun::OnCollisionEnter(Collider* pOther)
 {
-	Key* pInstance = new Key(device, deviceContext);
+	int a = 0;
+}
+
+void Gun::OnCollisionStay(Collider* pOther)
+{
+	int a = 0;
+}
+
+void Gun::OnCollisionExit(Collider* pOther)
+{
+	int a = 0;
+}
+
+Gun* Gun::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+{
+	Gun* pInstance = new Gun(device, deviceContext);
 
 	if (FAILED(pInstance->InitializePrototype()))
 	{
-		MSG_BOX("Failed to Create : KEY");
-		Safe_Release<Key*>(pInstance);
+		MSG_BOX("Failed to Create : Gun");
+		Safe_Release<Gun*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-GameObject* Key::Clone(void* pArg)
+GameObject* Gun::Clone(void* pArg)
 {
-	Key* pInstance = new Key(*this);
+	Gun* pInstance = new Gun(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Create : KEY");
-		Safe_Release<Key*>(pInstance);
+		MSG_BOX("Failed to Create : Gun");
+		Safe_Release<Gun*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-void Key::Free()
+void Gun::Free()
 {
 	__super::Free();
 }

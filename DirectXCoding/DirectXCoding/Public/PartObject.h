@@ -27,10 +27,17 @@ public:
 	virtual void LateTick(const _float& fTimeDelta) override;
 	virtual HRESULT Render()						override;
 
+public:
+	void SetObtainLight(_bool obtain) { _bObtainLight = obtain; }
+	void SetObtainGun(_bool obtain) { _bObtainGun = obtain; }
+
 protected:
 	Transform* _pParentTransform = { nullptr };
 	Matrix	   _WorldMatrix;
 
+protected:
+	_bool _bObtainGun = false;
+	_bool _bObtainLight = false;
 
 protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	Shader* _shader = nullptr;

@@ -39,11 +39,35 @@ void GridDoor::Tick(const _float& timeDelta)
 	if (_enabled)
 		return;
 
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+	Player* pPlayer = dynamic_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
+	_bool keyObtain = false;
+
+	if (nullptr != pPlayer)
+		keyObtain = pPlayer->GetObtainKey();
+
+
+	// ¿©±â¼­ ¹¹°¡ 
+	if (_id != 170 && true == _bIsRotation)
+	{
+		if(_id != 163)
+			_transform->Turn(Vec4(0.f, -1.f, 0.f, 1.f), timeDelta);
+		if (_id == 163 && true == keyObtain)
+			_transform->Turn(Vec4(0.f, -1.f, 0.f, 1.f), timeDelta);
+	}
+	else if (_id == 170 && true == _bIsRotation)
+	{
+
+		_transform->Turn(Vec4(0.f, 1.f, 0.f, 1.f), timeDelta);
+	}
+
 	if (_bIsOpen == false)
 	{
 		_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 		_pAssistCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 	}
+
+	RELEASE_INSTANCE(GameInstance);
 }
 
 void GridDoor::LateTick(const _float& timeDelta)
@@ -72,8 +96,18 @@ HRESULT GridDoor::Render()
 		if (FAILED(_shader->Begin(0)))
 			return E_FAIL;
 
-		if (FAILED(_binaryModel->Render(i)))
-			return E_FAIL;
+		if (_id != 170 && _id != 163)
+		{
+			if (FAILED(_binaryModel->Render(i)))
+				return E_FAIL;
+		}
+		else if (_id == 170 || _id == 163)
+		{
+			if (i <= 0)
+				if(FAILED(_binaryModel->Render(i)))
+					return E_FAIL;
+		}
+
 	}
 
 #ifdef _DEBUG
@@ -96,9 +130,9 @@ void GridDoor::OnCollisionStay(Collider* pOther)
 {
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
-	if (false == _bIsOpen)
+	if (false == _bIsRotation && _bIsOpen == false)
 	{
-		if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER)
+		if (this->_id != 163 && pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER)
 		{
 
 			Vec3 vPlayerCenter = static_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding()->Center;
@@ -111,12 +145,6 @@ void GridDoor::OnCollisionStay(Collider* pOther)
 			Vec3 vThisExtents = static_cast<BoundingAABB*>(_pCollider->GetBounding())->GetBounding()->Extents;
 
 			Vec3 extents = 0.5f * Vec3(::fabs(vFinalCenter.x), ::fabs(vFinalCenter.y), ::fabs(vFinalCenter.z));
-
-			_float xOverlap = extents.x - fabs(vFinalCenter.x);
-			_float yOverlap = extents.y - fabs(vFinalCenter.y);
-			_float zOverlap = extents.z - fabs(vFinalCenter.z);
-
-			_float minOverlap = std::min(std::min(xOverlap, yOverlap), zOverlap);
 
 			if (extents.x >= extents.y && extents.x >= extents.z)
 			{
@@ -178,6 +206,66 @@ void GridDoor::OnCollisionStay(Collider* pOther)
 				}
 			}
 		}
+		else if(_id == 163 || _id == 170)
+		{
+			Vec3 vPlayerCenter = static_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding()->Center;
+			Vec3 vThisCenter = static_cast<Bounding_Sphere*>(_pCollider->GetBounding())->GetBounding()->Center;
+
+			Vec3 vFinalCenter = vPlayerCenter - vThisCenter;
+
+			_float vThisExtents = static_cast<Bounding_Sphere*>(_pCollider->GetBounding())->GetBounding()->Radius;
+			Vec3 vPlayerExtents = static_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding()->Extents;
+
+ 			Vec3 extents = 0.5f * Vec3(::fabs(vFinalCenter.x), ::fabs(vFinalCenter.y), ::fabs(vFinalCenter.z));
+
+			if (extents.x >= extents.y && extents.x >= extents.z)
+			{
+				if (vPlayerCenter.x > vThisCenter.x)
+				{
+					_float vFinalExtents = fabs((vPlayerExtents.x + vThisExtents)) - fabs(vFinalCenter.x);
+
+					Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
+					vPos.x += vFinalExtents;
+
+					pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+				}
+				else
+				{
+					_float vFinalExtents = fabs((vPlayerExtents.x + vThisExtents)) - fabs(vFinalCenter.x);
+
+					Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
+					vPos.x -= vFinalExtents;
+
+					pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+				}
+			}
+			else if (extents.y >= extents.x && extents.y >= extents.z)
+			{
+
+			}
+			else
+			{
+				if (vPlayerCenter.z > vThisCenter.z)
+				{
+					_float vFinalExtents = fabs((vPlayerExtents.z + vThisExtents)) - fabs(vFinalCenter.z);
+
+					Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
+					vPos.z += vFinalExtents;
+
+					pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+				}
+				else
+				{
+					_float vFinalExtents = fabs((vPlayerExtents.z + vThisExtents)) - fabs(vFinalCenter.z);
+
+					Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
+					vPos.z -= vFinalExtents;
+
+					pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+				}
+
+			}
+		}
 	}
 	
 
@@ -208,15 +296,52 @@ HRESULT GridDoor::ReadyCollider()
 		aabbDesc.pOwner = this;
 	}
 
-	if (FAILED(__super::AddComponent(level,TEXT("ProtoTypeAABBCollider"),
-		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &aabbDesc)))
-		return E_FAIL;
+	if (_id == 163)
+	{
+		Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
+		sphereDesc.vCenter = Vec3(45.f, 110.f, 0.f);
+		sphereDesc.fRadius = 20.f;
+		sphereDesc.pOwner = this;
+
+		if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeSphereCollider"),
+			TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &sphereDesc)))
+			return E_FAIL;
+	}
+	else if(_id == 170)
+	{
+		Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
+		sphereDesc.vCenter = Vec3(45.f, 110.f, 0.f);
+		sphereDesc.fRadius = 20.f;
+		sphereDesc.pOwner = this;
+
+		if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeSphereCollider"),
+			TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &sphereDesc)))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeAABBCollider"),
+			TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &aabbDesc)))
+			return E_FAIL;
+	}
 
 	Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
 	{
 		sphereDesc.fRadius = 5.f;
 		sphereDesc.vCenter = Vec3(45.f, sphereDesc.fRadius * 10, 0.f);
 		sphereDesc.pOwner = this;
+	}
+
+	if (_id == 163)
+	{
+		sphereDesc.fRadius = 20.f;
+		sphereDesc.vCenter = Vec3(15.f, sphereDesc.fRadius * 10, 0.f);
+	}
+
+	if (_id == 170)
+	{
+		sphereDesc.fRadius = 20.f;
+		sphereDesc.vCenter = Vec3(30.f, sphereDesc.fRadius * 10, 0.f);
 	}
 
  	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeSphereCollider"),
@@ -226,7 +351,7 @@ HRESULT GridDoor::ReadyCollider()
 	Transform::TRANSFORM_DESC transDesc;
 	{
 		transDesc.speedPerSec = 0.f;
-		transDesc.rotationRadianPerSec = ::XMConvertToRadians(720.f) * 20.f;
+		transDesc.rotationRadianPerSec = ::XMConvertToRadians(180.f);
 	}
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),

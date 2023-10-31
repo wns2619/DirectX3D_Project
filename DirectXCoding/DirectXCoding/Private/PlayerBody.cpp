@@ -67,22 +67,27 @@ HRESULT PlayerBody::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	uint32 numMeshes = _binaryModel->GetNumMeshes();
 
-	for (size_t i = 0; i < numMeshes; i++)
+	if (true == _bObtainGun)
 	{
-		if (FAILED(_binaryModel->BindBoneMatrices(_shader, i, "BoneMatrices")))
-			return E_FAIL;
+		uint32 numMeshes = _binaryModel->GetNumMeshes();
 
-		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
-			return E_FAIL;
+		for (size_t i = 0; i < numMeshes; i++)
+		{
+			if (FAILED(_binaryModel->BindBoneMatrices(_shader, i, "BoneMatrices")))
+				return E_FAIL;
 
-		if (FAILED(_shader->Begin(0)))
-			return E_FAIL;
+			if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
+				return E_FAIL;
 
-		if (FAILED(_binaryModel->Render(i)))
-			return E_FAIL;
+			if (FAILED(_shader->Begin(0)))
+				return E_FAIL;
+
+			if (FAILED(_binaryModel->Render(i)))
+				return E_FAIL;
+		}
 	}
+
 
 
 

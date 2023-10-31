@@ -19,6 +19,11 @@ public:
 	virtual HRESULT Render()						override;
 
 public:
+	virtual void OnCollisionEnter(class  Collider* pOther);
+	virtual void OnCollisionStay(class Collider* pOther);
+	virtual void OnCollisionExit(class Collider* pOther);
+
+public:
 	virtual HRESULT ReadyCollider()					override;
 
 public:

@@ -690,7 +690,7 @@ HRESULT ImGuiManager::ModelNameCardSection()
 					// 여기까지
 
 					const pair<LAYER_TAG, wstring>& findPrototypename = ImGuiResourceHandler::GetInstance()->FindProtoFilePath(modelPath);
-					const pair<const wstring, const wstring>& findProtoComName = ImGuiResourceHandler::GetInstance()->FindProtoComponentName(modelPath);
+					//const pair<const wstring, const wstring>& findProtoComName = ImGuiResourceHandler::GetInstance()->FindProtoComponentName(modelPath);
 
 
 					ComponentNames comNames;
@@ -702,8 +702,8 @@ HRESULT ImGuiManager::ModelNameCardSection()
 							useModelName = _modelNames[i].first.substr(0, namePosition);
 
 						comNames._protoTypeName = findPrototypename.second;
-						comNames._strModelComponentName = findProtoComName.first;
-						comNames._strShaderName = findProtoComName.second;
+						//comNames._strModelComponentName = findProtoComName.first;
+						//comNames._strShaderName = findProtoComName.second;
 						comNames._strModelName = useModelName;
 						Matrix ScaleMatrix;
 						comNames._saveWorldMatrix *= ScaleMatrix.CreateScale(Vec3(0.1, 0.1f, 0.1f));
@@ -711,13 +711,13 @@ HRESULT ImGuiManager::ModelNameCardSection()
 	
 
 
-					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), findPrototypename.first, findPrototypename.second)))
+					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), findPrototypename.first, findPrototypename.second, &comNames)))
 					{
 						RELEASE_INSTANCE(GameInstance);
 						return E_FAIL;
 					}
 
-		/*			size_t dotPosition = modelPath.find_last_of(".");
+					/*size_t dotPosition = modelPath.find_last_of(".");
 					string fileExtension = "";
 
 					if (dotPosition != std::string::npos && dotPosition > 0)

@@ -39,14 +39,19 @@ public:
 	void KeyInput(const _float& timeDelta);
 
 public:
-	void SetInteration(_bool interaction) { _bInteraction = interaction; }
+	_bool GetObtainKey() { return _bObtatinKey; }
 
+public:
+	void SetInteration(_bool interaction) { _bInteraction = interaction; }
+	void SetObtainKey(_bool obtain) { _bObtatinKey = obtain; }
 public:
 	vector<class GameObject*>& GetPlyaerPart() { return m_pPlayerPart; }
 	StateMachine* GetStateMachine() { return _pStateMachine; }
 	_bool GetInteraction() { return _bInteraction; }
 private:
 	vector<class GameObject*> m_pPlayerPart;
+
+
 
 private:
 	Renderer* _render				= nullptr;
@@ -58,6 +63,8 @@ private:
 
 private:
 	_bool _bInteraction = false;
+	_bool _bObtatinKey = false;
+
 private:
 	HRESULT ReadyComponents();
 	HRESULT BindShaderResuorces();

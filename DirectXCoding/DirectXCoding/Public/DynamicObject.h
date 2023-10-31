@@ -16,7 +16,7 @@ class DynamicObject abstract : public GameObject
 {
 public:
 	enum DYNAMIC_TYPE { STEEL_DOOR, BREAK_DOOR, MASK, CHAIN, DRUM, 
-		GRID_DOOR, CAGE, OLD_DOOR, VALVE, BASEMENT_WOOD, KEY, COLLIDER, TYPE_END };
+		GRID_DOOR, CAGE, OLD_DOOR, VALVE, BASEMENT_WOOD, KEY, GUN, GUN_LIGHT, COLLIDER, TYPE_END };
 
 public:
 	struct STATE_DESC
@@ -47,12 +47,13 @@ public:
 public:
 	_bool CheckOBBOverlap(class Collider* pOther);
 	void CheckAABBOverlap(class Collider* pOther);
+	void CheckSphereOverlap(class Collider* pOther);
 
 public:
 	_bool GetIsOpen() { return _bIsOpen; }
 	_bool GetIsRotatate() { return _bIsRotation; }
 
-	void SetOpen(_bool open) { _bIsOpen = open; }
+	void SetOpen(_bool open) { _bIsOpen = open; SetRotate(false); }
 	void SetRotate(_bool rotate) { _bIsRotation = rotate; }
 
 protected:

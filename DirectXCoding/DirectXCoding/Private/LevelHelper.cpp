@@ -203,8 +203,8 @@ HRESULT LevelHelper::LodingforLevelEdit()
     // PLAYER
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\Player.dat", LAYER_TAG::LAYER_PLAYER, TEXT("ProtoTypeGameObjectPlayer"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\Player.dat", TEXT("ProtoTypeModelPlayer"), TEXT("ProtoTypeComponentAnimMesh"));
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", LAYER_TAG::LAYER_PLAYER, TEXT("ProtoTypeGameObjectPlayer"));
-    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", TEXT("ProtoTypeModelPlayer"), TEXT("ProtoTypeComponentAnimMesh"));
+   /* ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", LAYER_TAG::LAYER_PLAYER, TEXT("ProtoTypeGameObjectPlayer"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", TEXT("ProtoTypeModelsurefire"), TEXT("ProtoTypeComponentAnimMesh"));*/
    
     // STATIC
     /* Botton */
@@ -437,6 +437,15 @@ HRESULT LevelHelper::LodingforLevelEdit()
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle6.dat", TEXT("ProtoTypeWayGraffiti"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\Puddle7.dat", LAYER_TAG::LAYER_ENVIRONMENT, TEXT("ProtoWallPaint"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle7.dat", TEXT("ProtoTypeWayGraffiti"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
+
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\Key.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeKey"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Basement\\Key.dat", TEXT("ProtoTypeKey"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\Gun.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeGun"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\Gun.dat", TEXT("ProtoTypeGun"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeGunLight"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", TEXT("ProtoTypeModelsurefire"), TEXT("ProtoTypeComponentDefaultMeshShader"));
 
 #pragma endregion 2stProbs
 
@@ -1071,6 +1080,21 @@ HRESULT LevelHelper::LoadingMesh()
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
         }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeKey"),
+            BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Basement\\Key.dat", modelInitializMatrix))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeGun"),
+            BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Player\\Gun.dat", modelInitializMatrix))))
+
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
     }
         break;
     case Client::LEVEL::EDIT:
@@ -1645,6 +1669,22 @@ HRESULT LevelHelper::LoadingMesh()
              return E_FAIL;
          }
 
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeKey"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Basement\\Key.dat", modelInitializMatrix))))
+
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeGun"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Player\\Gun.dat", modelInitializMatrix))))
+
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
     } 
         break;
     default:
@@ -1886,6 +1926,27 @@ HRESULT LevelHelper::LoadingObject()
             return E_FAIL;
         }
 
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeKey"),
+            Key::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGun"),
+            Gun::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGunLight"),
+            GunLight::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
         break;
     case Client::LEVEL::EDIT:
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectEditTerrain"),
@@ -2000,6 +2061,27 @@ HRESULT LevelHelper::LoadingObject()
 
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeDoorCol"),
             DoorCollision::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeKey"),
+            Key::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGun"),
+            Gun::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGunLight"),
+            GunLight::Create(_device, _deviceContext))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

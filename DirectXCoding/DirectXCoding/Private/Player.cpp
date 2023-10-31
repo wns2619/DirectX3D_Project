@@ -72,8 +72,8 @@ void Player::Tick(const _float& fTimeDelta)
 
 	KeyInput(fTimeDelta);
 	_pStateMachine->UpdateStateMachine(fTimeDelta);
-	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 
+	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 
 	for (auto& pPart : m_pPlayerPart)
 	{
@@ -140,10 +140,45 @@ void Player::OnCollisionStay(Collider* pOther)
 	{
 		if (pOther->GetOwner()->GetModelName() == "OldSteelGridMainWithKey")
 		{
-			_float timeDelta = pGameInstance->ComputeTimeDelta(TEXT("Timer_60"));
-
-			if(false == dynamic_cast<DynamicObject*>(pOther->GetOwner())->GetIsOpen())
-				pOther->GetOwner()->GetTransform()->Turn(Vec4(0.f, -1.f, 0.f, 1.f), timeDelta);
+			if (pGameInstance->keyDown(DIK_E))
+			{
+				if(pOther->GetOwner()->GetIdNumber() != 163 && pOther->GetOwner()->GetIdNumber() != 170)
+					dynamic_cast<DynamicObject*>(pOther->GetOwner())->SetRotate(true);
+				else
+				{
+					if(true == _bObtatinKey)
+						dynamic_cast<DynamicObject*>(pOther->GetOwner())->SetRotate(true);
+				}
+			}
+		}
+		else if (pOther->GetOwner()->GetModelName() == "BasementWoodDoorMain")
+		{
+			if (pGameInstance->keyDown(DIK_E))
+				dynamic_cast<DynamicObject*>(pOther->GetOwner())->SetRotate(true);
+		}
+		else if (pOther->GetOwner()->GetModelName() == "Gun")
+		{
+			if (pGameInstance->keyDown(DIK_E))
+			{
+				dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->SetObtainGun(true);
+				pOther->GetOwner()->SetDead(true);
+			}
+		}
+		else if (pOther->GetOwner()->GetModelName() == "Surefire")
+		{
+			if (pGameInstance->keyDown(DIK_E))
+			{
+				dynamic_cast<Surefire*>(m_pPlayerPart[PART::PART_SURFIRE])->SetObtainLight(true);
+				pOther->GetOwner()->SetDead(true);
+			}
+		}
+		else if (pOther->GetOwner()->GetModelName() == "Key")
+		{
+			if (pGameInstance->keyDown(DIK_E))
+			{
+				pOther->GetOwner()->SetDead(true);
+				SetObtainKey(true);
+			}
 		}
 	}
 
@@ -216,18 +251,6 @@ HRESULT Player::ReadyComponents()
 		TEXT("ComponentAnimator"), reinterpret_cast<Component**>(&_pAnimator))))
 		return E_FAIL;
 
-	//BoundingOBB::BOUNDING_OBB_DESC obbDesc;
-	//{
-	//	obbDesc.vCenter = Vec3(0.f, -0.3f, 0.2f);
-	//	obbDesc.vExtents = Vec3(0.3f, 0.6f, 0.3f);
-	//	obbDesc.vRotation = Quaternion(0.f, 0.f, 0.f, 1.f);
-	//	obbDesc.pOwner = this;
-	//}
-
-	//Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
-	//sphereDesc.pOwner = this;
-	//sphereDesc.vCenter = Vec3(0.f, 0.f, 0.f);
-	//sphereDesc.fRadius = 0.5f;
 
 	BoundingAABB::BOUNDING_AABB_DESC aabbDesc;
 	{

@@ -86,6 +86,7 @@
     <ClInclude Include="..\Public\Timer.h" />
     <ClInclude Include="..\Public\Transform.h" />
     <ClInclude Include="..\Public\Types.h" />
+    <ClInclude Include="..\Public\UI.h" />
     <ClInclude Include="..\Public\Utils.h" />
     <ClInclude Include="..\Public\Values.h" />
     <ClInclude Include="..\Public\VIBuffer.h" />
@@ -182,6 +183,7 @@
     <ClCompile Include="..\Private\TimeManager.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />
     <ClCompile Include="..\Private\Transform.cpp" />
+    <ClCompile Include="..\Private\UI.cpp" />
     <ClCompile Include="..\Private\Utils.cpp" />
     <ClCompile Include="..\Private\VIBuffer.cpp" />
     <ClCompile Include="..\Private\VIBufferCell.cpp" />

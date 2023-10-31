@@ -9,7 +9,7 @@ IMPLEMENT_SINGLETON(CollisionManager)
 
 CollisionManager::CollisionManager()
 {
-	::ZeroMemory(_arrCheck, 0, sizeof(uint32) * static_cast<uint32>(LAYER_TAG::LAYER_END));
+	::ZeroMemory(_arrCheck, 0, sizeof(uint32));
 
 	CheckGroup(LAYER_TAG::LAYER_PLAYER, LAYER_TAG::LAYER_MONSTER);
 	CheckGroup(LAYER_TAG::LAYER_PLAYER, LAYER_TAG::LAYER_DYNAMIC);

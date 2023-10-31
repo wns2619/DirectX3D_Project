@@ -196,6 +196,8 @@
     <ClInclude Include="..\Public\Game.h" />
     <ClInclude Include="..\Public\GameScene.h" />
     <ClInclude Include="..\Public\GridDoor.h" />
+    <ClInclude Include="..\Public\Gun.h" />
+    <ClInclude Include="..\Public\GunLight.h" />
     <ClInclude Include="..\Public\HorrorMask.h" />
     <ClInclude Include="..\Public\ImGuiManager.h" />
     <ClInclude Include="..\Public\ImguiResourceHandler.h" />
@@ -269,6 +271,8 @@
     <ClCompile Include="..\Private\Game.cpp" />
     <ClCompile Include="..\Private\GameScene.cpp" />
     <ClCompile Include="..\Private\GridDoor.cpp" />
+    <ClCompile Include="..\Private\Gun.cpp" />
+    <ClCompile Include="..\Private\GunLight.cpp" />
     <ClCompile Include="..\Private\HorrorMask.cpp" />
     <ClCompile Include="..\Private\ImGuiManager.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>

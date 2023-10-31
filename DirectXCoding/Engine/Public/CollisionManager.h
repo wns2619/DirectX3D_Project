@@ -27,7 +27,7 @@ private:
 
 private:
 	map<uint64, _bool> _mapColInfo;
-	uint32 _arrCheck[static_cast<uint32>(LAYER_TAG::LAYER_END)];
+	uint32 _arrCheck[static_cast<uint32>(LAYER_TAG::LAYER_END)] = {};
 
 public:
 	virtual void Free() override;

@@ -196,6 +196,9 @@
     <Filter Include="04.Resource">
       <UniqueIdentifier>{ea2b697d-1a85-4924-b761-b7081d05113a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.GameObject\UI">
+      <UniqueIdentifier>{71bcb531-272e-4db0-972c-233d9dad4ed5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -423,6 +426,9 @@
     <ClInclude Include="..\Public\CollisionManager.h">
       <Filter>01.Utility\98.Manager\Collision</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI.h">
+      <Filter>01.Utility\03.GameObject\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -607,6 +613,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\CollisionManager.cpp">
       <Filter>01.Utility\98.Manager\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI.cpp">
+      <Filter>01.Utility\03.GameObject\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

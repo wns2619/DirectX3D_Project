@@ -128,8 +128,14 @@
     <Filter Include="소스 파일\02.GameObjects\99. DoorCollision">
       <UniqueIdentifier>{68d29e5e-1394-48ed-91ed-705440fd8113}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\02.GameObjects\04. Static\Key">
+    <Filter Include="소스 파일\02.GameObjects\06. Dynamic\Key">
       <UniqueIdentifier>{ba472975-940e-423c-a357-0f72ef58489c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\06. Dynamic\Gun">
+      <UniqueIdentifier>{ff403f40-4377-41b7-b7aa-6bba9975e7cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\06. Dynamic\GunLight">
+      <UniqueIdentifier>{b7cbfd6a-ab33-4de2-8b5e-e30e996626b7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -290,7 +296,13 @@
       <Filter>소스 파일\02.GameObjects\99. DoorCollision</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Key.h">
-      <Filter>소스 파일\02.GameObjects\04. Static\Key</Filter>
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\Key</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Gun.h">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GunLight.h">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\GunLight</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -427,7 +439,13 @@
       <Filter>소스 파일\02.GameObjects\99. DoorCollision</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Key.cpp">
-      <Filter>소스 파일\02.GameObjects\04. Static\Key</Filter>
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\Key</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Gun.cpp">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GunLight.cpp">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\GunLight</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -7,3 +7,6 @@
 #include "GridDoor.h"
 #include "Valve.h"
 #include "Cage.h"
+#include "Key.h"
+#include "Gun.h"
+#include "GunLight.h"
