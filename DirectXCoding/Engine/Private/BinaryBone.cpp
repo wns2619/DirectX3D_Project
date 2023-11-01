@@ -32,10 +32,20 @@ HRESULT BinaryBone::UpdateCombinedTransformMatrix(const vector<class BinaryBone*
 	if (-1 == _BoneDesc._parentBoneIndex)
 		_BoneDesc._combinedTransformationMatrix = _BoneDesc._transformationMatrix;
 	else
+	{
 		::XMStoreFloat4x4(&_BoneDesc._combinedTransformationMatrix,
 			::XMLoadFloat4x4(&_BoneDesc._transformationMatrix) *
 			::XMLoadFloat4x4(&bones[_BoneDesc._parentBoneIndex]->_BoneDesc._combinedTransformationMatrix));
 
+		
+
+		if (strcmp("slider", _szName) == 0)
+		{
+			Matrix dest = _BoneDesc._combinedTransformationMatrix;
+			_vSliderPos = Vec4(dest._41, dest._42, dest._43, 1.f);
+		}
+	}
+		
 	// 부모가 있을 경우 부모의 행렬 기준으로 본인의 위치가 지정되야함.
 	// 본인 위치 * 부모 행렬을 곱하면 그 위치가 정해진다. 본인의 위치 정보가 없으면 부모의 위치가 곧 본인의 위치임.
 	// 최종 본인의 상태를 combine 매트릭스에 저장.

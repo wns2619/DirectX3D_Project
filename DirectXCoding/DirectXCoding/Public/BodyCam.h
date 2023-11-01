@@ -34,6 +34,10 @@ public:
 	virtual void LateTick(const _float& fTimeDelta)		override;
 	virtual HRESULT Render()							override;
 
+public:
+	void AddPlayerCameraFov(_float fov) { _fFov += fov; }
+	_float PlayerCameraFov() { return _fFov; }
+
 private:
 	Matrix* m_SocketMatrix;
 	Matrix	m_SocketPivotMatrix;

@@ -71,6 +71,19 @@ Matrix* BinaryModel::GetBoneMatrix(const _char* pBoneName) const
 	return (*iter)->GetCombientTransformMatrixPoint();
 }
 
+Matrix* BinaryModel::GetBoneLocalMatrix(const _char* pBoneName) const
+{
+	auto iter = find_if(_bones.begin(), _bones.end(), [&](BinaryBone* pBone)
+		{
+			if (false == ::strcmp(pBone->GetBoneName(), pBoneName))
+				return true;
+
+			return false;
+		});
+
+	return (*iter)->GetTransformMatrix();
+}
+
 BinaryBone* BinaryModel::GetBone(const _char* pNodeName) const
 {
 	auto	iter = find_if(_bones.begin(), _bones.end(), [&](BinaryBone* pNode)

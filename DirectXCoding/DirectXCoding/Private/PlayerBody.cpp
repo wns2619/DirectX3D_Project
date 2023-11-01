@@ -68,8 +68,8 @@ HRESULT PlayerBody::Render()
 		return E_FAIL;
 
 
-	if (true == _bObtainGun)
-	{
+	//if (true == _bObtainGun)
+	//{
 		uint32 numMeshes = _binaryModel->GetNumMeshes();
 
 		for (size_t i = 0; i < numMeshes; i++)
@@ -86,7 +86,7 @@ HRESULT PlayerBody::Render()
 			if (FAILED(_binaryModel->Render(i)))
 				return E_FAIL;
 		}
-	}
+	//}
 
 
 
@@ -104,7 +104,7 @@ HRESULT PlayerBody::Ready_Components()
 		level = static_cast<uint32>(LEVEL::EDIT);
 
 	/* Shader Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT),
 		TEXT("ProtoTypeComponentAnimMesh"),
 		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
@@ -113,14 +113,14 @@ HRESULT PlayerBody::Ready_Components()
 	
 	Transform::TRANSFORM_DESC transformDesc;
 	transformDesc.speedPerSec = 5.f;
-	transformDesc.rotationRadianPerSec = ::XMConvertToRadians(90.f);
+	transformDesc.rotationRadianPerSec = ::XMConvertToRadians(40.f);
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
 		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform), &transformDesc)))
 		return E_FAIL;
 
 	/* Model Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelPlayer"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelPlayer"),
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
 

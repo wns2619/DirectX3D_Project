@@ -182,6 +182,7 @@
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\Public\BodyCam.h" />
     <ClInclude Include="..\Public\BreakDoor.h" />
+    <ClInclude Include="..\Public\Bullet.h" />
     <ClInclude Include="..\Public\Cage.h" />
     <ClInclude Include="..\Public\CeilingChain.h" />
     <ClInclude Include="..\Public\CellDraw.h" />
@@ -260,6 +261,7 @@
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
     <ClCompile Include="..\Private\BreakDoor.cpp" />
+    <ClCompile Include="..\Private\Bullet.cpp" />
     <ClCompile Include="..\Private\Cage.cpp" />
     <ClCompile Include="..\Private\CeilingChain.cpp" />
     <ClCompile Include="..\Private\CellDraw.cpp" />

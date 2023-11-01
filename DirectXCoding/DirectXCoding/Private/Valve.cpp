@@ -31,6 +31,8 @@ HRESULT Valve::Initialize(void* pArg)
 	if (nullptr != pArg)
 		_transform->SetWorldMatrix(static_cast<ComponentNames*>(pArg)->_saveWorldMatrix);
 
+	_iRotationTick = 50;
+
 	return S_OK;
 }
 
@@ -38,6 +40,30 @@ void Valve::Tick(const _float& timeDelta)
 {
 	if (_enabled)
 		return;
+
+	if (true == _bIsRotation)
+	{
+		--_iRotationTick;
+
+		if (_id == 159)
+			_transform->Turn(Vec4(1.f, 0.f, 0.f, 1.f), timeDelta);
+		else if (_id == 160)
+			_transform->Turn(Vec4(-1.f, 0.f, 0.f, 1.f), timeDelta);
+		else
+			_transform->Turn(Vec4(0.f, 0.f, 1.f, 1.f), timeDelta);
+
+
+		if (-49 == _iRotationTick)
+		{
+			_iRotationTick = 50;
+			_bIsRotation = false;
+
+			_iRotationCount++;
+
+			if (_iRotationCount == 5)
+				_bIsOpen = true;
+		}
+	}
 
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
@@ -101,11 +127,30 @@ HRESULT Valve::ReadyCollider()
 		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &sphereDesc)))
 		return E_FAIL;
 
+	Transform::TRANSFORM_DESC transformDesc;
+	transformDesc.rotationRadianPerSec = ::XMConvertToRadians(90.f);
+
+
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
-		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform))))
+		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform), &transformDesc)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(GameInstance);
+}
+
+void Valve::OnCollisionEnter(Collider* pOther)
+{
+
+}
+
+void Valve::OnCollisionStay(Collider* pOther)
+{
+
+}
+
+void Valve::OnCollisionExit(Collider* pOther)
+{
+
 }
 
 Valve* Valve::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)

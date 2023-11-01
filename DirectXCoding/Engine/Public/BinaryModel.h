@@ -19,6 +19,7 @@ public:
 	uint32 GetNumMeshes() const { return m_iNumMeshes; }
 	int32 GetBoneIndex(const char* boneName) const;
 	Matrix* GetBoneMatrix(const _char* pBoneName) const;
+	Matrix* GetBoneLocalMatrix(const _char* pBoneName) const;
 	class BinaryBone* GetBone(const _char* pNodeName) const;
 
 public:

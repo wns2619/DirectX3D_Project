@@ -138,7 +138,6 @@ void GridDoor::OnCollisionStay(Collider* pOther)
 			Vec3 vPlayerCenter = static_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding()->Center;
 			Vec3 vthisCenter = static_cast<BoundingAABB*>(_pCollider->GetBounding())->GetBounding()->Center;
 
-
 			Vec3 vFinalCenter = vPlayerCenter - vthisCenter;
 
 			Vec3 vPlayerExtents = static_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding()->Extents;

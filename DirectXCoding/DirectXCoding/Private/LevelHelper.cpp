@@ -453,6 +453,10 @@ HRESULT LevelHelper::LodingforLevelEdit()
     //ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle7.dat", TEXT("ProtoTypeDoorCol"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
 
 
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\PlayerBullet.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypePlayerBullet"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\PlayerBullet.dat", TEXT("ProtoTypePlayerBullet"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+
+
     _title = TEXT("Loading Successed");
     _IsFinished = true;
 
@@ -1095,6 +1099,14 @@ HRESULT LevelHelper::LoadingMesh()
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
         }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypePlayerBullet"),
+            BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Player\\PlayerBullet.dat", modelInitializMatrix))))
+
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
     }
         break;
     case Client::LEVEL::EDIT:
@@ -1685,6 +1697,14 @@ HRESULT LevelHelper::LoadingMesh()
              return E_FAIL;
          }
 
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypePlayerBullet"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Player\\PlayerBullet.dat", modelInitializMatrix))))
+
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
     } 
         break;
     default:
@@ -1947,6 +1967,13 @@ HRESULT LevelHelper::LoadingObject()
             return E_FAIL;
         }
 
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypePlayerBullet"),
+            Bullet::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
         break;
     case Client::LEVEL::EDIT:
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectEditTerrain"),
@@ -2082,6 +2109,13 @@ HRESULT LevelHelper::LoadingObject()
 
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGunLight"),
             GunLight::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypePlayerBullet"),
+            Bullet::Create(_device, _deviceContext))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

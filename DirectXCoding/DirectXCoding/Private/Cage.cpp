@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "BoundingOBB.h"
+#include "Valve.h"
 
 Cage::Cage(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::CAGE)
@@ -30,6 +31,8 @@ HRESULT Cage::Initialize(void* pArg)
 	if (nullptr != pArg)
 		_transform->SetWorldMatrix(static_cast<ComponentNames*>(pArg)->_saveWorldMatrix);
 
+	ValveTargetSet();
+
 	return S_OK;
 }
 
@@ -38,7 +41,23 @@ void Cage::Tick(const _float& timeDelta)
 	if (_enabled)
 		return;
 
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	uint32 targetRotationCount = dynamic_cast<Valve*>(_pTargetObject)->GetRotationCount();
+	_bool targetRotation = dynamic_cast<Valve*>(_pTargetObject)->GetIsRotatate();
+
+	if (true == targetRotation && targetRotationCount + 1 <= 5)
+	{
+		Vec4 vPos = _transform->GetState(Transform::STATE::POSITION);
+		vPos.y += 0.0045f;
+
+		_transform->SetState(Transform::STATE::POSITION, vPos);
+	}
+
+
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
+
+	RELEASE_INSTANCE(GameInstance);
 }
 
 void Cage::LateTick(const _float& timeDelta)
@@ -198,6 +217,65 @@ void Cage::OnCollisionStay(Collider* pOther)
 
 void Cage::OnCollisionExit(Collider* pOther)
 {
+}
+
+void Cage::ValveTargetSet()
+{
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	vector<GameObject*>* pGameList = pGameInstance->GetCurrentObjectList(LAYER_TAG::LAYER_DYNAMIC);
+
+	if (_id == 171)
+	{
+		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
+			{
+				if (pObject->GetIdNumber() == 159)
+					return true;
+
+				return false;
+			});
+
+		_pTargetObject = *iter;
+	}
+	else if (_id == 172)
+	{
+		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
+			{
+				if (pObject->GetIdNumber() == 160)
+					return true;
+
+				return false;
+			});
+
+		_pTargetObject = *iter;
+	}
+	else if (_id == 173)
+	{
+		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
+			{
+				if (pObject->GetIdNumber() == 161)
+					return true;
+
+				return false;
+			});
+
+		_pTargetObject = *iter;
+	}
+	else if (_id == 174)
+	{
+		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
+			{
+				if (pObject->GetIdNumber() == 162)
+					return true;
+
+				return false;
+			});
+
+		_pTargetObject = *iter;
+	}
+
+	RELEASE_INSTANCE(GameInstance);
+
 }
 
 Cage* Cage::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)

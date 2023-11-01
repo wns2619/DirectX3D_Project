@@ -14,7 +14,8 @@ CollisionManager::CollisionManager()
 	CheckGroup(LAYER_TAG::LAYER_PLAYER, LAYER_TAG::LAYER_MONSTER);
 	CheckGroup(LAYER_TAG::LAYER_PLAYER, LAYER_TAG::LAYER_DYNAMIC);
 	CheckGroup(LAYER_TAG::LAYER_PLAYER, LAYER_TAG::LAYER_PUZZLE);
-	
+	CheckGroup(LAYER_TAG::LAYER_MONSTER, LAYER_TAG::LAYER_DYNAMIC);
+
 }
 
 void CollisionManager::Tick(const _float& timeDelta)
@@ -85,11 +86,14 @@ void CollisionManager::CheckCollisionByType(LAYER_TAG eLayerTagLeft, LAYER_TAG e
 		if (nullptr == iterL->GetCollider())
 			continue;
 
-
 		for (auto& iterR : *pRightGameObject)
 		{
 			if (nullptr == iterR->GetCollider() || iterL == iterR)
 				continue;
+
+			if (iterL->GetModelName() == "Player" && iterR->GetModelName() == "Bullet")
+				continue;
+			
 
 			Collider* pLeftCol = iterL->GetCollider();
 			Collider* pRightCol = iterR->GetCollider();

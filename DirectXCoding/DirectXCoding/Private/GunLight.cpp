@@ -36,11 +36,17 @@ HRESULT GunLight::Initialize(void* pArg)
 
 void GunLight::Tick(const _float& timeDelta)
 {
+	if (_IsDead)
+		return;
+
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
 
 void GunLight::LateTick(const _float& timeDelta)
 {
+	if (_IsDead)
+		return;
+
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
 }
@@ -48,6 +54,9 @@ void GunLight::LateTick(const _float& timeDelta)
 HRESULT GunLight::Render()
 {
 	if (_enabled)
+		return S_OK;
+
+	if (_IsDead)
 		return S_OK;
 
 	if (FAILED(__super::BindShaderResource()))

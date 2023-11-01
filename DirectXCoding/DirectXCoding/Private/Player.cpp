@@ -10,7 +10,7 @@
 #include "PlayerReload.h"
 #include "BinaryAnimation.h"
 #include "BinaryBone.h"
-#include "DynamicObject.h"
+#include "DynamicObjectGroup.h"
 
 Player::Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: LandObject(device, deviceContext, OBJECT_TYPE::PLAYER)
@@ -33,7 +33,7 @@ HRESULT Player::InitializePrototype()
 
 HRESULT Player::Initialize(void* pArg)
 {
-	__super::Initialize(pArg);
+	//__super::Initialize(pArg);
 
 	if (FAILED(ReadyComponents()))
 		return E_FAIL;
@@ -52,9 +52,9 @@ HRESULT Player::Initialize(void* pArg)
 		static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->GetBinaryModelComponent()->GetBinaryAnimation();
 	vector<BinaryBone*>& pVecBone = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->GetBinaryModelComponent()->GetBinaryBones();
 
-	_pAnimator->AddAnimation(State::STATE::SHOOT, vecAnim[0], &pVecBone);
-	_pAnimator->AddAnimation(State::STATE::RELOAD, vecAnim[1], &pVecBone);
-	_pAnimator->AddAnimation(State::STATE::IDLE, vecAnim[2], &pVecBone, true);
+	_pAnimator->AddAnimation(State::STATE::RELOAD, vecAnim[0], &pVecBone);
+	_pAnimator->AddAnimation(State::STATE::IDLE, vecAnim[1], &pVecBone, true);
+	_pAnimator->AddAnimation(State::STATE::SHOOT, vecAnim[2], &pVecBone);
 
 
 	_pStateMachine->SetAnimator(_pAnimator);
@@ -70,7 +70,7 @@ void Player::Tick(const _float& fTimeDelta)
 	if (_enabled)
 		return;
 
-	KeyInput(fTimeDelta);
+	//KeyInput(fTimeDelta);
 	_pStateMachine->UpdateStateMachine(fTimeDelta);
 
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
@@ -164,7 +164,7 @@ void Player::OnCollisionStay(Collider* pOther)
 				pOther->GetOwner()->SetDead(true);
 			}
 		}
-		else if (pOther->GetOwner()->GetModelName() == "Surefire")
+		else if (pOther->GetOwner()->GetModelName() == "surefire")
 		{
 			if (pGameInstance->keyDown(DIK_E))
 			{
@@ -178,6 +178,14 @@ void Player::OnCollisionStay(Collider* pOther)
 			{
 				pOther->GetOwner()->SetDead(true);
 				SetObtainKey(true);
+			}
+		}
+		else if (pOther->GetOwner()->GetModelName() == "ValveHandler")
+		{
+			if (pGameInstance->keyDown(DIK_E))
+			{
+				if(false == dynamic_cast<Valve*>(pOther->GetOwner())->GetIsOpen())
+					dynamic_cast<Valve*>(pOther->GetOwner())->SetRotate(true);
 			}
 		}
 	}
@@ -206,6 +214,43 @@ void Player::KeyInput(const _float& timeDelta)
 
 	if (mouseMove = gameInstance->Get_DIMouseMove(DIMM::DIMM_Y))
 		_transform->Turn(_transform->GetState(Transform::STATE::RIGHT), mouseMove * 0.1f * timeDelta);
+
+	if (gameInstance->Get_DIMouseState(DIMK_RBUTTON))
+	{
+		_float fFov = dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->PlayerCameraFov();
+		
+		if (::XMConvertToRadians(45.f) <= fFov)
+		{
+
+			dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->AddPlayerCameraFov(::XMConvertToRadians(-1.f));
+
+			Vec4 vPos = dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->GetState(Transform::STATE::POSITION);
+			vPos.x += -0.006f;
+			vPos.y += 0.002f;
+
+			dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+			dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->Turn(Vec4(0.f, 1.f, 0.f, 1.f), timeDelta);
+		}
+	}
+	else
+	{
+		_float fFov = dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->PlayerCameraFov();
+
+		if (::XMConvertToRadians(70.f) > fFov)
+		{
+			dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->AddPlayerCameraFov(::XMConvertToRadians(1.f));
+
+			Vec4 vPos = dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->GetState(Transform::STATE::POSITION);
+
+			vPos.x -= -0.006f;
+			vPos.y -= 0.002f;
+
+			dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+			dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->Turn(Vec4(0.f, -1.f, 0.f, 1.f), timeDelta);
+
+		}
+	}
+
 
 	XMVECTOR vPosition = __super::SetUp_OnCell(_transform->GetState(Transform::STATE::POSITION), _pNavigation->GetCurrentIndex());
 
@@ -239,15 +284,15 @@ HRESULT Player::ReadyComponents()
 	Navigation::NAVIGATION_DESC NavigationDesc;
 	NavigationDesc._iCurrentIndex = 3;
 
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeNavigation"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeNavigation"),
 		TEXT("ComponentNavigation"), reinterpret_cast<Component**>(&_pNavigation), &NavigationDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeStateMachine"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeStateMachine"),
 		TEXT("ComponentStateMachine"), reinterpret_cast<Component**>(&_pStateMachine))))
 		return E_FAIL;
 
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAnimator"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeAnimator"),
 		TEXT("ComponentAnimator"), reinterpret_cast<Component**>(&_pAnimator))))
 		return E_FAIL;
 
@@ -259,7 +304,7 @@ HRESULT Player::ReadyComponents()
 		aabbDesc.vExtents = Vec3(0.3f, 0.5f, 0.5f);
 	}
 
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAABBCollider"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeAABBCollider"),
 		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &aabbDesc)))
 		return E_FAIL;
 
@@ -305,22 +350,22 @@ HRESULT Player::ReadyPlayerPart()
 	m_pPlayerPart.push_back(pPlayerPart);
 
 
-	BodyCam::BODYCAM_DESC BodyCamDesc;
-	BodyCamDesc.pParentTransform = _transform;
-	BodyCamDesc.SocketMatrix = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketBonePtr("Head_Cam");
-	BodyCamDesc.SocketPivot = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketPivotMatrix();
-	BodyCamDesc.vEye = Vec4(0.f, 10.f, -8.f, 1.f);
-	BodyCamDesc.vAt = Vec4(0.f, 0.f, 0.f, 1.f);
-	BodyCamDesc.fFov = ::XMConvertToRadians(70.f);
-	BodyCamDesc.fAspect = g_iWinSizeX / static_cast<_float>(g_iWinSizeY);
-	BodyCamDesc.fNear = 0.001f;
-	BodyCamDesc.fFar = 50.f;
+	//BodyCam::BODYCAM_DESC BodyCamDesc;
+	//BodyCamDesc.pParentTransform = _transform;
+	//BodyCamDesc.SocketMatrix = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketBonePtr("Head_Cam");
+	//BodyCamDesc.SocketPivot = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketPivotMatrix();
+	//BodyCamDesc.vEye = Vec4(0.f, 10.f, -8.f, 1.f);
+	//BodyCamDesc.vAt = Vec4(0.f, 0.f, 0.f, 1.f);
+	//BodyCamDesc.fFov = ::XMConvertToRadians(70.f);
+	//BodyCamDesc.fAspect = g_iWinSizeX / static_cast<_float>(g_iWinSizeY);
+	//BodyCamDesc.fNear = 0.001f;
+	//BodyCamDesc.fFar = 50.f;
 
 
-	pPlayerPart = gameInstance->CloneGameObject(TEXT("ProtoTypeGameObjectBodyCam"), &BodyCamDesc);
-	if (nullptr == pPlayerPart)
-		return E_FAIL;
-	m_pPlayerPart.push_back(pPlayerPart);
+	//pPlayerPart = gameInstance->CloneGameObject(TEXT("ProtoTypeGameObjectBodyCam"), &BodyCamDesc);
+	//if (nullptr == pPlayerPart)
+	//	return E_FAIL;
+	//m_pPlayerPart.push_back(pPlayerPart);
 
 
 	RELEASE_INSTANCE(GameInstance);

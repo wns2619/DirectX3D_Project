@@ -33,10 +33,11 @@ public:
 
 	void SetTransformationMatrix(FXMMATRIX transformationMatrix) { ::XMStoreFloat4x4(&_BoneDesc._transformationMatrix, transformationMatrix); }
 
-	Matrix GetTransformMatrix() { return _BoneDesc._transformationMatrix; }
+	Matrix* GetTransformMatrix() { return &_BoneDesc._transformationMatrix; }
 	Matrix* GetCombientTransformMatrixPoint() { return &_BoneDesc._combinedTransformationMatrix; }
 
 	BONE_DESC& GetBoneDesc() { return _BoneDesc; }
+	Vec4& GetSliderPos() { return _vSliderPos; }
 
 public:
 	HRESULT Initialize(const BONE_DESC boneInfo, const _char* nameData, int32 parentBoneIndex);
@@ -46,6 +47,8 @@ private:
 	_char _szName[MAX_PATH] = "";
 
 	BONE_DESC _BoneDesc = {};
+
+	Vec4 _vSliderPos;
 
 public:
 	static BinaryBone* Cretae(BONE_DESC boneInfo, const _char* nameData, int32 parentBoneIndex);

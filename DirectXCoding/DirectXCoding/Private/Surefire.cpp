@@ -68,8 +68,8 @@ HRESULT Surefire::Render()
 		return E_FAIL;
 
 
-	if (true == _bObtainLight)
-	{
+	//if (true == _bObtainLight)
+	//{
 		uint32 numMeshes = _binaryModel->GetNumMeshes();
 
 		for (size_t i = 0; i < numMeshes; i++)
@@ -83,7 +83,7 @@ HRESULT Surefire::Render()
 			if (FAILED(_binaryModel->Render(i)))
 				return E_FAIL;
 		}
-	}
+	//}
 
 
 
@@ -99,7 +99,7 @@ HRESULT Surefire::Ready_Components()
 		level = static_cast<uint32>(LEVEL::EDIT);
 
 	/* Shader Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT),
 		TEXT("ProtoTypeComponentDefaultMeshShader"),
 		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
@@ -114,7 +114,7 @@ HRESULT Surefire::Ready_Components()
 		return E_FAIL;
 
 	/* Model Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelsurefire"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelsurefire"),
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
 

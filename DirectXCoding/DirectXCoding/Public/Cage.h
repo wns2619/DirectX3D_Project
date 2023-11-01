@@ -26,6 +26,12 @@ public:
 	virtual void OnCollisionStay(class Collider* pOther);
 	virtual void OnCollisionExit(class Collider* pOther);
 
+private:
+	void ValveTargetSet();
+
+private:
+	GameObject* _pTargetObject = nullptr;
+
 public:
 	static Cage* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	virtual GameObject* Clone(void* argument) override;

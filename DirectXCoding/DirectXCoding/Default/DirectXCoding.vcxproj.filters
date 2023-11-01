@@ -137,6 +137,9 @@
     <Filter Include="소스 파일\02.GameObjects\06. Dynamic\GunLight">
       <UniqueIdentifier>{b7cbfd6a-ab33-4de2-8b5e-e30e996626b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\03.Player\Bullet">
+      <UniqueIdentifier>{a2bd48de-77c0-4b48-baeb-23ad1a2d068f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -304,6 +307,9 @@
     <ClInclude Include="..\Public\GunLight.h">
       <Filter>소스 파일\02.GameObjects\06. Dynamic\GunLight</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Bullet.h">
+      <Filter>소스 파일\02.GameObjects\03.Player\Bullet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -446,6 +452,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\GunLight.cpp">
       <Filter>소스 파일\02.GameObjects\06. Dynamic\GunLight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bullet.cpp">
+      <Filter>소스 파일\02.GameObjects\03.Player\Bullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
