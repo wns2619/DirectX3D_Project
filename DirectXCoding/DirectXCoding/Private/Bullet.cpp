@@ -32,9 +32,14 @@ HRESULT Bullet::Initialize(void* pArg)
 	if (FAILED(ReadyCollider()))
 		return E_FAIL;
 
+	_modelName = "PlayerBullet";
 
 
 	_transform->SetState(Transform::STATE::POSITION, _BulletDesc.vPos);
+
+
+	_BulletDesc.vDir.Normalize();
+
 	_transform->SetState(Transform::STATE::LOOK, _BulletDesc.vDir);
 
 	return S_OK;
@@ -120,7 +125,7 @@ HRESULT Bullet::ReadyCollider()
 	Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
 	{
 		sphereDesc.vCenter = Vec3(0.f, 0.f, 0.f);
-		sphereDesc.fRadius = 0.03f;
+		sphereDesc.fRadius = 0.1f;
 		sphereDesc.pOwner = this;
 	}
 

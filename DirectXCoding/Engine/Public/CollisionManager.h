@@ -21,14 +21,15 @@ public:
 private:
 	_bool IsCollision(Collider* pDesc, Collider* pSour);
 	void CheckCollisionByType(LAYER_TAG eLayerTagLeft, LAYER_TAG eLayerTagRight);
+	void CheckAssistCollision(LAYER_TAG eLayerTagLeft, LAYER_TAG eLayerTagRight);
+
 	void CheckGroup(LAYER_TAG eLeft, LAYER_TAG eRight);
-	
-	void CheckDoorCollision();
+	void CheckAssisGroup(LAYER_TAG eLeft, LAYER_TAG eRight);
 
 private:
 	map<uint64, _bool> _mapColInfo;
 	uint32 _arrCheck[static_cast<uint32>(LAYER_TAG::LAYER_END)] = {};
-
+	uint32 _arrCheckAssist[static_cast<uint32>(LAYER_TAG::LAYER_END)] = {};
 public:
 	virtual void Free() override;
 };

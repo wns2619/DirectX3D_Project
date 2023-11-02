@@ -155,6 +155,19 @@ HRESULT Animator::ChangeAnimation(_float duration, const _float& timeDelta, Stat
     return S_OK;
 }
 
+_bool Animator::IsCurKeyFrame(uint32 iIndex)
+{
+    vector<uint32> pCurrentKeyFrame = _pCurAnimation->GetCurrentKeyFrame();
+
+    for (auto& pCurKey : pCurrentKeyFrame)
+    {
+        if (iIndex <= pCurKey)
+            return true;
+    }
+
+    return false;
+}
+
 Animator* Animator::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
     Animator* pInstance = new Animator(device, deviceContext);

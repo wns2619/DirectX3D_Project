@@ -37,7 +37,8 @@ public:
 	Matrix* GetCombientTransformMatrixPoint() { return &_BoneDesc._combinedTransformationMatrix; }
 
 	BONE_DESC& GetBoneDesc() { return _BoneDesc; }
-	Vec4& GetSliderPos() { return _vSliderPos; }
+	Matrix& GetSliderPos() { return _vSliderPos; }
+
 
 public:
 	HRESULT Initialize(const BONE_DESC boneInfo, const _char* nameData, int32 parentBoneIndex);
@@ -48,7 +49,7 @@ private:
 
 	BONE_DESC _BoneDesc = {};
 
-	Vec4 _vSliderPos;
+	Matrix _vSliderPos;
 
 public:
 	static BinaryBone* Cretae(BONE_DESC boneInfo, const _char* nameData, int32 parentBoneIndex);

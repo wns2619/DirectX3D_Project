@@ -22,6 +22,8 @@
 #include <DirectXTex\DirectXTex.h>
 #include <DirectXTex\DirectXTex.inl>
 
+#include <random>
+
 #include "dirent.h"
 #include "StringUtilities.h"
 

@@ -35,9 +35,8 @@ HRESULT Surefire::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	_transform->SetScaling(Vec3(0.0001f, 0.0001f, 0.00005f));
-	_transform->FixRotation(Vec3(1.f, 0.f, 0.f), ::XMConvertToRadians(45));
-	_transform->SetState(Transform::STATE::POSITION, Vec4(0.f, -0.07f, 0.015f, 1.f));
+	_transform->FixRotation(Vec3(-1.f, 0.f, 0.f), ::XMConvertToRadians(90));
+	_transform->SetState(Transform::STATE::POSITION, Vec4(0.02f, 0.02f, -0.009f, 1.f));
 
 	return S_OK;
 }
@@ -77,7 +76,7 @@ HRESULT Surefire::Render()
 			if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
 				return E_FAIL;
 
-			if (FAILED(_shader->Begin(1)))
+			if (FAILED(_shader->Begin(0)))
 				return E_FAIL;
 
 			if (FAILED(_binaryModel->Render(i)))
@@ -99,7 +98,7 @@ HRESULT Surefire::Ready_Components()
 		level = static_cast<uint32>(LEVEL::EDIT);
 
 	/* Shader Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME),
 		TEXT("ProtoTypeComponentDefaultMeshShader"),
 		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
@@ -107,14 +106,14 @@ HRESULT Surefire::Ready_Components()
 	/* Transform Component */
 	Transform::TRANSFORM_DESC transformDesc;
 	transformDesc.speedPerSec = 5.f;
-	transformDesc.rotationRadianPerSec = ::XMConvertToRadians(90.f);
+	transformDesc.rotationRadianPerSec = ::XMConvertToRadians(40.f);
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
 		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform), &transformDesc)))
 		return E_FAIL;
 
 	/* Model Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelsurefire"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelsurefire"),
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
 

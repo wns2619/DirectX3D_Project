@@ -19,6 +19,8 @@ MeshOut VS_MAIN(VertexAnimMesh input)
     
     matrix WVP = ComputeTransformMatrix(W, V, P);
     
+    
+    
     Out.position = mul(bonePosition, WVP);
     Out.uv = input.uv;
     Out.normal = mul(meshNormal, W);

@@ -70,22 +70,28 @@ HRESULT PlayerBody::Render()
 
 	//if (true == _bObtainGun)
 	//{
-		uint32 numMeshes = _binaryModel->GetNumMeshes();
+	uint32 numMeshes = _binaryModel->GetNumMeshes();
 
-		for (size_t i = 0; i < numMeshes; i++)
-		{
-			if (FAILED(_binaryModel->BindBoneMatrices(_shader, i, "BoneMatrices")))
-				return E_FAIL;
+	for (size_t i = 0; i < numMeshes; i++)
+	{
+		if (FAILED(_binaryModel->BindBoneMatrices(_shader, i, "BoneMatrices")))
+			return E_FAIL;
 
-			if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
-				return E_FAIL;
+		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
+			return E_FAIL;
 
-			if (FAILED(_shader->Begin(0)))
-				return E_FAIL;
+		if (FAILED(_shader->Begin(0)))
+			return E_FAIL;
 
-			if (FAILED(_binaryModel->Render(i)))
-				return E_FAIL;
-		}
+		if (false == _bObtainGun)
+			continue;
+
+		if (false == _bObtainLight && i == 3)
+			continue;
+
+		if (FAILED(_binaryModel->Render(i)))
+			return E_FAIL;
+	}
 	//}
 
 
@@ -104,7 +110,7 @@ HRESULT PlayerBody::Ready_Components()
 		level = static_cast<uint32>(LEVEL::EDIT);
 
 	/* Shader Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME),
 		TEXT("ProtoTypeComponentAnimMesh"),
 		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
 		return E_FAIL;
@@ -120,7 +126,7 @@ HRESULT PlayerBody::Ready_Components()
 		return E_FAIL;
 
 	/* Model Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelPlayer"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelPlayer"),
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
 

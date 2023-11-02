@@ -66,6 +66,11 @@ void GridDoor::Tick(const _float& timeDelta)
 		_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 		_pAssistCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 	}
+	else
+	{
+		//Safe_Release<Collider*>(_pCollider);
+		//Safe_Release<Collider*>(_pAssistCollider);
+	}
 
 	RELEASE_INSTANCE(GameInstance);
 }
@@ -111,8 +116,11 @@ HRESULT GridDoor::Render()
 	}
 
 #ifdef _DEBUG
-	_pCollider->Render();
-	_pAssistCollider->Render();
+	if (_bIsOpen == false)
+	{
+		_pCollider->Render();
+		_pAssistCollider->Render();
+	}
 #endif // _DEBUG
 
 

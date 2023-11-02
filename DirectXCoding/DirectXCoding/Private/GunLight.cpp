@@ -96,7 +96,7 @@ HRESULT GunLight::ReadyCollider()
 	Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
 	{
 		sphereDesc.vCenter = Vec3(0.f, 0.f, 0.f);
-		sphereDesc.fRadius = 1600.f;
+		sphereDesc.fRadius = 0.2f;
 		sphereDesc.pOwner = this;
 	}
 

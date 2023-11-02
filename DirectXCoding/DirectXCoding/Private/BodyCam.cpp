@@ -65,7 +65,37 @@ void BodyCam::Tick(const _float& fTimeDelta)
 
 	Compute_RenderMatrix(_transform->GetWorldMatrix() * worldMatrix);
 
-	
+	//if (_remainingShakeDuration > 0.f)
+	//{
+	//	_float randomAngle = RandomFloatInRange(0.0f, XM_2PI); // 0에서 2π 사이의 랜덤한 각도
+	//	_float shakeAmplitude = RandomFloatInRange(0.0f, _fShakeMagnitude);
+
+	//	// 랜덤한 변위를 생성
+	//	XMFLOAT3 displacement;
+	//	displacement.x = shakeAmplitude * cosf(randomAngle);
+	//	displacement.y = shakeAmplitude * sinf(randomAngle);
+	//	displacement.z = 0.0f;
+
+	//	// 현재 뷰 행렬에 랜덤 변위를 더함
+	//	XMMATRIX view = _WorldMatrix;
+	//	view.r[3] = XMVectorAdd(view.r[3], XMLoadFloat3(&displacement));
+	//	_WorldMatrix = view;
+
+
+	//	_remainingShakeDuration -= fTimeDelta;
+
+	//	// 쉐이크 지속 시간이 끝나면 원래 행렬로 복원
+	//	if (_remainingShakeDuration <= 0.0f)
+	//	{
+	//		_remainingShakeDuration = 0.0f; // 정확한 완료를 보장하기 위해 0으로 설정
+
+	//		// 원래 행렬과 현재 행렬을 선형 보간하여 부드럽게 복원
+	//		float lerpFactor = 1.0f - (_remainingShakeDuration / _fShakeDuration);
+	//		_WorldMatrix = LerpMatrix(_originalMatrix, _WorldMatrix, lerpFactor);
+	//	}
+	//}
+
+
 	_pCameraHelper->SetTransform(CameraHelper::TRANSFORMSTATE::D3DTS_VIEW, _WorldMatrix.Invert());
 	_pCameraHelper->SetTransform(CameraHelper::TRANSFORMSTATE::D3DTS_PROJ,
 		::XMMatrixPerspectiveFovLH(_fFov, _fAspect, _fNear, _fFar));
@@ -79,6 +109,32 @@ void BodyCam::LateTick(const _float& fTimeDelta)
 HRESULT BodyCam::Render()
 {
 	return S_OK;
+}
+
+void BodyCam::StartCameraShake()
+{
+	if (_remainingShakeDuration <= 0.f)
+	{
+		_originalMatrix = _WorldMatrix;
+		_remainingShakeDuration = _fShakeDuration;
+	}
+}
+
+_float BodyCam::RandomFloatInRange(_float min, _float max)
+{
+	// C++에서 제공하는 난수 생성 엔진 사용
+	std::random_device rd;  // 시드를 위한 장치
+	std::mt19937 gen(rd()); // 메르센 트위스터 엔진 사용
+	std::uniform_real_distribution<float> dist(min, max); // 주어진 범위 내의 균일한 분포
+
+	// 범위 내에서 랜덤한 부동 소수점 숫자를 생성하여 반환
+	return dist(gen);
+}
+
+XMMATRIX BodyCam::LerpMatrix(const XMMATRIX& matrix1, const XMMATRIX& matrix2, _float t)
+{
+	return XMMatrixMultiply(matrix1, XMMatrixScaling(1.0f - t, 1.0f - t, 1.0f - t)) +
+		XMMatrixMultiply(matrix2, XMMatrixScaling(t, t, t));
 }
 
 HRESULT BodyCam::Ready_Components()

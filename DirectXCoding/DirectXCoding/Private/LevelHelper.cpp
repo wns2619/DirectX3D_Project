@@ -201,8 +201,8 @@ HRESULT LevelHelper::LodingforLevelEdit()
 #pragma region 2stProbs
     
     // PLAYER
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\Player.dat", LAYER_TAG::LAYER_PLAYER, TEXT("ProtoTypeGameObjectPlayer"));
-    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\Player.dat", TEXT("ProtoTypeModelPlayer"), TEXT("ProtoTypeComponentAnimMesh"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", LAYER_TAG::LAYER_PLAYER, TEXT("ProtoTypeGameObjectPlayer"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", TEXT("ProtoTypeModelPlayer"), TEXT("ProtoTypeComponentAnimMesh"));
    /* ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", LAYER_TAG::LAYER_PLAYER, TEXT("ProtoTypeGameObjectPlayer"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", TEXT("ProtoTypeModelsurefire"), TEXT("ProtoTypeComponentAnimMesh"));*/
    
@@ -444,8 +444,8 @@ HRESULT LevelHelper::LodingforLevelEdit()
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\Gun.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeGun"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\Gun.dat", TEXT("ProtoTypeGun"), TEXT("ProtoTypeComponentDefaultMeshShader"));
 
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeGunLight"));
-    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", TEXT("ProtoTypeModelsurefire"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\surefire.fbx", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeGunLight"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\surefire.fbx", TEXT("ProtoTypeModelsurefire"), TEXT("ProtoTypeComponentDefaultMeshShader"));
 
 #pragma endregion 2stProbs
 
@@ -1123,7 +1123,7 @@ HRESULT LevelHelper::LoadingMesh()
 
 
          if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeModelPlayer"),
-             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\MyModels\\Player\\Player.dat", modelInitializMatrix))))
+             Model::Create(_device, _deviceContext, Model::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\MyModels\\Player\\Player.fbx", modelInitializMatrix))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

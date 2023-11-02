@@ -46,10 +46,10 @@ void Cage::Tick(const _float& timeDelta)
 	uint32 targetRotationCount = dynamic_cast<Valve*>(_pTargetObject)->GetRotationCount();
 	_bool targetRotation = dynamic_cast<Valve*>(_pTargetObject)->GetIsRotatate();
 
-	if (true == targetRotation && targetRotationCount + 1 <= 5)
+	if (true == targetRotation && targetRotationCount + 1 <= 3)
 	{
 		Vec4 vPos = _transform->GetState(Transform::STATE::POSITION);
-		vPos.y += 0.0045f;
+		vPos.y += 0.0065f;
 
 		_transform->SetState(Transform::STATE::POSITION, vPos);
 	}

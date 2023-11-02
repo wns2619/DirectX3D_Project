@@ -60,7 +60,7 @@ void Valve::Tick(const _float& timeDelta)
 
 			_iRotationCount++;
 
-			if (_iRotationCount == 5)
+			if (_iRotationCount == 3)
 				_bIsOpen = true;
 		}
 	}

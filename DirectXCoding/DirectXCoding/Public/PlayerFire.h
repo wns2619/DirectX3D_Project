@@ -26,6 +26,9 @@ public:
 	virtual STATE KeyInput(const _float& timeDelta)			override;
 
 public:
+	_bool _IsShoot = true;
+
+public:
 	static PlayerFire* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, GameObject* pOwner);
 	virtual void Free() override;
 };

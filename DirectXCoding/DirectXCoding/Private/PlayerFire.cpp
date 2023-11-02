@@ -3,6 +3,12 @@
 #include "GameInstance.h"
 #include "Transform.h"
 #include "LandObject.h"
+#include "Player.h"
+#include "BinaryAnimation.h"
+#include "Bullet.h"
+#include "BinaryBone.h"
+#include "GameObject.h"
+#include "BodyCam.h"
 
 PlayerFire::PlayerFire(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
@@ -21,6 +27,62 @@ State::STATE PlayerFire::UpdateState(const _float& timeDelta)
 
 	if (nullptr != _pOwner)
 		eState = KeyInput(timeDelta);
+
+	StateMachine* pStateMachine = dynamic_cast<Player*>(_pOwner)->GetStateMachine();
+	if (nullptr == pStateMachine)
+		return eState;
+
+
+	if (pStateMachine->GetAnimator()->IsCurKeyFrame(1))
+	{
+		if (true == _IsShoot)
+		{
+			GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+			CameraHelper* pCamera = GET_INSTANCE(CameraHelper);
+
+			Matrix CameraMatrix = pCamera->GetInverseTransformCalculator(CameraHelper::TRANSFORMSTATE::D3DTS_VIEW);
+
+			BinaryModel* pModel = dynamic_cast<Player*>(_pOwner)->GetPlyaerPart()[Player::PART::PART_BODY]->GetBinaryModelComponent();
+			if (pModel == nullptr)
+				return STATE::SHOOT;
+
+			Bullet::BULLET_DESC bullDesc;
+			BinaryBone* pBone = pModel->GetBone("slider");
+			Matrix mSliderMatrix = pBone->GetSliderPos();
+			Matrix pivotMatrix = pModel->GetPivotMatrix();
+
+			
+			dynamic_cast<BodyCam*>(dynamic_cast<Player*>(_pOwner)->GetPlyaerPart()[Player::PART::PART_CAMERA])->StartCameraShake();
+
+
+			Vec4 vSliderPos = Vec4(mSliderMatrix._41, mSliderMatrix._42, mSliderMatrix._43, mSliderMatrix._44);
+			vSliderPos = ::XMVector3TransformCoord(vSliderPos, pivotMatrix);
+
+			Matrix finalMatrix = _pOwner->GetTransform()->GetWorldMatrix();
+			vSliderPos = ::XMVector3TransformCoord(vSliderPos, finalMatrix);
+
+
+			bullDesc.vPos = vSliderPos;
+			bullDesc.fBulletSpeed = 25.f;
+			bullDesc.vDir = _pOwner->GetTransform()->GetState(Transform::STATE::LOOK);
+
+			if (FAILED(pGameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), LAYER_TAG::LAYER_BULLET,
+				TEXT("ProtoTypePlayerBullet"), &bullDesc)))
+			{
+				RELEASE_INSTANCE(GameInstance);
+				RELEASE_INSTANCE(CameraHelper);
+				return STATE::SHOOT;
+			}
+
+			_IsShoot = false;
+
+			RELEASE_INSTANCE(GameInstance);
+			RELEASE_INSTANCE(CameraHelper);
+		}
+	}
+	else
+		_IsShoot = true;
+
 
 	return eState;
 }

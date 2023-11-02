@@ -16,7 +16,7 @@ BEGIN(Client)
 class Player final : public LandObject
 {
 public:
-	enum PART { PART_BODY, PART_SURFIRE, PART_CAMERA, PART_END };
+	enum PART { PART_BODY, PART_CAMERA, PART_END };
 
 private:
 	explicit Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
@@ -40,7 +40,7 @@ public:
 
 public:
 	_bool GetObtainKey() { return _bObtatinKey; }
-
+	_bool GetIsJoom() { return _bIsJoom; }
 public:
 	void SetInteration(_bool interaction) { _bInteraction = interaction; }
 	void SetObtainKey(_bool obtain) { _bObtatinKey = obtain; }
@@ -64,6 +64,7 @@ private:
 private:
 	_bool _bInteraction = false;
 	_bool _bObtatinKey = false;
+	_bool _bIsJoom = false;
 
 private:
 	HRESULT ReadyComponents();

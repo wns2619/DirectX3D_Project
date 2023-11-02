@@ -28,6 +28,8 @@ public:
 		vector<class BinaryBone*>* pBone = nullptr, _bool loop = false);
 	HRESULT ChangeAnimation(_float duration, const _float& timeDelta, State::STATE eState);
 
+	_bool IsCurKeyFrame(uint32 iIndex);
+
 private:
 	map<State::STATE, class BinaryAnimation*> _mapAnimation;
 
