@@ -220,6 +220,7 @@ HRESULT Mesh::ReadyVertexBufferAnim(const aiMesh* mesh, const Model* model)
         if (-1 == iIndex)
             return E_FAIL;
 
+        _szBoneName.push_back(szName);
         Matrix offsetMatrix = Matrix::Identity;
 
         _offsetMatrices.push_back(offsetMatrix);

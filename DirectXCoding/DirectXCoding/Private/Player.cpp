@@ -104,7 +104,8 @@ HRESULT Player::Render()
 		return S_OK;
 
 
-	if (FAILED(BindShaderResuorces()))
+	if (FAILED(BindShaderResuorces
+	()))
 		return E_FAIL;
 
 

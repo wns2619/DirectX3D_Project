@@ -7,7 +7,7 @@ BEGIN(Engine)
 class ENGINE_DLL State : public Base 
 {
 public:
-	enum STATE { SHOOT, RELOAD, IDLE, STATE_END };
+	enum STATE { SHOOT, RELOAD, IDLE, WALK, RUN , DANCE, STATE_END };
 protected:
 	explicit State();
 	virtual ~State() = default;

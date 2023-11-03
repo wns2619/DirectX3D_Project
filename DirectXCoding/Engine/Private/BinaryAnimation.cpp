@@ -50,7 +50,7 @@ void BinaryAnimation::UpdateTransformationMatrix(vector<class BinaryBone*>& Bone
 	if (true == _isFinished)
 		return;
 
-	_animationDesc._trackPosition += _animationDesc._tickPerSecond * timeDelta;
+	_animationDesc._trackPosition += _animationDesc._tickPerSecond * timeDelta * _fAnimationSpeed;
 
 	if (_animationDesc._trackPosition >= _animationDesc._duration)
 	{
@@ -69,6 +69,7 @@ void BinaryAnimation::UpdateTransformationMatrix(vector<class BinaryBone*>& Bone
 void BinaryAnimation::Reset()
 {
 	_animationDesc._trackPosition = 0.f;
+
 	_isFinished = false;
 
 

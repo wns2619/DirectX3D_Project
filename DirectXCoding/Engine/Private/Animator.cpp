@@ -99,6 +99,7 @@ HRESULT Animator::AddAnimation(State::STATE eState, BinaryAnimation* pAnimation,
     _mapAnimation.insert({ eState, pAnimation });
     _pBinaryBone = pBone;
     pAnimation->SetLoop(loop);
+    pAnimation->SetAnimationSpeed(2.f);
 
     return S_OK;
 }

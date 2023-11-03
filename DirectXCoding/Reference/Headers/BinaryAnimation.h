@@ -22,6 +22,7 @@ private:
 
 public:
 	void SetLoop(_bool isLoop) { _isLoop = isLoop; }
+	void SetAnimationSpeed(_float fSpped) { _fAnimationSpeed = fSpped; }
 
 public:
 	HRESULT Initialize(const class BinaryModel* pModel, const _char* animationName, const ANIMATION_DESC pAIAnimation, vector<class BinaryChannel*>& vecChannel);
@@ -45,6 +46,8 @@ private:
 	_char _szName[MAX_PATH] = ""; // 애니메이션이 구동해야하는 뼈의 정보들.
 	vector<class BinaryChannel*> _channels; // 애니메이션이 갖고 있는 채널 개수.
 	vector<uint32> _CurrentKeyFrame; // 클론 복사를 위해 채널의 current 프레임을 애니메이션이 직접 갖고 있음.
+
+	_float _fAnimationSpeed = 1.f;
 public:
 	static BinaryAnimation* Create(const class BinaryModel* pModel, const _char* animationName, ANIMATION_DESC AnimationInfo, vector<class BinaryChannel*>& vecChannel);
 	BinaryAnimation* Clone();

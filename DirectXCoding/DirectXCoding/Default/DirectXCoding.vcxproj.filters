@@ -140,6 +140,12 @@
     <Filter Include="소스 파일\02.GameObjects\03.Player\Bullet">
       <UniqueIdentifier>{a2bd48de-77c0-4b48-baeb-23ad1a2d068f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\07. Monster">
+      <UniqueIdentifier>{751d171e-4ae6-4f37-a966-bd1b3e8d1e6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\07. Monster\State">
+      <UniqueIdentifier>{b8ddbebf-9cfd-425d-80fa-4c56db01e216}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -310,6 +316,12 @@
     <ClInclude Include="..\Public\Bullet.h">
       <Filter>소스 파일\02.GameObjects\03.Player\Bullet</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Monster.h">
+      <Filter>소스 파일\02.GameObjects\07. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterWalk.h">
+      <Filter>소스 파일\02.GameObjects\07. Monster\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -455,6 +467,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Bullet.cpp">
       <Filter>소스 파일\02.GameObjects\03.Player\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster.cpp">
+      <Filter>소스 파일\02.GameObjects\07. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterWalk.cpp">
+      <Filter>소스 파일\02.GameObjects\07. Monster\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

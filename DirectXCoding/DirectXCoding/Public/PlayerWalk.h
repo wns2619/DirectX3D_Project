@@ -8,7 +8,7 @@ class GameObject;
 
 END
 
-BEGIN(Engine)
+BEGIN(Client)
 
 class PlayerWalk final : public State
 {

@@ -16,6 +16,7 @@
 #include "WallPainting.h"
 #include "BodyCam.h"
 #include "DoorCollision.h"
+#include "Monster.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -206,6 +207,11 @@ HRESULT LevelHelper::LodingforLevelEdit()
    /* ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", LAYER_TAG::LAYER_PLAYER, TEXT("ProtoTypeGameObjectPlayer"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", TEXT("ProtoTypeModelsurefire"), TEXT("ProtoTypeComponentAnimMesh"));*/
    
+    // Monster
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Monster\\DanceMonster.dat", LAYER_TAG::LAYER_MONSTER, TEXT("ProtoTypeDanceMonster"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Monster\\DanceMonster.dat", TEXT("ProtoTypeDanceMonster"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+
+
     // STATIC
     /* Botton */
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\2stBottom.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
@@ -1107,6 +1113,14 @@ HRESULT LevelHelper::LoadingMesh()
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
         }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeDanceMonster"),
+            BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\MyModels\\Monster\\DanceMonster.dat", modelInitializMatrix))))
+
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
     }
         break;
     case Client::LEVEL::EDIT:
@@ -1705,6 +1719,14 @@ HRESULT LevelHelper::LoadingMesh()
              return E_FAIL;
          }
 
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeDanceMonster"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\MyModels\\Monster\\DanceMonster.dat", modelInitializMatrix))))
+
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
     } 
         break;
     default:
@@ -1974,6 +1996,13 @@ HRESULT LevelHelper::LoadingObject()
             return E_FAIL;
         }
 
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeDanceMonster"),
+            Monster::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
         break;
     case Client::LEVEL::EDIT:
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectEditTerrain"),
@@ -2116,6 +2145,14 @@ HRESULT LevelHelper::LoadingObject()
 
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypePlayerBullet"),
             Bullet::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeDanceMonster"),
+            Monster::Create(_device, _deviceContext))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

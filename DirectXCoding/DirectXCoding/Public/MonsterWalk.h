@@ -3,18 +3,17 @@
 #include "State.h"
 
 BEGIN(Engine)
-
 class GameObject;
 
 END
 
 BEGIN(Client)
 
-class PlayerFire final : public State
+class MonsterWalk final : public State
 {
 private:
-	explicit PlayerFire(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
-	virtual ~PlayerFire() = default;
+	explicit MonsterWalk(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+	virtual ~MonsterWalk() = default;
 
 public:
 	virtual HRESULT ReadyState(class GameObject* pOwner)	override;
@@ -23,14 +22,14 @@ public:
 	virtual void RenderState()								override;
 
 public:
-	virtual STATE KeyInput(const _float& timeDelta)			override;
+	virtual State::STATE KeyInput(const _float& timeDelta) override
+	{ return State::STATE::WALK; }
 
 public:
-	_bool _IsShoot = true;
-
-public:
-	static PlayerFire* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, GameObject* pOwner);
+	static MonsterWalk* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, GameObject* pOwner);
 	virtual void Free() override;
+
+
 };
 
 END
