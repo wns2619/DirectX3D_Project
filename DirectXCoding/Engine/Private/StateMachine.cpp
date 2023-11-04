@@ -60,6 +60,8 @@ HRESULT StateMachine::AddState(State::STATE eState, State* pState)
     return S_OK;
 }
 
+
+
 void StateMachine::SetState(State::STATE eState)
 {
     auto iter = find_if(_stateMap.begin(), _stateMap.end(), [&](const pair<State::STATE, State*>& pair)
@@ -71,6 +73,7 @@ void StateMachine::SetState(State::STATE eState)
     _ePrevState = _eCurState;
     _pPrevState = _pCurState;
     _pCurState = iter->second;
+    _pCurState->ChangeSetState();
 
     _eCurState = eState;
 

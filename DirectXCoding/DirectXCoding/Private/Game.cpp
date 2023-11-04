@@ -43,7 +43,7 @@ HRESULT Game::Initialize(HWND hwnd)
 		return E_FAIL;
 
 
-	if (FAILED(OpenLevel(LEVEL::EDIT)))
+	if (FAILED(OpenLevel(LEVEL::GAME)))
 		return E_FAIL;
 	
 	
@@ -54,6 +54,8 @@ void Game::Tick(const _float& timeDelta)
 {
 	//ImGuiManager::GetInstance()->LateTick(timeDelta);
 	_gameInstance->Tick(timeDelta);
+	_gameInstance->EventManagerTick();
+
 }
 
 HRESULT Game::Render()
@@ -71,8 +73,8 @@ HRESULT Game::Render()
 		ImGuiManager::GetInstance()->Render();
 
 
-
 	_gameInstance->Present();
+
 
 	return S_OK;
 }

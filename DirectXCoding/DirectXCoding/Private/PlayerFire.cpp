@@ -32,57 +32,46 @@ State::STATE PlayerFire::UpdateState(const _float& timeDelta)
 	if (nullptr == pStateMachine)
 		return eState;
 
-
-	if (pStateMachine->GetAnimator()->IsCurKeyFrame(1))
+	if (true == _IsShoot)
 	{
-		if (true == _IsShoot)
-		{
-			GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
-			CameraHelper* pCamera = GET_INSTANCE(CameraHelper);
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+		CameraHelper* pCamera = GET_INSTANCE(CameraHelper);
 
-			Matrix CameraMatrix = pCamera->GetInverseTransformCalculator(CameraHelper::TRANSFORMSTATE::D3DTS_VIEW);
+		Matrix CameraMatrix = pCamera->GetInverseTransformCalculator(CameraHelper::TRANSFORMSTATE::D3DTS_VIEW);
 
-			BinaryModel* pModel = dynamic_cast<Player*>(_pOwner)->GetPlyaerPart()[Player::PART::PART_BODY]->GetBinaryModelComponent();
-			if (pModel == nullptr)
-				return STATE::SHOOT;
+		BinaryModel* pModel = dynamic_cast<Player*>(_pOwner)->GetPlyaerPart()[Player::PART::PART_BODY]->GetBinaryModelComponent();
+		if (pModel == nullptr)
+			return STATE::SHOOT;
 
-			Bullet::BULLET_DESC bullDesc;
-			BinaryBone* pBone = pModel->GetBone("slider");
-			Matrix mSliderMatrix = pBone->GetSliderPos();
-			Matrix pivotMatrix = pModel->GetPivotMatrix();
+		Bullet::BULLET_DESC bullDesc;
+		BinaryBone* pBone = pModel->GetBone("slider");
+		Matrix mSliderMatrix = pBone->GetSliderPos();
+		Matrix pivotMatrix = pModel->GetPivotMatrix();
 
-			
-			dynamic_cast<BodyCam*>(dynamic_cast<Player*>(_pOwner)->GetPlyaerPart()[Player::PART::PART_CAMERA])->StartCameraShake();
+		
+		dynamic_cast<BodyCam*>(dynamic_cast<Player*>(_pOwner)->GetPlyaerPart()[Player::PART::PART_CAMERA])->StartCameraShake();
 
 
-			Vec4 vSliderPos = Vec4(mSliderMatrix._41, mSliderMatrix._42, mSliderMatrix._43, mSliderMatrix._44);
-			vSliderPos = ::XMVector3TransformCoord(vSliderPos, pivotMatrix);
+		Vec4 vSliderPos = Vec4(mSliderMatrix._41, mSliderMatrix._42, mSliderMatrix._43, mSliderMatrix._44);
+		vSliderPos = ::XMVector3TransformCoord(vSliderPos, pivotMatrix);
 
-			Matrix finalMatrix = _pOwner->GetTransform()->GetWorldMatrix();
-			vSliderPos = ::XMVector3TransformCoord(vSliderPos, finalMatrix);
+		Matrix finalMatrix = _pOwner->GetTransform()->GetWorldMatrix();
+		vSliderPos = ::XMVector3TransformCoord(vSliderPos, finalMatrix);
 
 
-			bullDesc.vPos = vSliderPos;
-			bullDesc.fBulletSpeed = 25.f;
-			bullDesc.vDir = _pOwner->GetTransform()->GetState(Transform::STATE::LOOK);
+		bullDesc.vPos = vSliderPos;
+		bullDesc.fBulletSpeed = 25.f;
+		bullDesc.vDir = _pOwner->GetTransform()->GetState(Transform::STATE::LOOK);
 
-			if (FAILED(pGameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), LAYER_TAG::LAYER_BULLET,
-				TEXT("ProtoTypePlayerBullet"), &bullDesc)))
-			{
-				RELEASE_INSTANCE(GameInstance);
-				RELEASE_INSTANCE(CameraHelper);
-				return STATE::SHOOT;
-			}
+		GameObject* pGameObject = pGameInstance->CloneGameObject(TEXT("ProtoTypePlayerBullet"), &bullDesc);			
+		pGameInstance->CreateObject(pGameObject, static_cast<LAYER_TAG>(LAYER_TAG::LAYER_BULLET));
 
-			_IsShoot = false;
+		_IsShoot = false;
 
-			RELEASE_INSTANCE(GameInstance);
-			RELEASE_INSTANCE(CameraHelper);
-		}
+		RELEASE_INSTANCE(GameInstance);
+		RELEASE_INSTANCE(CameraHelper);
 	}
-	else
-		_IsShoot = true;
-
+	
 
 	return eState;
 }
@@ -96,6 +85,11 @@ void PlayerFire::RenderState()
 {
 	//std::cout << "Fire" << std::endl;
 
+}
+
+void PlayerFire::ChangeSetState()
+{
+	_IsShoot = true;
 }
 
 State::STATE PlayerFire::KeyInput(const _float& timeDelta)

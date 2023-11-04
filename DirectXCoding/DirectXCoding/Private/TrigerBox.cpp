@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "DoorCollision.h"
+#include "TrigerBox.h"
 
 #include "GameInstance.h"
 #include "Bounding.h"
@@ -7,26 +7,26 @@
 #include "BoundingAABB.h"
 #include "DynamicObject.h"
 
-DoorCollision::DoorCollision(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+TrigerBox::TrigerBox(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: StaticObject(device, deviceContext)
 {
-	_modelName = "DoorCollision";
-	_comNames._protoTypeTag = TEXT("ProtoTypeDoorCol");
+	_modelName = "TrigerBox";
+	_comNames._protoTypeTag = TEXT("ProtoTypeTrigerBox");
 }
 
-DoorCollision::DoorCollision(const DoorCollision& rhs)
+TrigerBox::TrigerBox(const TrigerBox& rhs)
 	: StaticObject(rhs)
 {
 
 }
 
-HRESULT DoorCollision::InitializePrototype()
+HRESULT TrigerBox::InitializePrototype()
 {
 
 	return S_OK;
 }
 
-HRESULT DoorCollision::Initialize(void* pArg)
+HRESULT TrigerBox::Initialize(void* pArg)
 {
 	if (FAILED(ReadyComponents()))
 		return E_FAIL;
@@ -34,25 +34,34 @@ HRESULT DoorCollision::Initialize(void* pArg)
 	if (nullptr != pArg)
 		_transform->SetWorldMatrix(static_cast<ComponentNames*>(pArg)->_saveWorldMatrix);
 
+	//shared_ptr<FileUtils> pFile = make_shared<FileUtils>();
+
+	//pFile->Open(L"..\\Binaries\\Resources\\MyModels\\Triger.dat", FileMode::Write);
+
+	//pFile->Write<uint32>(static_cast<uint32>(_objectType));
+
+	//Matrix colliderMatrix = _transform->GetWorldMatrix();
+	//pFile->Write<Matrix>(colliderMatrix);
+
 	return S_OK;
 }
 
-void DoorCollision::PriorityTick(const _float& timeDelta)
+void TrigerBox::PriorityTick(const _float& timeDelta)
 {
 }
 
-void DoorCollision::Tick(const _float& timeDelta)
+void TrigerBox::Tick(const _float& timeDelta)
 {
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
 
-void DoorCollision::LateTick(const _float& timeDelta)
+void TrigerBox::LateTick(const _float& timeDelta)
 {
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
 }
 
-HRESULT DoorCollision::Render()
+HRESULT TrigerBox::Render()
 {
 #ifdef _DEBUG
 	_pCollider->Render();
@@ -62,37 +71,25 @@ HRESULT DoorCollision::Render()
 	return S_OK;
 }
 
-void DoorCollision::OnCollisionEnter(Collider* pOther)
+void TrigerBox::OnCollisionEnter(Collider* pOther)
 {
 }
 
-void DoorCollision::OnCollisionStay(Collider* pOther)
+void TrigerBox::OnCollisionStay(Collider* pOther)
 {
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
-	Vec3 vPlayerCenter = static_cast<Bounding_Sphere*>(pOther->GetBounding())->GetBounding()->Center;
-	Vec3 vthisCenter = static_cast<BoundingAABB*>(_pCollider->GetBounding())->GetBounding()->Center;
-
-	Vec3 vFinalCenter = vPlayerCenter - vthisCenter;
-	Vec3 extents = 0.5f * Vec3(::fabs(vFinalCenter.x), ::fabs(vFinalCenter.y), ::fabs(vFinalCenter.z));
-
-	if (extents.x >= extents.y && extents.x >= extents.z)
-		dynamic_cast<DynamicObject*>(pOther->GetOwner())->SetOpen(true);
-	else if (extents.y >= extents.x && extents.y >= extents.z)
-		dynamic_cast<DynamicObject*>(pOther->GetOwner())->SetOpen(true);
-	else
-		dynamic_cast<DynamicObject*>(pOther->GetOwner())->SetOpen(true);
 
 
 	RELEASE_INSTANCE(GameInstance);
 }
 
-void DoorCollision::OnCollisionExit(Collider* pOther)
+void TrigerBox::OnCollisionExit(Collider* pOther)
 {
 
 }
 
-HRESULT DoorCollision::ReadyComponents()
+HRESULT TrigerBox::ReadyComponents()
 {
 
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
@@ -117,7 +114,7 @@ HRESULT DoorCollision::ReadyComponents()
 
 	BoundingAABB::BOUNDING_AABB_DESC aabbDesc;
 	{
-		aabbDesc.vCenter = Vec3(0.f, 0., 0.f);
+		aabbDesc.vCenter = Vec3(0.f, 0.f, 0.f);
 		aabbDesc.vExtents = Vec3(1.f, 1.f, 1.f);
 		aabbDesc.pOwner = this;
 	}
@@ -131,33 +128,33 @@ HRESULT DoorCollision::ReadyComponents()
 	return S_OK;
 }
 
-DoorCollision* DoorCollision::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+TrigerBox* TrigerBox::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
-	DoorCollision* pInstance = new DoorCollision(device, deviceContext);
+	TrigerBox* pInstance = new TrigerBox(device, deviceContext);
 
 	if (FAILED(pInstance->InitializePrototype()))
 	{
-		MSG_BOX("Failed to Created : DoorCollision");
-		Safe_Release<DoorCollision*>(pInstance);
+		MSG_BOX("Failed to Created : TrigerBox");
+		Safe_Release<TrigerBox*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-GameObject* DoorCollision::Clone(void* pArg)
+GameObject* TrigerBox::Clone(void* pArg)
 {
-	DoorCollision* pInstance = new DoorCollision(*this);
+	TrigerBox* pInstance = new TrigerBox(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Created : DoorCollision");
-		Safe_Release<DoorCollision*>(pInstance);
+		MSG_BOX("Failed to Created : TrigerBox");
+		Safe_Release<TrigerBox*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-void DoorCollision::Free()
+void TrigerBox::Free()
 {
 	__super::Free();
 

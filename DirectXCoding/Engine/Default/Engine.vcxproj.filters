@@ -199,6 +199,9 @@
     <Filter Include="01.Utility\03.GameObject\UI">
       <UniqueIdentifier>{71bcb531-272e-4db0-972c-233d9dad4ed5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\98.Manager\Event">
+      <UniqueIdentifier>{548bb995-6086-4ed6-91f5-7200e6b98480}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -429,6 +432,9 @@
     <ClInclude Include="..\Public\UI.h">
       <Filter>01.Utility\03.GameObject\UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\EventManager.h">
+      <Filter>01.Utility\98.Manager\Event</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -616,6 +622,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI.cpp">
       <Filter>01.Utility\03.GameObject\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EventManager.cpp">
+      <Filter>01.Utility\98.Manager\Event</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -36,6 +36,10 @@ void PlayerReload::RenderState()
 
 }
 
+void PlayerReload::ChangeSetState()
+{
+}
+
 State::STATE PlayerReload::KeyInput(const _float& timeDelta)
 {
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);

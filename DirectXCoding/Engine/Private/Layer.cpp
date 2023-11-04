@@ -23,25 +23,61 @@ HRESULT Layer::AddGameObject(GameObject* gameObject)
 
 void Layer::PriorityTick(const _float& timeDelta)
 {
-	for (auto& pGameObject : _gameObjects)
+	for (auto iter = _gameObjects.begin(); iter != _gameObjects.end();)
 	{
-		if (nullptr != pGameObject)
-			pGameObject->PriorityTick(timeDelta);
+		if (false == (*iter)->IsDead() && (*iter) != nullptr)
+		{
+			(*iter)->PriorityTick(timeDelta);
+			++iter;
+		}
+		else
+			iter = _gameObjects.erase(iter);
 	}
+
+
+	//for (auto& pGameObject : _gameObjects)
+	//{
+	//	if (nullptr != pGameObject)
+	//		pGameObject->PriorityTick(timeDelta);
+	//}
 }
 
 void Layer::Tick(const _float& timeDelta)
 {
-	for (auto& gameiter : _gameObjects)
-		if (nullptr != gameiter)
-			gameiter->Tick(timeDelta);
+	for (auto iter = _gameObjects.begin(); iter != _gameObjects.end();)
+	{
+		if (false == (*iter)->IsDead() && (*iter) != nullptr)
+		{
+			(*iter)->Tick(timeDelta);
+			++iter;
+		}
+		else
+			iter = _gameObjects.erase(iter);
+	}
+
+
+	//for (auto& gameiter : _gameObjects)
+	//	if (nullptr != gameiter)
+	//		gameiter->Tick(timeDelta);
 }
 
 void Layer::LateTick(const _float& timeDelta)
 {
-	for (auto& gameiter : _gameObjects)
-		if (nullptr != gameiter)
-			gameiter->LateTick(timeDelta);
+
+	for (auto iter = _gameObjects.begin(); iter != _gameObjects.end();)
+	{
+		if (false == (*iter)->IsDead() && (*iter) != nullptr)
+		{
+			(*iter)->LateTick(timeDelta);
+			++iter;
+		}
+		else
+			iter = _gameObjects.erase(iter);
+	}
+
+	//for (auto& gameiter : _gameObjects)
+	//	if (nullptr != gameiter)
+	//		gameiter->LateTick(timeDelta);
 }
 
 HRESULT Layer::DeleteLayerObject(uint32 objectNumber, const string& modelName)

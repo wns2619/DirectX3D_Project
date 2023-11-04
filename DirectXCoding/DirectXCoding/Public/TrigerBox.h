@@ -9,12 +9,12 @@ END
 
 BEGIN(Client)
 
-class DoorCollision final : public StaticObject
+class TrigerBox final : public StaticObject
 {
 private:
-	explicit DoorCollision(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
-	explicit DoorCollision(const DoorCollision& rhs);
-	virtual ~DoorCollision() = default;
+	explicit TrigerBox(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+	explicit TrigerBox(const TrigerBox& rhs);
+	virtual ~TrigerBox() = default;
 
 public:
 	virtual HRESULT InitializePrototype()				override;
@@ -38,7 +38,7 @@ private:
 	virtual HRESULT ReadyCollider() { return S_OK; };
 
 public:
-	static DoorCollision* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+	static TrigerBox* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	virtual GameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

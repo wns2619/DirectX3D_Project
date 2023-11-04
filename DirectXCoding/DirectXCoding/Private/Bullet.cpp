@@ -7,6 +7,7 @@
 Bullet::Bullet(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::BULLET)
 {
+	_modelName = "PlayerBullet";
 }
 
 Bullet::Bullet(const Bullet& rhs)
@@ -31,8 +32,6 @@ HRESULT Bullet::Initialize(void* pArg)
 
 	if (FAILED(ReadyCollider()))
 		return E_FAIL;
-
-	_modelName = "PlayerBullet";
 
 
 	_transform->SetState(Transform::STATE::POSITION, _BulletDesc.vPos);

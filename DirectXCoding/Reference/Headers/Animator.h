@@ -25,7 +25,7 @@ public:
 
 public:
 	HRESULT AddAnimation(State::STATE eState, class BinaryAnimation* pAnimation, 
-		vector<class BinaryBone*>* pBone = nullptr, _bool loop = false);
+		vector<class BinaryBone*>* pBone = nullptr, _bool loop = false, _float perSpeed = 1.f);
 	HRESULT ChangeAnimation(_float duration, const _float& timeDelta, State::STATE eState);
 
 	_bool IsCurKeyFrame(uint32 iIndex);

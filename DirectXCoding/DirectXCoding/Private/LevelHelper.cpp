@@ -17,6 +17,7 @@
 #include "BodyCam.h"
 #include "DoorCollision.h"
 #include "Monster.h"
+#include "TrigerBox.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -456,6 +457,7 @@ HRESULT LevelHelper::LodingforLevelEdit()
 #pragma endregion 2stProbs
 
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\WallCollider.dat", LAYER_TAG::LAYER_COLLIDER, TEXT("ProtoTypeDoorCol"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Triger.dat", LAYER_TAG::LAYER_TRIGER, TEXT("ProtoTypeTrigerBox"));
     //ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle7.dat", TEXT("ProtoTypeDoorCol"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
 
 
@@ -2003,6 +2005,13 @@ HRESULT LevelHelper::LoadingObject()
             return E_FAIL;
         }
 
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeTrigerBox"),
+            TrigerBox::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
         break;
     case Client::LEVEL::EDIT:
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectEditTerrain"),
@@ -2153,6 +2162,13 @@ HRESULT LevelHelper::LoadingObject()
 
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeDanceMonster"),
             Monster::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeTrigerBox"),
+            TrigerBox::Create(_device, _deviceContext))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

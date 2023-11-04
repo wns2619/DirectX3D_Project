@@ -23,6 +23,9 @@ public:
 	virtual void RenderState()								override;
 
 public:
+	virtual void ChangeSetState() override;
+
+public:
 	virtual STATE KeyInput(const _float& timeDelta)			override;
 
 public:

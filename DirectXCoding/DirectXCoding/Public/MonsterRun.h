@@ -9,11 +9,11 @@ END
 
 BEGIN(Client)
 
-class MonsterWalk final : public State
+class MonsterRun final : public State
 {
 private:
-	explicit MonsterWalk(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
-	virtual ~MonsterWalk() = default;
+	explicit MonsterRun(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+	virtual ~MonsterRun() = default;
 
 public:
 	virtual HRESULT ReadyState(class GameObject* pOwner)	override;
@@ -23,14 +23,15 @@ public:
 
 public:
 	virtual State::STATE KeyInput(const _float& timeDelta) override
-	{ return State::STATE::WALK; }
+	{
+		return State::STATE::WALK;
+	}
 
 public:
 	virtual void ChangeSetState() override;
 
-
 public:
-	static MonsterWalk* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, GameObject* pOwner);
+	static MonsterRun* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, GameObject* pOwner);
 	virtual void Free() override;
 
 

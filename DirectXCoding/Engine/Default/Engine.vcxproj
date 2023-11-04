@@ -46,6 +46,7 @@
     <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Defines.h" />
     <ClInclude Include="..\Public\dirent.h" />
+    <ClInclude Include="..\Public\EventManager.h" />
     <ClInclude Include="..\Public\FileUtils.h" />
     <ClInclude Include="..\Public\Function.h" />
     <ClInclude Include="..\Public\Functor.h" />
@@ -145,6 +146,7 @@
     <ClCompile Include="..\Private\ComponentManager.cpp" />
     <ClCompile Include="..\Private\ConstantBuffer.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp" />
+    <ClCompile Include="..\Private\EventManager.cpp" />
     <ClCompile Include="..\Private\FileUtils.cpp" />
     <ClCompile Include="..\Private\GameInstance.cpp" />
     <ClCompile Include="..\Private\GameObject.cpp" />

@@ -146,6 +146,9 @@
     <Filter Include="소스 파일\02.GameObjects\07. Monster\State">
       <UniqueIdentifier>{b8ddbebf-9cfd-425d-80fa-4c56db01e216}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\98.Triger">
+      <UniqueIdentifier>{6ebfbd20-45e9-48f0-834c-9a83e42e6fc8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -322,6 +325,15 @@
     <ClInclude Include="..\Public\MonsterWalk.h">
       <Filter>소스 파일\02.GameObjects\07. Monster\State</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MonsterRun.h">
+      <Filter>소스 파일\02.GameObjects\07. Monster\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterDance.h">
+      <Filter>소스 파일\02.GameObjects\07. Monster\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TrigerBox.h">
+      <Filter>소스 파일\02.GameObjects\98.Triger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -473,6 +485,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\MonsterWalk.cpp">
       <Filter>소스 파일\02.GameObjects\07. Monster\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterRun.cpp">
+      <Filter>소스 파일\02.GameObjects\07. Monster\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterDance.cpp">
+      <Filter>소스 파일\02.GameObjects\07. Monster\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TrigerBox.cpp">
+      <Filter>소스 파일\02.GameObjects\98.Triger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -91,7 +91,7 @@ void Animator::SetAnimator(State::STATE eState)
 }
 
 HRESULT Animator::AddAnimation(State::STATE eState, BinaryAnimation* pAnimation, 
-    vector<class BinaryBone*>* pBone, _bool loop)
+    vector<class BinaryBone*>* pBone, _bool loop, _float perSpeed)
 {
     if (nullptr == pAnimation)
         return E_FAIL;
@@ -99,7 +99,7 @@ HRESULT Animator::AddAnimation(State::STATE eState, BinaryAnimation* pAnimation,
     _mapAnimation.insert({ eState, pAnimation });
     _pBinaryBone = pBone;
     pAnimation->SetLoop(loop);
-    pAnimation->SetAnimationSpeed(2.f);
+    pAnimation->SetAnimationSpeed(perSpeed);
 
     return S_OK;
 }

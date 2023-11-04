@@ -7,6 +7,8 @@
 #include "BinaryAnimation.h"
 #include "BinaryBone.h"
 #include "MonsterWalk.h"
+#include "MonsterRun.h"
+#include "MonsterDance.h"
 
 Monster::Monster(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: LandObject(device, deviceContext, OBJECT_TYPE::MONSTER)
@@ -37,13 +39,17 @@ HRESULT Monster::Initialize(void* pArg)
 
 	State* pState = MonsterWalk::Create(_device, _deviceContext, this);
 	_pStateMachine->AddState(State::STATE::IDLE, pState);
+	pState = MonsterRun::Create(_device, _deviceContext, this);
+	_pStateMachine->AddState(State::STATE::RUN, pState);
+	pState = MonsterDance::Create(_device, _deviceContext, this);
+	_pStateMachine->AddState(State::STATE::DANCE, pState);
 
 	vector<BinaryAnimation*>& vecAnim = _binaryModel->GetBinaryAnimation();
 	vector<BinaryBone*>& pVecBone = _binaryModel->GetBinaryBones();
 
-	_pAnimator->AddAnimation(State::STATE::IDLE, vecAnim[0], &pVecBone, true);
-	//_pAnimator->AddAnimation(State::STATE::RUN, vecAnim[1], &pVecBone, true);
-	//_pAnimator->AddAnimation(State::STATE::SHOOT, vecAnim[2], &pVecBone);
+	_pAnimator->AddAnimation(State::STATE::IDLE, vecAnim[0], &pVecBone, true, 1.f);
+	_pAnimator->AddAnimation(State::STATE::RUN, vecAnim[1], &pVecBone, true, 2.f);
+	_pAnimator->AddAnimation(State::STATE::DANCE, vecAnim[2], &pVecBone, true, 2.f);
 
 
 	_pStateMachine->SetAnimator(_pAnimator);

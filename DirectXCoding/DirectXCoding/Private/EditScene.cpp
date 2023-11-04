@@ -26,6 +26,8 @@ HRESULT EditScene::Initialize()
     if (FAILED(ReadyLayerEditCamera(LAYER_TAG::LAYER_CAMERA)))
         return E_FAIL;
 
+    
+
     //if(FAILED(ReadyEnvironment(LAYER_TAG::LAYER_ENVIRONMENT)))
     //    return E_FAIL;
 
@@ -168,6 +170,9 @@ HRESULT EditScene::ReadyLight()
 
     if (FAILED(gameInstance->AddLight(lightDesc)))
         return E_FAIL;
+
+    //if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), LAYER_TAG::LAYER_TRIGER, TEXT("ProtoTypeTrigerBox"))))
+    //    return E_FAIL;
 
     RELEASE_INSTANCE(GameInstance);
 

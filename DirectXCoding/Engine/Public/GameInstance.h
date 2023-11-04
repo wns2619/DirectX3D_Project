@@ -8,6 +8,7 @@
 #include "Viewport.h"
 #include "InputHandler.h"
 #include "ObjectManager.h"
+#include "EventManager.h"
 
 BEGIN(Engine)
 
@@ -57,7 +58,7 @@ public: // LevelManager
 public: // ObjectManager
 	HRESULT AddProtoType(const wstring& prototypeTag, GameObject* prototype);
 	HRESULT AddGameObject(uint32 levelIndex, const LAYER_TAG layerTag, const wstring& prototypeTag, void* argument = nullptr);
-	GameObject* GetLayerObject(const LAYER_TAG layertag, OBJECT_TYPE type);
+	vector<GameObject*>& GetLayerObject(const LAYER_TAG layertag);
 	GameObject* GetLayerObjectTag(const LAYER_TAG layerag, const string& modelname);
 	HRESULT ComparisonAddObject(int32 levelIndex, const string& addObjectfile = "", const LAYER_TAG layertag = LAYER_TAG::LAYER_END, void* argument = nullptr);
 	int32	GetLayerObjectCount();
@@ -97,6 +98,11 @@ public: // Picking
 	Vec4 TerrainPicking(POINT pt, Transform* trans, VIBufferTerrain* buffer);
 	_bool PickObject(POINT pt, Transform* trans, VIBuffer* objectBuffer, Vec4& vPos);
 
+public: // EventManager
+	void CreateObject(class GameObject* pObj, LAYER_TAG _eLayer);
+	void DeleteObject(class GameObject* pObj);
+	void EventManagerTick();
+
 private:
 	class TimeManager* _timeManager = nullptr;
 	class GraphicsManager* _graphicManager = nullptr;
@@ -109,6 +115,7 @@ private:
 	class Picking* _picking = nullptr;
 	class InputHandler* _inputHandler = nullptr;
 	class CollisionManager* _collisionManager = nullptr;
+	class EventManager* _pEventManager = nullptr;
 
 public:
 	static void Release_Engine();

@@ -54,7 +54,6 @@ void BreakDoor::LateTick(const _float& timeDelta)
 {
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
-
 }
 
 HRESULT BreakDoor::Render()
@@ -97,13 +96,23 @@ HRESULT BreakDoor::Render()
 void BreakDoor::OnCollisionEnter(Collider* pOther)
 {
 	if (pOther->GetOwner()->GetModelName() == "PlayerBullet")
+	{
 		_bIsBreak = true;
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		pGameInstance->DeleteObject(pOther->GetOwner());
+
+		RELEASE_INSTANCE(GameInstance);
+	}
 }
 
 void BreakDoor::OnCollisionStay(Collider* pOther)
 {
 	if (pOther->GetOwner()->GetModelName() == "PlayerBullet")
+	{
+
 		_bIsBreak = true;
+	}
 
 	if (false == _bIsOpen)
 	{

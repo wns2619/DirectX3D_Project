@@ -69,7 +69,10 @@ void ObjectManager::PriorityTick(const _float& timeDelta)
 	for (uint32 i = 0; i < _levelNumber; ++i)
 	{
 		for (auto& pair : _Layers[i])
+		{
+
 			pair.second->PriorityTick(timeDelta);
+		}
 	}
 }
 
@@ -95,21 +98,11 @@ void ObjectManager::Clear(uint32 levelIndex)
 	_Layers[levelIndex].clear();
 }
 
-GameObject* ObjectManager::GetLayerObject(const LAYER_TAG layertag, OBJECT_TYPE type)
+vector<GameObject*>& ObjectManager::GetLayerObject(const LAYER_TAG layertag)
 {
 	Layer* CurrentLayer = FindLayer(_currenlevel, layertag);
-	if (CurrentLayer == nullptr)
-		return nullptr;
 
-	vector<GameObject*>* objectlist = CurrentLayer->GetGameObject();
-
-	for (GameObject* gameObject : *objectlist)
-	{
-		if (gameObject->GetObjectType() == type)
-			return gameObject;
-	}
-
-	return nullptr;
+	return *CurrentLayer->GetGameObject();
 }
 
 GameObject* ObjectManager::GetLayerObjectTag(const LAYER_TAG layerag, const string& modelname)

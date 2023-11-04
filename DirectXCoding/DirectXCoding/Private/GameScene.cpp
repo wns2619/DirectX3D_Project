@@ -275,6 +275,22 @@ HRESULT GameScene::ReadyMyMap()
 
 			}
 			break;
+		case Engine::LAYER_TAG::LAYER_TRIGER:
+			for (uint32 j = 0; j < GameObjectListSize; ++j)
+			{
+				uint32 modelType;
+				file->Read<uint32>(modelType);
+				//// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
+				ComponentNames ColliderComponentName;
+
+				Matrix staticObjectWorldMarix;
+				file->Read<Matrix>(staticObjectWorldMarix);
+				ColliderComponentName._saveWorldMatrix = staticObjectWorldMarix;
+
+				if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), static_cast<LAYER_TAG>(LayerTagType), TEXT("ProtoTypeTrigerBox"), &ColliderComponentName)))
+					return E_FAIL;
+			}
+			break;
 		case Engine::LAYER_TAG::LAYER_END:
 			break;
 		default:

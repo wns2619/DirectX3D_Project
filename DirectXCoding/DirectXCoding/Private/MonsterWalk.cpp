@@ -15,7 +15,7 @@ HRESULT MonsterWalk::ReadyState(GameObject* pOwner)
 
 State::STATE MonsterWalk::UpdateState(const _float& timeDelta)
 {
-	State::STATE eState = STATE::RUN;
+	State::STATE eState = STATE::IDLE;
 
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
@@ -32,6 +32,10 @@ void MonsterWalk::LateUpdateState(const _float& timeDelta)
 }
 
 void MonsterWalk::RenderState()
+{
+}
+
+void MonsterWalk::ChangeSetState()
 {
 }
 

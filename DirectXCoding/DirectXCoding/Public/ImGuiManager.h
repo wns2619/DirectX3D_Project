@@ -92,7 +92,7 @@ private:
 	_float _imageSize = 50.f;
 	_float _offset = 60.f;
 	_float _checkBoxOffset = 28.f;
-	string _fileguipath = "..\\Binaries\\Resources\\Textures\\DDS\\";
+	string _fileguipath = "..\\Binaries\\Resources\\MyModels\\";
 	const string _rootTextureDirection = "..\\Binaries\\Resources\\Textures\\DDS\\";
 	TexturePathPBR _texturePath = {};
 

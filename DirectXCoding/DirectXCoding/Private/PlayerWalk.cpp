@@ -40,6 +40,10 @@ void PlayerWalk::RenderState()
 
 }
 
+void PlayerWalk::ChangeSetState()
+{
+}
+
 State::STATE PlayerWalk::KeyInput(const _float& timeDelta)
 {
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);

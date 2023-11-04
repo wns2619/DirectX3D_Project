@@ -26,13 +26,13 @@ public:
 	void LateTick(const _float& timeDelta);
 	void Clear(uint32 levelIndex);
 
-	GameObject* GetLayerObject(const LAYER_TAG layertag, OBJECT_TYPE type);
+	vector<GameObject*>& GetLayerObject(const LAYER_TAG layertag);
 	GameObject* GetLayerObjectTag(const LAYER_TAG layerag, const string& modelname);
 	uint32 GetLayerObjectCount();
 	vector<GameObject*>* GetCurrentObjectList(LAYER_TAG layerTag);
 
 	GameObject* CloneGameObject(const wstring& strPrototypeTag, void* pArg);
-
+	Layer* FindLayer(int32 levelIndex, const LAYER_TAG layerTag);
 public:
 	Component* GetComponent(uint32 iLevelIndex, const LAYER_TAG eTag, const wstring& strComponentTag, const string& modelName, uint32 iIndex);
 	Component* GetComponentFromID(uint32 iLevelIndex, const LAYER_TAG tag, const wstring& strComponentTag, const string& modelName, uint32 id);
@@ -55,7 +55,7 @@ private:
 	int32  _levelObjectCount = 0;
 private:
 	GameObject* FindPrototype(const wstring& prototypeTag);
-	Layer* FindLayer(int32 levelIndex, const LAYER_TAG layerTag);
+
 
 public:
 	virtual void Free() override;

@@ -5,6 +5,7 @@
 #include "LevelManager.h"
 #include "Picking.h"
 #include "CollisionManager.h"
+#include "EventManager.h"
 
 IMPLEMENT_SINGLETON(GameInstance)
 
@@ -14,6 +15,7 @@ GameInstance::GameInstance()
     _componentManager(ComponentManager::GetInstance()), _cameraHelper(CameraHelper::GetInstance())
     , _inputManager(InputManager::GetInstance()), _lightManager(LightManager::GetInstance())
     , _picking(Picking::GetInstance()), _inputHandler(InputHandler::GetInstance()), _collisionManager(CollisionManager::GetInstance())
+    , _pEventManager(EventManager::GetInstance())
 {
     Safe_AddRef<InputHandler*>(_inputHandler);
     Safe_AddRef<InputManager*>(_inputManager);
@@ -22,6 +24,7 @@ GameInstance::GameInstance()
     Safe_AddRef<LightManager*>(_lightManager);
     Safe_AddRef<ComponentManager*>(_componentManager);
     Safe_AddRef<ObjectManager*>(_objectManager);
+    Safe_AddRef<EventManager*>(_pEventManager);
     Safe_AddRef<CollisionManager*>(_collisionManager);
     Safe_AddRef<LevelManager*>(_levelManager);
     Safe_AddRef<TimeManager*>(_timeManager);
@@ -207,12 +210,9 @@ HRESULT GameInstance::AddGameObject(uint32 levelIndex, const LAYER_TAG layerTag,
     return _objectManager->AddGameObject(levelIndex, layerTag, prototypeTag, argument);
 }
 
-GameObject* GameInstance::GetLayerObject(const LAYER_TAG layertag, OBJECT_TYPE type)
+vector<GameObject*>& GameInstance::GetLayerObject(const LAYER_TAG layertag)
 {
-    if (nullptr == _objectManager)
-        return nullptr;
-
-    return _objectManager->GetLayerObject(layertag, type);
+    return _objectManager->GetLayerObject(layertag);
 }
 
 GameObject* GameInstance::GetLayerObjectTag(const LAYER_TAG layerag, const string& modelname)
@@ -418,6 +418,30 @@ _bool GameInstance::PickObject(POINT pt, Transform* trans, VIBuffer* objectBuffe
     return _picking->PickObject(pt, trans, objectBuffer, vPos);
 }
 
+void GameInstance::CreateObject(GameObject* pObj, LAYER_TAG _eLayer)
+{
+    if (nullptr == _pEventManager)
+        return;
+
+    _pEventManager->CreateObject(pObj, _eLayer);
+}
+
+void GameInstance::DeleteObject(GameObject* pObj)
+{
+    if (nullptr == _pEventManager)
+        return;
+
+    _pEventManager->DeleteObject(pObj);
+}
+
+void GameInstance::EventManagerTick()
+{
+    if (nullptr == _pEventManager)
+        return;
+
+    _pEventManager->Tick();
+}
+
 XMVECTOR GameInstance::GetCameraCaculator() const
 {
     if(nullptr == _cameraHelper)
@@ -431,6 +455,7 @@ void GameInstance::Release_Engine()
     GameInstance::GetInstance()->DestroyInstance();
     LevelManager::GetInstance()->DestroyInstance();
     ObjectManager::GetInstance()->DestroyInstance();
+    EventManager::GetInstance()->DestroyInstance();
     CollisionManager::GetInstance()->DestroyInstance();
     ComponentManager::GetInstance()->DestroyInstance();
     TimeManager::GetInstance()->DestroyInstance();
@@ -449,6 +474,7 @@ void GameInstance::Free()
     Safe_Release<CameraHelper*>(_cameraHelper);
     Safe_Release<ComponentManager*>(_componentManager);
     Safe_Release<ObjectManager*>(_objectManager);
+    Safe_Release<EventManager*>(_pEventManager);
     Safe_Release<CollisionManager*>(_collisionManager);
     Safe_Release<LevelManager*>(_levelManager);
     Safe_Release<TimeManager*>(_timeManager);

@@ -19,6 +19,8 @@ public:
 	virtual void LateUpdateState(const _float& timeDelta) = 0;
 	virtual void RenderState() = 0;
 
+	virtual void ChangeSetState() = 0;
+
 public:
 	virtual STATE KeyInput(const _float& timeDelta) = 0;
 

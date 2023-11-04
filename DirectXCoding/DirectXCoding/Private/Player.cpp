@@ -162,7 +162,7 @@ void Player::OnCollisionStay(Collider* pOther)
 			if (pGameInstance->keyDown(DIK_E))
 			{
 				dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->SetObtainGun(true);
-				pOther->GetOwner()->SetDead(true);
+				pGameInstance->DeleteObject(pOther->GetOwner());
 			}
 		}
 		else if (pOther->GetOwner()->GetModelName() == "surefire")
@@ -170,15 +170,15 @@ void Player::OnCollisionStay(Collider* pOther)
 			if (pGameInstance->keyDown(DIK_E))
 			{
 				dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->SetObtainLight(true);
-				pOther->GetOwner()->SetDead(true);
+				pGameInstance->DeleteObject(pOther->GetOwner());
 			}
 		}
 		else if (pOther->GetOwner()->GetModelName() == "Key")
 		{
 			if (pGameInstance->keyDown(DIK_E))
 			{
-				pOther->GetOwner()->SetDead(true);
 				SetObtainKey(true);
+				pGameInstance->DeleteObject(pOther->GetOwner());
 			}
 		}
 		else if (pOther->GetOwner()->GetModelName() == "ValveHandler")
