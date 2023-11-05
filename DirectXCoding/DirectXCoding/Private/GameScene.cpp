@@ -266,6 +266,10 @@ HRESULT GameScene::ReadyMyMap()
 				//// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
 				ComponentNames ColliderComponentName;
 
+				uint32 modelID;
+				file->Read<uint32>(modelID);
+				ColliderComponentName._modelID = modelID;
+
 				Matrix staticObjectWorldMarix;
 				file->Read<Matrix>(staticObjectWorldMarix);
 				ColliderComponentName._saveWorldMatrix = staticObjectWorldMarix;
@@ -282,6 +286,11 @@ HRESULT GameScene::ReadyMyMap()
 				file->Read<uint32>(modelType);
 				//// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
 				ComponentNames ColliderComponentName;
+
+
+				uint32 modelID;
+				file->Read<uint32>(modelID);
+				ColliderComponentName._modelID = modelID;
 
 				Matrix staticObjectWorldMarix;
 				file->Read<Matrix>(staticObjectWorldMarix);

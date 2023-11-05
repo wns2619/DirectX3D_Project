@@ -194,6 +194,7 @@
     <ClInclude Include="..\Public\DynamicObjectGroup.h" />
     <ClInclude Include="..\Public\EditorTerrain.h" />
     <ClInclude Include="..\Public\EditScene.h" />
+    <ClInclude Include="..\Public\EventMainDoor.h" />
     <ClInclude Include="..\Public\Game.h" />
     <ClInclude Include="..\Public\GameScene.h" />
     <ClInclude Include="..\Public\GridDoor.h" />
@@ -225,6 +226,7 @@
     <ClInclude Include="..\Public\TrigerBox.h" />
     <ClInclude Include="..\Public\Valve.h" />
     <ClInclude Include="..\Public\WallPainting.h" />
+    <ClInclude Include="..\Public\Water.h" />
     <ClInclude Include="DirectXCoding.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
@@ -275,6 +277,7 @@
     <ClCompile Include="..\Private\DynamicObject.cpp" />
     <ClCompile Include="..\Private\EditorTerrain.cpp" />
     <ClCompile Include="..\Private\EditScene.cpp" />
+    <ClCompile Include="..\Private\EventMainDoor.cpp" />
     <ClCompile Include="..\Private\Game.cpp" />
     <ClCompile Include="..\Private\GameScene.cpp" />
     <ClCompile Include="..\Private\GridDoor.cpp" />
@@ -317,6 +320,7 @@
     <ClCompile Include="..\Private\TrigerBox.cpp" />
     <ClCompile Include="..\Private\Valve.cpp" />
     <ClCompile Include="..\Private\WallPainting.cpp" />
+    <ClCompile Include="..\Private\Water.cpp" />
     <ClCompile Include="DirectXCoding.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>

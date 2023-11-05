@@ -35,7 +35,7 @@ HRESULT Bullet::Initialize(void* pArg)
 
 
 	_transform->SetState(Transform::STATE::POSITION, _BulletDesc.vPos);
-
+	_vInitialPos = _transform->GetState(Transform::STATE::POSITION);
 
 	_BulletDesc.vDir.Normalize();
 
@@ -49,8 +49,21 @@ void Bullet::Tick(const _float& timeDelta)
 	if (true == _IsDead)
 		return;
 
-	_transform->Forward(timeDelta);
+	Vec4 vCurrentPos;
+	::XMStoreFloat4(&vCurrentPos, _transform->GetState(Transform::STATE::POSITION));
 
+	Vec4 vDistance = vCurrentPos - _vInitialPos;
+	
+	if (vDistance.Length() > 30.f)
+	{
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		pGameInstance->DeleteObject(this);
+
+		RELEASE_INSTANCE(GameInstance);
+	}
+
+	_transform->Forward(timeDelta);
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
 

@@ -11,6 +11,7 @@
 #include "BinaryAnimation.h"
 #include "BinaryBone.h"
 #include "DynamicObjectGroup.h"
+#include "TrigerBox.h"
 
 Player::Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: LandObject(device, deviceContext, OBJECT_TYPE::PLAYER)
@@ -143,7 +144,7 @@ void Player::OnCollisionStay(Collider* pOther)
 		{
 			if (pGameInstance->keyDown(DIK_E))
 			{
-				if(pOther->GetOwner()->GetIdNumber() != 163 && pOther->GetOwner()->GetIdNumber() != 170)
+				if(pOther->GetOwner()->GetIdNumber() != 188 && pOther->GetOwner()->GetIdNumber() != 195)
 					dynamic_cast<DynamicObject*>(pOther->GetOwner())->SetRotate(true);
 				else
 				{
@@ -189,6 +190,12 @@ void Player::OnCollisionStay(Collider* pOther)
 					dynamic_cast<Valve*>(pOther->GetOwner())->SetRotate(true);
 			}
 		}
+	}
+
+	if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::STATIC)
+	{
+		if(pOther->GetOwner()->GetModelName() == "TrigerBox")
+			TrigerBoxEvent(pOther);
 	}
 
 	RELEASE_INSTANCE(GameInstance);
@@ -273,6 +280,19 @@ void Player::KeyInput(const _float& timeDelta)
 	XMVECTOR vPosition = __super::SetUp_OnCell(_transform->GetState(Transform::STATE::POSITION), _pNavigation->GetCurrentIndex());
 
 	_transform->SetState(Transform::STATE::POSITION, vPosition);
+
+	RELEASE_INSTANCE(GameInstance);
+}
+
+void Player::TrigerBoxEvent(Collider* pOther)
+{
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	uint32 id = pOther->GetOwner()->GetIdNumber();
+
+	if (id == 230)
+		dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+
 
 	RELEASE_INSTANCE(GameInstance);
 }

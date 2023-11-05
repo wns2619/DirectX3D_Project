@@ -1,26 +1,25 @@
 #include "pch.h"
-#include "OldWoodDoor.h"
+#include "Water.h"
 
 #include "GameInstance.h"
-#include "BoundingOBB.h"
 
-OldWoodDoor::OldWoodDoor(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::OLD_DOOR)
+Water::Water(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::WATER)
 {
 
 }
 
-OldWoodDoor::OldWoodDoor(const OldWoodDoor& rhs)
+Water::Water(const Water& rhs)
 	: DynamicObject(rhs)
 {
 }
 
-HRESULT OldWoodDoor::InitializePrototype()
+HRESULT Water::InitializePrototype()
 {
 	return S_OK;
 }
 
-HRESULT OldWoodDoor::Initialize(void* pArg)
+HRESULT Water::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -34,28 +33,15 @@ HRESULT OldWoodDoor::Initialize(void* pArg)
 	return S_OK;
 }
 
-void OldWoodDoor::Tick(const _float& timeDelta)
+void Water::Tick(const _float& timeDelta)
 {
-	if (_enabled)
-		return;
-
-	if (true == _bIsRotation)
-		_transform->Turn(Vec4(0.f, 1.f, 0.f, 1.f), timeDelta);
-
-	if (_bIsOpen == false)
-	{
-		_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
-		_pAssistCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
-	}
 }
 
-void OldWoodDoor::LateTick(const _float& timeDelta)
+void Water::LateTick(const _float& timeDelta)
 {
-	if (!_enabled)
-		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
 }
 
-HRESULT OldWoodDoor::Render()
+HRESULT Water::Render()
 {
 	if (_enabled)
 		return S_OK;
@@ -81,19 +67,17 @@ HRESULT OldWoodDoor::Render()
 
 #ifdef _DEBUG
 	_pCollider->Render();
-	_pAssistCollider->Render();
 #endif // _DEBUG
 
 
 	return S_OK;
-
 }
 
-void OldWoodDoor::OnCollisionEnter(Collider* pOther)
+void Water::OnCollisionEnter(Collider* pOther)
 {
 }
 
-void OldWoodDoor::OnCollisionStay(Collider* pOther)
+void Water::OnCollisionStay(Collider* pOther)
 {
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
@@ -185,11 +169,11 @@ void OldWoodDoor::OnCollisionStay(Collider* pOther)
 	RELEASE_INSTANCE(GameInstance);
 }
 
-void OldWoodDoor::OnCollisionExit(Collider* pOther)
+void Water::OnCollisionExit(Collider* pOther)
 {
 }
 
-HRESULT OldWoodDoor::ReadyCollider()
+HRESULT Water::ReadyCollider()
 {
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
@@ -210,26 +194,8 @@ HRESULT OldWoodDoor::ReadyCollider()
 		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &aabbDesc)))
 		return E_FAIL;
 
-	Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
-	{
-		sphereDesc.fRadius = 15.f;
-		sphereDesc.vCenter = Vec3(20.f, sphereDesc.fRadius * 10, 0.f);
-		sphereDesc.pOwner = this;
-	}
-
-	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeSphereCollider"),
-		TEXT("ComponentSphereCollider"), reinterpret_cast<Component**>(&_pAssistCollider), &sphereDesc)))
-		return E_FAIL;
-
-	Transform::TRANSFORM_DESC transDesc;
-	{
-		transDesc.speedPerSec = 0.f;
-		transDesc.rotationRadianPerSec = ::XMConvertToRadians(180.f);
-	}
-
-
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
-		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform), &transDesc)))
+		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(GameInstance);
@@ -237,33 +203,33 @@ HRESULT OldWoodDoor::ReadyCollider()
 	return S_OK;
 }
 
-OldWoodDoor* OldWoodDoor::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+Water* Water::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
-	OldWoodDoor* pInstance = new OldWoodDoor(device, deviceContext);
+	Water* pInstance = new Water(device, deviceContext);
 
 	if (FAILED(pInstance->InitializePrototype()))
 	{
-		MSG_BOX("Create to Failed : OldWoodDoor");
-		Safe_Release<OldWoodDoor*>(pInstance);
+		MSG_BOX("Create to Failed : Water");
+		Safe_Release<Water*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-GameObject* OldWoodDoor::Clone(void* argument)
+GameObject* Water::Clone(void* argument)
 {
-	OldWoodDoor* pInstance = new OldWoodDoor(*this);
+	Water* pInstance = new Water(*this);
 
 	if (FAILED(pInstance->Initialize(argument)))
 	{
-		MSG_BOX("Create to Failed : OldWoodDoor");
-		Safe_Release<OldWoodDoor*>(pInstance);
+		MSG_BOX("Create to Failed : Water");
+		Safe_Release<Water*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-void OldWoodDoor::Free()
+void Water::Free()
 {
 	__super::Free();
 }

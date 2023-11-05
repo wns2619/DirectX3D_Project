@@ -407,6 +407,18 @@ HRESULT LevelHelper::LodingforLevelEdit()
     /* Old Grid Steel Main*/
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\OldSteelGridMainWithKey.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeOldSteelGridMainWithKey"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\OldSteelGridMainWithKey.dat", TEXT("ProtoTypeOldSteelGridMainWithKey"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+
+    // Event Door Frame or Main
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\EventDoorMain.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeEventDoorMain"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\EventDoorMain.dat", TEXT("ProtoTypeEventDoorMain"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\EventDoorFrame.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\EventDoorFrame.dat", TEXT("ProtoTypeEventDoorFrame"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+
+    // BasementWire
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\basementWire.dat", LAYER_TAG::LAYER_STATIC, TEXT("ProtoTypeStaticObject"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\2stprob\\basementWire.dat", TEXT("ProtoTypebasementWire"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+
+
     /* Graffiti List */
 
     // Evil
@@ -431,19 +443,25 @@ HRESULT LevelHelper::LodingforLevelEdit()
 
     // Graffiti
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle1.dat", LAYER_TAG::LAYER_ENVIRONMENT, TEXT("ProtoWallPaint"));
-    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle1.dat", TEXT("ProtoTypeWayGraffiti"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle1.dat", TEXT("ProtoTypePuddle1"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle2.dat", LAYER_TAG::LAYER_ENVIRONMENT, TEXT("ProtoWallPaint"));
-    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle2.dat", TEXT("ProtoTypeWayGraffiti"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle2.dat", TEXT("ProtoTypePuddle2"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle3.dat", LAYER_TAG::LAYER_ENVIRONMENT, TEXT("ProtoWallPaint"));
-    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle3.dat", TEXT("ProtoTypeWayGraffiti"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle3.dat", TEXT("ProtoTypePuddle3"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle4.dat", LAYER_TAG::LAYER_ENVIRONMENT, TEXT("ProtoWallPaint"));
-    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle4.dat", TEXT("ProtoTypeWayGraffiti"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle4.dat", TEXT("ProtoTypePuddle4"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle5.dat", LAYER_TAG::LAYER_ENVIRONMENT, TEXT("ProtoWallPaint"));
-    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle5.dat", TEXT("ProtoTypeWayGraffiti"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle5.dat", TEXT("ProtoTypePuddle5"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle6.dat", LAYER_TAG::LAYER_ENVIRONMENT, TEXT("ProtoWallPaint"));
-    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle6.dat", TEXT("ProtoTypeWayGraffiti"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\2stprob\\Puddle7.dat", LAYER_TAG::LAYER_ENVIRONMENT, TEXT("ProtoWallPaint"));
-    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle7.dat", TEXT("ProtoTypeWayGraffiti"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle6.dat", TEXT("ProtoTypePuddle6"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle7.dat", LAYER_TAG::LAYER_ENVIRONMENT, TEXT("ProtoWallPaint"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Puddle7.dat", TEXT("ProtoTypePuddle7"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
+
+
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Graffiti\\Water.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeWater"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Graffiti\\Water.dat", TEXT("ProtoTypeWater"), TEXT("ProtoTypeComponentShaderVertexTextureData"));
+
+
 
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Basement\\Key.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeKey"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Basement\\Key.dat", TEXT("ProtoTypeKey"), TEXT("ProtoTypeComponentDefaultMeshShader"));
@@ -451,8 +469,8 @@ HRESULT LevelHelper::LodingforLevelEdit()
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\Gun.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeGun"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\Gun.dat", TEXT("ProtoTypeGun"), TEXT("ProtoTypeComponentDefaultMeshShader"));
 
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\surefire.fbx", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeGunLight"));
-    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\surefire.fbx", TEXT("ProtoTypeModelsurefire"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", LAYER_TAG::LAYER_DYNAMIC, TEXT("ProtoTypeGunLight"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", TEXT("ProtoTypeModelsurefire"), TEXT("ProtoTypeComponentDefaultMeshShader"));
 
 #pragma endregion 2stProbs
 
@@ -1123,6 +1141,41 @@ HRESULT LevelHelper::LoadingMesh()
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
         }
+
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeEventDoorMain"),
+            BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\EventDoorMain.dat", modelInitializMatrix))))
+
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeEventDoorFrame"),
+            BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\EventDoorFrame.dat", modelInitializMatrix))))
+
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeWater"),
+            BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Graffiti\\Water.dat", modelInitializMatrix))))
+
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypebasementWire"),
+            BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\basementWire.dat", modelInitializMatrix))))
+
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
     }
         break;
     case Client::LEVEL::EDIT:
@@ -1729,6 +1782,40 @@ HRESULT LevelHelper::LoadingMesh()
              return E_FAIL;
          }
 
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeEventDoorMain"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\EventDoorMain.dat", modelInitializMatrix))))
+
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeEventDoorFrame"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\EventDoorFrame.dat", modelInitializMatrix))))
+
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeWater"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Graffiti\\Water.dat", modelInitializMatrix))))
+
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypebasementWire"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\2stprob\\basementWire.dat", modelInitializMatrix))))
+
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
     } 
         break;
     default:
@@ -2012,6 +2099,20 @@ HRESULT LevelHelper::LoadingObject()
             return E_FAIL;
         }
 
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeEventDoorMain"),
+            EventMainDoor::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeWater"),
+            Water::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
         break;
     case Client::LEVEL::EDIT:
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectEditTerrain"),
@@ -2169,6 +2270,21 @@ HRESULT LevelHelper::LoadingObject()
 
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeTrigerBox"),
             TrigerBox::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeEventDoorMain"),
+            EventMainDoor::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeWater"),
+            Water::Create(_device, _deviceContext))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

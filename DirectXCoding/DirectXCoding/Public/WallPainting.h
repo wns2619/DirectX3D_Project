@@ -14,6 +14,13 @@ BEGIN(Client)
 class WallPainting final : public StaticObject
 {
 public:
+	typedef struct tagPartDesc
+	{
+		Transform* pParentTransform;
+
+	}ART_DESC;
+
+public:
 	enum PAINT_TYPE { SHOOT, EVIL, HUMAN, WAY, ART, PAINT_END };
 
 
@@ -28,6 +35,12 @@ public:
 	virtual void Tick(const _float& timeDelta)		override;
 	virtual void LateTick(const _float& timeDelta)	override;
 	virtual HRESULT Render()						override;
+
+private:
+	void DoorTargetSet();
+
+private:
+	GameObject* _pTargetObject = nullptr;
 
 public:
 	static WallPainting* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);

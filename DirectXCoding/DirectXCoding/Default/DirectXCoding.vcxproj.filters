@@ -149,6 +149,12 @@
     <Filter Include="소스 파일\02.GameObjects\98.Triger">
       <UniqueIdentifier>{6ebfbd20-45e9-48f0-834c-9a83e42e6fc8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\06. Dynamic\EventDoorMain">
+      <UniqueIdentifier>{706d1bcc-4b15-454a-a894-852ad4f73ad8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\08. Water">
+      <UniqueIdentifier>{79221f50-601c-4f73-b597-2dcf7d4fba7b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -334,6 +340,12 @@
     <ClInclude Include="..\Public\TrigerBox.h">
       <Filter>소스 파일\02.GameObjects\98.Triger</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\EventMainDoor.h">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\EventDoorMain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Water.h">
+      <Filter>소스 파일\02.GameObjects\08. Water</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -494,6 +506,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\TrigerBox.cpp">
       <Filter>소스 파일\02.GameObjects\98.Triger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EventMainDoor.cpp">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\EventDoorMain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Water.cpp">
+      <Filter>소스 파일\02.GameObjects\08. Water</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

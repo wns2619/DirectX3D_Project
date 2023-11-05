@@ -704,7 +704,7 @@ HRESULT ImGuiManager::ModelNameCardSection()
 						comNames._protoTypeName = findPrototypename.second;
 						//comNames._strModelComponentName = findProtoComName.first;
 						//comNames._strShaderName = findProtoComName.second;
-						//comNames._strModelName = useModelName;
+						comNames._strModelName = useModelName;
 						Matrix ScaleMatrix;
 						comNames._saveWorldMatrix *= ScaleMatrix.CreateScale(Vec3(1.f, 1.f, 1.f));
 					}
@@ -717,11 +717,11 @@ HRESULT ImGuiManager::ModelNameCardSection()
 						return E_FAIL;
 					}
 
-					//size_t dotPosition = modelPath.find_last_of(".");
-					//string fileExtension = "";
+				/*	size_t dotPosition = modelPath.find_last_of(".");
+					string fileExtension = "";
 
-					//if (dotPosition != std::string::npos && dotPosition > 0)
-					//	fileExtension = modelPath.substr(0, dotPosition);
+					if (dotPosition != std::string::npos && dotPosition > 0)
+						fileExtension = modelPath.substr(0, dotPosition);*/
 
 					//BinaryModelSave(modelPath, Utils::ToWString(fileExtension));
 					//BinaryAnimModelSave(modelPath, Utils::ToWString(fileExtension));
@@ -2221,6 +2221,9 @@ HRESULT ImGuiManager::SceneSave(wstring& filePath)
 				OBJECT_TYPE modelType = LayerObjects->GetObjectType();
 				file->Write<uint32>(static_cast<uint32>(modelType));
 
+				uint32 modelID = LayerObjects->GetIdNumber();
+				file->Write<uint32>(modelID);
+
 				Matrix colliderMatrix = LayerObjects->GetTransform()->GetWorldMatrix();
 				file->Write<Matrix>(colliderMatrix);
 			}
@@ -2230,6 +2233,9 @@ HRESULT ImGuiManager::SceneSave(wstring& filePath)
 			{
 				OBJECT_TYPE modelType = LayerObjects->GetObjectType();
 				file->Write<uint32>(static_cast<uint32>(modelType));
+
+				uint32 modelID = LayerObjects->GetIdNumber();
+				file->Write<uint32>(modelID);
 
 				Matrix colliderMatrix = LayerObjects->GetTransform()->GetWorldMatrix();
 				file->Write<Matrix>(colliderMatrix);
@@ -2468,6 +2474,10 @@ HRESULT ImGuiManager::SceneLoad(wstring& filePath)
 				//// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
 				ComponentNames ColliderComponentName;
 
+				uint32 modelID;
+				file->Read<uint32>(modelID);
+				ColliderComponentName._modelID = modelID;
+
 				Matrix staticObjectWorldMarix;
 				file->Read<Matrix>(staticObjectWorldMarix);
 				ColliderComponentName._saveWorldMatrix = staticObjectWorldMarix;
@@ -2484,11 +2494,15 @@ HRESULT ImGuiManager::SceneLoad(wstring& filePath)
 				//// 스태틱마다 모델과 사용할 셰이더가 다르니까, 컴포넌트 모델 이름 + 컴포넌트 셰이더 이름 저장
 				ComponentNames ColliderComponentName;
 
+				uint32 modelID;
+				file->Read<uint32>(modelID);
+				ColliderComponentName._modelID = modelID;
+
 				Matrix staticObjectWorldMarix;
 				file->Read<Matrix>(staticObjectWorldMarix);
 				ColliderComponentName._saveWorldMatrix = staticObjectWorldMarix;
 
-				if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), static_cast<LAYER_TAG>(LayerTagType), TEXT("ProtoTypeDoorCol"), &ColliderComponentName)))
+				if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), static_cast<LAYER_TAG>(LayerTagType), TEXT("ProtoTypeTrigerBox"), &ColliderComponentName)))
 					return E_FAIL;
 			}
 			break;

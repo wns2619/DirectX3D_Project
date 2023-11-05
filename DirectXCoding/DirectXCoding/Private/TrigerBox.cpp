@@ -6,6 +6,7 @@
 #include "FileUtils.h"
 #include "BoundingAABB.h"
 #include "DynamicObject.h"
+#include "EventMainDoor.h"
 
 TrigerBox::TrigerBox(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: StaticObject(device, deviceContext)
@@ -32,16 +33,12 @@ HRESULT TrigerBox::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (nullptr != pArg)
+	{
+		_id = static_cast<ComponentNames*>(pArg)->_modelID;
 		_transform->SetWorldMatrix(static_cast<ComponentNames*>(pArg)->_saveWorldMatrix);
+	}
 
-	//shared_ptr<FileUtils> pFile = make_shared<FileUtils>();
-
-	//pFile->Open(L"..\\Binaries\\Resources\\MyModels\\Triger.dat", FileMode::Write);
-
-	//pFile->Write<uint32>(static_cast<uint32>(_objectType));
-
-	//Matrix colliderMatrix = _transform->GetWorldMatrix();
-	//pFile->Write<Matrix>(colliderMatrix);
+	EventTarget();
 
 	return S_OK;
 }
@@ -52,6 +49,18 @@ void TrigerBox::PriorityTick(const _float& timeDelta)
 
 void TrigerBox::Tick(const _float& timeDelta)
 {
+	if (_id == 230 && true == _bTrigerOn)
+	{
+
+		if (_iTurnCount < 120)
+		{
+			++_iTurnCount;
+			dynamic_cast<EventMainDoor*>(_pTargetObject)->GetTransform()->Turn(Vec4(0.f, 1.f, 0.f, 1.f), timeDelta);
+		}
+	}
+
+
+
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
 
@@ -77,16 +86,37 @@ void TrigerBox::OnCollisionEnter(Collider* pOther)
 
 void TrigerBox::OnCollisionStay(Collider* pOther)
 {
-	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
-
-
-	RELEASE_INSTANCE(GameInstance);
 }
 
 void TrigerBox::OnCollisionExit(Collider* pOther)
 {
 
+}
+
+void TrigerBox::EventTarget()
+{
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	vector<GameObject*>* pGameList = pGameInstance->GetCurrentObjectList(LAYER_TAG::LAYER_DYNAMIC);
+
+	if (_id == 230)
+	{
+		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
+			{
+				if (pObject->GetIdNumber() == 196)
+					return true;
+
+				return false;
+			});
+
+		if (nullptr == (*iter))
+			return;
+
+		_pTargetObject = *iter;
+	}
+
+	RELEASE_INSTANCE(GameInstance);
 }
 
 HRESULT TrigerBox::ReadyComponents()

@@ -46,19 +46,18 @@ void GridDoor::Tick(const _float& timeDelta)
 	if (nullptr != pPlayer)
 		keyObtain = pPlayer->GetObtainKey();
 
-
 	// ¿©±â¼­ ¹¹°¡ 
-	if (_id != 170 && true == _bIsRotation)
+	if (_id != 195 && true == _bIsRotation)
 	{
-		if(_id != 163)
+		if(_id != 188)
 			_transform->Turn(Vec4(0.f, -1.f, 0.f, 1.f), timeDelta);
-		if (_id == 163 && true == keyObtain)
+		if (_id == 188 && true == keyObtain)
 			_transform->Turn(Vec4(0.f, -1.f, 0.f, 1.f), timeDelta);
 	}
-	else if (_id == 170 && true == _bIsRotation)
+	else if (_id == 195 && true == _bIsRotation)
 	{
-
-		_transform->Turn(Vec4(0.f, 1.f, 0.f, 1.f), timeDelta);
+		if(true == keyObtain)
+			_transform->Turn(Vec4(0.f, 1.f, 0.f, 1.f), timeDelta);
 	}
 
 	if (_bIsOpen == false)
@@ -93,6 +92,14 @@ HRESULT GridDoor::Render()
 
 	uint32 numMeshes = _binaryModel->GetNumMeshes();
 
+
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+	Player* pPlayer = dynamic_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
+	_bool keyObtain = false;
+
+	if (nullptr != pPlayer)
+		keyObtain = pPlayer->GetObtainKey();
+
 	for (size_t i = 0; i < numMeshes; i++)
 	{
 		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
@@ -101,14 +108,19 @@ HRESULT GridDoor::Render()
 		if (FAILED(_shader->Begin(0)))
 			return E_FAIL;
 
-		if (_id != 170 && _id != 163)
+		if (_id != 188 && _id != 195)
 		{
 			if (FAILED(_binaryModel->Render(i)))
 				return E_FAIL;
 		}
-		else if (_id == 170 || _id == 163)
+		else if (_id == 188 || _id == 195)
 		{
-			if (i <= 0)
+			if (true == _bGridDoorKey)
+			{
+				if (FAILED(_binaryModel->Render(i)))
+					return E_FAIL;
+			}
+			else if(i <= 0 && false == _bGridDoorKey)
 				if(FAILED(_binaryModel->Render(i)))
 					return E_FAIL;
 		}
@@ -124,6 +136,7 @@ HRESULT GridDoor::Render()
 #endif // _DEBUG
 
 
+	RELEASE_INSTANCE(GameInstance);
 
 	return S_OK;
 
@@ -138,9 +151,18 @@ void GridDoor::OnCollisionStay(Collider* pOther)
 {
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
+	if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER)
+	{
+		if (pGameInstance->keyDown(DIK_E))
+		{
+			Player* pPlayer = dynamic_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
+			_bGridDoorKey = pPlayer->GetObtainKey();
+		}
+	}
+
 	if (false == _bIsRotation && _bIsOpen == false)
 	{
-		if (this->_id != 163 && pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER)
+		if (this->_id != 188 && this->_id != 195 && pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER)
 		{
 
 			Vec3 vPlayerCenter = static_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding()->Center;
@@ -213,7 +235,7 @@ void GridDoor::OnCollisionStay(Collider* pOther)
 				}
 			}
 		}
-		else if(_id == 163 || _id == 170)
+		else if(_id == 188 || _id == 195)
 		{
 			Vec3 vPlayerCenter = static_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding()->Center;
 			Vec3 vThisCenter = static_cast<Bounding_Sphere*>(_pCollider->GetBounding())->GetBounding()->Center;
@@ -303,7 +325,7 @@ HRESULT GridDoor::ReadyCollider()
 		aabbDesc.pOwner = this;
 	}
 
-	if (_id == 163)
+	if (_id == 188)
 	{
 		Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
 		sphereDesc.vCenter = Vec3(45.f, 110.f, 0.f);
@@ -314,7 +336,7 @@ HRESULT GridDoor::ReadyCollider()
 			TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &sphereDesc)))
 			return E_FAIL;
 	}
-	else if(_id == 170)
+	else if(_id == 195)
 	{
 		Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
 		sphereDesc.vCenter = Vec3(45.f, 110.f, 0.f);
@@ -339,13 +361,13 @@ HRESULT GridDoor::ReadyCollider()
 		sphereDesc.pOwner = this;
 	}
 
-	if (_id == 163)
+	if (_id == 188)
 	{
 		sphereDesc.fRadius = 20.f;
 		sphereDesc.vCenter = Vec3(15.f, sphereDesc.fRadius * 10, 0.f);
 	}
 
-	if (_id == 170)
+	if (_id == 195)
 	{
 		sphereDesc.fRadius = 20.f;
 		sphereDesc.vCenter = Vec3(30.f, sphereDesc.fRadius * 10, 0.f);

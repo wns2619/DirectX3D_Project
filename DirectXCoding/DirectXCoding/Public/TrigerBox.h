@@ -29,9 +29,21 @@ public:
 	virtual void OnCollisionStay(class Collider* pOther);
 	virtual void OnCollisionExit(class Collider* pOther);
 
+public:
+	const _bool& GetTriger() { return _bTrigerOn; }
+
+	void TrigerSet(_bool triger) { _bTrigerOn = triger; }
+
+public:
+	void EventTarget();
+
 private:
 	VIBufferRect* _pVIBufferRect = nullptr;
 
+	_bool _bTrigerOn = false;
+	GameObject* _pTargetObject = nullptr;
+
+	uint32 _iTurnCount = 0;
 
 private:
 	virtual HRESULT ReadyComponents() override;

@@ -24,6 +24,11 @@ HRESULT Drum::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
+		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform))))
+		return E_FAIL;
+
 	if (nullptr != pArg)
 		_transform->SetWorldMatrix(static_cast<ComponentNames*>(pArg)->_saveWorldMatrix);
 

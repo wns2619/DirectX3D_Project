@@ -37,6 +37,7 @@ public:
 
 public:
 	void KeyInput(const _float& timeDelta);
+	void TrigerBoxEvent(Collider* pOther);
 
 public:
 	_bool GetObtainKey() { return _bObtatinKey; }

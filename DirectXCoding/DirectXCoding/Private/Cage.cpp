@@ -114,7 +114,7 @@ HRESULT Cage::ReadyCollider()
 		aabbDesc.pOwner = this;
 	}
 	
-	if (_id == 171)
+	if (_id == 205)
 		aabbDesc.vExtents = Vec3(5.f, 120.f, 80.f);
 
 	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeAABBCollider"),
@@ -179,9 +179,46 @@ void Cage::OnCollisionStay(Collider* pOther)
 		{
 			if (vPlayerCenter.y > vthisCenter.y)
 			{
+				if (_id == 205)
+				{
+					_float vFinalExtents = fabs((vPlayerExtents.x + vThisExtents.x)) - fabs(vFinalCenter.x);
+
+					Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
+					vPos.x -= vFinalExtents;
+
+					pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+				}
+				else
+				{
+					_float vFinalExtents = fabs((vPlayerExtents.z + vThisExtents.z)) - fabs(vFinalCenter.z);
+
+					Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
+					vPos.z -= vFinalExtents;
+
+					pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+				}
+
 			}
 			else
 			{
+				if (_id == 205)
+				{
+					_float vFinalExtents = fabs((vPlayerExtents.x + vThisExtents.x)) - fabs(vFinalCenter.x);
+
+					Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
+					vPos.x += vFinalExtents;
+
+					pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+				}
+				else
+				{
+					_float vFinalExtents = fabs((vPlayerExtents.z + vThisExtents.z)) - fabs(vFinalCenter.z);
+
+					Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
+					vPos.z += vFinalExtents;
+
+					pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+				}
 
 			}
 		}
@@ -225,51 +262,63 @@ void Cage::ValveTargetSet()
 
 	vector<GameObject*>* pGameList = pGameInstance->GetCurrentObjectList(LAYER_TAG::LAYER_DYNAMIC);
 
-	if (_id == 171)
+	if (_id == 205)
 	{
 		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
 			{
-				if (pObject->GetIdNumber() == 159)
+				if (pObject->GetIdNumber() == 184)
 					return true;
 
 				return false;
 			});
+
+		if (nullptr == (*iter))
+			return;
 
 		_pTargetObject = *iter;
 	}
-	else if (_id == 172)
+	else if (_id == 206)
 	{
 		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
 			{
-				if (pObject->GetIdNumber() == 160)
+				if (pObject->GetIdNumber() == 185)
 					return true;
 
 				return false;
 			});
+
+		if (nullptr == (*iter))
+			return;
 
 		_pTargetObject = *iter;
 	}
-	else if (_id == 173)
+	else if (_id == 207)
 	{
 		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
 			{
-				if (pObject->GetIdNumber() == 161)
+				if (pObject->GetIdNumber() == 186)
 					return true;
 
 				return false;
 			});
+
+		if (nullptr == (*iter))
+			return;
 
 		_pTargetObject = *iter;
 	}
-	else if (_id == 174)
+	else if (_id == 208)
 	{
 		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
 			{
-				if (pObject->GetIdNumber() == 162)
+				if (pObject->GetIdNumber() == 187)
 					return true;
 
 				return false;
 			});
+
+		if (nullptr == (*iter))
+			return;
 
 		_pTargetObject = *iter;
 	}

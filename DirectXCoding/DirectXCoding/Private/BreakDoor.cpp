@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "BoundingOBB.h"
+#include "WallPainting.h"
 
 BreakDoor::BreakDoor(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::BREAK_DOOR)
@@ -42,8 +43,11 @@ void BreakDoor::Tick(const _float& timeDelta)
 
 	if (true == _bIsBreak)
 	{
-		if(false == _bIsOpen)
+		if (false == _bIsOpen)
+		{
+			_vPrevPosition = dynamic_cast<Bounding_Sphere*>(_pAssistCollider->GetBounding())->GetBounding()->Center;
 			_transform->Turn(Vec4(0.f, 1.f, 0.f, 1.f), timeDelta);
+		}
 	}
 
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
@@ -220,7 +224,7 @@ HRESULT BreakDoor::ReadyCollider()
 		aabbDesc.pOwner = this;
 	}
 
-	if (_id == 158)
+	if (_id == 183)
 	{
 		aabbDesc.vCenter = Vec3(0.f, 0.f, 45.f);
 		aabbDesc.vExtents = Vec3(7.5f, 100.f, 40.f);
@@ -253,6 +257,11 @@ HRESULT BreakDoor::ReadyCollider()
 
 	RELEASE_INSTANCE(GameInstance);
 
+	return S_OK;
+}
+
+HRESULT BreakDoor::ReadyDoorArt()
+{
 	return S_OK;
 }
 

@@ -2,6 +2,7 @@
 #include "WallPainting.h"
 
 #include "GameInstance.h"
+#include "BreakDoor.h"
 WallPainting::WallPainting(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: StaticObject(device, deviceContext)
 {
@@ -23,11 +24,55 @@ HRESULT WallPainting::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+
+	DoorTargetSet();
+
 	return S_OK;
 }
 
 void WallPainting::Tick(const _float& timeDelta)
-{
+{	
+	if (nullptr != _pTargetObject)
+	{
+		if (true == dynamic_cast<BreakDoor*>(_pTargetObject)->GetIsBreak())
+		{
+
+			if (false == dynamic_cast<BreakDoor*>(_pTargetObject)->GetIsOpen())
+			{
+				Matrix MyWorld = _transform->GetWorldMatrix();
+				XMVECTOR TargetRotation = _pTargetObject->GetTransform()->GetWorldRotation();
+
+				XMVECTOR right = _transform->GetState(Transform::STATE::RIGHT);
+				XMVECTOR up = _transform->GetState(Transform::STATE::UP);
+				XMVECTOR look = _transform->GetState(Transform::STATE::LOOK);
+
+				XMVECTOR vMyPosition = _transform->GetState(Transform::STATE::POSITION);
+				XMVECTOR vTargetPosition =
+					::XMLoadFloat3(&dynamic_cast<Bounding_Sphere*>
+						(_pTargetObject->GetAssistCollider()->GetBounding())->GetBounding()->Center);
+
+				XMVECTOR relativePosition = vMyPosition - vTargetPosition;
+
+				Vec4 targetMoment = vTargetPosition - 
+					::XMLoadFloat4(&dynamic_cast<BreakDoor*>(_pTargetObject)->GetPrevPosition());
+				targetMoment.Normalize();
+
+				vMyPosition += targetMoment * timeDelta * 1.2f;
+
+
+				right = ::XMVector3Rotate(right, TargetRotation);
+				up = ::XMVector3Rotate(up, TargetRotation);
+				look = ::XMVector3Rotate(look, TargetRotation);
+
+				_transform->SetState(Transform::STATE::POSITION, vMyPosition);
+
+				_transform->SetState(Transform::STATE::RIGHT, right);
+				_transform->SetState(Transform::STATE::UP, up);
+				_transform->SetState(Transform::STATE::LOOK, look);
+			}
+
+		}
+	}
 }
 
 void WallPainting::LateTick(const _float& timeDelta)
@@ -73,6 +118,40 @@ HRESULT WallPainting::Render()
 
 
 	return S_OK;
+}
+
+void WallPainting::DoorTargetSet()
+{
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	vector<GameObject*>* pGameList = pGameInstance->GetCurrentObjectList(LAYER_TAG::LAYER_DYNAMIC);
+
+	if (_id == 212)
+	{
+		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
+			{
+				if (pObject->GetIdNumber() == 172)
+					return true;
+
+				return false;
+			});
+
+		_pTargetObject = *iter;
+	}
+	else if (_id == 213)
+	{
+		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
+			{
+				if (pObject->GetIdNumber() == 183)
+					return true;
+
+				return false;
+			});
+
+		_pTargetObject = *iter;
+	}
+
+	RELEASE_INSTANCE(GameInstance);
 }
 
 

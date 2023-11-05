@@ -4,12 +4,12 @@
 
 BEGIN(Client)
 
-class BreakDoor final : public DynamicObject
+class EventMainDoor final : public DynamicObject
 {
 private:
-	explicit BreakDoor(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
-	explicit BreakDoor(const BreakDoor& rhs);
-	virtual ~BreakDoor() = default;
+	explicit EventMainDoor(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+	explicit EventMainDoor(const EventMainDoor& rhs);
+	virtual ~EventMainDoor() = default;
 
 public:
 	virtual HRESULT InitializePrototype()			override;
@@ -24,22 +24,11 @@ public:
 	virtual void OnCollisionExit(class Collider* pOther);
 
 public:
-	const _bool& GetIsBreak() { return _bIsBreak; }
-	const Vec4& GetPrevPosition() { return _vPrevPosition; }
-public:
 	virtual HRESULT ReadyCollider()					override;
 
-private:
-	_bool _bIsBreak = false;
-	Vec4 _vPrevPosition;
-
-private:
-	vector<class GameObject*> _pDoorArt;
-
-	HRESULT ReadyDoorArt();
 
 public:
-	static BreakDoor* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+	static EventMainDoor* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	virtual GameObject* Clone(void* argument) override;
 	virtual void Free() override;
 };

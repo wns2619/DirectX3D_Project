@@ -26,6 +26,9 @@ public:
 public:
 	virtual HRESULT ReadyCollider()					override;
 
+private:
+	_bool _bGridDoorKey = false;
+
 
 public:
 	static GridDoor* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);

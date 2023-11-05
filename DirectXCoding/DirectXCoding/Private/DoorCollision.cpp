@@ -32,7 +32,10 @@ HRESULT DoorCollision::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (nullptr != pArg)
+	{
 		_transform->SetWorldMatrix(static_cast<ComponentNames*>(pArg)->_saveWorldMatrix);
+		_id = static_cast<ComponentNames*>(pArg)->_modelID;
+	}
 
 	return S_OK;
 }

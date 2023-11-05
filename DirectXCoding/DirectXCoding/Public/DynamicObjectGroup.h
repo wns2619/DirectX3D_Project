@@ -11,3 +11,5 @@
 #include "Gun.h"
 #include "GunLight.h"
 #include "Bullet.h"
+#include "EventMainDoor.h"
+#include "Water.h"

@@ -32,7 +32,7 @@ public:
 
 private:
 	BULLET_DESC _BulletDesc = {};
-
+	Vec4 _vInitialPos;
 public:
 	static Bullet* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	virtual GameObject* Clone(void* pArg) override;

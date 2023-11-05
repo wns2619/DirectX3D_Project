@@ -45,9 +45,9 @@ void Valve::Tick(const _float& timeDelta)
 	{
 		--_iRotationTick;
 
-		if (_id == 159)
+		if (_id == 184)
 			_transform->Turn(Vec4(1.f, 0.f, 0.f, 1.f), timeDelta);
-		else if (_id == 160)
+		else if (_id == 185)
 			_transform->Turn(Vec4(-1.f, 0.f, 0.f, 1.f), timeDelta);
 		else
 			_transform->Turn(Vec4(0.f, 0.f, 1.f, 1.f), timeDelta);
