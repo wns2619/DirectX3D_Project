@@ -37,6 +37,11 @@ HRESULT GameScene::Initialize()
 	//if (FAILED(ReadyLayerCamera(LAYER_TAG::LAYER_CAMERA)))
 	//	return E_FAIL;
 
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	//pGameInstance->PlayBGM(TEXT("gool.wav"), 0.1);
+
+	RELEASE_INSTANCE(GameInstance);
 
     return S_OK;
 }

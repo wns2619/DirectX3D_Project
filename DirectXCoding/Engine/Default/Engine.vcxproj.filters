@@ -202,6 +202,18 @@
     <Filter Include="01.Utility\98.Manager\Event">
       <UniqueIdentifier>{548bb995-6086-4ed6-91f5-7200e6b98480}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\05.RenderTargets">
+      <UniqueIdentifier>{8d94e1a7-2b8e-4352-b667-71ccb33b34f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\98.Manager\RenderTargetManager">
+      <UniqueIdentifier>{eed16526-4ccc-46e4-aa52-794d3a9ad8b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\98.Manager\Sound">
+      <UniqueIdentifier>{4a8d75c6-8e10-421e-bba7-83dba429ace4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\98.Manager\Sound\fmod">
+      <UniqueIdentifier>{7b2c6e82-a3dd-46b6-8d4c-26779562e0bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -435,6 +447,36 @@
     <ClInclude Include="..\Public\EventManager.h">
       <Filter>01.Utility\98.Manager\Event</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\RenderTarget.h">
+      <Filter>01.Utility\05.RenderTargets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TargetManager.h">
+      <Filter>01.Utility\98.Manager\RenderTargetManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SoundManager.h">
+      <Filter>01.Utility\98.Manager\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\fmod\fmod.h">
+      <Filter>01.Utility\98.Manager\Sound\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\fmod\fmod.hpp">
+      <Filter>01.Utility\98.Manager\Sound\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\fmod\fmod_codec.h">
+      <Filter>01.Utility\98.Manager\Sound\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\fmod\fmod_dsp.h">
+      <Filter>01.Utility\98.Manager\Sound\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\fmod\fmod_errors.h">
+      <Filter>01.Utility\98.Manager\Sound\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\fmod\fmod_memoryinfo.h">
+      <Filter>01.Utility\98.Manager\Sound\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\fmod\fmod_output.h">
+      <Filter>01.Utility\98.Manager\Sound\fmod</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -625,6 +667,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\EventManager.cpp">
       <Filter>01.Utility\98.Manager\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RenderTarget.cpp">
+      <Filter>01.Utility\05.RenderTargets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TargetManager.cpp">
+      <Filter>01.Utility\98.Manager\RenderTargetManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SoundManager.cpp">
+      <Filter>01.Utility\98.Manager\Sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

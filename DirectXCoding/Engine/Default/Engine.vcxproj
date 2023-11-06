@@ -48,6 +48,13 @@
     <ClInclude Include="..\Public\dirent.h" />
     <ClInclude Include="..\Public\EventManager.h" />
     <ClInclude Include="..\Public\FileUtils.h" />
+    <ClInclude Include="..\Public\fmod\fmod.h" />
+    <ClInclude Include="..\Public\fmod\fmod.hpp" />
+    <ClInclude Include="..\Public\fmod\fmod_codec.h" />
+    <ClInclude Include="..\Public\fmod\fmod_dsp.h" />
+    <ClInclude Include="..\Public\fmod\fmod_errors.h" />
+    <ClInclude Include="..\Public\fmod\fmod_memoryinfo.h" />
+    <ClInclude Include="..\Public\fmod\fmod_output.h" />
     <ClInclude Include="..\Public\Function.h" />
     <ClInclude Include="..\Public\Functor.h" />
     <ClInclude Include="..\Public\GameInstance.h" />
@@ -75,13 +82,16 @@
     <ClInclude Include="..\Public\Physics.h" />
     <ClInclude Include="..\Public\Picking.h" />
     <ClInclude Include="..\Public\Renderer.h" />
+    <ClInclude Include="..\Public\RenderTarget.h" />
     <ClInclude Include="..\Public\ResourceBase.h" />
     <ClInclude Include="..\Public\Shader.h" />
     <ClInclude Include="..\Public\SimpleMath.h" />
+    <ClInclude Include="..\Public\SoundManager.h" />
     <ClInclude Include="..\Public\State.h" />
     <ClInclude Include="..\Public\StateMachine.h" />
     <ClInclude Include="..\Public\StringUtilities.h" />
     <ClInclude Include="..\Public\Struct.h" />
+    <ClInclude Include="..\Public\TargetManager.h" />
     <ClInclude Include="..\Public\Texture.h" />
     <ClInclude Include="..\Public\TimeManager.h" />
     <ClInclude Include="..\Public\Timer.h" />
@@ -173,14 +183,17 @@
     <ClCompile Include="..\Private\Physics.cpp" />
     <ClCompile Include="..\Private\Picking.cpp" />
     <ClCompile Include="..\Private\Renderer.cpp" />
+    <ClCompile Include="..\Private\RenderTarget.cpp" />
     <ClCompile Include="..\Private\ResourceBase.cpp" />
     <ClCompile Include="..\Private\Shader.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IncludeInUnityFile>
     </ClCompile>
     <ClCompile Include="..\Private\SimpleMath.cpp" />
+    <ClCompile Include="..\Private\SoundManager.cpp" />
     <ClCompile Include="..\Private\State.cpp" />
     <ClCompile Include="..\Private\StateMachine.cpp" />
     <ClCompile Include="..\Private\Struct.cpp" />
+    <ClCompile Include="..\Private\TargetManager.cpp" />
     <ClCompile Include="..\Private\Texture.cpp" />
     <ClCompile Include="..\Private\TimeManager.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />
@@ -306,7 +319,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../Public/;./;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Public/;../fmod/inc/;./;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -316,8 +329,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../lib/FX11/;../lib/DirectXTK/;../lib/DirectXTex/;../lib/Assimp/;../lib/tiny/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>d3d11.lib;Effects11d.lib;DirectXTKd.lib;DirectXTex_Debug.lib;assimp-vc140-mtd.lib;dinput8.lib;tinyxml2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../lib/FX11/;../lib/DirectXTK/;../lib/DirectXTex/;../lib/Assimp/;../lib/tiny/;../fmod/lib/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;Effects11d.lib;DirectXTKd.lib;DirectXTex_Debug.lib;assimp-vc140-mtd.lib;dinput8.lib;tinyxml2d.lib;fmod_vc.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <NoEntryPoint>false</NoEntryPoint>
     </Link>
     <PostBuildEvent>

@@ -41,6 +41,13 @@ HRESULT Bullet::Initialize(void* pArg)
 
 	_transform->SetState(Transform::STATE::LOOK, _BulletDesc.vDir);
 
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	pGameInstance->StopSound(SOUND_BULLET);
+	pGameInstance->PlaySound(TEXT("Shoot.wav"), SOUND_BULLET, 0.3f);
+
+	RELEASE_INSTANCE(GameInstance);
+
 	return S_OK;
 }
 

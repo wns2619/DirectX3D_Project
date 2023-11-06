@@ -34,6 +34,9 @@ private:
 	Vec4 _vPrevPosition;
 
 private:
+	_bool _bChageMoment = false;
+	_float _fTime = 0.f;
+private:
 	vector<class GameObject*> _pDoorArt;
 
 	HRESULT ReadyDoorArt();

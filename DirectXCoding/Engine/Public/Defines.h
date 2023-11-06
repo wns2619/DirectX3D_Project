@@ -37,6 +37,11 @@
 #include "dirent.h"
 #include "tinyxml2.h"
 
+// fmod
+#include "fmod.h"
+#include "fmod.hpp"
+#include <io.h>
+
 using namespace DirectX;
 using namespace Microsoft::WRL;
 

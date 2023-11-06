@@ -27,6 +27,7 @@ public:
 
 private:
 	list<GameObject*> _renderObjects[static_cast<int32>(RENDERGROUP::RENDER_END)];
+	class TargetManager* _pTargetManager = nullptr;
 
 private:
 	HRESULT	RenderPriority();

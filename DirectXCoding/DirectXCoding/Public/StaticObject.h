@@ -7,6 +7,7 @@ class Shader;
 class Renderer;
 class BinaryNavi;
 class VIBufferCell;
+class GameInstance;
 END
 
 BEGIN(Client)
@@ -38,6 +39,9 @@ public:
 	
 public:
 	STATE_DESC& GetStaticComponentsName() { return _comNames; }
+
+public:
+	void LerpSoundPlayer(_float& fVolume, _float& fDistanc, _float fMaxDistance, GameInstance* pGameInstance);
 
 protected:
 	Renderer* _render = nullptr;

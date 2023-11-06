@@ -105,8 +105,7 @@ HRESULT Player::Render()
 		return S_OK;
 
 
-	if (FAILED(BindShaderResuorces
-	()))
+	if (FAILED(BindShaderResuorces()))
 		return E_FAIL;
 
 
@@ -163,6 +162,10 @@ void Player::OnCollisionStay(Collider* pOther)
 			if (pGameInstance->keyDown(DIK_E))
 			{
 				dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->SetObtainGun(true);
+
+				pGameInstance->StopSound(SOUND_PICKUP);
+				pGameInstance->PlaySound(TEXT("PickUp.wav"), SOUND_PICKUP, 1.f);
+
 				pGameInstance->DeleteObject(pOther->GetOwner());
 			}
 		}
@@ -186,8 +189,13 @@ void Player::OnCollisionStay(Collider* pOther)
 		{
 			if (pGameInstance->keyDown(DIK_E))
 			{
-				if(false == dynamic_cast<Valve*>(pOther->GetOwner())->GetIsOpen())
+				if (false == dynamic_cast<Valve*>(pOther->GetOwner())->GetIsOpen() &&
+					false == dynamic_cast<Valve*>(pOther->GetOwner())->GetIsRotatate())
+				{
 					dynamic_cast<Valve*>(pOther->GetOwner())->SetRotate(true);
+					pGameInstance->StopSound(SOUND_SCARE1);
+					pGameInstance->PlaySound(TEXT("valve (mp3cut.net).wav"), SOUND_SCARE1, 0.2f);
+				}
 			}
 		}
 	}
@@ -292,6 +300,24 @@ void Player::TrigerBoxEvent(Collider* pOther)
 
 	if (id == 230)
 		dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+	else if (id == 231)
+		dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+	else if (id == 232)
+	{
+
+	}
+	else if (id == 236)
+	{
+		if (pGameInstance->keyDown(DIK_E))
+		{
+			dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+			pGameInstance->PlaySound(TEXT("sveton.wav"), SOUND_SCARE1, 1.f);
+		}
+
+		// TODO Light를 붉게 만들고
+		// Sound 2개 재생.
+		// 
+	}
 
 
 	RELEASE_INSTANCE(GameInstance);
@@ -312,7 +338,7 @@ HRESULT Player::ReadyComponents()
 
 	/* Transform Component */
 	Transform::TRANSFORM_DESC transformDesc;
-	transformDesc.speedPerSec = 2.f;
+	transformDesc.speedPerSec = 1.5f;
 	transformDesc.rotationRadianPerSec = ::XMConvertToRadians(90.f);
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),

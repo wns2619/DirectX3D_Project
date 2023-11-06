@@ -113,15 +113,37 @@ void BreakDoor::OnCollisionEnter(Collider* pOther)
 void BreakDoor::OnCollisionStay(Collider* pOther)
 {
 	if (pOther->GetOwner()->GetModelName() == "PlayerBullet")
-	{
-
 		_bIsBreak = true;
+
+	if (_bIsBreak == true)
+	{
+		if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER && _id == 172)
+		{
+			GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+			if (false == _bChageMoment)
+			{
+				_fTime += pGameInstance->ComputeTimeDelta(TEXT("Timer_60")) * 22.f;
+
+				if (_fTime >= 0.65f)
+				{
+					pGameInstance->StopAll();
+					pGameInstance->PlayBGM(TEXT("bass #30425.wav"), 0.15f);
+					pGameInstance->StopSound(SOUND_SCARE1);
+					pGameInstance->PlaySound(TEXT("scary pad 2_12.wav"), SOUND_SCARE1, 0.8f);
+
+					_bChageMoment = true;
+				}
+			}
+			RELEASE_INSTANCE(GameInstance);
+		}
 	}
+
 
 	if (false == _bIsOpen)
 	{
 		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
-
+		
 		if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER)
 		{
 

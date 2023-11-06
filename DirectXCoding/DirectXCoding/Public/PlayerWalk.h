@@ -28,6 +28,9 @@ public:
 public:
 	virtual STATE KeyInput(const _float& timeDelta)			override;
 
+private:
+	_bool _bWalk = false;
+
 public:
 	static PlayerWalk* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, GameObject* pOwner);
 	virtual void Free() override;

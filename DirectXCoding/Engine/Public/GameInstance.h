@@ -10,6 +10,7 @@
 #include "ObjectManager.h"
 #include "EventManager.h"
 
+
 BEGIN(Engine)
 
 class ENGINE_DLL GameInstance final : public Base
@@ -103,6 +104,14 @@ public: // EventManager
 	void DeleteObject(class GameObject* pObj);
 	void EventManagerTick();
 
+public: // SoundManager
+	void PlaySound(const TCHAR* pSoundKey, CHANNELID eID, float fVolume);
+	void PlaySoundLoop(const TCHAR* pSoundKey, CHANNELID eID, float fVolume);
+	void PlayBGM(const TCHAR* pSoundKey, float fVolume);
+	void StopSound(CHANNELID eID);
+	void StopAll();
+	void SetChannelVolume(CHANNELID eID, float fVolume);
+
 private:
 	class TimeManager* _timeManager = nullptr;
 	class GraphicsManager* _graphicManager = nullptr;
@@ -116,6 +125,8 @@ private:
 	class InputHandler* _inputHandler = nullptr;
 	class CollisionManager* _collisionManager = nullptr;
 	class EventManager* _pEventManager = nullptr;
+	class TargetManager* _pTargetManager = nullptr;
+	class SoundManager* _pSoundManager = nullptr;
 
 public:
 	static void Release_Engine();

@@ -36,6 +36,9 @@ public:
 
 public:
 	void EventTarget();
+	void LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMaxDistance, GameInstance* pGameInstance);
+
+	void TrigerOccur(const _float& timeDelta);
 
 private:
 	VIBufferRect* _pVIBufferRect = nullptr;
@@ -44,6 +47,11 @@ private:
 	GameObject* _pTargetObject = nullptr;
 
 	uint32 _iTurnCount = 0;
+
+	_float _fEventSound = 0.f;
+
+private: //event
+	_bool _bEventState = false;
 
 private:
 	virtual HRESULT ReadyComponents() override;

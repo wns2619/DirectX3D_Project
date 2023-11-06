@@ -62,6 +62,7 @@ private:
 
 	uint32 animationcount = 0;
 
+
 private:
 	_bool _bInteraction = false;
 	_bool _bObtatinKey = false;

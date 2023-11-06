@@ -102,23 +102,35 @@ State::STATE PlayerFire::KeyInput(const _float& timeDelta)
 
 	if (pGameInstance->KeyPressing(DIK_W))
 	{
+		pGameInstance->StopSound(SOUND_PLAYER);
+		pGameInstance->PlaySound(TEXT("walkPlayer.wav"), SOUND_PLAYER, 0.2f);
+
 		_pOwner->GetTransform()->Forward(timeDelta, pLandObject->GetNavigation());
 		eState = STATE::SHOOT;
 	}
 	// What Animation
 	else if (pGameInstance->KeyPressing(DIK_S))
 	{
+		pGameInstance->StopSound(SOUND_PLAYER);
+		pGameInstance->PlaySound(TEXT("walkPlayer.wav"), SOUND_PLAYER, 0.2f);
+
 		_pOwner->GetTransform()->Backward(timeDelta, pLandObject->GetNavigation());
 		eState = STATE::SHOOT;
 	}
 
 	if (pGameInstance->KeyPressing(DIK_A))
 	{
+		pGameInstance->StopSound(SOUND_PLAYER);
+		pGameInstance->PlaySound(TEXT("walkPlayer.wav"), SOUND_PLAYER, 0.2f);
+
 		_pOwner->GetTransform()->Left(timeDelta, pLandObject->GetNavigation());
 		eState = STATE::SHOOT;
 	}
 	else if (pGameInstance->KeyPressing(DIK_D))
 	{
+		pGameInstance->StopSound(SOUND_PLAYER);
+		pGameInstance->PlaySound(TEXT("walkPlayer.wav"), SOUND_PLAYER, 0.2f);
+
 		_pOwner->GetTransform()->Right(timeDelta, pLandObject->GetNavigation());
 		eState = STATE::SHOOT;
 	}

@@ -31,7 +31,7 @@ HRESULT Valve::Initialize(void* pArg)
 	if (nullptr != pArg)
 		_transform->SetWorldMatrix(static_cast<ComponentNames*>(pArg)->_saveWorldMatrix);
 
-	_iRotationTick = 50;
+	_iRotationTick = 100;
 
 	return S_OK;
 }
@@ -53,12 +53,23 @@ void Valve::Tick(const _float& timeDelta)
 			_transform->Turn(Vec4(0.f, 0.f, 1.f, 1.f), timeDelta);
 
 
-		if (-49 == _iRotationTick)
+		if (-99 == _iRotationTick)
 		{
-			_iRotationTick = 50;
+			_iRotationTick = 100;
 			_bIsRotation = false;
 
 			_iRotationCount++;
+
+			if (_iRotationCount == 2)
+			{
+				GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+				pGameInstance->StopSound(SOUND_SCARE2);
+				pGameInstance->PlaySound(TEXT("scary pad 2_9.wav"), SOUND_SCARE2, 1.f);
+
+				RELEASE_INSTANCE(GameInstance);
+			}
+
 
 			if (_iRotationCount == 3)
 				_bIsOpen = true;

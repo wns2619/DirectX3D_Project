@@ -23,6 +23,8 @@ State::STATE PlayerWalk::UpdateState(const _float& timeDelta)
 {
 	STATE eState = STATE::IDLE;
 
+	_bWalk = false;
+
 	if (nullptr != _pOwner)
 		eState = KeyInput(timeDelta);
 
@@ -54,35 +56,56 @@ State::STATE PlayerWalk::KeyInput(const _float& timeDelta)
 
 	if (pGameInstance->KeyPressing(DIK_W))
 	{
+		pGameInstance->PlaySound(TEXT("walkPlayer.wav"), SOUND_PLAYER, 1.f);
+
 		_pOwner->GetTransform()->Forward(timeDelta, pLandObject->GetNavigation());
 		eState = STATE::IDLE;
+
+		_bWalk = true;
 	}
 		// What Animation
 	else if (pGameInstance->KeyPressing(DIK_S))
 	{
+	
+		pGameInstance->PlaySound(TEXT("walkPlayer.wav"), SOUND_PLAYER, 1.f);
+
 		_pOwner->GetTransform()->Backward(timeDelta, pLandObject->GetNavigation());
 		eState = STATE::IDLE;
+
+		_bWalk = true;
 	}
 
 	if (pGameInstance->KeyPressing(DIK_A))
 	{
+		
+		pGameInstance->PlaySound(TEXT("walkPlayer.wav"), SOUND_PLAYER, 1.f);
+
 		_pOwner->GetTransform()->Left(timeDelta, pLandObject->GetNavigation());
 		eState = STATE::IDLE;
+
+		_bWalk = true;
 	}
 	else if (pGameInstance->KeyPressing(DIK_D))
 	{
+		
+		pGameInstance->PlaySound(TEXT("walkPlayer.wav"), SOUND_PLAYER, 1.f);
+
 		_pOwner->GetTransform()->Right(timeDelta, pLandObject->GetNavigation());
 		eState = STATE::IDLE;
+
+		_bWalk = true;
 	}
 
 
-	
 	if(true == dynamic_cast<Player*>(_pOwner)->GetIsJoom())
 		if (pGameInstance->mouseDown(DIMK::DIMK_LBUTTON))
 			eState = STATE::SHOOT;
 	
 	if (pGameInstance->keyDown(DIK_R))
 		eState = STATE::RELOAD;
+
+	if (false == _bWalk)
+		pGameInstance->StopSound(SOUND_PLAYER);
 
 	RELEASE_INSTANCE(GameInstance);
 

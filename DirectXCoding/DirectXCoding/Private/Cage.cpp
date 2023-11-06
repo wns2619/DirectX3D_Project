@@ -49,7 +49,7 @@ void Cage::Tick(const _float& timeDelta)
 	if (true == targetRotation && targetRotationCount + 1 <= 3)
 	{
 		Vec4 vPos = _transform->GetState(Transform::STATE::POSITION);
-		vPos.y += 0.0065f;
+		vPos.y += 0.0035f;
 
 		_transform->SetState(Transform::STATE::POSITION, vPos);
 	}
