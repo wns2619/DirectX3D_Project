@@ -8,6 +8,10 @@
 #include "DynamicObject.h"
 #include "EventMainDoor.h"
 
+#include "PlayerBody.h"
+#include "Player.h"
+#include "Monster.h"
+
 TrigerBox::TrigerBox(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: StaticObject(device, deviceContext)
 {
@@ -267,7 +271,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		if (_fEventSound <= 2.0f)
 		{
 
-			if (_fEventSound >= 1.6f)
+			if (_fEventSound >= 1.4f)
 			{
 				GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
@@ -286,6 +290,48 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 				RELEASE_INSTANCE(GameInstance);
 			}
 		}
+	}
+
+	if (_id == 232 && true == _bTrigerOn && false == _bEventState)
+	{
+		LandObject::LANDOBJET_DESC LandObjectDesc = {};
+
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		Transform* pTransform = static_cast<Transform*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::GAME), LAYER_TAG::LAYER_STATIC, TEXT("ComponentTransform"), "2stBottom", 0));
+		BinaryNavi* pNavi = static_cast<BinaryNavi*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::GAME), LAYER_TAG::LAYER_STATIC, TEXT("ComponentNavigation"), "2stBottom", 0));
+
+		vector<Cell*>& vecCells = pNavi->GetCell();
+
+		LandObjectDesc.pCells = &vecCells;
+		LandObjectDesc.pCellTransform = pTransform;
+
+		Monster* pGameObject = dynamic_cast<Monster*>(pGameInstance->CloneGameObject(TEXT("ProtoTypeDanceMonster"), &LandObjectDesc));
+		pGameObject->GetTransform()->SetState(Transform::STATE::POSITION, Vec4(4.086, 0.f, -9.718, 1.f));
+		pGameObject->GetNavigation()->SetCurrentIndex(289);
+		pGameObject->GetStateMachine()->SetState(State::STATE::RUN);
+
+		pGameInstance->CreateObject(pGameObject, LAYER_TAG::LAYER_MONSTER);
+		RELEASE_INSTANCE(GameInstance);
+
+		_bEventState = true;
+	}
+
+	if (_id == 234 && true == _bTrigerOn && false == _bEventState)
+	{
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		if (false == _bEventState)
+			pGameInstance->StopSound(SOUND_MONSTER2);
+
+		pGameInstance->PlaySound(TEXT("Scream.wav"), SOUND_MONSTER2, 1.f);
+
+		Player* pPlayer = dynamic_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
+		pPlayer->SetScare(true);
+
+		_bEventState = true;
+
+		RELEASE_INSTANCE(GameInstance);
 	}
 
 	if (_id == 236 && true == _bTrigerOn)
@@ -316,12 +362,76 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
 		_float fVolume = 0.f;
-		_float fDistance = 5.f;
+		_float fDistance = 0.f;
 
-		LerpSoundPlayer(fVolume, fDistance, 2.5f, pGameInstance);
+		LerpSoundPlayer(fVolume, fDistance, 3.2f, pGameInstance);
 
-		if (fDistance <= 5.f)
+		if (fDistance <= 3.2f)
 			pGameInstance->PlaySoundLoop(TEXT("kapaet.wav"), SOUND_ENVIRONMENT2, fVolume);
+
+		RELEASE_INSTANCE(GameInstance);
+	}
+
+	if (_id == 240 && true == _bTrigerOn)
+	{
+
+		if (false == _bEventState)
+		{
+			GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+			pGameInstance->StopAll();
+			pGameInstance->PlaySoundLoop(TEXT("Amb_Deep_impacts_stress.wav"), SOUND_SCARE1, 0.8f);
+			pGameInstance->PlaySoundLoop(TEXT("bass #30425.wav"), SOUND_SCARE2, 0.3f);
+
+			RELEASE_INSTANCE(GameInstance);
+
+			_bEventState = true;
+		}
+
+	}
+
+	if (_id == 241 && true == _bTrigerOn && false == _bEventState)
+	{
+
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		uint32 iLevel = pGameInstance->GetCurrentLevelIndex();
+		Player* pPlayer = dynamic_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
+		if (nullptr == pPlayer)
+			return;
+
+		_bool obtain = dynamic_cast<PlayerBody*>(pPlayer->GetPlyaerPart()[Player::PART::PART_BODY])->IsObtainingLight();
+
+		if (true == obtain)
+		{
+			pGameInstance->StopAll();
+			pGameInstance->PlaySoundLoop(TEXT("bass.wav"), SOUND_SCARE1, 0.2f);
+			_bEventState = true;
+		}
+
+		RELEASE_INSTANCE(GameInstance);
+	}
+
+	if (_id == 242 && true == _bTrigerOn && false == _bEventState)
+	{
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		uint32 iLevel = pGameInstance->GetCurrentLevelIndex();
+		Player* pPlayer = dynamic_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
+		if (nullptr == pPlayer)
+			return;
+
+		_bool obtain = dynamic_cast<PlayerBody*>(pPlayer->GetPlyaerPart()[Player::PART::PART_BODY])->IsObtainingLight();
+
+		if (true == obtain)
+		{
+			pGameInstance->StopSound(SOUND_SCARE2);
+			pGameInstance->PlaySound(TEXT("scary pad 2_4.wav"), SOUND_SCARE2, 0.8f);
+
+
+			_bEventState = true;
+		}
+
 
 		RELEASE_INSTANCE(GameInstance);
 	}

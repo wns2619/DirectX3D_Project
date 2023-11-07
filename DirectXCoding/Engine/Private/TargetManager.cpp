@@ -8,7 +8,7 @@ TargetManager::TargetManager()
 {
 }
 
-HRESULT TargetManager::AddRenderTarget(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wstring& strTargetTag, uint32 iSizeX, uint32 iSizeY, DXGI_FORMAT ePixelFormat)
+HRESULT TargetManager::AddRenderTarget(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wstring& strTargetTag, uint32 iSizeX, uint32 iSizeY, DXGI_FORMAT ePixelFormat, const Color& vColor)
 {
     if (nullptr != FindRenderTarget(strTargetTag))
         return E_FAIL;
@@ -60,11 +60,16 @@ HRESULT TargetManager::BeginMRT(ID3D11DeviceContext* deviceContext, const wstrin
     uint32 iNumRTVs = 0;
 
     for (auto& pRenderTarget : *pMRTList)
+    {
         pRenderTargets[iNumRTVs++] = pRenderTarget->GetResourceView();
+        pRenderTarget->Clear();
+    }
+
+    if (iNumRTVs < 0 || iNumRTVs >= 8)
+        return E_FAIL;
 
     deviceContext->OMSetRenderTargets(iNumRTVs, pRenderTargets, _pDepthStencilView);
     
-
     return S_OK;
 }
 
@@ -77,6 +82,35 @@ HRESULT TargetManager::EndMRT(ID3D11DeviceContext* deviceContext)
 
     return S_OK;
 }
+
+#ifdef _DEBUG
+
+HRESULT TargetManager::ReadyDebug(const wstring& strTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
+{
+    RenderTarget* pRenderTarget = FindRenderTarget(strTargetTag);
+
+    if (nullptr == pRenderTarget)
+        return E_FAIL;
+
+    return pRenderTarget->ReadyDebug(fX, fY, fSizeX, fSizeY);
+}
+
+HRESULT TargetManager::Render(const wstring& strMRTTag, Shader* pShader, VIBufferRect* pVIBuffer)
+{
+    list<RenderTarget*>* pMRTList = FindMRT(strMRTTag);
+    if (nullptr == pMRTList)
+        return E_FAIL;
+
+    for (auto& pRenderTarget : *pMRTList)
+        pRenderTarget->Render(pShader, pVIBuffer);
+
+    return S_OK;
+}
+
+#endif // _DEBUG
+
+
+
 
 RenderTarget* TargetManager::FindRenderTarget(const wstring& strTargetTag)
 {

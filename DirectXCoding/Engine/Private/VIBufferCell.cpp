@@ -90,7 +90,7 @@ HRESULT VIBufferCell::Initialize(void* pArg)
 	return S_OK;
 }
 
-XMVECTOR VIBufferCell::SetUp_OnCell(Transform* cellTransform, FXMVECTOR vWorldPos)
+XMVECTOR VIBufferCell::SetUp_OnCell(Transform* cellTransform, FXMVECTOR vWorldPos, _bool bCorrection)
 {
 	// 셀의 정점 정보를 가지고와서..
 	///*vWorldPos *  지형 월드 행렬의 역 => vWorldPos의 위치를 지형의 로컬 스페이스 상의 정보로 변환한다. */
@@ -109,20 +109,15 @@ XMVECTOR VIBufferCell::SetUp_OnCell(Transform* cellTransform, FXMVECTOR vWorldPo
 	XMVECTOR vPlane;
 	vPlane = ::XMPlaneFromPoints(vVertex1, vVertex2, vVertex3);
 
-	//_float x = ::XMVectorGetX(vLocalPos);
-	//_float z = ::XMVectorGetZ(vLocalPos);
-	//_float y = (( - ::XMVectorGetX(vPlane) * x - ::XMVectorGetZ(vPlane) * z) - ::XMVectorGetW(vPlane)) / ::XMVectorGetY(vPlane);
-
-	//_float Test = ((-XMVectorGetX(vPlane) * ::XMVectorGetX(vWorldPos) - (XMVectorGetZ(vPlane) * XMVectorGetZ(vWorldPos)) - XMVectorGetW(vPlane)));
 
 	_float fY = ((-XMVectorGetX(vPlane) * ::XMVectorGetX(vWorldPos) - (XMVectorGetZ(vPlane) * XMVectorGetZ(vWorldPos)) - XMVectorGetW(vPlane))) / XMVectorGetY(vPlane);
 
 	XMVECTOR finalPos;
 	finalPos = ::XMVectorSetY(vWorldPos, fY);
 
-	finalPos.m128_f32[1] += 1.25f;
+	if(true == bCorrection)
+		finalPos.m128_f32[1] += 1.25f;
 
-	//return ::XMVector3TransformCoord(finalPos, cellTransform->GetWorldMatrixCaculator());
 	return finalPos;
 }
 

@@ -23,7 +23,8 @@ MeshOut VS_MAIN(VertexAnimMesh input)
     
     Out.position = mul(bonePosition, WVP);
     Out.uv = input.uv;
-    Out.normal = mul(meshNormal, W);
+    Out.normal = normalize(mul(meshNormal, W));
+    Out.tangent = normalize(mul(float4(input.tangent, 1.f), W));
     Out.worldPosition = mul(bonePosition, W);
     
     return Out;
@@ -35,8 +36,9 @@ PixelOut PS_MAIN(MeshOut input)
     PixelOut Out = (PixelOut) 0;
     
     // 조명 + 내 마테리얼로 나온 최종 색깔 값.
-    //Out.Color = ComputeTeacherLight(float4(input.normal, 1.f), input.uv, input.worldPosition);
-    Out.Color = float4(CalcAmbient(float4(input.normal, 0.f), input.uv), 1.f);
+    ComputeNormalMapping(input.normal.xyz, input.tangent, input.uv);
+    Out.Color = ComputeTeacherLight(float4(input.normal, 1.f), input.uv, input.worldPosition);
+    //Out.Color = float4(CalcAmbient(float4(input.normal, 0.f), input.uv), 1.f);
     
     //// TODO Color  * @@ 
     //float2 fCenter = float2(0.5f, 0.5f);

@@ -214,7 +214,21 @@
     <None Include="..\Public\SimpleMath.inl" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Binaries\Shaders\EngineShaderDefine.fx">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="..\Binaries\Shaders\Shader_Cell.fx">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="..\Binaries\Shaders\Shader_Deferred.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
@@ -352,7 +366,7 @@ call Copy.bat</Command>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../Public/;./;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Public/;../fmod/inc/;./;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <Optimization>MaxSpeed</Optimization>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -362,8 +376,8 @@ call Copy.bat</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;Effects11.lib;DirectXTK.lib;DirectXTex.lib;assimp-vc140-mt.lib;dinput8.lib;tinyxml2.lib;$(CoreLibraryDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../lib/FX11/;../lib/DirectXTK/;../lib/DirectXTex/;../lib/Assimp/;../lib/tiny/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;Effects11.lib;DirectXTK.lib;DirectXTex.lib;assimp-vc140-mt.lib;dinput8.lib;tinyxml2.lib;fmod_vc.lib;fmodL_vc.lib;$(CoreLibraryDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../lib/FX11/;../lib/DirectXTK/;../lib/DirectXTex/;../lib/Assimp/;../lib/tiny/;../fmod/lib/</AdditionalLibraryDirectories>
       <NoEntryPoint>false</NoEntryPoint>
     </Link>
     <PostBuildEvent>

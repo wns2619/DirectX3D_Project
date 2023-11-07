@@ -61,7 +61,7 @@ XMVECTOR LandObject::SetUp_OnCell(FXMVECTOR vWorldPos, int32 currentIndex)
 	if (currentIndex == -1)
 		return XMVECTOR();
 
-	return (*_pCells)[currentIndex]->GetCellBuffer()->SetUp_OnCell(_pCellTransform, vWorldPos);
+	return (*_pCells)[currentIndex]->GetCellBuffer()->SetUp_OnCell(_pCellTransform, vWorldPos, _bHeightCorrection);
 }
 
 void LandObject::Free()

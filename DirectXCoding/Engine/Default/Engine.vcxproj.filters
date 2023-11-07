@@ -214,6 +214,12 @@
     <Filter Include="01.Utility\98.Manager\Sound\fmod">
       <UniqueIdentifier>{7b2c6e82-a3dd-46b6-8d4c-26779562e0bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\06.ShaderFiles">
+      <UniqueIdentifier>{701b80f4-ea6a-41c9-ab14-c789cdfb18a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\06.ShaderFiles\Common">
+      <UniqueIdentifier>{670a3a05-21ac-483b-b049-de9ed2b73e5e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -686,6 +692,12 @@
   <ItemGroup>
     <FxCompile Include="..\Binaries\Shaders\Shader_Cell.fx">
       <Filter>01.Utility\04.Component\Navigation\ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Binaries\Shaders\EngineShaderDefine.fx">
+      <Filter>01.Utility\06.ShaderFiles\Common</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Binaries\Shaders\Shader_Deferred.fx">
+      <Filter>01.Utility\06.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

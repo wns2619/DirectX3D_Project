@@ -26,7 +26,7 @@ public:
 
 public:
 	int32 GetCurrentIndex() { return _iCurrentIndex; }
-
+	void SetCurrentIndex(int32 iIndex) { _iCurrentIndex = iIndex; }
 public:
 	vector<class Cell*>& GetCell() { return _cells; }
 	HRESULT SetUp_Neighbors();

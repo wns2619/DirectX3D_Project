@@ -1,6 +1,11 @@
 #include "LightHelper.fx"
 #include "GlobalShader.fx"
 
+cbuffer testBuffer
+{
+    vector WaterColor = vector(1.f, 1.f, 1.f, 1.f);
+};
+
 struct VS_IN
 {
     float3 position : POSITION;
@@ -14,6 +19,7 @@ struct VS_OUT
     float4 position : SV_POSITION;
     float4 normal   : NORMAL;
     float2 texcoord : TEXCOORD0;
+    float3 vTangent : TANGENT;
     float4 worldPos : TEXCOORD1;
 };
 
@@ -25,7 +31,7 @@ VS_OUT VS_MAIN(VS_IN input)
     
     Out.position = mul(float4(input.position, 1.f), WVP);
     Out.texcoord = input.texcoord;
-    Out.normal = mul(float4(input.normal, 0.f), W);
+    Out.normal = normalize(mul(float4(input.normal, 0.f), W));
     Out.worldPos = mul(float4(input.position, 1.f), W);
     
     return Out;
@@ -37,6 +43,7 @@ struct PS_IN
     float4 position : SV_POSITION;
     float4 normal   : NORMAL;
     float2 texcoord : TEXCOORD0;
+    float3 vTangent : TANGENT;
     float4 worldPos : TEXCOORD1;
 };
 
@@ -49,9 +56,13 @@ PS_OUT PS_MAIN(PS_IN input)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    ///Out.color = ComputeTeacherLight(input.normal, input.texcoord, input.worldPos);
+    ComputeNormalMapping(input.normal.xyz, input.vTangent, input.texcoord);
+    Out.color = ComputeTeacherLight(input.normal, input.texcoord, input.worldPos);
     
-    Out.color = float4(CalcAmbient(input.normal, input.texcoord), 1.f);
+    
+    //Out.color = float4(CalcAmbient(input.normal, input.texcoord), 1.f);
+    
+    //Out.color *= WaterColor;
     
     //Out.color += CalcDirectional(input.worldPos, input.texcoord, input.normal);
     

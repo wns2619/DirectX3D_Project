@@ -28,6 +28,9 @@ public:
 	virtual HRESULT Render()						override;
 
 public:
+	const _bool& IsObtainingLight() { return _bObtainLight; }
+
+public:
 	void SetObtainLight(_bool obtain) { _bObtainLight = obtain; }
 	void SetObtainGun(_bool obtain) { _bObtainGun = obtain; }
 

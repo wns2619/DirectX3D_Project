@@ -39,6 +39,10 @@ void MonsterDance::ChangeSetState()
 {
 }
 
+void MonsterDance::LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMaxDistance, GameInstance* pGameInstance)
+{
+}
+
 MonsterDance* MonsterDance::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, GameObject* pOwner)
 {
 	MonsterDance* pInstance = new MonsterDance(device, deviceContext);

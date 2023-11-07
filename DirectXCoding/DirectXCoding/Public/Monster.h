@@ -39,6 +39,12 @@ public:
 	virtual void OnCollisionStay(class Collider* pOther);
 	virtual void OnCollisionExit(class Collider* pOther);
 
+public:
+	StateMachine* GetStateMachine() { return _pStateMachine; }
+
+private:
+	void TrigerBoxEvent(Collider* pOther);
+
 private:
 	Renderer* _render = nullptr;
 	Shader* _shader = nullptr;
@@ -48,6 +54,10 @@ private:
 	uint32 animationcount = 0;
 
 	STATE_DESC _comNames;
+
+private:
+	_bool _bDeadDelay = false;
+	_float _fLifeTime = 0.f;
 
 private:
 	HRESULT ReadyComponents();

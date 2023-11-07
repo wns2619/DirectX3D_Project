@@ -30,11 +30,23 @@ private:
 	class TargetManager* _pTargetManager = nullptr;
 
 private:
+	class VIBufferRect* _pVIBuffer = nullptr;
+	class Shader* _pShader = nullptr;
+
+	Matrix _mViewMatrix, _mProjMatrix;
+
+private:
 	HRESULT	RenderPriority();
 	HRESULT	RenderNonLight();
 	HRESULT	RenderNonBlend();
 	HRESULT	RenderBlend();
 	HRESULT	RenderUI();
+
+#ifdef _DEBUG
+private:
+	HRESULT RenderDebug();
+#endif // _DEBUG
+
 	
 public:
 	static Renderer* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);

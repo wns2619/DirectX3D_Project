@@ -9,6 +9,7 @@
 #include "MonsterWalk.h"
 #include "MonsterRun.h"
 #include "MonsterDance.h"
+#include "TrigerBox.h"
 
 Monster::Monster(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: LandObject(device, deviceContext, OBJECT_TYPE::MONSTER)
@@ -32,7 +33,7 @@ HRESULT Monster::InitializePrototype()
 HRESULT Monster::Initialize(void* pArg)
 {
 	
-	//__super::Initialize(pArg);
+	__super::Initialize(pArg);
 
 	if (FAILED(ReadyComponents()))
 		return E_FAIL;
@@ -65,10 +66,29 @@ void Monster::Tick(const _float& fTimeDelta)
 	if (_enabled)
 		return;
 
+	if (true == _bDeadDelay)
+	{
+		_fLifeTime += fTimeDelta;
+
+		if (_fLifeTime >= 1.f)
+		{
+			GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+			pGameInstance->DeleteObject(this);
+
+			RELEASE_INSTANCE(GameInstance);
+		}
+	}
+
+	_transform->Forward(fTimeDelta, _pNavigation);
+
+	XMVECTOR vPosition = __super::SetUp_OnCell(_transform->GetState(Transform::STATE::POSITION), _pNavigation->GetCurrentIndex());
+	_transform->SetState(Transform::STATE::POSITION, vPosition);
+
 	_pStateMachine->UpdateStateMachine(fTimeDelta);
 
 
-	//_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
+	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
 
 void Monster::LateTick(const _float& fTimeDelta)
@@ -107,11 +127,11 @@ HRESULT Monster::Render()
 	}
 
 #ifdef _DEBUG
-	//_pCollider->Render();
+	_pCollider->Render();
 #endif // _DEBUG
 
 #ifdef _DEBUG
-	//_pNavigation->Render();
+	_pNavigation->Render();
 #endif // _DEBUG
 
 
@@ -126,8 +146,8 @@ void Monster::OnCollisionEnter(Collider* pOther)
 
 void Monster::OnCollisionStay(Collider* pOther)
 {
-	
-
+	if (pOther->GetOwner()->GetModelName() == "TrigerBox")
+		TrigerBoxEvent(pOther);
 }
 
 void Monster::OnCollisionExit(Collider* pOther)
@@ -135,6 +155,20 @@ void Monster::OnCollisionExit(Collider* pOther)
 
 }
 
+void Monster::TrigerBoxEvent(Collider* pOther)
+{
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	uint32 id = pOther->GetOwner()->GetIdNumber();
+
+	if (id == 234)
+	{
+		dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+		_bDeadDelay = true;
+	}
+
+	RELEASE_INSTANCE(GameInstance);
+}
 
 HRESULT Monster::ReadyComponents()
 {
@@ -162,19 +196,37 @@ HRESULT Monster::ReadyComponents()
 
 	/* Transform Component */
 	Transform::TRANSFORM_DESC transformDesc;
-	transformDesc.speedPerSec = 2.f;
+	transformDesc.speedPerSec = 5.f;
 	transformDesc.rotationRadianPerSec = ::XMConvertToRadians(90.f);
 
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
+		if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
 		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform), &transformDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeStateMachine"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeStateMachine"),
 		TEXT("ComponentStateMachine"), reinterpret_cast<Component**>(&_pStateMachine))))
 		return E_FAIL;
 
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeAnimator"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAnimator"),
 		TEXT("ComponentAnimator"), reinterpret_cast<Component**>(&_pAnimator))))
+		return E_FAIL;
+
+	Navigation::NAVIGATION_DESC NavigationDesc;
+	NavigationDesc._iCurrentIndex = 289;
+
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeNavigation"),
+		TEXT("ComponentNavigation"), reinterpret_cast<Component**>(&_pNavigation), &NavigationDesc)))
+		return E_FAIL;
+
+	BoundingAABB::BOUNDING_AABB_DESC aabbDesc;
+	{
+		aabbDesc.pOwner = this;
+		aabbDesc.vExtents = Vec3(0.3f, 0.8, 0.5f);
+		aabbDesc.vCenter = Vec3(0.f, aabbDesc.vExtents.y, 0.f);
+	}
+
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAABBCollider"),
+		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &aabbDesc)))
 		return E_FAIL;
 
 

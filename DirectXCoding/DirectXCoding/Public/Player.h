@@ -38,13 +38,14 @@ public:
 public:
 	void KeyInput(const _float& timeDelta);
 	void TrigerBoxEvent(Collider* pOther);
-
+	void ScareCamera();
 public:
 	_bool GetObtainKey() { return _bObtatinKey; }
 	_bool GetIsJoom() { return _bIsJoom; }
 public:
 	void SetInteration(_bool interaction) { _bInteraction = interaction; }
 	void SetObtainKey(_bool obtain) { _bObtatinKey = obtain; }
+	void SetScare(_bool scare) { _bScare = scare; }
 public:
 	vector<class GameObject*>& GetPlyaerPart() { return m_pPlayerPart; }
 	StateMachine* GetStateMachine() { return _pStateMachine; }
@@ -68,6 +69,10 @@ private:
 	_bool _bObtatinKey = false;
 	_bool _bIsJoom = false;
 
+private:
+	_bool _bScare = false;
+	uint32 _iPeriod = 0;
+	int32 _iPulseTick = 11;
 private:
 	HRESULT ReadyComponents();
 	HRESULT BindShaderResuorces();

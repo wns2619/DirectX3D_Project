@@ -62,6 +62,8 @@ HRESULT Player::Initialize(void* pArg)
 	_pStateMachine->SetState(State::STATE::IDLE);
 	_transform->SetState(Transform::STATE::POSITION, ::XMVectorSet(11.f, 0.f, -45.5f, 1.f));
 
+	_bHeightCorrection = true;
+
 
 	return S_OK;
 }
@@ -175,6 +177,8 @@ void Player::OnCollisionStay(Collider* pOther)
 			{
 				dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->SetObtainLight(true);
 				pGameInstance->DeleteObject(pOther->GetOwner());
+
+				pGameInstance->StopAll();
 			}
 		}
 		else if (pOther->GetOwner()->GetModelName() == "Key")
@@ -285,6 +289,38 @@ void Player::KeyInput(const _float& timeDelta)
 	}
 
 
+	if (true == _bScare)
+	{
+		// TODO : 카메라 줌인 줌 아웃. 몇 초간 시키고 다시 원상 복귀. 
+		_float fFov = dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->PlayerCameraFov();
+
+		if (_iPeriod == 2)
+		{
+			if (::XMConvertToRadians(70.f) > fFov)
+			{
+				dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->AddPlayerCameraFov(::XMConvertToRadians(2.f));
+				_bScare = false;
+			}
+		}
+
+
+		if (_iPeriod < 2)
+		{
+			if (0 < _iPulseTick)
+				dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->AddPlayerCameraFov(::XMConvertToRadians(-2.f));
+			else
+				dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->AddPlayerCameraFov(::XMConvertToRadians(2.f));
+		}
+		--_iPulseTick;
+
+		if (-10 == _iPulseTick)
+		{
+			_iPulseTick = 11;
+			++_iPeriod;
+		}
+	}
+
+
 	XMVECTOR vPosition = __super::SetUp_OnCell(_transform->GetState(Transform::STATE::POSITION), _pNavigation->GetCurrentIndex());
 
 	_transform->SetState(Transform::STATE::POSITION, vPosition);
@@ -304,6 +340,15 @@ void Player::TrigerBoxEvent(Collider* pOther)
 		dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
 	else if (id == 232)
 	{
+		// TODO : Monster appeared
+		const _bool& Isobtain = dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->IsObtainingLight();
+
+		if (true == Isobtain)
+			dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+
+	}
+	else if (id == 234)
+	{
 
 	}
 	else if (id == 236)
@@ -318,9 +363,28 @@ void Player::TrigerBoxEvent(Collider* pOther)
 		// Sound 2개 재생.
 		// 
 	}
+	else if (id == 240)
+		dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+	else if (id == 241)
+	{
+		const _bool& Isobtain = dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->IsObtainingLight();
 
+		if (true == Isobtain)
+			dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+	}
+	else if (id == 242)
+	{
+		const _bool& Isobtain = dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->IsObtainingLight();
+
+		if(true == Isobtain)
+			dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+	}
 
 	RELEASE_INSTANCE(GameInstance);
+}
+
+void Player::ScareCamera()
+{
 }
 
 HRESULT Player::ReadyComponents()

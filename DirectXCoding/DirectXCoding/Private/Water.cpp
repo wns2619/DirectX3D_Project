@@ -46,10 +46,13 @@ HRESULT Water::Render()
 	if (_enabled)
 		return S_OK;
 
+	
+	Color vColor = Color(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(__super::BindShaderResource()))
 		return E_FAIL;
 
+	_shader->BindRawValue("WaterColor", &vColor, sizeof(Color));
 
 	uint32 numMeshes = _binaryModel->GetNumMeshes();
 

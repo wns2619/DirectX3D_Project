@@ -40,6 +40,7 @@ private:
 
 protected:
 	class BinaryNavi* _pNavigation = nullptr;
+	_bool _bHeightCorrection = false;
 
 public:
 	virtual GameObject* Clone(void* pArg) = 0;

@@ -4,7 +4,7 @@
 
 BEGIN(Engine)
 class GameObject;
-
+class GameInstance;
 END
 
 BEGIN(Client)
@@ -27,7 +27,7 @@ public:
 
 public:
 	virtual void ChangeSetState() override;
-
+	void LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMaxDistance, GameInstance* pGameInstance);
 
 public:
 	static MonsterWalk* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, GameObject* pOwner);

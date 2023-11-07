@@ -14,11 +14,18 @@ private:
 
 public:
 	HRESULT AddRenderTarget(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
-		const wstring& strTargetTag, uint32 iSizeX, uint32 iSizeY, DXGI_FORMAT ePixelFormat);
+		const wstring& strTargetTag, uint32 iSizeX, uint32 iSizeY, DXGI_FORMAT ePixelFormat, const Color& vColor);
 	HRESULT AddMRT(const wstring& strMRTTag, const wstring& strTargetTag);
 
 	HRESULT BeginMRT(ID3D11DeviceContext* deviceContext, const wstring& strMRTTag);
 	HRESULT EndMRT(ID3D11DeviceContext* deviceContext);
+
+#ifdef _DEBUG
+public:
+	HRESULT ReadyDebug(const wstring& strTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
+	HRESULT Render(const wstring& strMRTTag, class Shader* pShader, class VIBufferRect* pVIBuffer);
+#endif // _DEBUG
+
 
 private:
 	map<const wstring, class RenderTarget*> _renderTargets;

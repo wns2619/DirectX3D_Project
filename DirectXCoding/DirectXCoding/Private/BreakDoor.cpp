@@ -123,7 +123,7 @@ void BreakDoor::OnCollisionStay(Collider* pOther)
 
 			if (false == _bChageMoment)
 			{
-				_fTime += pGameInstance->ComputeTimeDelta(TEXT("Timer_60")) * 22.f;
+				_fTime += pGameInstance->ComputeTimeDelta(TEXT("Timer_60")) * 130.f;
 
 				if (_fTime >= 0.65f)
 				{
