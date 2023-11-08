@@ -125,7 +125,7 @@ private:
 	class InputHandler* _inputHandler = nullptr;
 	class CollisionManager* _collisionManager = nullptr;
 	class EventManager* _pEventManager = nullptr;
-	class TargetManager* _pTargetManager = nullptr;
+	class RenderTargetManager* _pTargetManager = nullptr;
 	class SoundManager* _pSoundManager = nullptr;
 
 public:

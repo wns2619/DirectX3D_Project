@@ -453,12 +453,6 @@
     <ClInclude Include="..\Public\EventManager.h">
       <Filter>01.Utility\98.Manager\Event</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\RenderTarget.h">
-      <Filter>01.Utility\05.RenderTargets</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\TargetManager.h">
-      <Filter>01.Utility\98.Manager\RenderTargetManager</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\SoundManager.h">
       <Filter>01.Utility\98.Manager\Sound</Filter>
     </ClInclude>
@@ -482,6 +476,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\fmod\fmod_output.h">
       <Filter>01.Utility\98.Manager\Sound\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RenderTarget.h">
+      <Filter>01.Utility\05.RenderTargets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RenderTargetManager.h">
+      <Filter>01.Utility\98.Manager\RenderTargetManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -674,14 +674,14 @@
     <ClCompile Include="..\Private\EventManager.cpp">
       <Filter>01.Utility\98.Manager\Event</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\SoundManager.cpp">
+      <Filter>01.Utility\98.Manager\Sound</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\RenderTarget.cpp">
       <Filter>01.Utility\05.RenderTargets</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\TargetManager.cpp">
+    <ClCompile Include="..\Private\RenderTargetManager.cpp">
       <Filter>01.Utility\98.Manager\RenderTargetManager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\SoundManager.cpp">
-      <Filter>01.Utility\98.Manager\Sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

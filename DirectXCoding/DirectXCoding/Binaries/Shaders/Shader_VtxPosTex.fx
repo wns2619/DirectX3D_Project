@@ -18,30 +18,26 @@ VertexOut VS_MAIN(VertexTextureNormal input)
     return output;
 }
 
-PixelOut PS_MAIN(VertexOut input)
+struct PS_OUT
 {
-    PixelOut Out = (PixelOut) 0;
+    float4 vDiffuse : SV_TARGET0;
+    float4 vNormal : SV_TARGET1;
+};
+
+PS_OUT PS_MAIN(VertexOut input)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vMtrlDiffuse = DiffuseMap.Sample(LinearSampler, input.uv);
     
-    vector vMaterialDiffuse = DiffuseMap.Sample(LinearSampler, input.uv) * NewColor;
-    
-    if (vMaterialDiffuse.a < 0.3f)
+    if (vMtrlDiffuse.a < 0.3f)
         discard;
     
-    // Diffuse + ambient
-    vector shade = max(dot(normalize(-GlobalLight.Direction), normalize(input.normal)), 0.f) +
-    GlobalLight.Ambient * Material.Ambient;
-    
-    // Specular
-    float3 reflection = reflect(normalize(GlobalLight.Direction), normalize(input.normal));
-    float3 eyelook = input.worldPosition.xyz - CameraPosition();
-    
-    float specular = pow(max(dot(normalize(eyelook), normalize(reflection)), 0.f), 30.f);
-    
-    Out.Color = (GlobalLight.Diffuse * vMaterialDiffuse) * saturate(shade) + (GlobalLight.Specular * Material.Specular) * specular;
-    
+    Out.vDiffuse = vMtrlDiffuse;
+    vector vNormal = NormalMap.Sample(LinearSampler, input.uv);
+    Out.vNormal = vector(input.normal.xyz * 0.5f + 0.5f, 0.f);
+        
     return Out;
-   
-    //Out.Color = ComputeTeacherLight(input.normal, input.uv, input.worldPosition.xyz);
 }
 
 technique11 DefaultTechnique

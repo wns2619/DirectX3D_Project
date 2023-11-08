@@ -101,6 +101,7 @@ HRESULT WallPainting::Render()
 
 	_shader->BindRawValue("NewColor", &vColor, sizeof(Color));
 
+
 	uint32 numMeshes = _binaryModel->GetNumMeshes();
 
 

@@ -84,12 +84,6 @@ cbuffer MaterialBuffer
     MaterialDesc Material;
 };
 
-// ShaderResourceVIEW
-
-Texture2D DiffuseMap;
-Texture2D SpecularMap;
-Texture2D NormalMap;
-
 // Function
 float3 GammaToLinear(float3 color)
 {

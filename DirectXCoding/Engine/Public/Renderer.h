@@ -27,18 +27,21 @@ public:
 
 private:
 	list<GameObject*> _renderObjects[static_cast<int32>(RENDERGROUP::RENDER_END)];
-	class TargetManager* _pTargetManager = nullptr;
+	class RenderTargetManager* _pTargetManager = nullptr;
+	class LightManager* _pLightManager = nullptr;
 
 private:
 	class VIBufferRect* _pVIBuffer = nullptr;
 	class Shader* _pShader = nullptr;
 
-	Matrix _mViewMatrix, _mProjMatrix;
+	Matrix _mWorldMatrix, _mViewMatrix, _mProjMatrix;
 
 private:
 	HRESULT	RenderPriority();
 	HRESULT	RenderNonLight();
 	HRESULT	RenderNonBlend();
+	HRESULT RenderLightAcc();
+	HRESULT RenderDeferred();
 	HRESULT	RenderBlend();
 	HRESULT	RenderUI();
 

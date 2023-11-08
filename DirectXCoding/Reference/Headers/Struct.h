@@ -49,8 +49,8 @@ namespace Engine
 
 	struct ENGINE_DLL VertexTextureData
 	{
-		Vec3 position = { 0,0,0, };
-		Vec2 uv = { 0,0 };
+		Vec3 position;
+		Vec2 uv;
 
 		static const uint32 numElements = 2;
 		static const D3D11_INPUT_ELEMENT_DESC Elements[numElements];

@@ -6,8 +6,8 @@
 #include "Picking.h"
 #include "CollisionManager.h"
 #include "EventManager.h"
-#include "TargetManager.h"
 #include "SoundManager.h"
+#include "RenderTargetManager.h"
 
 IMPLEMENT_SINGLETON(GameInstance)
 
@@ -17,11 +17,11 @@ GameInstance::GameInstance()
     _componentManager(ComponentManager::GetInstance()), _cameraHelper(CameraHelper::GetInstance())
     , _inputManager(InputManager::GetInstance()), _lightManager(LightManager::GetInstance())
     , _picking(Picking::GetInstance()), _inputHandler(InputHandler::GetInstance()), _collisionManager(CollisionManager::GetInstance())
-    , _pEventManager(EventManager::GetInstance()), _pTargetManager(TargetManager::GetInstance())
+    , _pEventManager(EventManager::GetInstance()), _pTargetManager(RenderTargetManager::GetInstance())
     , _pSoundManager(SoundManager::GetInstance())
 {
+    Safe_AddRef<RenderTargetManager*>(_pTargetManager);
     Safe_AddRef<SoundManager*>(_pSoundManager);
-    Safe_AddRef<TargetManager*>(_pTargetManager);
     Safe_AddRef<InputHandler*>(_inputHandler);
     Safe_AddRef<InputManager*>(_inputManager);
     Safe_AddRef<Picking*>(_picking);
@@ -53,8 +53,6 @@ HRESULT GameInstance::Initialize_Engine(uint32 levelNumbers, HINSTANCE instance,
     _pSoundManager->ReadySound();
         
 
- /*   if (FAILED(_lightManager->ReserveManager(levelNumbers)))
-        return E_FAIL;*/
 
     return S_OK;
 }
@@ -506,8 +504,8 @@ void GameInstance::Release_Engine()
 {
     GameInstance::GetInstance()->DestroyInstance();
 
+    RenderTargetManager::GetInstance()->DestroyInstance();
     SoundManager::GetInstance()->DestroyInstance();
-    TargetManager::GetInstance()->DestroyInstance();
     LevelManager::GetInstance()->DestroyInstance();
     ObjectManager::GetInstance()->DestroyInstance();
     EventManager::GetInstance()->DestroyInstance();
@@ -526,8 +524,8 @@ void GameInstance::Free()
 {
     __super::Free();
 
+    Safe_Release<RenderTargetManager*>(_pTargetManager);
     Safe_Release<SoundManager*>(_pSoundManager);
-    Safe_Release<TargetManager*>(_pTargetManager);
     Safe_Release<CameraHelper*>(_cameraHelper);
     Safe_Release<ComponentManager*>(_componentManager);
     Safe_Release<ObjectManager*>(_objectManager);

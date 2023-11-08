@@ -135,6 +135,9 @@ HRESULT BinaryModel::BindMaterialTexture(Shader* shader, const char* constantNam
 
 	uint32 iMaterialIndex = m_Meshes[meshIndex]->GetMaterialIndex();
 
+	if (nullptr == _materials[iMaterialIndex]._texture[type])
+		return S_OK;
+
 	if (iMaterialIndex >= _numMaterial)
 		return E_FAIL;
 

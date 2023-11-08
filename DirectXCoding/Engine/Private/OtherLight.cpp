@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "OtherLight.h"
+#include "VIBufferRect.h"
+#include "Shader.h"
 
 OtherLight::OtherLight()
 {
@@ -15,6 +17,21 @@ HRESULT OtherLight::Initialize(const LIGHT_DESC& lightdesc)
 		_strlightName = "Point";
 	else
 		_strlightName = "Spot";
+
+	return S_OK;
+}
+
+HRESULT OtherLight::Render(Shader* pShader, VIBufferRect* pVIBuffer)
+{
+	if(FAILED(pShader->BindRawValue("vLightDir", &_lightDesc.Direction, sizeof(Vec4))))
+		return E_FAIL;
+
+	if (FAILED(pShader->Begin(1)))
+		return E_FAIL;
+
+	if (FAILED(pVIBuffer->Render()))
+		return E_FAIL;
+
 
 	return S_OK;
 }

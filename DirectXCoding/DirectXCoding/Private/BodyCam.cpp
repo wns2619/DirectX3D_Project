@@ -65,37 +65,6 @@ void BodyCam::Tick(const _float& fTimeDelta)
 
 	Compute_RenderMatrix(_transform->GetWorldMatrix() * worldMatrix);
 
-	//if (_remainingShakeDuration > 0.f)
-	//{
-	//	_float randomAngle = RandomFloatInRange(0.0f, XM_2PI); // 0에서 2π 사이의 랜덤한 각도
-	//	_float shakeAmplitude = RandomFloatInRange(0.0f, _fShakeMagnitude);
-
-	//	// 랜덤한 변위를 생성
-	//	XMFLOAT3 displacement;
-	//	displacement.x = shakeAmplitude * cosf(randomAngle);
-	//	displacement.y = shakeAmplitude * sinf(randomAngle);
-	//	displacement.z = 0.0f;
-
-	//	// 현재 뷰 행렬에 랜덤 변위를 더함
-	//	XMMATRIX view = _WorldMatrix;
-	//	view.r[3] = XMVectorAdd(view.r[3], XMLoadFloat3(&displacement));
-	//	_WorldMatrix = view;
-
-
-	//	_remainingShakeDuration -= fTimeDelta;
-
-	//	// 쉐이크 지속 시간이 끝나면 원래 행렬로 복원
-	//	if (_remainingShakeDuration <= 0.0f)
-	//	{
-	//		_remainingShakeDuration = 0.0f; // 정확한 완료를 보장하기 위해 0으로 설정
-
-	//		// 원래 행렬과 현재 행렬을 선형 보간하여 부드럽게 복원
-	//		float lerpFactor = 1.0f - (_remainingShakeDuration / _fShakeDuration);
-	//		_WorldMatrix = LerpMatrix(_originalMatrix, _WorldMatrix, lerpFactor);
-	//	}
-	//}
-
-
 	_pCameraHelper->SetTransform(CameraHelper::TRANSFORMSTATE::D3DTS_VIEW, _WorldMatrix.Invert());
 	_pCameraHelper->SetTransform(CameraHelper::TRANSFORMSTATE::D3DTS_PROJ,
 		::XMMatrixPerspectiveFovLH(_fFov, _fAspect, _fNear, _fFar));

@@ -105,7 +105,7 @@ HRESULT BackGround::Ready_Components()
 
 HRESULT BackGround::Bind_ShaderResources()
 {
-	if (FAILED(_transform->BindShaderResources(_shader, "worldMatrix")))
+	/*if (FAILED(_transform->BindShaderResources(_shader, "worldMatrix")))
 		return E_FAIL;
 	if (FAILED(_shader->BindMatrix("viewMatrix", &_viewMatrix)))
 		return E_FAIL;
@@ -115,7 +115,7 @@ HRESULT BackGround::Bind_ShaderResources()
 	if (FAILED(_texture->BindShaderResource(_shader, "ShadersTexture", 0)))
 		return E_FAIL;
 	if (FAILED(_texture->BindShaderReosurces(_shader, "ShadersTextures")))
-		return E_FAIL;
+		return E_FAIL;*/
 
 	return S_OK;
 }

@@ -39,6 +39,8 @@ void Water::Tick(const _float& timeDelta)
 
 void Water::LateTick(const _float& timeDelta)
 {
+	if (!_enabled)
+		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
 }
 
 HRESULT Water::Render()
@@ -46,19 +48,17 @@ HRESULT Water::Render()
 	if (_enabled)
 		return S_OK;
 
-	
-	Color vColor = Color(1.f, 1.f, 1.f, 1.f);
-
 	if (FAILED(__super::BindShaderResource()))
 		return E_FAIL;
-
-	_shader->BindRawValue("WaterColor", &vColor, sizeof(Color));
 
 	uint32 numMeshes = _binaryModel->GetNumMeshes();
 
 	for (size_t i = 0; i < numMeshes; i++)
 	{
-		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
+		//if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
+		//	return E_FAIL;
+
+		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "NormalMap", i, TextureType_NORMALS)))
 			return E_FAIL;
 
 		if (FAILED(_shader->Begin(0)))

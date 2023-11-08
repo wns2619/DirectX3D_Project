@@ -1,6 +1,8 @@
 #ifndef _GLOBAL_FX_
 #define _GLOBAL_FX_
 
+#include "EngineShaderDefine.fx"
+
 cbuffer TransformBuffer
 {
     matrix W;
@@ -50,6 +52,7 @@ struct VertexMesh
     float3 bittangent : BITTANGENT;
 };
 
+// Anim
 struct VertexAnimMesh
 {
     float3 position : POSITION;
@@ -70,7 +73,7 @@ struct VertexOut
     float4 worldPosition : TEXCOORD1;
 };
 
-struct MeshOut
+struct VertexAnimMeshOut
 {
     float4 position : SV_POSITION;
     float3 normal : NORMAL;
@@ -98,82 +101,15 @@ struct PixelOut
 };
 
 
-SamplerState LinearSampler : register(s0)
-{
-    Filter = MIN_MAG_MIP_LINEAR;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
-
-SamplerState PointSampler : register(s1)
-{
-    Filter = MIN_MAG_MIP_POINT;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
-
-RasterizerState FillModeWireFrame
-{
-    FillMode = WireFrame;
-    FrontCounterClockwise = false;
-};
-
-RasterizerState FillModeSolid
-{
-    CullMode = NONE;
-    FillMode = SOLID;
-    FrontCounterClockwise = false;
-};
-
-DepthStencilState DSS_None
-{
-    DepthEnable = false;
-    DepthWriteMask = zero;
-
-};
-
-DepthStencilState DSS_Default
-{
-    DepthEnable = true;
-    DepthWriteMask = all;
-    DepthFunc = LESS_EQUAL;
-};
-
-
-#define SOLID_PASS_VP(name, vs, ps)                 \
-pass name                                           \
-{                                                   \
-    SetRasterizerState(FillModeSolid);              \
-    SetDepthStencilState(DSS_Default, 0);           \
-    SetVertexShader(CompileShader(vs_5_0, vs()));   \
-    SetPixelShader(CompileShader(ps_5_0, ps()));    \
+#define SOLID_PASS_VP(name, vs, ps)                                    \
+pass name                                                              \
+{                                                                      \
+    SetRasterizerState(RS_Default);                                    \
+    SetDepthStencilState(DSS_Default, 0);                              \
+	SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff); \
+    SetVertexShader(CompileShader(vs_5_0, vs()));                      \
+    SetPixelShader(CompileShader(ps_5_0, ps()));                       \
 }
-
-#define SOLID_PASS_VPDEPTH(name, vs, ps)            \
-pass name                                           \
-{                                                   \
-    SetRasterizerState(FillModeSolid);              \
-    SetDepthStencilState(DSS_None, 0);              \
-    SetVertexShader(CompileShader(vs_5_0, vs()));   \
-    SetPixelShader(CompileShader(ps_5_0, ps()));    \
-}
-
-#define WIRE_PASS_VP(name, vs, ps)                  \
-pass name                                           \
-{                                                   \
-    SetRasterizerState(FillModeWireFrame);          \
-    SetDepthStencilState(DSS_Default, 0);           \
-    SetVertexShader(CompileShader(vs_5_0, vs()));   \
-    SetPixelShader(CompileShader(ps_5_0, ps()));    \
-}
-
-//#define NONE_PASS_VP(name, vs, ps)                  \
-//pass name                                           \
-//{                                                   \
-//    SetRasterizerState(FillModelNone);              \
-//    SetVertexShader(CompileShader(vs_5_0, vs()));   \
-//    SetPixelShader(CompileShader(ps_5_0, ps()));    \
-//}
 
 float3 CameraPosition()
 {

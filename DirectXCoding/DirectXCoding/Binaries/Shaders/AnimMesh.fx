@@ -1,9 +1,9 @@
 #include "LightHelper.fx"
 #include "GlobalShader.fx"
 
-MeshOut VS_MAIN(VertexAnimMesh input)
+VertexAnimMeshOut VS_MAIN(VertexAnimMesh input)
 {
-    MeshOut Out = (MeshOut) 0;
+    VertexAnimMeshOut Out = (VertexAnimMeshOut) 0;
     
     
     float fW = 1.f - (input.blendWeights.x + input.blendWeights.y + input.blendWeights.z);
@@ -19,25 +19,38 @@ MeshOut VS_MAIN(VertexAnimMesh input)
     
     matrix WVP = ComputeTransformMatrix(W, V, P);
     
-    
-    
+   
     Out.position = mul(bonePosition, WVP);
     Out.uv = input.uv;
     Out.normal = normalize(mul(meshNormal, W));
-    Out.tangent = normalize(mul(float4(input.tangent, 1.f), W));
+    Out.tangent = normalize(mul(float4(input.tangent, 0.f), W));
     Out.worldPosition = mul(bonePosition, W);
     
     return Out;
 }
 
-
-PixelOut PS_MAIN(MeshOut input)
+struct PS_OUT
 {
-    PixelOut Out = (PixelOut) 0;
+    float4 vDiffuse : SV_TARGET0;
+    float4 vNormal : SV_TARGET1;
+};
+
+PS_OUT PS_MAIN(VertexAnimMeshOut input)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vMtrlDiffuse = DiffuseMap.Sample(LinearSampler, input.uv);
+    
+    if (vMtrlDiffuse.a < 0.3f)
+        discard;
+    
+    Out.vDiffuse = vMtrlDiffuse;
+    ComputeNormalMapping(input.normal.xyz, input.tangent, input.uv);
+    Out.vNormal = float4(input.normal, 0.f) * 0.3;
+    //Out.vNormal = vector(input.normal.xyz * 0.5f + 0.5f, 0.f);
     
     // 조명 + 내 마테리얼로 나온 최종 색깔 값.
-    ComputeNormalMapping(input.normal.xyz, input.tangent, input.uv);
-    Out.Color = ComputeTeacherLight(float4(input.normal, 1.f), input.uv, input.worldPosition);
+    //Out.Color = ComputeTeacherLight(float4(input.normal, 1.f), input.uv, input.worldPosition);
     //Out.Color = float4(CalcAmbient(float4(input.normal, 0.f), input.uv), 1.f);
     
     //// TODO Color  * @@ 
@@ -59,5 +72,4 @@ PixelOut PS_MAIN(MeshOut input)
 technique11 MeshTechnique
 {
     SOLID_PASS_VP(AnimMesh, VS_MAIN, PS_MAIN)
-    SOLID_PASS_VPDEPTH(PlayerMesh, VS_MAIN, PS_MAIN)
 }

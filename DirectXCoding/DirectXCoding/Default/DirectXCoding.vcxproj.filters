@@ -411,9 +411,6 @@
     <ClCompile Include="..\Private\EditorTerrain.cpp">
       <Filter>소스 파일\02.GameObjects\01.Terrain\EditTerrain</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Player.cpp">
-      <Filter>소스 파일\02.GameObjects\03.Player</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\App.cpp">
       <Filter>소스 파일\00.Main</Filter>
     </ClCompile>
@@ -513,18 +510,12 @@
     <ClCompile Include="..\Private\Water.cpp">
       <Filter>소스 파일\02.GameObjects\08. Water</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp">
+      <Filter>소스 파일\02.GameObjects\03.Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\Binaries\Shaders\Shader_VtxPosTex.fx">
-      <Filter>소스 파일\98.Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Binaries\Shaders\DirectionalLight.fx">
-      <Filter>소스 파일\98.Shaders\MapShader</Filter>
-    </FxCompile>
     <FxCompile Include="..\Binaries\Shaders\HillsShader.fx">
-      <Filter>소스 파일\98.Shaders\MapShader</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Binaries\Shaders\WireFrameHills.fx">
       <Filter>소스 파일\98.Shaders\MapShader</Filter>
     </FxCompile>
     <FxCompile Include="..\Binaries\Shaders\DefaultMeshShader.fx">
@@ -538,6 +529,9 @@
     </FxCompile>
     <FxCompile Include="..\Binaries\Shaders\LightHelper.fx">
       <Filter>소스 파일\98.Shaders\Common</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Binaries\Shaders\Shader_VtxPosTex.fx">
+      <Filter>소스 파일\98.Shaders\ObjectShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

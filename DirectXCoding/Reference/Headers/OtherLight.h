@@ -20,6 +20,9 @@ public:
 	void SetLightName(const string& name) { _strlightName = name; }
 	const string& GetLightName() { return _strlightName; }
 
+public:
+	HRESULT Render(class Shader* pShader, class VIBufferRect* pVIBuffer);
+
 private:
 	LIGHT_DESC _lightDesc;
 	string _strlightName = "";

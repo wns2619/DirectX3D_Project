@@ -125,7 +125,7 @@ HRESULT Shader::BindTexture(const _char* constantName, ID3D11ShaderResourceView*
 		return E_FAIL;
 
 	return resourceVariable->SetResource(srv);
-}
+ }
 
 HRESULT Shader::BindTextures(const _char* constantName, ID3D11ShaderResourceView** srv, uint32 numTextures) const
 {

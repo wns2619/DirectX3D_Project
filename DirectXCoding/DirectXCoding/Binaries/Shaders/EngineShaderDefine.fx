@@ -1,3 +1,6 @@
+#ifndef _ENGINEDEFINE_FX_
+#define _ENGINEDEFINE_FX_
+
 
 sampler LinearSampler = sampler_state
 {
@@ -62,3 +65,12 @@ BlendState BS_AlphaBlend
 	//DestBlend[1] = One;
 	//BlendOp[1] = Add;
 };
+
+
+Texture2D DiffuseMap;
+Texture2D NormalMap;
+Texture2D ShadeMap;
+Texture2D SpecularMap;
+
+
+#endif

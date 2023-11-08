@@ -83,6 +83,7 @@
     <ClInclude Include="..\Public\Picking.h" />
     <ClInclude Include="..\Public\Renderer.h" />
     <ClInclude Include="..\Public\RenderTarget.h" />
+    <ClInclude Include="..\Public\RenderTargetManager.h" />
     <ClInclude Include="..\Public\ResourceBase.h" />
     <ClInclude Include="..\Public\Shader.h" />
     <ClInclude Include="..\Public\SimpleMath.h" />
@@ -91,7 +92,6 @@
     <ClInclude Include="..\Public\StateMachine.h" />
     <ClInclude Include="..\Public\StringUtilities.h" />
     <ClInclude Include="..\Public\Struct.h" />
-    <ClInclude Include="..\Public\TargetManager.h" />
     <ClInclude Include="..\Public\Texture.h" />
     <ClInclude Include="..\Public\TimeManager.h" />
     <ClInclude Include="..\Public\Timer.h" />
@@ -183,7 +183,14 @@
     <ClCompile Include="..\Private\Physics.cpp" />
     <ClCompile Include="..\Private\Picking.cpp" />
     <ClCompile Include="..\Private\Renderer.cpp" />
-    <ClCompile Include="..\Private\RenderTarget.cpp" />
+    <ClCompile Include="..\Private\RenderTarget.cpp">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IncludeInUnityFile>
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</IncludeInUnityFile>
+    </ClCompile>
+    <ClCompile Include="..\Private\RenderTargetManager.cpp">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IncludeInUnityFile>
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</IncludeInUnityFile>
+    </ClCompile>
     <ClCompile Include="..\Private\ResourceBase.cpp" />
     <ClCompile Include="..\Private\Shader.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IncludeInUnityFile>
@@ -193,7 +200,6 @@
     <ClCompile Include="..\Private\State.cpp" />
     <ClCompile Include="..\Private\StateMachine.cpp" />
     <ClCompile Include="..\Private\Struct.cpp" />
-    <ClCompile Include="..\Private\TargetManager.cpp" />
     <ClCompile Include="..\Private\Texture.cpp" />
     <ClCompile Include="..\Private\TimeManager.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />

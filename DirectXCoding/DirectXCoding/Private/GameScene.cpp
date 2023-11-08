@@ -426,7 +426,7 @@ HRESULT GameScene::ReadyLight()
         lightDesc.type = LIGHT_DESC::DIRECTION;
         lightDesc.enabled = true;
 
-        lightDesc.Direction = Vec3(1.f, -1.f, 1.f);
+        lightDesc.Direction = Vec3(1.f, 1.f, -1.f);
         lightDesc.Ambient = Vec4(1.f, 1.f, 1.f, 1.f);
         lightDesc.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
     }

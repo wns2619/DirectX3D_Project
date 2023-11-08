@@ -482,11 +482,11 @@ HRESULT Player::ReadyPlayerPart()
 	BodyCamDesc.pParentTransform = _transform;
 	BodyCamDesc.SocketMatrix = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketBonePtr("Head_Cam");
 	BodyCamDesc.SocketPivot = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketPivotMatrix();
-	BodyCamDesc.vEye = Vec4(0.f, 10.f, -8.f, 1.f);
+	BodyCamDesc.vEye = Vec4(0.f, 10.f, 8.f, 1.f);
 	BodyCamDesc.vAt = Vec4(0.f, 0.f, 0.f, 1.f);
 	BodyCamDesc.fFov = ::XMConvertToRadians(70.f);
 	BodyCamDesc.fAspect = g_iWinSizeX / static_cast<_float>(g_iWinSizeY);
-	BodyCamDesc.fNear = 0.001f;
+	BodyCamDesc.fNear = 0.1f;
 	BodyCamDesc.fFar = 50.f;
 
 

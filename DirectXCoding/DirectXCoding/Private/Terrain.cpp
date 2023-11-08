@@ -124,8 +124,8 @@ HRESULT Terrain::Bind_ShaderResources()
 
 	const LIGHT_DESC* lightdesc = gameInstance->GetLightDesc(0);
 
-	if (FAILED(_shader->BindRawValue("Lightinfo", lightdesc, sizeof(LIGHT_DESC))))
-		return E_FAIL;
+	//if (FAILED(_shader->BindRawValue("Lightinfo", lightdesc, sizeof(LIGHT_DESC))))
+	//	return E_FAIL;
 
 	//if (FAILED(_light->BindingLightToShader(_shader, "dirLight", Light::LightType::DIRECTIONAL, sizeof(Light::DirectinoalLight))))
 	//	return E_FAIL;

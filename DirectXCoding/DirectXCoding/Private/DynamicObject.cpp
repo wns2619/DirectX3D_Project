@@ -150,19 +150,6 @@ HRESULT DynamicObject::BindShaderResource()
 	if (FAILED(gameInstance->BindTransformToShader(_shader, "P", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
 		return E_FAIL;
 
-	const LIGHT_DESC* lightdesc = gameInstance->GetLightDesc(0);
-
-	if (FAILED(_shader->BindRawValue("GlobalLight", lightdesc, sizeof(LIGHT_DESC))))
-		return E_FAIL;
-
-	MESH_MATERIAL materialDesc;
-	::ZeroMemory(&materialDesc, sizeof(materialDesc));
-	materialDesc.ambient = Vec4(0.8);
-	materialDesc.diffuse = Vec4(1.f);
-	materialDesc.specular = Vec4(1.f);
-
-	if (FAILED(_shader->BindRawValue("Material", &materialDesc, 80)))
-		return E_FAIL;
 
 	Safe_Release<GameInstance*>(gameInstance);
 

@@ -32,7 +32,7 @@ HRESULT GraphicsManager::Initialize(GRAPHIC_DESC desc, _Inout_ ID3D11Device** de
 
 
 
-	ID3D11RenderTargetView* rtv[2] = { _renderTargetView, _vignetteTargetView };
+	ID3D11RenderTargetView* rtv[1] = { _renderTargetView };
 
 	_deviceContext->OMSetRenderTargets(1, rtv, _depthStencilView);
 
@@ -52,11 +52,6 @@ HRESULT GraphicsManager::Initialize(GRAPHIC_DESC desc, _Inout_ ID3D11Device** de
 	D3D11_RASTERIZER_DESC rasterizerDesc;
 	ZeroMemory(&rasterizerDesc, sizeof(rasterizerDesc));
 	rasterizerDesc.CullMode = D3D11_CULL_NONE; // 후면 컬링 비활성화
-
-
-	_device->CreateRasterizerState(&rasterizerDesc, &pRasterizerState);
-
-	_deviceContext->RSSetState(pRasterizerState);
 
 
 	_deviceContext->RSSetViewports(1, &viewportDesc);

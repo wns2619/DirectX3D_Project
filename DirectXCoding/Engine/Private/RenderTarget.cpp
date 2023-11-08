@@ -3,15 +3,17 @@
 #include "Shader.h"
 #include "VIBufferRect.h"
 
-RenderTarget::RenderTarget(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-    : _pDevice(device), _pDeviceContext(deviceContext)
+RenderTarget::RenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+	: _pDevice(pDevice), _pDeviceContext(pDeviceContext)
 {
-    Safe_AddRef<ID3D11Device*>(_pDevice);
-    Safe_AddRef<ID3D11DeviceContext*>(_pDeviceContext);
+	Safe_AddRef<ID3D11Device*>(_pDevice);
+	Safe_AddRef<ID3D11DeviceContext*>(_pDeviceContext);
 }
 
-HRESULT RenderTarget::Initialize(uint32 iSizeX, uint32 iSizeY, DXGI_FORMAT ePixelFormat)
+HRESULT RenderTarget::Initialize(uint32 iSizeX, uint32 iSizeY, DXGI_FORMAT ePixelFormat, const Color& vColor)
 {
+	_vColor = vColor;
+
 	D3D11_TEXTURE2D_DESC		TextureDesc = {};
 
 	TextureDesc.Width = iSizeX;
@@ -31,19 +33,23 @@ HRESULT RenderTarget::Initialize(uint32 iSizeX, uint32 iSizeY, DXGI_FORMAT ePixe
 	if (FAILED(_pDevice->CreateTexture2D(&TextureDesc, nullptr, &_pTexture2D)))
 		return E_FAIL;
 
-	if (FAILED(_pDevice->CreateRenderTargetView(_pTexture2D, nullptr, &_pRenderTargetView)))
+	if (FAILED(_pDevice->CreateRenderTargetView(_pTexture2D, nullptr, &_pRTV)))
 		return E_FAIL;
 
-	if (FAILED(_pDevice->CreateShaderResourceView(_pTexture2D, nullptr, &_pShaderResourceView)))
+	if (FAILED(_pDevice->CreateShaderResourceView(_pTexture2D, nullptr, &_pSRV)))
 		return E_FAIL;
 
+	return S_OK;
+}
 
-    return S_OK;
+HRESULT RenderTarget::BindSRV(Shader* pShader, const _char* pConstantName)
+{
+	return pShader->BindTexture(pConstantName, _pSRV);
 }
 
 HRESULT RenderTarget::Clear()
 {
-	_pDeviceContext->ClearRenderTargetView(_pRenderTargetView, reinterpret_cast<_float*>(&_vColor));
+	_pDeviceContext->ClearRenderTargetView(_pRTV, reinterpret_cast<_float*>(&_vColor));
 
 	return S_OK;
 }
@@ -52,34 +58,35 @@ HRESULT RenderTarget::Clear()
 
 HRESULT RenderTarget::ReadyDebug(_float fX, _float fY, _float fSizeX, _float fSizeY)
 {
-	D3D11_VIEWPORT viewPortDesc;
+	D3D11_VIEWPORT ViewportDesc;
 
 	uint32 iNumViewports = 1;
 
-	_pDeviceContext->RSGetViewports(&iNumViewports, &viewPortDesc);
+	_pDeviceContext->RSGetViewports(&iNumViewports, &ViewportDesc);
+
+	_mWorldMatrix = Matrix::Identity;
 
 	_mWorldMatrix._11 = fSizeX;
 	_mWorldMatrix._22 = fSizeY;
 
-	_mWorldMatrix._41 = fX - viewPortDesc.Width * 0.5f;
-	_mWorldMatrix._42 = -fY + viewPortDesc.Height * 0.5f;
-
+	_mWorldMatrix._41 = fX - ViewportDesc.Width * 0.5f;
+	_mWorldMatrix._42 = -fY + ViewportDesc.Height * 0.5f;
 
 	return S_OK;
 }
 
-HRESULT RenderTarget::Render(Shader* pShader, VIBufferRect* pBuffer)
+HRESULT RenderTarget::Render(class Shader* pShader, VIBufferRect* pVIBuffer)
 {
 	if (FAILED(pShader->BindMatrix("W", &_mWorldMatrix)))
 		return E_FAIL;
 
-	if (FAILED(pShader->BindTexture("gTexture", _pShaderResourceView)))
+	if (FAILED(pShader->BindTexture("gTexture", _pSRV)))
 		return E_FAIL;
 
 	if (FAILED(pShader->Begin(0)))
 		return E_FAIL;
 
-	if (FAILED(pBuffer->Render()))
+	if (FAILED(pVIBuffer->Render()))
 		return E_FAIL;
 
 	return S_OK;
@@ -90,29 +97,25 @@ HRESULT RenderTarget::Render(Shader* pShader, VIBufferRect* pBuffer)
 
 
 
-
-
-RenderTarget* RenderTarget::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, uint32 iSizeX, uint32 iSizeY, DXGI_FORMAT ePixelFormat)
+RenderTarget* RenderTarget::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, uint32 iSizeX, uint32 iSizeY, DXGI_FORMAT ePiexlFormat, const Color& vColor)
 {
-	RenderTarget* pInstance = new RenderTarget(device, deviceContext);
+	RenderTarget* pInstance = new RenderTarget(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->Initialize(iSizeX, iSizeY, ePixelFormat)))
+	if (FAILED(pInstance->Initialize(iSizeX, iSizeY, ePiexlFormat, vColor)))
 	{
-		MSG_BOX("Failed to Created : RenderTarget");
-		Safe_Release<RenderTarget*>(pInstance);
+		MSG_BOX("Failed to Created : CRenderTarget");
+		Safe_Release(pInstance);
 	}
 
 	return pInstance;
-
 }
 
 void RenderTarget::Free()
 {
-	//SaveDDSTextureToFile(_pDeviceContext, _pTexture2D, TEXT("..\\Binaries\\Diffuse.dds"));
-
-
-	Safe_Release<ID3D11ShaderResourceView*>(_pShaderResourceView);
-	Safe_Release<ID3D11RenderTargetView*>(_pRenderTargetView);
+	SaveDDSTextureToFile(_pDeviceContext, _pTexture2D, TEXT("../Binaries/Diffuse.dds"));
+	
+	Safe_Release<ID3D11ShaderResourceView*>(_pSRV);
+	Safe_Release<ID3D11RenderTargetView*>(_pRTV);
 	Safe_Release<ID3D11Texture2D*>(_pTexture2D);
 
 	Safe_Release<ID3D11Device*>(_pDevice);

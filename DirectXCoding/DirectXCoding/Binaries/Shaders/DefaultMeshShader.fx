@@ -1,10 +1,6 @@
 #include "LightHelper.fx"
 #include "GlobalShader.fx"
 
-cbuffer testBuffer
-{
-    vector WaterColor = vector(1.f, 1.f, 1.f, 1.f);
-};
 
 struct VS_IN
 {
@@ -32,6 +28,7 @@ VS_OUT VS_MAIN(VS_IN input)
     Out.position = mul(float4(input.position, 1.f), WVP);
     Out.texcoord = input.texcoord;
     Out.normal = normalize(mul(float4(input.normal, 0.f), W));
+    Out.vTangent = normalize(mul(input.vTangent, W)).xyz;
     Out.worldPos = mul(float4(input.position, 1.f), W);
     
     return Out;
@@ -49,15 +46,25 @@ struct PS_IN
 
 struct PS_OUT
 {
-    float4 color : SV_TARGET0;
+    float4 vDiffuse : SV_TARGET0;
+    float4 vNormal : SV_TARGET1;
 };
 
 PS_OUT PS_MAIN(PS_IN input)
 {
-    PS_OUT Out = (PS_OUT) 0;
+    PS_OUT Out = (PS_OUT)0;
 
+    vector vMtrlDiffuse = DiffuseMap.Sample(LinearSampler, input.texcoord);
+    
+    if (vMtrlDiffuse.a < 0.3f)
+        discard;
+    
+    Out.vDiffuse = vMtrlDiffuse;
     ComputeNormalMapping(input.normal.xyz, input.vTangent, input.texcoord);
-    Out.color = ComputeTeacherLight(input.normal, input.texcoord, input.worldPos);
+    //Out.vNormal = vector(input.normal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vNormal = input.normal * 0.3;
+    
+    //Out.color = ComputeTeacherLight(input.normal, input.texcoord, input.worldPos);
     
     
     //Out.color = float4(CalcAmbient(input.normal, input.texcoord), 1.f);
