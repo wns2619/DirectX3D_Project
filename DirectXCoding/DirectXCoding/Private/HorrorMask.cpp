@@ -48,6 +48,11 @@ void HorrorMask::LateTick(const _float& timeDelta)
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
 
+#ifdef _DEBUG
+	_render->AddDebug(_pCollider);
+#endif // _DEBUG
+
+
 }
 
 HRESULT HorrorMask::Render()
@@ -74,9 +79,6 @@ HRESULT HorrorMask::Render()
 			return E_FAIL;
 	}
 
-#ifdef _DEBUG
-	_pCollider->Render();
-#endif // _DEBUG
 
 	return S_OK;
 }

@@ -25,6 +25,16 @@ public:
 	HRESULT	AddRenderGroup(RENDERGROUP renderGroup, GameObject* gameObject);
 	HRESULT	DrawRenderObjects();
 
+#ifdef _DEBUG
+	HRESULT AddDebug(class Component* pDebug)
+	{
+		_renderDebug.push_back(pDebug);
+		Safe_AddRef<Component*>(pDebug);
+		return S_OK;
+	}
+#endif // _DEBUG
+
+
 private:
 	list<GameObject*> _renderObjects[static_cast<int32>(RENDERGROUP::RENDER_END)];
 	class RenderTargetManager* _pTargetManager = nullptr;
@@ -35,6 +45,12 @@ private:
 	class Shader* _pShader = nullptr;
 
 	Matrix _mWorldMatrix, _mViewMatrix, _mProjMatrix;
+
+#ifdef _DEBUG
+private:
+	list<class Component*> _renderDebug;
+#endif // _DEBUG
+
 
 private:
 	HRESULT	RenderPriority();

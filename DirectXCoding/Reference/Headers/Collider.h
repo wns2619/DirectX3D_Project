@@ -59,7 +59,7 @@ private:
 	PrimitiveBatch<DirectX::VertexPositionColor>* _pBatch = nullptr;
 	BasicEffect* _pEffect = nullptr;
 	ID3D11InputLayout* _pInputLayOut = nullptr;
-
+	ID3D11DepthStencilState* _pDSState = nullptr;
 
 #endif // _DEBUG
 

@@ -37,8 +37,8 @@ HRESULT EditScene::Initialize()
     //if (FAILED(ReadyLandObject(LAYER_TAG::LAYER_STATIC)))
     //    return E_FAIL;
 
-    if (FAILED(ReadyLight()))
-        return E_FAIL;
+ /*   if (FAILED(ReadyLight()))
+        return E_FAIL;*/
 
     return S_OK;
 }
@@ -145,6 +145,7 @@ HRESULT EditScene::ReadyLandObject(const LAYER_TAG layerTag)
     if (FAILED(pGameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), layerTag, TEXT("ProtoTypeGameObjectPlayer"), &LandObjectDesc)))
         return E_FAIL;
 
+
     return S_OK;
 }
 
@@ -152,20 +153,37 @@ HRESULT EditScene::ReadyLight()
 {
     GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-
     LIGHT_DESC lightDesc;
     ZeroMemory(&lightDesc, sizeof(lightDesc));
     {
-        lightDesc.Position = Vec4(33.f, 10.f, 10.f, 1.f);
-        lightDesc.Diffuse = Vec4(0.8f, 0.8f, 0.8f, 1.f);
-        lightDesc.intensity = 1.f;
-        lightDesc.range = 4.f;
-        lightDesc.type = LIGHT_DESC::DIRECTION;
-        lightDesc.enabled = true;
+        lightDesc.type = LIGHT_DESC::SPOT;
 
-        lightDesc.Direction = Vec3(1.f, -1.f, 1.f);
+        // Ambient Upper or Lower And Directional
+        //_transform->SetState(Transform::STATE::POSITION, ::XMVectorSet(11.f, 0.f, -45.5f, 1.f));
+
+
+        lightDesc.Position = Vec4(11.f, 0.f, -45.5f, 1.f);
+        lightDesc.vAmbientLowerColor = Color(1.f, 1.f, 1.f, 1.f);
+        lightDesc.vAmbientUpperColor = Color(1.f, 1.f, 1.f, 1.f);
+        lightDesc.Direction = Vec3(0.f, 1.f, 1.f);
+        lightDesc.Diffuse = Vec4(1.f, 1.f, 1.f, 1.f);
+
+        // SpecularIntensity or SpecExponent
+        lightDesc.fSpecExp = 30.f;
+        lightDesc.fSpecIntensity = 1.f;
+
+        // Light Color.
         lightDesc.Ambient = Vec4(1.f, 1.f, 1.f, 1.f);
         lightDesc.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
+
+
+        // Point
+        //lightDesc.pointLightRangeRcp = 1.0f / 50.f;
+
+        // Spot
+        lightDesc.fSpotLightRangeRcp = 1.0f / 60.f;
+        lightDesc.fSpotCosOuterCone = ::cosf(XM_PI * 65.f / 180.f);
+        lightDesc.fSpotInnerConeRcp = 1.f / ::cosf(XM_PI * 45.f / 180.f);
     }
 
     if (FAILED(gameInstance->AddLight(lightDesc)))

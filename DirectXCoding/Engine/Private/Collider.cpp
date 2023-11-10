@@ -21,9 +21,13 @@ Collider::Collider(const Collider& rhs)
     , _pBatch(rhs._pBatch)
     , _pEffect(rhs._pEffect)
     , _pInputLayOut(rhs._pInputLayOut)
+    , _pDSState(rhs._pDSState)
 #endif // _DEBUG
 {
-
+#ifdef _DEBUG
+    Safe_AddRef<ID3D11DepthStencilState*>(_pDSState);
+    Safe_AddRef<ID3D11InputLayout*>(_pInputLayOut);
+#endif // _DEBUG
 }
 
 HRESULT Collider::InitializePrototype(COLLIDER_TYPE eType)
@@ -43,6 +47,16 @@ HRESULT Collider::InitializePrototype(COLLIDER_TYPE eType)
     _pEffect->GetVertexShaderBytecode(&pShaderByteCode, &iShaderByteCodeLength);
 
     if (FAILED(_device->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderByteCode, iShaderByteCodeLength, &_pInputLayOut)))
+        return E_FAIL;
+
+    D3D11_DEPTH_STENCIL_DESC DSStateDesc = {};
+    DSStateDesc.DepthEnable = true;
+    DSStateDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+    DSStateDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+    
+    DSStateDesc.StencilEnable = false;
+
+    if (FAILED(_device->CreateDepthStencilState(&DSStateDesc, &_pDSState)))
         return E_FAIL;
 
 #endif // _DEBUG
@@ -84,6 +98,8 @@ HRESULT Collider::Initialize(void* argument)
 
 HRESULT Collider::Render()
 {
+    _deviceContext->OMSetDepthStencilState(_pDSState, 0);
+
     CameraHelper* pCameraHelper = GET_INSTANCE(CameraHelper);
 
    _pEffect->SetWorld(::XMMatrixIdentity());
@@ -165,9 +181,10 @@ void Collider::Free()
     __super::Free();
 
 #ifdef _DEBUG
+    Safe_Release<ID3D11InputLayout*>(_pInputLayOut);
+    Safe_Release<ID3D11DepthStencilState*>(_pDSState);
     if (false == _isCloned)
     {
-        Safe_Release<ID3D11InputLayout*>(_pInputLayOut);
         Safe_Delete<DirectX::PrimitiveBatch<VertexPositionColor>*>(_pBatch);
         Safe_Delete<BasicEffect*>(_pEffect);
     }

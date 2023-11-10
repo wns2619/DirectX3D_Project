@@ -74,7 +74,9 @@ HRESULT RenderTargetManager::BeginMRT(ID3D11DeviceContext* pDeviceContext, const
 		pRenderTarget->Clear();
 	}
 
-	pDeviceContext->OMSetRenderTargets(iNumRTVs, pRenderTargets, _pDSV);
+	if(iNumRTVs >= 0 || iNumRTVs < 8)
+		pDeviceContext->OMSetRenderTargets(iNumRTVs, pRenderTargets, _pDSV);
+
 
 	return	S_OK;
 }

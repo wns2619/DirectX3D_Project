@@ -53,6 +53,11 @@ void OldWoodDoor::LateTick(const _float& timeDelta)
 {
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+
+#ifdef _DEBUG
+	_render->AddDebug(_pCollider);
+	_render->AddDebug(_pAssistCollider);
+#endif // _DEBUG
 }
 
 HRESULT OldWoodDoor::Render()
@@ -78,11 +83,6 @@ HRESULT OldWoodDoor::Render()
 		if (FAILED(_binaryModel->Render(i)))
 			return E_FAIL;
 	}
-
-#ifdef _DEBUG
-	_pCollider->Render();
-	_pAssistCollider->Render();
-#endif // _DEBUG
 
 
 	return S_OK;

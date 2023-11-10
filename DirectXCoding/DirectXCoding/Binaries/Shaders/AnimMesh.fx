@@ -1,6 +1,11 @@
 #include "LightHelper.fx"
 #include "GlobalShader.fx"
 
+cbuffer CameraCBuffer
+{
+    float fCameraFar = 50.f;
+};
+
 VertexAnimMeshOut VS_MAIN(VertexAnimMesh input)
 {
     VertexAnimMeshOut Out = (VertexAnimMeshOut) 0;
@@ -25,6 +30,7 @@ VertexAnimMeshOut VS_MAIN(VertexAnimMesh input)
     Out.normal = normalize(mul(meshNormal, W));
     Out.tangent = normalize(mul(float4(input.tangent, 0.f), W));
     Out.worldPosition = mul(bonePosition, W);
+    Out.vProjPos = Out.position;
     
     return Out;
 }
@@ -33,6 +39,7 @@ struct PS_OUT
 {
     float4 vDiffuse : SV_TARGET0;
     float4 vNormal : SV_TARGET1;
+    float4 vDepth : SV_TARGET2;
 };
 
 PS_OUT PS_MAIN(VertexAnimMeshOut input)
@@ -45,26 +52,9 @@ PS_OUT PS_MAIN(VertexAnimMeshOut input)
         discard;
     
     Out.vDiffuse = vMtrlDiffuse;
-    ComputeNormalMapping(input.normal.xyz, input.tangent, input.uv);
-    Out.vNormal = float4(input.normal, 0.f) * 0.3;
-    //Out.vNormal = vector(input.normal.xyz * 0.5f + 0.5f, 0.f);
-    
-    // 조명 + 내 마테리얼로 나온 최종 색깔 값.
-    //Out.Color = ComputeTeacherLight(float4(input.normal, 1.f), input.uv, input.worldPosition);
-    //Out.Color = float4(CalcAmbient(float4(input.normal, 0.f), input.uv), 1.f);
-    
-    //// TODO Color  * @@ 
-    //float2 fCenter = float2(0.5f, 0.5f);
-    
-    //float strength = 0.01f;
-    
-    //float fdistance = distance(input.uv, fCenter);
-    
-    //// 비네트효과 적용
-    //float4 vignette = float4(0.f, 0.f, 0.f, 0.f);
-    //float4 vignetteColor = 1.0 - saturate(strength * fdistance * fdistance);
-    
-    //Out.Color.rgb = lerp(Out.Color.rgb, Out.Color.rgb * vignetteColor.rgb, vignetteColor.a * 2.0);
+    Out.vNormal = vector(input.normal.xyz * 0.5 + 0.5f, 0.f);
+    Out.vDepth = vector(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w / fCameraFar, 0.f, 0.f);
+
     
     return Out;
 }

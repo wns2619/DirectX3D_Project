@@ -64,6 +64,10 @@ void Cage::LateTick(const _float& timeDelta)
 {
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+
+#ifdef _DEBUG
+	_render->AddDebug(_pCollider);
+#endif // _DEBUG
 }
 
 HRESULT Cage::Render()
@@ -89,10 +93,6 @@ HRESULT Cage::Render()
 		if (FAILED(_binaryModel->Render(i)))
 			return E_FAIL;
 	}
-
-#ifdef _DEBUG
-	_pCollider->Render();
-#endif // _DEBUG
 
 	return S_OK;
 	

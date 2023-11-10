@@ -121,7 +121,9 @@ namespace Engine
 	struct LIGHT_DESC
 	{
 		enum TYPE { DIRECTION, POINT, SPOT, LIGHT_END };
+		int32 type = LIGHT_END;
 
+		// Public
 		Vec4 Position;
 		Vec4 Emissive;
 		Vec4 Diffuse; // Color
@@ -129,15 +131,22 @@ namespace Engine
 		Vec4 Specular;
 
 		Vec3 Direction;
-		_float intensity = 1.f;
 
+		// Ambient
+		Vec4 vAmbientLowerColor;
+		Vec4 vAmbientUpperColor;
 
-		Vec2 spotAngles = Vec2(1.f, 1.f);
-		int32 type = LIGHT_END;
-		_float range = 1.f;
+		// Specular 
+		_float fSpecExp				= 0.f;
+		_float fSpecIntensity		= 0.f;
 
-		Vec3 rotationDeg;
-		_bool enabled = true;
+		// Point
+		_float pointLightRangeRcp	= 0.f;
+
+		// Spot
+		_float fSpotLightRangeRcp	= 0.f;
+		_float fSpotCosOuterCone	= 0.f;
+		_float fSpotInnerConeRcp	= 0.f;
 	};
 
 	struct MESH_MATERIAL
@@ -156,7 +165,7 @@ namespace Engine
 	struct LightHelper
 	{
 		Vec3 rotationDeg;
-		Vec2 spotAngles;
+		Vec3 spotAngles = Vec3(1.f,1.f,1.f);
 	};
 
 

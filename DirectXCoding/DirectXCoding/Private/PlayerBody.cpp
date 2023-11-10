@@ -90,7 +90,7 @@ HRESULT PlayerBody::Render()
 			continue;
 
 		if (false == _bObtainLight && i == 3)
-			continue;
+			continue;	
 
 		if (FAILED(_binaryModel->Render(i)))
 			return E_FAIL;

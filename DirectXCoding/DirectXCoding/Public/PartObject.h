@@ -44,7 +44,6 @@ protected:
 
 protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	Shader* _shader = nullptr;
-
 protected:
 	HRESULT Compute_RenderMatrix(FXMMATRIX ChildMatrix);
 

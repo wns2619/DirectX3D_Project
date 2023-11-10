@@ -95,9 +95,13 @@ void Monster::LateTick(const _float& fTimeDelta)
 {
 	_pStateMachine->UpdateLateStateMachine(fTimeDelta);
 
-
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+
+#ifdef _DEBUG
+	_render->AddDebug(_pCollider);
+	_render->AddDebug(_pNavigation);
+#endif // _DEBUG
 }
 
 HRESULT Monster::Render()
@@ -128,15 +132,6 @@ HRESULT Monster::Render()
 		if (FAILED(_binaryModel->Render(i)))
 			return E_FAIL;
 	}
-
-#ifdef _DEBUG
-	_pCollider->Render();
-#endif // _DEBUG
-
-#ifdef _DEBUG
-	_pNavigation->Render();
-#endif // _DEBUG
-
 
 	return S_OK;
 }

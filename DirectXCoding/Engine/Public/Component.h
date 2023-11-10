@@ -20,6 +20,11 @@ public:
 	virtual HRESULT	InitializePrototype();
 	virtual HRESULT Initialize(void* argument);
 
+#ifdef _DEBUG
+	virtual HRESULT Render() { return S_OK; }
+#endif // _DEBUG
+
+
 public: // IMGUI
 	COMPONENT_TYPE GetComponentType() { return _type; }
 

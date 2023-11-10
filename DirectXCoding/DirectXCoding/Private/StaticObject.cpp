@@ -81,6 +81,12 @@ void StaticObject::LateTick(const _float& timeDelta)
 {
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+
+#ifdef _DEBUG
+	if (_modelName == "2stBottom")
+		_render->AddDebug(_pNavigation);
+#endif // _DEBUG
+
 }
 
 HRESULT StaticObject::Render()
@@ -108,13 +114,6 @@ HRESULT StaticObject::Render()
 		if (FAILED(_binaryModel->Render(i)))
 			return E_FAIL;
 	}
-
-#ifdef _DEBUG
-	// ¹Ù´ÚÀÏ ¶§¸¸ ³×ºñ ·»´õ.
-	if (_modelName == "2stBottom")
-		_pNavigation->Render();
-#endif // _DEBUG
-
 
 
 	return S_OK;

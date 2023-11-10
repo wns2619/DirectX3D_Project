@@ -78,6 +78,14 @@ void GridDoor::LateTick(const _float& timeDelta)
 {
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+
+#ifdef _DEBUG
+	if (_bIsOpen == false)
+	{
+		_render->AddDebug(_pCollider);
+		_render->AddDebug(_pAssistCollider);
+	}
+#endif // _DEBUG
 }
 
 HRESULT GridDoor::Render()
@@ -126,15 +134,6 @@ HRESULT GridDoor::Render()
 		}
 
 	}
-
-#ifdef _DEBUG
-	if (_bIsOpen == false)
-	{
-		_pCollider->Render();
-		_pAssistCollider->Render();
-	}
-#endif // _DEBUG
-
 
 	RELEASE_INSTANCE(GameInstance);
 

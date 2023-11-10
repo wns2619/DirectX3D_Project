@@ -50,6 +50,11 @@ void Key::LateTick(const _float& timeDelta)
 
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+
+#ifdef _DEBUG
+	_render->AddDebug(_pCollider);
+#endif // _DEBUG
+
 }
 
 HRESULT Key::Render()
@@ -76,10 +81,6 @@ HRESULT Key::Render()
 		if (FAILED(_binaryModel->Render(i)))
 			return E_FAIL;
 	}
-
-#ifdef _DEBUG
-	_pCollider->Render();
-#endif // _DEBUG
 
 
 	return S_OK;

@@ -3,16 +3,6 @@
 
 #include "EngineShaderDefine.fx"
 
-cbuffer TransformBuffer
-{
-    matrix W;
-};
-
-cbuffer GlobalBuffer
-{
-    matrix V;
-    matrix P;
-};
 
 cbuffer BoneMatricesBuffer
 {
@@ -71,6 +61,7 @@ struct VertexOut
     float3 normal : NORMAL;
     float2 uv : TEXCOORD0;
     float4 worldPosition : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
 };
 
 struct VertexAnimMeshOut
@@ -85,6 +76,7 @@ struct VertexAnimMeshOut
     float4 blendWeights : BLENDWEIGHT;
     
     float4 worldPosition : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
 };
 
 struct PixelIn

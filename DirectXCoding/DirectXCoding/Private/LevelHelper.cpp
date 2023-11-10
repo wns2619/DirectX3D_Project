@@ -1876,14 +1876,6 @@ HRESULT LevelHelper::LoadingShader()
 
         break;
     case Client::LEVEL::EDIT:
-        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentEditHillsShader"),
-            Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/WireFrameHills.fx"),
-                VertexTextureNormalData::Elements, VertexTextureNormalData::numElements))))
-        {
-            RELEASE_INSTANCE(GameInstance);
-            return E_FAIL;
-        }
-
         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentDefaultMeshShader"),
             Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/DefaultMeshShader.fx"),
                 VTXMESH::Elements, VTXMESH::iNumElements))))

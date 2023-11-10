@@ -5,6 +5,7 @@
 #include "VIBufferRect.h"
 #include "RenderTargetManager.h"
 #include "LightManager.h"
+#include "GameInstance.h"
 
 Renderer::Renderer(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: Component(device, deviceContext, COMPONENT_TYPE::RENDERER)
@@ -33,17 +34,30 @@ HRESULT Renderer::InitializePrototype()
 		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, Color(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
+	if (FAILED(_pTargetManager->AddRenderTarget(_device, _deviceContext, TEXT("Target_Depth"),
+		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, Color(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
 	/* For.Target_Shade */
 	if (FAILED(_pTargetManager->AddRenderTarget(_device, _deviceContext, TEXT("Target_Shade"),
-		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, Color(1.f, 1.f, 1.f, 1.f))))
+		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, Color(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
+	if (FAILED(_pTargetManager->AddRenderTarget(_device, _deviceContext, TEXT("Target_Specular"),
+		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, Color(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+
+
 #ifdef _DEBUG
-	if (FAILED(_pTargetManager->ReadyDebug(TEXT("Target_Diffuse"), 150.0f, 150.f, 300.0f, 300.f)))
+	if (FAILED(_pTargetManager->ReadyDebug(TEXT("Target_Diffuse"), 100.0f, 100.f, 200.0f, 200.f)))
 		return E_FAIL;
-	if (FAILED(_pTargetManager->ReadyDebug(TEXT("Target_Normal"), 150.0f, 450.f, 300.f, 300.f)))
+	if (FAILED(_pTargetManager->ReadyDebug(TEXT("Target_Normal"), 100.0f, 300.f, 200.f, 200.f)))
 		return E_FAIL;
-	if (FAILED(_pTargetManager->ReadyDebug(TEXT("Target_Shade"), 450.0f, 150.f, 300.f, 300.f)))
+	if (FAILED(_pTargetManager->ReadyDebug(TEXT("Target_Depth"), 100.0f, 500.f, 200.f, 200.f)))
+		return E_FAIL;
+	if (FAILED(_pTargetManager->ReadyDebug(TEXT("Target_Shade"), 300.0f, 100.0f, 200.f, 200.f)))
+		return E_FAIL;
+	if (FAILED(_pTargetManager->ReadyDebug(TEXT("Target_Specular"), 300.0f, 300.f, 200.f, 200.f)))
 		return E_FAIL;
 #endif
 
@@ -53,9 +67,13 @@ HRESULT Renderer::InitializePrototype()
 		return E_FAIL;
 	if (FAILED(_pTargetManager->AddMRT(TEXT("MRT_GameObjects"), TEXT("Target_Normal"))))
 		return E_FAIL;
+	if (FAILED(_pTargetManager->AddMRT(TEXT("MRT_GameObjects"), TEXT("Target_Depth"))))
+		return E_FAIL;
 	/* 이 렌더타겟들은 게임내에 존재하는 빛으로부터 연산한 결과를 저장받는다. */
 	/* For.MRT_ */
 	if (FAILED(_pTargetManager->AddMRT(TEXT("MRT_Lights"), TEXT("Target_Shade"))))
+		return E_FAIL;
+	if (FAILED(_pTargetManager->AddMRT(TEXT("MRT_Lights"), TEXT("Target_Specular"))))
 		return E_FAIL;
 
 
@@ -185,8 +203,31 @@ HRESULT Renderer::RenderLightAcc()
 	if (FAILED(_pShader->BindMatrix("P", &_mProjMatrix)))
 		return E_FAIL;
 
+	CameraHelper* pCamera = GET_INSTANCE(CameraHelper);
+
+	Matrix viewInv = pCamera->GetInverseTransformCalculator(CameraHelper::TRANSFORMSTATE::D3DTS_VIEW);
+	Matrix ProjInv = pCamera->GetInverseTransformCalculator(CameraHelper::TRANSFORMSTATE::D3DTS_PROJ);
+
+	if (FAILED(_pShader->BindMatrix("viewInv", &viewInv)))
+		return E_FAIL;
+
+	if (FAILED(_pShader->BindMatrix("projInv", &ProjInv)))
+		return E_FAIL;
+
+
+	Vec4 vCameraPos = pCamera->GetCameraPosition();
+
+	if (FAILED(_pShader->BindRawValue("EyePosition", &vCameraPos, sizeof(Vec4))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CameraHelper);
+
 	if (FAILED(_pTargetManager->BindSRV(_pShader, TEXT("Target_Normal"), "NormalMap")))
 		return E_FAIL;
+
+	if (FAILED(_pTargetManager->BindSRV(_pShader, TEXT("Target_Depth"), "DepthMap")))
+		return E_FAIL;
+
 
 	_pLightManager->Render(_pShader, _pVIBuffer);
 
@@ -214,7 +255,10 @@ HRESULT Renderer::RenderDeferred()
 	if (FAILED(_pTargetManager->BindSRV(_pShader, TEXT("Target_Shade"), "ShadeMap")))
 		return E_FAIL;
 
-	if (FAILED(_pShader->Begin(3)))
+	if (FAILED(_pTargetManager->BindSRV(_pShader, TEXT("Target_Specular"), "SpecularMap")))
+		return E_FAIL;
+
+	if (FAILED(_pShader->Begin(4)))
 		return E_FAIL;
 
 	if (FAILED(_pVIBuffer->Render()))
@@ -258,7 +302,14 @@ HRESULT Renderer::RenderUI()
 
 HRESULT Renderer::RenderDebug()
 {
-	
+	 
+	for (auto& pDebugCom : _renderDebug)
+	{
+		pDebugCom->Render();
+		Safe_Release<Component*>(pDebugCom);
+	}
+	_renderDebug.clear();
+
 	if (FAILED(_pShader->BindMatrix("V", &_mViewMatrix)))
 		return E_FAIL;
 	if (FAILED(_pShader->BindMatrix("P", &_mProjMatrix)))

@@ -1,6 +1,11 @@
 #include "LightHelper.fx"
 #include "GlobalShader.fx"
 
+cbuffer CameraCBuffer
+{
+    float fCameraFar = 50.f;
+};
+
 
 struct VS_IN
 {
@@ -17,6 +22,7 @@ struct VS_OUT
     float2 texcoord : TEXCOORD0;
     float3 vTangent : TANGENT;
     float4 worldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
 };
 
 VS_OUT VS_MAIN(VS_IN input)
@@ -30,6 +36,7 @@ VS_OUT VS_MAIN(VS_IN input)
     Out.normal = normalize(mul(float4(input.normal, 0.f), W));
     Out.vTangent = normalize(mul(input.vTangent, W)).xyz;
     Out.worldPos = mul(float4(input.position, 1.f), W);
+    Out.vProjPos = Out.position;
     
     return Out;
 }
@@ -42,12 +49,14 @@ struct PS_IN
     float2 texcoord : TEXCOORD0;
     float3 vTangent : TANGENT;
     float4 worldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
 };
 
 struct PS_OUT
 {
     float4 vDiffuse : SV_TARGET0;
     float4 vNormal : SV_TARGET1;
+    float4 vDepth : SV_TARGET2;
 };
 
 PS_OUT PS_MAIN(PS_IN input)
@@ -60,31 +69,11 @@ PS_OUT PS_MAIN(PS_IN input)
         discard;
     
     Out.vDiffuse = vMtrlDiffuse;
-    ComputeNormalMapping(input.normal.xyz, input.vTangent, input.texcoord);
-    //Out.vNormal = vector(input.normal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vNormal = input.normal * 0.3;
-    
-    //Out.color = ComputeTeacherLight(input.normal, input.texcoord, input.worldPos);
-    
-    
-    //Out.color = float4(CalcAmbient(input.normal, input.texcoord), 1.f);
-    
-    //Out.color *= WaterColor;
-    
-    //Out.color += CalcDirectional(input.worldPos, input.texcoord, input.normal);
-    
-    //float2 fCenter = float2(0.5, 0.5); // 화면 중심의 정규화된 좌표
-    //float strength = 3.0f;
+    //ComputeNormalMapping(input.normal.xyz, input.vTangent, input.texcoord);
+    Out.vNormal = vector(input.normal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w / fCameraFar, 0.f, 0.f);
 
-    //float2 uv = input.texcoord; // 정규화된 텍스처 좌표
 
-    //// 비네트 효과 적용 (화면 전체에)
-    //float distanceFromCenter = distance(uv, fCenter);
-    //float4 vignetteColor = 1.0 - saturate(strength * distanceFromCenter * distanceFromCenter);
-
-    
-    //Out.color.rgb = lerp(Out.color.rgb, Out.color.rgb * vignetteColor.rgb, vignetteColor.a * 2.0);
-    
     
     return Out;
 }

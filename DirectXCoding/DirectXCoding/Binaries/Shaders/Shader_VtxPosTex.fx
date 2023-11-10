@@ -3,7 +3,14 @@
 
 vector NewColor = vector(1.f, 1.f, 1.f, 1.f);
 
+cbuffer CameraCBuffer
+{
+    float fCameraFar = 50.f;
+};
+
 VertexOut VS_MAIN(VertexTextureNormal input)
+
+
 {
     VertexOut output = (VertexOut) 0;
     
@@ -14,6 +21,7 @@ VertexOut VS_MAIN(VertexTextureNormal input)
     output.uv = input.uv;
     output.normal = mul(float4(input.normal, 0.f), W);
     output.worldPosition = mul(float4(input.position, 1.f), W);
+    output.vProjPos = output.position;
     
     return output;
 }
@@ -22,6 +30,7 @@ struct PS_OUT
 {
     float4 vDiffuse : SV_TARGET0;
     float4 vNormal : SV_TARGET1;
+    float4 vDepth : SV_TARGET2;
 };
 
 PS_OUT PS_MAIN(VertexOut input)
@@ -34,8 +43,10 @@ PS_OUT PS_MAIN(VertexOut input)
         discard;
     
     Out.vDiffuse = vMtrlDiffuse;
-    vector vNormal = NormalMap.Sample(LinearSampler, input.uv);
+    //vector vNormal = NormalMap.Sample(LinearSampler, input.uv);
     Out.vNormal = vector(input.normal.xyz * 0.5f + 0.5f, 0.f);
+    
+    Out.vDepth = vector(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w / fCameraFar, 0.f, 0.f);
         
     return Out;
 }

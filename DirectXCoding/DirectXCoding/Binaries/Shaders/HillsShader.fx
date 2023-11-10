@@ -1,11 +1,6 @@
 #include "LightHelper.fx"
 #include "GlobalShader.fx"
 
-cbuffer LightBuffer
-{
-    LightDesc Lightinfo;
-}
-
 cbuffer Material : register(b2)
 {
     vector materialAmbient   = vector(0.4f, 0.4f, 0.4f, 1.f);
@@ -36,16 +31,16 @@ PixelOut PS_MAIN(PixelIn In)
 {
     PixelOut Out = (PixelOut) 0;
     
-    vector mtldff = DiffuseTexture.Sample(LinearSampler, In.uv * 30.f);
+    //vector mtldff = DiffuseTexture.Sample(LinearSampler, In.uv * 30.f);
     
-    vector shader = max(dot(normalize(-Lightinfo.Direction.xyz), normalize(In.normal)), 0.f) + Lightinfo.Ambient * materialAmbient;
+    //vector shader = max(dot(normalize(-Lightinfo.Direction.xyz), normalize(In.normal)), 0.f) + Lightinfo.Ambient * materialAmbient;
     
-    float3 reflectDirection = reflect(normalize(Lightinfo.Direction.xyz), normalize(In.normal));
-    float3 look = In.worldPosition - float4(CameraPosition(), 1.f);
+    //float3 reflectDirection = reflect(normalize(Lightinfo.Direction.xyz), normalize(In.normal));
+    //float3 look = In.worldPosition - float4(CameraPosition(), 1.f);
     
-    float specular = pow(max(dot(normalize(-look), normalize(reflectDirection)), 0.f), 30.f);
+    //float specular = pow(max(dot(normalize(-look), normalize(reflectDirection)), 0.f), 30.f);
     
-    Out.Color = (Lightinfo.Diffuse * mtldff) * saturate(shader) + (Lightinfo.Specular * materialSpecular) * specular;
+    //Out.Color = (Lightinfo.Diffuse * mtldff) * saturate(shader) + (Lightinfo.Specular * materialSpecular) * specular;
     
     return Out;
 }

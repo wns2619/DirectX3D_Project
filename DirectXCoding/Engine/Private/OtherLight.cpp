@@ -23,10 +23,65 @@ HRESULT OtherLight::Initialize(const LIGHT_DESC& lightdesc)
 
 HRESULT OtherLight::Render(Shader* pShader, VIBufferRect* pVIBuffer)
 {
-	if(FAILED(pShader->BindRawValue("vLightDir", &_lightDesc.Direction, sizeof(Vec4))))
+	uint32 iPassIndex = 0;
+
+	if (LIGHT_DESC::DIRECTION == _lightDesc.type)
+	{
+		if (FAILED(pShader->BindRawValue("DirToLight", &_lightDesc.Direction, sizeof(Vec4))))
+			return E_FAIL;
+		
+		if (FAILED(pShader->BindRawValue("DirLightColor", &_lightDesc.Diffuse, sizeof(Vec4))))
+			return E_FAIL;
+
+		iPassIndex = 1;
+	}
+
+	else if (LIGHT_DESC::POINT == _lightDesc.type)
+	{
+
+		if (FAILED(pShader->BindRawValue("PointLightColor", &_lightDesc.Diffuse, sizeof(Vec4))))
+			return E_FAIL;
+		if (FAILED(pShader->BindRawValue("PointLightPosition", &_lightDesc.Position, sizeof(Vec4))))
+			return E_FAIL;
+		if (FAILED(pShader->BindRawValue("PointLightRangeRcp", &_lightDesc.pointLightRangeRcp, sizeof(_float))))
+			return E_FAIL;
+
+		iPassIndex = 2;
+	}
+
+	else if (LIGHT_DESC::SPOT == _lightDesc.type)
+	{
+		if (FAILED(pShader->BindRawValue("SpotLightColor", &_lightDesc.Diffuse, sizeof(Vec4))))
+			return E_FAIL;
+		if (FAILED(pShader->BindRawValue("SpotLightPos", &_lightDesc.Position, sizeof(Vec4))))
+			return E_FAIL;
+		if (FAILED(pShader->BindRawValue("SpotDirToLight", &_lightDesc.Direction, sizeof(Vec3))))
+			return E_FAIL;
+		if (FAILED(pShader->BindRawValue("SpotLightRangeRcp", &_lightDesc.fSpotLightRangeRcp, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(pShader->BindRawValue("SpotCosOuterCone", &_lightDesc.fSpotCosOuterCone, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(pShader->BindRawValue("SpotCosInnerConeRcp", &_lightDesc.fSpotInnerConeRcp, sizeof(_float))))
+			return E_FAIL;
+
+		iPassIndex = 3;
+	}
+
+
+	if (FAILED(pShader->BindRawValue("ambientDown", &_lightDesc.vAmbientLowerColor, sizeof(Vec4))))
 		return E_FAIL;
 
-	if (FAILED(pShader->Begin(1)))
+	if (FAILED(pShader->BindRawValue("ambientUp", &_lightDesc.vAmbientUpperColor, sizeof(Vec4))))
+		return E_FAIL;
+
+	if (FAILED(pShader->BindRawValue("specExp", &_lightDesc.fSpecExp, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(pShader->BindRawValue("specIntensity", &_lightDesc.fSpecIntensity, sizeof(_float))))
+		return E_FAIL;
+
+
+	if (FAILED(pShader->Begin(iPassIndex)))
 		return E_FAIL;
 
 	if (FAILED(pVIBuffer->Render()))

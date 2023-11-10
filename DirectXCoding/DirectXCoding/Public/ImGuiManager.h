@@ -25,6 +25,7 @@ struct TexturePathPBR
 static const char* LightTypeName[] = { "Point", "Spot", "Directional" };
 
 
+
 class ImGuiManager final : Base
 {
 	DECLARE_SINGLETON(ImGuiManager)
@@ -112,6 +113,8 @@ private:
 	Vec3 _rotationDeg = Vec3(1.f,1.f,1.f);
 	_float _lightIntensity = 1.f;
 	_float _lightrange = 1.f;
+
+	vector<pair<LIGHT_DESC, LightHelper>> _mLights;
 
 	// Load && Save
 	void LoadModelList(string path = "..\\Binaries\\Resources\\MyModels\\");

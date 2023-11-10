@@ -1,7 +1,4 @@
-cbuffer PipeLineBuffer
-{
-    Matrix W, V, P;
-};
+#include "EngineShaderDefine.fx"
 
 cbuffer LineColor
 {
@@ -60,6 +57,11 @@ technique11 DefaultTechnique
 {
     pass Cell
     {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+
+
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         HullShader = NULL;

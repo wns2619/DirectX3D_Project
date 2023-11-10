@@ -99,6 +99,12 @@ void Player::LateTick(const _float& fTimeDelta)
 
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+
+#ifdef _DEBUG
+	_render->AddDebug(_pCollider);
+	_render->AddDebug(_pNavigation);
+#endif // _DEBUG
+
 }
 
 HRESULT Player::Render()
@@ -116,15 +122,6 @@ HRESULT Player::Render()
 		if (nullptr != pPart)
 			pPart->Render();
 	}
-
-#ifdef _DEBUG
-	_pCollider->Render();
-#endif // _DEBUG
-
-#ifdef _DEBUG
-	_pNavigation->Render();
-#endif // _DEBUG
-
 
 	return S_OK;
 }
@@ -486,7 +483,7 @@ HRESULT Player::ReadyPlayerPart()
 	BodyCamDesc.vAt = Vec4(0.f, 0.f, 0.f, 1.f);
 	BodyCamDesc.fFov = ::XMConvertToRadians(70.f);
 	BodyCamDesc.fAspect = g_iWinSizeX / static_cast<_float>(g_iWinSizeY);
-	BodyCamDesc.fNear = 0.1f;
+	BodyCamDesc.fNear = 0.001f;
 	BodyCamDesc.fFar = 50.f;
 
 

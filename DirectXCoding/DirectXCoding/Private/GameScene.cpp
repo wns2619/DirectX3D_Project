@@ -419,20 +419,31 @@ HRESULT GameScene::ReadyLight()
     LIGHT_DESC lightDesc;
     ZeroMemory(&lightDesc, sizeof(lightDesc));
     {
-        lightDesc.Position = Vec4(0.f, 5.f, 0.f, 1.f);
-        lightDesc.Diffuse = Vec3(1.f, 1.f, 1.f);
-        lightDesc.intensity = 1.f;
-        lightDesc.range = 4.f;
-        lightDesc.type = LIGHT_DESC::DIRECTION;
-        lightDesc.enabled = true;
+        lightDesc.type = LIGHT_DESC::POINT;
 
-        lightDesc.Direction = Vec3(1.f, 1.f, -1.f);
+		// Ambient Upper or Lower And Directional
+		//_transform->SetState(Transform::STATE::POSITION, ::XMVectorSet(11.f, 0.f, -45.5f, 1.f));
+
+
+		lightDesc.Position = Vec4(11.f, 1.3f, -45.5f, 1.f);
+		lightDesc.vAmbientLowerColor = Color(1.f, 1.f, 1.f, 1.f);
+		lightDesc.vAmbientUpperColor = Color(1.f, 1.f, 1.f, 1.f);
+		//lightDesc.Direction = Vec3(1.f, -1.f, 1.f) * -1.f;
+		lightDesc.Diffuse = Vec4(1.f, 1.f, 1.f, 1.f);
+
+		// SpecularIntensity or SpecExponent
+		lightDesc.fSpecExp = 500.f;
+		lightDesc.fSpecIntensity = 0.25f;
+
+		// Light Color.
         lightDesc.Ambient = Vec4(1.f, 1.f, 1.f, 1.f);
         lightDesc.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
+
+		lightDesc.pointLightRangeRcp = 1.0f / 50.f;
     }
 
-    if (FAILED(gameInstance->AddLight(lightDesc)))
-        return E_FAIL;
+	if (FAILED(gameInstance->AddLight(lightDesc)))
+		return E_FAIL;
 
     RELEASE_INSTANCE(GameInstance);
 
