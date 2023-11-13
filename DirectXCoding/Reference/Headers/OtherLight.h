@@ -28,6 +28,15 @@ private:
 	string _strlightName = "";
 
 	uint32 _ownLightNumber = 0;
+
+private:
+	// Blink
+	_float _fMaxBlinkRange = 10.f;
+	_float _fMinBlinkRange = 2.f;
+	_float _fBlinkSpeed = 1.f;
+
+	_float _fBlinkTime = 0.f;
+
 public:
 	static OtherLight* Create(const LIGHT_DESC& LightDesc);
 	virtual void Free() override;

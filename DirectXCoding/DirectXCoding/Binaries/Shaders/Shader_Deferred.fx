@@ -9,14 +9,14 @@ cbuffer cbDirLightPS : register(b1) // Directional and Ambient light ConstantBuf
     vector DirLightColor    : packoffset(c3);
 };
 
-cbuffer PointLightConstants : register(b1) // point Light constants
+cbuffer PointLightConstants : register(b2) // point Light constants
 {
     vector PointLightPosition   : packoffset(c0);
     vector PointLightColor      : packoffset(c1);
     float PointLightRangeRcp    : packoffset(c2);
 };
 
-cbuffer SpotLightConstants : register(b1)
+cbuffer SpotLightConstants : register(b3)
 {
     vector SpotLightPos         : packoffset(c0);
     vector SpotLightColor       : packoffset(c1);
@@ -42,7 +42,7 @@ void GammaToLinear(inout vector color)
 
 vector CalcAmbient(float4 normal, float4 Color)
 {
-    float up = normal.y;
+    float up = normal.y * 0.5 + 0.5;
     
     vector downColor = ambientDown;
     vector UpColor = ambientUp;
@@ -91,20 +91,20 @@ void CalcPoint(vector position, Material material, inout PS_OUT_LIGHT finalColor
     // Phong Diffuse
     ToLight /= DistToLight; // normaliz
     float NDotL = saturate(dot(ToLight, material.normal.xyz));
-    shadeColor += float4(PointColor.rgb * NDotL, 1.f);
+    finalColor.vShade += float4(PointColor.rgb * NDotL, 1.f);
     
     // Blinn Specular;
     ToEye = normalize(ToEye);
     float3 HalfWay = normalize(ToEye + ToLight);
     float NDotH = saturate(dot(HalfWay, material.normal.xyz));
-    specColor = float4(PointColor.rgb * pow(NDotH, material.specExp) * material.specIntensity, 1.f);
+    finalColor.vSpecular *= PointColor * pow(NDotH, material.specExp) * material.specIntensity;
     
     // Attenuation
     float DistToLightNorm = 1.0 - saturate(DistToLight * PointLightRangeRcp);
     float Attn = DistToLightNorm * DistToLightNorm;
     
-    finalColor.vShade = Attn * shadeColor;
-    finalColor.vSpecular = Attn * specColor;
+    finalColor.vShade *= Attn;
+    finalColor.vSpecular *= Attn;
 }
 
 void CalcSpot(vector position, Material material, inout PS_OUT_LIGHT finalColor)
@@ -122,13 +122,13 @@ void CalcSpot(vector position, Material material, inout PS_OUT_LIGHT finalColor)
     // Phong Diffuse
     ToLight /= DistToLight; // noramlize
     float NDotL = saturate(dot(ToLight, material.normal.xyz));
-    shadeColor += float4(SpotColor.rgb * NDotL, 1.f);
+    finalColor.vShade += float4(SpotColor.rgb * NDotL, 1.f);
 
     // Phong Specular
     ToEye = normalize(ToEye);
     float3 HalfWay = normalize(ToEye + ToLight);
     float NDotH = saturate(dot(HalfWay, material.normal.xyz));
-    specColor += float4(SpotColor.rgb * pow(NDotH, material.specExp) * material.specIntensity, 1.f);
+    finalColor.vSpecular *= float4(SpotColor.rgb * pow(NDotH, material.specExp) * material.specIntensity, 1.f);
     
     // Cone attenuation
     float cosAng = dot(SpotDirToLight, ToLight);
@@ -139,17 +139,12 @@ void CalcSpot(vector position, Material material, inout PS_OUT_LIGHT finalColor)
     float DistToLightNorm = 1.0 - saturate(DistToLight * SpotLightRangeRcp);
     float Attn = DistToLightNorm * DistToLightNorm;
     
-    finalColor.vShade = conAtt * Attn * shadeColor;
-    finalColor.vSpecular = conAtt * Attn * specColor;
+    finalColor.vShade *= conAtt * Attn;
+    finalColor.vSpecular *= conAtt * Attn;
 }
 
 
 Texture2D gTexture;
-
-cbuffer CameraInfoCBuffer
-{
-    float fFar = 50.f;
-};
 
 cbuffer InvMatrixCBuffer
 {
@@ -239,7 +234,7 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
     
     vector vNormalDesc = NormalMap.Sample(PointSampler, In.vTexcoord);
     vector vDepthDesc = DepthMap.Sample(PointSampler, In.vTexcoord);
-    float fViewZ = vDepthDesc.y * fFar;
+    float fViewZ = vDepthDesc.y * fCameraFar;
     
     vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
     
@@ -273,7 +268,7 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
 
     vector vNormalDesc = NormalMap.Sample(PointSampler, In.vTexcoord);
     vector vDepthDesc = DepthMap.Sample(PointSampler, In.vTexcoord);
-    float fViewZ = vDepthDesc.y * fFar;
+    float fViewZ = vDepthDesc.y * fCameraFar;
 
     vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
     
@@ -307,7 +302,7 @@ PS_OUT_LIGHT PS_MAIN_SPOT(PS_IN In)
     
     vector vNormalDesc = NormalMap.Sample(PointSampler, In.vTexcoord);
     vector vDepthDesc = DepthMap.Sample(PointSampler, In.vTexcoord);
-    float fViewZ = vDepthDesc.y * fFar;
+    float fViewZ = vDepthDesc.y * fCameraFar;
 
     vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
 

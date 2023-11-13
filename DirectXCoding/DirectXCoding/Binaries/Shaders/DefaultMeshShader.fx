@@ -1,11 +1,10 @@
 #include "LightHelper.fx"
 #include "GlobalShader.fx"
 
-cbuffer CameraCBuffer
+cbuffer streamTime
 {
-    float fCameraFar = 50.f;
+    float gTimeDelta = 0.f;
 };
-
 
 struct VS_IN
 {
@@ -32,11 +31,31 @@ VS_OUT VS_MAIN(VS_IN input)
     matrix WVP = ComputeTransformMatrix(W, V, P);
     
     Out.position = mul(float4(input.position, 1.f), WVP);
-    Out.texcoord = input.texcoord;
+    Out.texcoord = input.texcoord.xy;
     Out.normal = normalize(mul(float4(input.normal, 0.f), W));
     Out.vTangent = normalize(mul(input.vTangent, W)).xyz;
     Out.worldPos = mul(float4(input.position, 1.f), W);
     Out.vProjPos = Out.position;
+    
+    
+    
+    return Out;
+}
+
+VS_OUT VS_MAIN_WATER(VS_IN input)
+{
+    VS_OUT Out = (VS_OUT) 0;
+    
+    matrix WVP = ComputeTransformMatrix(W, V, P);
+    
+    Out.position = mul(float4(input.position, 1.f), WVP);
+    Out.texcoord = input.texcoord.xy + gTimeDelta;
+    Out.normal = normalize(mul(float4(input.normal, 0.f), W));
+    Out.vTangent = normalize(mul(input.vTangent, W)).xyz;
+    Out.worldPos = mul(float4(input.position, 1.f), W);
+    Out.vProjPos = Out.position;
+    
+    
     
     return Out;
 }
@@ -73,6 +92,25 @@ PS_OUT PS_MAIN(PS_IN input)
     Out.vNormal = vector(input.normal.xyz * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w / fCameraFar, 0.f, 0.f);
 
+    
+    return Out;
+}
+
+PS_OUT PS_WATER_MAIN(PS_IN input)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vMtrlDiffuse = vector(0.5f, 0.5f, 0.5f, 0.35f);
+    
+    if (vMtrlDiffuse.a < 0.3f)
+        discard;
+    
+    Out.vDiffuse = vMtrlDiffuse;
+    
+    ComputeNormalMapping(input.normal.xyz, input.vTangent, input.texcoord * 5.f);
+    Out.vNormal = vector(input.normal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w / fCameraFar, 0.f, 0.f);
+
 
     
     return Out;
@@ -81,4 +119,5 @@ PS_OUT PS_MAIN(PS_IN input)
 technique11 MeshTechnique
 {
     SOLID_PASS_VP(StaticMesh, VS_MAIN, PS_MAIN)
+    SOLID_PASS_VP(WaterMesh, VS_MAIN_WATER, PS_WATER_MAIN)
 }

@@ -28,11 +28,12 @@ HRESULT GameScene::Initialize()
     //if (FAILED(ReadyLayerTerrain(LAYER_TAG::LAYER_STATIC)))
     //    return E_FAIL;
 
+	if (FAILED(ReadyLight()))
+		return E_FAIL;
+
     if (FAILED(ReadyLandObjects(LAYER_TAG::LAYER_STATIC)))
         return E_FAIL;
 
-    if (FAILED(ReadyLight()))
-        return E_FAIL;
 
 	//if (FAILED(ReadyLayerCamera(LAYER_TAG::LAYER_CAMERA)))
 	//	return E_FAIL;
@@ -413,42 +414,31 @@ HRESULT GameScene::ReadyLayerPlayer(const LAYER_TAG layerTag, void* pArg)
 
 HRESULT GameScene::ReadyLight()
 {
-    GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+
+	wstring finalPath = L"..\\Binaries\\Data\\Light.dat";
+
+	file->Open(finalPath, FileMode::Read);
+
+	uint32 iLightSize;
+	file->Read<uint32>(iLightSize);
+
+	LIGHT_DESC* pLightArray = new LIGHT_DESC[iLightSize];
 
 
-    LIGHT_DESC lightDesc;
-    ZeroMemory(&lightDesc, sizeof(lightDesc));
-    {
-        lightDesc.type = LIGHT_DESC::POINT;
+	for (uint32 i = 0; i < iLightSize; ++i)
+		file->Read<LIGHT_DESC>(pLightArray[i]);
 
-		// Ambient Upper or Lower And Directional
-		//_transform->SetState(Transform::STATE::POSITION, ::XMVectorSet(11.f, 0.f, -45.5f, 1.f));
+	for (uint32 i = 0; i < iLightSize; ++i)
+		gameInstance->AddLight(pLightArray[i]);
 
+	Safe_Delete_Array<LIGHT_DESC*>(pLightArray);
 
-		lightDesc.Position = Vec4(11.f, 1.3f, -45.5f, 1.f);
-		lightDesc.vAmbientLowerColor = Color(1.f, 1.f, 1.f, 1.f);
-		lightDesc.vAmbientUpperColor = Color(1.f, 1.f, 1.f, 1.f);
-		//lightDesc.Direction = Vec3(1.f, -1.f, 1.f) * -1.f;
-		lightDesc.Diffuse = Vec4(1.f, 1.f, 1.f, 1.f);
+	RELEASE_INSTANCE(GameInstance);
 
-		// SpecularIntensity or SpecExponent
-		lightDesc.fSpecExp = 500.f;
-		lightDesc.fSpecIntensity = 0.25f;
-
-		// Light Color.
-        lightDesc.Ambient = Vec4(1.f, 1.f, 1.f, 1.f);
-        lightDesc.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
-
-		lightDesc.pointLightRangeRcp = 1.0f / 50.f;
-    }
-
-	if (FAILED(gameInstance->AddLight(lightDesc)))
-		return E_FAIL;
-
-    RELEASE_INSTANCE(GameInstance);
-
-
-    return S_OK;
+	return S_OK;
 }
 
 GameScene* GameScene::Create(ID3D11Device* _device, ID3D11DeviceContext* _deviceContext)

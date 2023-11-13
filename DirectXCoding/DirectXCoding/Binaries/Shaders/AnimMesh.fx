@@ -1,11 +1,6 @@
 #include "LightHelper.fx"
 #include "GlobalShader.fx"
 
-cbuffer CameraCBuffer
-{
-    float fCameraFar = 50.f;
-};
-
 VertexAnimMeshOut VS_MAIN(VertexAnimMesh input)
 {
     VertexAnimMeshOut Out = (VertexAnimMeshOut) 0;

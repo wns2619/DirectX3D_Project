@@ -35,7 +35,9 @@ private:
 
 private:
 	HRESULT Ready_Components();
-	HRESULT Bind_ShaderResources();
+
+private:
+	class OtherLight* _pLight = nullptr;
 
 public:
 	static Surefire* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

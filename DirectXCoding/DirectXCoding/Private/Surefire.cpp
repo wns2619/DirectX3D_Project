@@ -35,8 +35,31 @@ HRESULT Surefire::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	_transform->FixRotation(Vec3(-1.f, 0.f, 0.f), ::XMConvertToRadians(90));
-	_transform->SetState(Transform::STATE::POSITION, Vec4(0.02f, 0.02f, -0.009f, 1.f));
+	//_transform->FixRotation(Vec3(0.f, -1.f, 0.f), ::XMConvertToRadians(180));
+
+
+
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	vector<OtherLight*>* flashLight = pGameInstance->getLightList();
+
+	auto iter = [&](OtherLight* pLight)->OtherLight*
+		{
+			if (pLight->GetLightDesc()->PlayerLight == true)
+				return pLight;
+
+			return nullptr;
+		};
+
+	auto finditer = find_if(flashLight->begin(), flashLight->end(), iter);
+
+	if (finditer != flashLight->end())
+		_pLight = *finditer;
+
+
+
+
+	RELEASE_INSTANCE(GameInstance);
 
 	return S_OK;
 }
@@ -50,6 +73,17 @@ void Surefire::Tick(const _float& fTimeDelta)
 	worldMatrix.r[2] = XMVector3Normalize(worldMatrix.r[2]);
 
 	Compute_RenderMatrix(_transform->GetWorldMatrix() * worldMatrix);
+
+	if (nullptr != _pLight)
+	{
+		Vec3 vLook = _pParentTransform->GetState(Transform::STATE::LOOK);
+		vLook.Normalize();
+
+		Vec4 vPosition = _pParentTransform->GetState(Transform::STATE::POSITION);
+
+		_pLight->GetLightDesc()->Position = vPosition;
+		::XMStoreFloat3(&_pLight->GetLightDesc()->Direction, -vLook);
+	}
 }
 
 void Surefire::LateTick(const _float& fTimeDelta)
@@ -63,48 +97,12 @@ HRESULT Surefire::Render()
 		return S_OK;
 
 
-	if (FAILED(Bind_ShaderResources()))
-		return E_FAIL;
-
-
-	//if (true == _bObtainLight)
-	//{
-		uint32 numMeshes = _binaryModel->GetNumMeshes();
-
-		for (size_t i = 0; i < numMeshes; i++)
-		{
-			if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
-				return E_FAIL;
-
-			if (FAILED(_binaryModel->BindMaterialTexture(_shader, "NormalMap", i, TextureType_NORMALS)))
-				return E_FAIL;
-
-			if (FAILED(_shader->Begin(0)))
-				return E_FAIL;
-
-			if (FAILED(_binaryModel->Render(i)))
-				return E_FAIL;
-		}
-	//}
-
-
 
 	return S_OK;
 }
 
 HRESULT Surefire::Ready_Components()
 {
-	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
-	uint32 level = static_cast<uint32>(LEVEL::GAME);
-
-	if (static_cast<uint32>(LEVEL::EDIT) == gameInstance->GetCurrentLevelIndex())
-		level = static_cast<uint32>(LEVEL::EDIT);
-
-	/* Shader Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME),
-		TEXT("ProtoTypeComponentDefaultMeshShader"),
-		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
-		return E_FAIL;
 
 	/* Transform Component */
 	Transform::TRANSFORM_DESC transformDesc;
@@ -115,35 +113,43 @@ HRESULT Surefire::Ready_Components()
 		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform), &transformDesc)))
 		return E_FAIL;
 
-	/* Model Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelsurefire"),
-		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
-		return E_FAIL;
+	// Light Add
+
+	//GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+	//LIGHT_DESC lightDesc;
+	//ZeroMemory(&lightDesc, sizeof(lightDesc));
+	//{
+	//	lightDesc.type = LIGHT_DESC::SPOT;
 
 
-	RELEASE_INSTANCE(GameInstance);
+	//	lightDesc.Position = Vec4(11.f, 1.3f, -45.5f, 1.f);
+	//	lightDesc.vAmbientLowerColor = Color(1.f, 1.f, 1.f, 1.f);
+	//	lightDesc.vAmbientUpperColor = Color(1.f, 1.f, 1.f, 1.f);
+	//	lightDesc.Direction = Vec3(1.f, 0.f, 1.f);
+	//	lightDesc.Diffuse = Vec4(1.f, 1.f, 1.f, 1.f);
+
+	//	// SpecularIntensity or SpecExponent
+	//	lightDesc.fSpecExp = 100.f;
+	//	lightDesc.fSpecIntensity = 10.f;
+
+	//	// Spot
+	//	lightDesc.fSpotLightRangeRcp = 1.0f / 10.f;
+	//	lightDesc.fSpotCosOuterCone = ::cosf(0.5f / 180.f);
+	//	lightDesc.fSpotInnerConeRcp = 1.f / ::cosf(0.1f / 180.f);
+	//	lightDesc.PlayerLight = true;
+	//}
+
+	//if (FAILED(gameInstance->AddLight(lightDesc)))
+	//	return E_FAIL;
+
+
+
+	//RELEASE_INSTANCE(GameInstance);
 
 	return S_OK;
 }
 
-HRESULT Surefire::Bind_ShaderResources()
-{
-	GameInstance* gameInstance = GameInstance::GetInstance();
-	Safe_AddRef<GameInstance*>(gameInstance);
-
-	if (FAILED(_shader->BindMatrix("W", &_WorldMatrix)))
-		return E_FAIL;
-
-
-	if (FAILED(gameInstance->BindTransformToShader(_shader, "V", CameraHelper::TRANSFORMSTATE::D3DTS_VIEW)))
-		return E_FAIL;
-	if (FAILED(gameInstance->BindTransformToShader(_shader, "P", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
-		return E_FAIL;
-
-	Safe_Release<GameInstance*>(gameInstance);
-
-	return S_OK;
-}
 
 Surefire* Surefire::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
@@ -175,6 +181,4 @@ void Surefire::Free()
 {
 	__super::Free();
 
-	Safe_Release<Transform*>(_transform);
-	Safe_Release<Shader*>(_shader);
 }

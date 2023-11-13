@@ -80,12 +80,12 @@ public: // custom Movement
 	XMVECTOR GetPosition() { return _position; }
 	void SetWorldRotation(XMVECTOR rotation) { _rotation = rotation; }
 	XMVECTOR GetWorldRotation() { return _rotation; }
+
 	const DirectionVectors& GetDirectionalVectors() { return _directionalVectors; }
 private:
 	Matrix _worldMatrix;
 	Matrix _fixRotation;
 
-	XMVECTOR _localrotation = ::XMVectorSet(0.f, 0.f, 0.f, 1.f);
 	XMVECTOR _rotation = ::XMVectorSet(0.f, 0.f, 0.f, 1.f);
 	XMVECTOR _scale = ::XMVectorSet(1.f, 1.f, 1.f, 0.f);
 	XMVECTOR _position = ::XMVectorSet(0.f, 0.f, 0.f, 1.f);

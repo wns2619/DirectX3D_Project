@@ -214,7 +214,6 @@ HRESULT Renderer::RenderLightAcc()
 	if (FAILED(_pShader->BindMatrix("projInv", &ProjInv)))
 		return E_FAIL;
 
-
 	Vec4 vCameraPos = pCamera->GetCameraPosition();
 
 	if (FAILED(_pShader->BindRawValue("EyePosition", &vCameraPos, sizeof(Vec4))))
@@ -228,6 +227,9 @@ HRESULT Renderer::RenderLightAcc()
 	if (FAILED(_pTargetManager->BindSRV(_pShader, TEXT("Target_Depth"), "DepthMap")))
 		return E_FAIL;
 
+
+	// TODO
+	// Control to Light
 
 	_pLightManager->Render(_pShader, _pVIBuffer);
 

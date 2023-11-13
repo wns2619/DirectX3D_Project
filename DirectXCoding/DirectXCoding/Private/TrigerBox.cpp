@@ -53,7 +53,6 @@ void TrigerBox::PriorityTick(const _float& timeDelta)
 
 void TrigerBox::Tick(const _float& timeDelta)
 {
-
 	//TrigerOccur(timeDelta);
 
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
@@ -67,6 +66,7 @@ void TrigerBox::LateTick(const _float& timeDelta)
 #ifdef _DEBUG
 	_render->AddDebug(_pCollider);
 #endif // _DEBUG
+
 
 }
 
@@ -221,7 +221,10 @@ void TrigerBox::EventTarget()
 			});
 
 		if (nullptr == (*iter))
+		{
+			RELEASE_INSTANCE(GameInstance);
 			return;
+		}
 
 		_pTargetObject = *iter;
 	}
@@ -271,7 +274,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		if (_fEventSound <= 2.0f)
 		{
 
-			if (_fEventSound >= 1.4f)
+			if (_fEventSound >= 1.f)
 			{
 				GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
@@ -285,6 +288,9 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 				pGameInstance->PlaySound(TEXT("Low Bell.wav"), SOUND_SCARE2, 1.f);
 				pGameInstance->PlaySound(TEXT("LampBreak.wav"), SOUND_SCARE3, 1.f);
 				_bEventState = true;
+
+				uint32 iTurnOffLight[7] = { 0, 1, 2, 3, 4, 5, 6 };
+				pGameInstance->SelectTurnOffLight(iTurnOffLight, 7);
 
 
 				RELEASE_INSTANCE(GameInstance);
@@ -326,6 +332,9 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 
 		pGameInstance->PlaySound(TEXT("Scream.wav"), SOUND_MONSTER2, 1.f);
 
+		uint32 pLight[4] = { 7, 8, 9, 10 };
+		pGameInstance->SelectTurnOffLight(pLight, 4);
+
 		Player* pPlayer = dynamic_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
 		pPlayer->SetScare(true);
 
@@ -350,7 +359,6 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 
 				pGameInstance->PlaySound(TEXT("Very Low Growling.wav"), SOUND_SCARE2, 1.f);
 				_bEventState = true;
-
 
 				RELEASE_INSTANCE(GameInstance);
 			}

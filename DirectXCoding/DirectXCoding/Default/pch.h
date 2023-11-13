@@ -21,6 +21,7 @@
 #include <DirectXTK\WICTextureLoader.h>
 #include <DirectXTex\DirectXTex.h>
 #include <DirectXTex\DirectXTex.inl>
+#include <array>
 
 #include <random>
 

@@ -7,6 +7,7 @@
 
 BEGIN(Engine)
 class BinaryNavi;
+class OtherLight;
 END
 
 BEGIN(Client)
@@ -108,6 +109,12 @@ private:
 
 
 	// Lights
+	map<uint32, pair<_bool, class OtherLight*>> _SelectLight;
+
+
+	HRESULT LightSave(wstring& filePath);
+	HRESULT LightLoad(wstring& filePath);
+
 	Vec4 _lightposition = Vec4(1.f, 1.f, 1.f, 1.f);
 	Vec3 _LightColor = Vec3(1.f,1.f,1.f);
 	Vec3 _rotationDeg = Vec3(1.f,1.f,1.f);

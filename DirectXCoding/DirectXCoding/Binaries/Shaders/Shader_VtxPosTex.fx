@@ -3,14 +3,9 @@
 
 vector NewColor = vector(1.f, 1.f, 1.f, 1.f);
 
-cbuffer CameraCBuffer
-{
-    float fCameraFar = 50.f;
-};
+
 
 VertexOut VS_MAIN(VertexTextureNormal input)
-
-
 {
     VertexOut output = (VertexOut) 0;
     

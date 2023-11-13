@@ -27,6 +27,9 @@ public:
 public:
 	HRESULT	AddLight(const LIGHT_DESC& lightDesc);
 	HRESULT DeleteLight(uint32 lightIndex, const string& lightName);
+	OtherLight* FindLightFromID(const uint32 id);
+	HRESULT SelectTurnOffLight(uint32* pLightArray, uint32 arraySize);
+	HRESULT	AllTurnOnLight();
 
 private:
 	vector<OtherLight*> _lights;

@@ -112,7 +112,7 @@ RenderTarget* RenderTarget::Create(ID3D11Device* pDevice, ID3D11DeviceContext* p
 
 void RenderTarget::Free()
 {
-	SaveDDSTextureToFile(_pDeviceContext, _pTexture2D, TEXT("../Binaries/Diffuse.dds"));
+	//SaveDDSTextureToFile(_pDeviceContext, _pTexture2D, TEXT("../Binaries/Diffuse.dds"));
 	
 	Safe_Release<ID3D11ShaderResourceView*>(_pSRV);
 	Safe_Release<ID3D11RenderTargetView*>(_pRTV);

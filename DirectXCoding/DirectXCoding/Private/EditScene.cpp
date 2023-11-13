@@ -216,3 +216,60 @@ void EditScene::Free()
 
     __super::Free();
 }
+
+
+
+//if (LightTypeName[i] == "Directional")
+//{
+//
+//    ::ZeroMemory(&lightDesc, sizeof(lightDesc));
+//    {
+//        lightDesc.type = LIGHT_DESC::DIRECTION;
+// 
+//        lightDesc.Position = Vec4(0.f, 5.f, 0.f, 1.f);
+//        lightDesc.Diffuse = Vec3(1.f, 1.f, 1.f);
+//        lightDesc.fSpecIntensity = 1.f;
+//
+//        lightDesc.Direction = Vec3(1.f, -1.f, 1.f);
+//        lightDesc.vAmbientUpperColor = Vec4(1.f, 1.f, 1.f, 1.f);
+//        lightDesc.vAmbientLowerColor = Vec4(1.f, 1.f, 1.f, 1.f);
+//        lightDesc.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
+//    }
+//}
+//
+//else if (LightTypeName[i] == "Point")
+//{
+//    lightDesc.type = LIGHT_DESC::POINT;
+//
+//    lightDesc.Position = Vec4(0.f, 5.f, 0.f, 1.f);
+//    lightDesc.Diffuse = Vec4(1.f, 1.f, 1.f, 1.f);
+// 
+//      lightDesc.fSpecExp = 30.f;
+//      lightDesc.fSpecIntensity = 1.f;   
+//    lightDesc.vAmbientLowerColor = Color(1.f, 1.f, 1.f, 1.f);
+//    lightDesc.vAmbientUpperColor = Color(1.f, 1.f, 1.f, 1.f);
+//    lightDesc.Direction = -1.f * Vec3(0.f, 1.f, 1.f);
+//
+//    // SpecularIntensity or SpecExponent
+//    
+//    
+//
+//    // Light Color.
+//    lightDesc.Ambient = Vec4(1.f, 1.f, 1.f, 1.f);
+//    lightDesc.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
+//
+//
+//    // Point
+//    lightDesc.pointLightRangeRcp = 1.0f / 50.f;
+//}
+//
+//else if (LightTypeName[i] == "Spot")
+//{
+//    lightDesc.type = LIGHT_DESC::SPOT;
+
+
+//    // Spot
+//    lightDesc.fSpotLightRangeRcp = 1.0f / 60.f;
+//    lightDesc.fSpotCosOuterCone = ::cosf(XM_PI * 65.f / 180.f);
+//    lightDesc.fSpotInnerConeRcp = 1.f / ::cosf(XM_PI * 45.f / 180.f);
+//}

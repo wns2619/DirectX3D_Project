@@ -35,6 +35,10 @@ HRESULT Water::Initialize(void* pArg)
 
 void Water::Tick(const _float& timeDelta)
 {
+	_fStream += timeDelta * timeDelta;
+
+	if (FAILED(_shader->BindRawValue("gTimeDelta", &_fStream, sizeof(_float))))
+		return;
 }
 
 void Water::LateTick(const _float& timeDelta)
@@ -65,8 +69,9 @@ HRESULT Water::Render()
 		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "NormalMap", i, TextureType_NORMALS)))
 			return E_FAIL;
 
-		if (FAILED(_shader->Begin(0)))
+		if (FAILED(_shader->Begin(1)))
 			return E_FAIL;
+
 
 		if (FAILED(_binaryModel->Render(i)))
 			return E_FAIL;

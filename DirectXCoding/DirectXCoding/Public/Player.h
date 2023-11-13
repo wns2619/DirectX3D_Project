@@ -9,6 +9,7 @@ class BinaryNavi;
 class StateMachine;
 class Animator;
 class Collider;
+class OtherLight;
 END
 
 BEGIN(Client)
@@ -16,7 +17,7 @@ BEGIN(Client)
 class Player final : public LandObject
 {
 public:
-	enum PART { PART_BODY, PART_CAMERA, PART_END };
+	enum PART { PART_BODY, PART_CAMERA, PLAYER_LIGHT, PART_END };
 
 private:
 	explicit Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext);

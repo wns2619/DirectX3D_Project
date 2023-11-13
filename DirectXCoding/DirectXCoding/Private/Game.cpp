@@ -42,10 +42,11 @@ HRESULT Game::Initialize(HWND hwnd)
 	if (FAILED(ReadyProtoTypeComponents()))
 		return E_FAIL;
 
-
+	 
 	if (FAILED(OpenLevel(LEVEL::EDIT)))
 		return E_FAIL;
 	
+	//D3D11_BLEND_DESC
 	
 	return S_OK;
 }

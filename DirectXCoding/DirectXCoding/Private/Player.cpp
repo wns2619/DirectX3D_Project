@@ -173,9 +173,16 @@ void Player::OnCollisionStay(Collider* pOther)
 			if (pGameInstance->keyDown(DIK_E))
 			{
 				dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->SetObtainLight(true);
-				pGameInstance->DeleteObject(pOther->GetOwner());
+
+				uint32 pLightNum[2] = { 14, 15 };
+				pGameInstance->SelectTurnOffLight(pLightNum, 2);
+				OtherLight* pLight = pGameInstance->FindLightFromID(16);
+				pLight->GetLightDesc()->bEnable = false;
 
 				pGameInstance->StopAll();
+				pGameInstance->PlaySound(TEXT("PickUp2.wav"), SOUND_PICKUP, 1.f);
+
+				pGameInstance->DeleteObject(pOther->GetOwner());
 			}
 		}
 		else if (pOther->GetOwner()->GetModelName() == "Key")
@@ -220,7 +227,7 @@ void Player::KeyInput(const _float& timeDelta)
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
 	POINT		pt{ g_iWinSizeX >> 1, g_iWinSizeY >> 1 };
-
+	
 	ClientToScreen(g_hWnd, &pt);
 	SetCursorPos(pt.x, pt.y);
 
@@ -353,7 +360,13 @@ void Player::TrigerBoxEvent(Collider* pOther)
 		if (pGameInstance->keyDown(DIK_E))
 		{
 			dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
-			pGameInstance->PlaySound(TEXT("sveton.wav"), SOUND_SCARE1, 1.f);
+			{
+				pGameInstance->PlaySound(TEXT("sveton.wav"), SOUND_SCARE1, 1.f);
+				OtherLight* pLight = pGameInstance->FindLightFromID(10);
+
+				pLight->GetLightDesc()->Diffuse = Color(1.f, 0.f, 0.f, 1.f);
+				pGameInstance->AllTurnOnLight();
+			}
 		}
 
 		// TODO Light를 붉게 만들고
@@ -462,17 +475,7 @@ HRESULT Player::ReadyPlayerPart()
 	m_pPlayerPart.push_back(pPlayerPart);
 
 
-	//// SureFire
-	//Surefire::FLASHLIGHT_DESC surefireDesc;
-	//surefireDesc.pParentTransform = _transform;
-	//surefireDesc.SocketMatrix = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketBonePtr("gun_root");
-	//surefireDesc.SocketPivot = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketPivotMatrix();
 
-
-	//pPlayerPart = gameInstance->CloneGameObject(TEXT("ProtoTypeGameObjectPlayerSurefire"), &surefireDesc);
-	//if (nullptr == pPlayerPart)
-	//	return E_FAIL;
-	//m_pPlayerPart.push_back(pPlayerPart);
 
 
 	BodyCam::BODYCAM_DESC BodyCamDesc;
@@ -488,6 +491,19 @@ HRESULT Player::ReadyPlayerPart()
 
 
 	pPlayerPart = gameInstance->CloneGameObject(TEXT("ProtoTypeGameObjectBodyCam"), &BodyCamDesc);
+	if (nullptr == pPlayerPart)
+		return E_FAIL;
+	m_pPlayerPart.push_back(pPlayerPart);
+
+
+		// SureFire
+	Surefire::FLASHLIGHT_DESC surefireDesc;
+	surefireDesc.pParentTransform = _transform;
+	surefireDesc.SocketMatrix = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketBonePtr("gun_root");
+	surefireDesc.SocketPivot = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketPivotMatrix();
+
+
+	pPlayerPart = gameInstance->CloneGameObject(TEXT("ProtoTypeGameObjectPlayerSurefire"), &surefireDesc);
 	if (nullptr == pPlayerPart)
 		return E_FAIL;
 	m_pPlayerPart.push_back(pPlayerPart);

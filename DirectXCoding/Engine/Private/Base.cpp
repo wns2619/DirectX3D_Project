@@ -17,7 +17,7 @@ unsigned long Base::Release()
         Free();
 
         delete this;
-
+        
         return 0;
     }
     else

@@ -11,7 +11,7 @@ void ComputeNormalMapping(inout float3 normal, float3 tangent, float2 uv)
 {
     // [0, 255] 범위를 [0, 1]의 범위로 변환
     // Sample이 0, 1로 변환해주는 작업을 해주고 있었음.
-    float4 map = NormalMap.Sample(LinearSampler, uv);
+    float4 map = NormalMap.Sample(LinearSamplerMirror, uv);
 
     // rgb값 중 어느 하나가 값이있으면 true, 전부 없으면 false를 반환함.
     if (any(map.rgb) == false)

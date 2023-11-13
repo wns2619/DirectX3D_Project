@@ -103,6 +103,16 @@ pass name                                                              \
     SetPixelShader(CompileShader(ps_5_0, ps()));                       \
 }
 
+#define SOLID_PASS_WATER_VP(name, vs, ps)                                   \
+pass name                                                                   \
+{                                                                           \
+    SetRasterizerState(RS_Default);                                         \
+    SetDepthStencilState(DSS_Default, 0);                                   \
+	SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);   \
+    SetVertexShader(CompileShader(vs_5_0, vs()));                           \
+    SetPixelShader(CompileShader(ps_5_0, ps()));                            \
+}
+
 float3 CameraPosition()
 {
     return -V._41_42_43;

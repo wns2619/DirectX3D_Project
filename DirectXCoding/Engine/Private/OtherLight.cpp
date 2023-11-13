@@ -2,6 +2,7 @@
 #include "OtherLight.h"
 #include "VIBufferRect.h"
 #include "Shader.h"
+#include "TimeManager.h"
 
 OtherLight::OtherLight()
 {
@@ -25,6 +26,9 @@ HRESULT OtherLight::Render(Shader* pShader, VIBufferRect* pVIBuffer)
 {
 	uint32 iPassIndex = 0;
 
+	if (true == _lightDesc.bEnable)
+		return S_OK;
+
 	if (LIGHT_DESC::DIRECTION == _lightDesc.type)
 	{
 		if (FAILED(pShader->BindRawValue("DirToLight", &_lightDesc.Direction, sizeof(Vec4))))
@@ -43,8 +47,27 @@ HRESULT OtherLight::Render(Shader* pShader, VIBufferRect* pVIBuffer)
 			return E_FAIL;
 		if (FAILED(pShader->BindRawValue("PointLightPosition", &_lightDesc.Position, sizeof(Vec4))))
 			return E_FAIL;
-		if (FAILED(pShader->BindRawValue("PointLightRangeRcp", &_lightDesc.pointLightRangeRcp, sizeof(_float))))
-			return E_FAIL;
+
+
+		
+		if (_ownLightNumber == 5)
+		{
+			TimeManager* pTimeInstance = GET_INSTANCE(TimeManager);
+
+			_fBlinkTime += pTimeInstance->Compute_TimeDelta(L"Timer_60") * 50.f;
+
+			_float fRange = _fMinBlinkRange + 0.5f * (_fMaxBlinkRange - _fMinBlinkRange) * (1.f + sinf(_fBlinkSpeed * _fBlinkTime));
+
+			_lightDesc.pointLightRangeRcp = 1.f / fRange;
+
+			if (FAILED(pShader->BindRawValue("PointLightRangeRcp", &_lightDesc.pointLightRangeRcp, sizeof(_float))))
+				return E_FAIL;
+
+			RELEASE_INSTANCE(TimeManager);
+		}
+		else
+			if(FAILED(pShader->BindRawValue("PointLightRangeRcp", &_lightDesc.pointLightRangeRcp, sizeof(_float))))
+				return E_FAIL;
 
 		iPassIndex = 2;
 	}

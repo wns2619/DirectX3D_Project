@@ -186,10 +186,11 @@ void Transform::Turn(XMVECTOR axis, const _float& timeDelta)
     right = ::XMVector3Rotate(right, _rotation);
     up = ::XMVector3Rotate(up, _rotation);
     look = ::XMVector3Rotate(look, _rotation);
-
+ 
     SetState(STATE::RIGHT, right);
     SetState(STATE::UP, up);
     SetState(STATE::LOOK, look);
+
 }
 
 void Transform::LookAt(FXMVECTOR point)
@@ -259,12 +260,8 @@ Vec3 Transform::CustomGetPositionV3() const
 
 XMMATRIX Transform::CustomGetWorldMatrix() const
 {
-    return XMMATRIX(
-        ::XMMatrixScalingFromVector(_scale) *
-        ::XMMatrixRotationRollPitchYawFromVector(_localrotation) *
-        ::XMMatrixRotationRollPitchYawFromVector(_rotation) *
-        ::XMMatrixTranslationFromVector(_position)
-    );
+
+    return XMMATRIX();
 }
 
 Transform* Transform::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)

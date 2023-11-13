@@ -31,6 +31,9 @@ HRESULT DynamicObject::Initialize(void* pArg)
 		_modelName = names->_strModelName;
 		_comNames._strShaderName = names->_strShaderName;
 		_id = names->_modelID;
+
+		if (_modelName == "Water")
+			_comNames._strShaderName = L"ProtoTypeComponentDefaultMeshShader";
 	}
 
 	if (FAILED(ReadyComponents()))

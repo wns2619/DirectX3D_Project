@@ -35,7 +35,10 @@ void LightManager::GetLighsNumber()
 HRESULT LightManager::Render(Shader* pShader, VIBufferRect* pVIBuffer)
 {
 	for (auto& pLight : _lights)
-		pLight->Render(pShader, pVIBuffer);
+	{
+		if(false == pLight->GetLightDesc()->bEnable)
+			pLight->Render(pShader, pVIBuffer);
+	}
 
 	return S_OK;
 }
@@ -85,6 +88,50 @@ HRESULT LightManager::DeleteLight(uint32 lightIndex, const string& lightName)
 	}
 
 	return S_OK;;
+}
+
+OtherLight* LightManager::FindLightFromID(const uint32 id)
+{
+	if (id > _lights.size())
+		return nullptr;
+
+	auto iter = find_if(_lights.begin(), _lights.end(), [&](OtherLight* pLight) {
+		if (id == pLight->GetLightNumber())
+			return true;
+
+		return false;
+		});
+
+	if (iter == _lights.end())
+		return nullptr;
+
+	return *iter;
+}
+
+HRESULT LightManager::SelectTurnOffLight(uint32* pLightArray, uint32 arraySize)
+{
+	for (auto& pLight : _lights)
+	{
+		// 배열의 사이즈도 받아서 배열의 사이즈만큼 라이트를 전부 순회해서 비교. 해당하는게 있으면 true. 
+		for (uint32 i = 0; i < arraySize; ++i)
+		{
+			if (pLight->GetLightNumber() == pLightArray[i])
+				pLight->GetLightDesc()->bEnable = true;
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT LightManager::AllTurnOnLight()
+{
+	for (auto& pLight : _lights)
+	{
+		if (pLight->GetLightDesc()->PlayerLight != true)
+			pLight->GetLightDesc()->bEnable = false;
+	}
+
+	return S_OK;
 }
 
 void LightManager::Free()

@@ -408,6 +408,31 @@ HRESULT GameInstance::DeleteLight(uint32 lightIndex, const string& lightName)
     return _lightManager->DeleteLight(lightIndex, lightName);
 }
 
+OtherLight* GameInstance::FindLightFromID(const uint32 id)
+{
+    if (nullptr == _lightManager)
+        return nullptr;
+
+
+    return _lightManager->FindLightFromID(id);
+}
+
+HRESULT GameInstance::AllTurnOnLight()
+{
+    if (nullptr == _lightManager)
+        return E_FAIL;
+
+    return _lightManager->AllTurnOnLight();
+}
+
+HRESULT GameInstance::SelectTurnOffLight(uint32* pLightArray, uint32 arraySize)
+{
+    if (nullptr == _lightManager)
+        return E_FAIL;
+
+    return _lightManager->SelectTurnOffLight(pLightArray, arraySize);
+}
+
 Vec4 GameInstance::TerrainPicking(POINT pt, Transform* trans, VIBufferTerrain* buffer)
 {
     if (nullptr == _picking)

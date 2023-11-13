@@ -53,8 +53,7 @@ HRESULT BodyCam::Initialize(void* pArg)
 
 
 	_transform->FixRotation(Vec4(0.f, 0.f, 1.f, 1.f), ::XMConvertToRadians(-180));
-	::ShowCursor(FALSE);
-
+	//::ShowCursor(FALSE);
 
 	return S_OK;
 }

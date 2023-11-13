@@ -147,6 +147,12 @@ namespace Engine
 		_float fSpotLightRangeRcp	= 0.f;
 		_float fSpotCosOuterCone	= 0.f;
 		_float fSpotInnerConeRcp	= 0.f;
+
+
+		// State
+		_bool PlayerLight = false;
+		_bool bEnable = false;
+		_bool bSelect = false;
 	};
 
 	struct MESH_MATERIAL

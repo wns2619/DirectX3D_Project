@@ -418,6 +418,15 @@ void ImGuiManager::MouseMove()
 						Selectiter.second.second->GetTransform()->SetState(Transform::STATE::POSITION, ::XMLoadFloat4(&ObjectPos));
 				}
 			}
+
+			for (const auto& SelectLight : _SelectLight)
+			{
+				if (SelectLight.second.first == true)
+				{
+					if (gameinstance->Get_DIMouseState(DIMK::DIMK_RBUTTON))
+						SelectLight.second.second->GetLightDesc()->Position = ObjectPos;
+				}
+			}
 		}
 	}
 
@@ -564,6 +573,7 @@ void ImGuiManager::MainSection()
 			
 			wstring Navipath = L"..\\Binaries\\Data\\";
 			NavigationMeshSave(Navipath);
+			LightSave(Navipath);
 		}
 
 		ImGui::SameLine(ImGui::GetWindowWidth() - 56);
@@ -576,6 +586,9 @@ void ImGuiManager::MainSection()
 		{
 			wstring filepath = L"..\\Binaries\\Resources\\MapData\\";
 			SceneLoad(filepath);
+
+			wstring lightPath = L"..\\Binaries\\Data\\";
+			LightLoad(lightPath);
 
 			_pNaviGation = dynamic_cast<BinaryNavi*>(gameInstance->GetComponent(static_cast<uint32>(LEVEL::EDIT), LAYER_TAG::LAYER_STATIC,
 				TEXT("ComponentNavigation"), "2stBottom", 0));
@@ -690,7 +703,7 @@ HRESULT ImGuiManager::ModelNameCardSection()
 					// 여기까지
 
 					const pair<LAYER_TAG, wstring>& findPrototypename = ImGuiResourceHandler::GetInstance()->FindProtoFilePath(modelPath);
-					//const pair<const wstring, const wstring>& findProtoComName = ImGuiResourceHandler::GetInstance()->FindProtoComponentName(modelPath);
+					const pair<const wstring, const wstring>& findProtoComName = ImGuiResourceHandler::GetInstance()->FindProtoComponentName(modelPath);
 
 
 					ComponentNames comNames;
@@ -702,8 +715,8 @@ HRESULT ImGuiManager::ModelNameCardSection()
 							useModelName = _modelNames[i].first.substr(0, namePosition);
 
 						comNames._protoTypeName = findPrototypename.second;
-						//comNames._strModelComponentName = findProtoComName.first;
-						//comNames._strShaderName = findProtoComName.second;
+						comNames._strModelComponentName = findProtoComName.first;
+						comNames._strShaderName = findProtoComName.second;
 						comNames._strModelName = useModelName;
 						Matrix ScaleMatrix;
 						comNames._saveWorldMatrix *= ScaleMatrix.CreateScale(Vec3(1.f, 1.f, 1.f));
@@ -1262,10 +1275,6 @@ void ImGuiManager::AddLightSection()
 				lightDesc.fSpecExp = 30.f;
 				lightDesc.fSpecIntensity = 1.f;
 
-				// Light Color.
-				lightDesc.Ambient = Vec4(1.f, 1.f, 1.f, 1.f);
-				lightDesc.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
-
 
 				// Point
 				lightDesc.pointLightRangeRcp = 1.0f / 50.f;
@@ -1285,10 +1294,6 @@ void ImGuiManager::AddLightSection()
 				// SpecularIntensity or SpecExponent
 				lightDesc.fSpecExp = 30.f;
 				lightDesc.fSpecIntensity = 1.f;
-
-				// Light Color.
-				lightDesc.Ambient = Vec4(1.f, 1.f, 1.f, 1.f);
-				lightDesc.Specular = Vec4(1.f, 1.f, 1.f, 1.f);
 
 				// Spot
 				lightDesc.fSpotLightRangeRcp = 1.0f / 60.f;
@@ -1371,12 +1376,18 @@ HRESULT ImGuiManager::MainLightSection()
 				ImGui::Text((to_string(i) + ", " + lightname).c_str());
 				ImGui::PushID(string("Light" + to_string(i)).c_str());
 
+	
 				ImGui::NextColumn();
 				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
 				ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - colWidth - 46);
 				if (ImGui::ImageButton(ImGuiResourceHandler::GetInstance()->GetResourceTexture(L"Icon\\baseline_delete_white_18dp.png"), ImVec2(20, 20)))
 				{
-					if (FAILED(gameInstance->DeleteLight(i, lightname)))
+
+					uint32 iLightID = (*lightvector)[i]->GetLightNumber();
+					OtherLight* pOtherLight = (*lightvector)[i];
+
+
+					if (FAILED(gameInstance->DeleteLight(iLightID, lightname)))
 						return E_FAIL;
 					else
 						--lightsize;
@@ -1387,170 +1398,221 @@ HRESULT ImGuiManager::MainLightSection()
 				{
 					ImGui::PopStyleVar();
 
-					ImGui::Separator();
+					uint32 iLightID = (*lightvector)[i]->GetLightNumber();
+					OtherLight* pOtherLight = (*lightvector)[i];
 
-					ImGui::NextColumn();
-					ImGui::Text("Diffuse");
-					ImGui::NextColumn();
+					LIGHT_DESC* lightDesc = pOtherLight->GetLightDesc();
 
-					ImGui::PushItemWidth(0.f);
-					if (ImGui::ColorEdit3(string("##Diffuse" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->Diffuse.x, ImGuiColorEditFlags_Float)) // 향 후 수정
+					_bool* enable = &lightDesc->bEnable;
+					_bool* select = &lightDesc->bSelect;
+					_bool* PlayerLight = &lightDesc->PlayerLight;
+
+					string enabledLabel = "Enabled##" + to_string(iLightID);
+					string selectLabel = "Select##" + to_string(iLightID);
+					string playerLightLabel = "PlayerLight##" + to_string(iLightID);
+
+					if (ImGui::Checkbox(playerLightLabel.c_str(), PlayerLight))
+					{
+					
+					}
+
+
+					ImGui::SameLine();
+
+					if (ImGui::Checkbox(enabledLabel.c_str(), enable))
 					{
 
 					}
 
-					ImGui::PopItemWidth();
-					ImGui::NextColumn();
+					ImGui::SameLine();
 
-					ImGui::Text("Intensity");
-					ImGui::NextColumn();
-					ImGui::PushItemWidth(0.f);
+					if (ImGui::Checkbox(selectLabel.c_str(), select))
+						_SelectLight.emplace(iLightID, make_pair(select, pOtherLight));
 
-
-					if (ImGui::DragFloat(string("##Intensity" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->fSpecIntensity, 0.01f, 0.25f, 30.f))
+					if (*select == false && !_SelectLight.empty())
 					{
+						auto iter = _SelectLight.find(iLightID);
 
-					}
-					ImGui::PopItemWidth();
-					ImGui::NextColumn();
-
-					ImGui::Text("SpecExp");
-					ImGui::NextColumn();
-					ImGui::PushItemWidth(0.f);
-
-					ImGui::PushItemWidth(0.f);
-
-
-					if (ImGui::DragFloat(string("##SpecExp" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->fSpecExp, 0.01f, 1.f, 1000.f))
-					{
-
-					}
-					ImGui::PopItemWidth();
-					ImGui::NextColumn();
-
-					ImGui::Text("AmbientLower");
-					ImGui::NextColumn();
-					ImGui::PushItemWidth(0.f);
-
-
-					if (ImGui::ColorEdit3(string("##AmbientLower" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->vAmbientLowerColor.x, ImGuiColorEditFlags_Float)) // 향 후 수정
-					{
+						if (iter != _SelectLight.end())
+						{
+							iter->second.first = false;
+							iter->second.second = nullptr;
+							_SelectLight.erase(iter);
+						}
 
 					}
 
-					ImGui::PopItemWidth();
-					ImGui::NextColumn();
 
-					ImGui::Text("AmbientUpper");
-					ImGui::NextColumn();
-					ImGui::PushItemWidth(0.f);
-
-
-					if (ImGui::ColorEdit3(string("##AmbientUpper" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->vAmbientUpperColor.x, ImGuiColorEditFlags_Float)) // 향 후 수정
+					if (ImGui::CollapsingHeader("LightInfo"))
 					{
 
-					}
-					ImGui::PopItemWidth();
+						ImGui::Separator();
 
-
-
-
-					// 디렉션이 아니면 position이 있으니까.
-					if ((*lightvector)[i]->GetLightDesc()->type != LIGHT_DESC::DIRECTION)
-					{
 						ImGui::NextColumn();
-						ImGui::Text("Position");
+						ImGui::Text("Diffuse");
+						ImGui::NextColumn();
+
+						ImGui::PushItemWidth(0.f);
+
+						if (ImGui::ColorEdit3(string("##Diffuse" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->Diffuse.x, ImGuiColorEditFlags_Float)) // 향 후 수정
+						{
+
+						}
+
+						ImGui::PopItemWidth();
+						ImGui::NextColumn();
+
+						ImGui::Text("Intensity");
 						ImGui::NextColumn();
 						ImGui::PushItemWidth(0.f);
-						if (ImGui::DragFloat3(string("##Position" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->Position.x, 0.1f))
+
+
+						if (ImGui::DragFloat(string("##Intensity" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->fSpecIntensity, 0.01f, 0.01f, 30.f))
 						{
 
 						}
 						ImGui::PopItemWidth();
-					}
-
-					if ((*lightvector)[i]->GetLightDesc()->type == LIGHT_DESC::SPOT)
-					{
 						ImGui::NextColumn();
-						ImGui::Text("Direction");
-						ImGui::NextColumn();
-						ImGui::PushItemWidth(0.f);
-						if (ImGui::DragFloat3(string("##Direction" + to_string(i)).c_str(), &_mLights[i].second.rotationDeg.x, 1.f, -180.f, 180.f, "%.fdeg"))
-						{
-							XMVECTOR rotQuat = ::XMQuaternionRotationRollPitchYaw(
-								::XMConvertToRadians(_mLights[i].second.rotationDeg.x),
-								::XMConvertToRadians(_mLights[i].second.rotationDeg.y),
-								::XMConvertToRadians(_mLights[i].second.rotationDeg.z));
 
-							XMVECTOR rotQuatInverse = ::XMQuaternionInverse(rotQuat);
-							XMVECTOR lightDir = ::XMQuaternionMultiply(rotQuat, ::XMVectorSet(0.f, 0.f, 1.f, 0.f));
-							::XMStoreFloat3(&(*lightvector)[i]->GetLightDesc()->Direction, ::XMQuaternionMultiply(lightDir, rotQuatInverse));
-						}
-						ImGui::PopItemWidth();
-
-						// Spot Anlges
-						ImGui::NextColumn();
-						ImGui::Text("Spot Angles");
-						ImGui::NextColumn();
-						ImGui::PushItemWidth(0.f);
-						if (ImGui::DragFloat3(string("##Spot Angles" + to_string(i)).c_str(), &_mLights[i].second.spotAngles.x, 1.f, 1.f, 90.f))
-						{
-							if (_mLights[i].second.spotAngles.x > _mLights[i].second.spotAngles.y)
-								_mLights[i].second.spotAngles.x = _mLights[i].second.spotAngles.y;
-
-							_mLights[i].first.fSpotCosOuterCone = cosf(_mLights[i].second.spotAngles.y);
-							_mLights[i].first.fSpotInnerConeRcp = 1.0f / (::cosf(_mLights[i].second.spotAngles.x) - cosf(_mLights[i].second.spotAngles.y));
-							_mLights[i].first.fSpotLightRangeRcp = 1.f / _mLights[i].second.spotAngles.z;
-
-							(*lightvector)[i]->GetLightDesc()->fSpotCosOuterCone = _mLights[i].first.fSpotCosOuterCone;
-							(*lightvector)[i]->GetLightDesc()->fSpotInnerConeRcp = _mLights[i].first.fSpotInnerConeRcp;
-							(*lightvector)[i]->GetLightDesc()->fSpotLightRangeRcp = _mLights[i].first.fSpotLightRangeRcp;
-							
-						}
-						ImGui::PopItemWidth();
-					}
-
-
-
-					if ((*lightvector)[i]->GetLightDesc()->type == LIGHT_DESC::DIRECTION)
-					{
-						ImGui::NextColumn();
-						ImGui::Text("Direction");
-						ImGui::NextColumn();
-						ImGui::PushItemWidth(0.f);
-						if (ImGui::DragFloat3(string("##Direction" + to_string(i)).c_str(), &_mLights[i].second.rotationDeg.x, 1.f, -180.f, 180.f, "%.fdeg"))
-						{
-							XMVECTOR rotQuat = ::XMQuaternionRotationRollPitchYaw(
-								::XMConvertToRadians(_mLights[i].second.rotationDeg.x),
-								::XMConvertToRadians(_mLights[i].second.rotationDeg.y),
-								::XMConvertToRadians(_mLights[i].second.rotationDeg.z));
-
-							XMVECTOR rotQuatInverse = ::XMQuaternionInverse(rotQuat);
-							XMVECTOR lightDir = ::XMQuaternionMultiply(rotQuat, ::XMVectorSet(0.f, 0.f, 1.f, 0.f));
-							::XMStoreFloat3(&(*lightvector)[i]->GetLightDesc()->Direction, ::XMQuaternionMultiply(lightDir, rotQuatInverse));
-						}
-
-						ImGui::PopItemWidth();
-					}
-
-
-					if ((*lightvector)[i]->GetLightDesc()->type == LIGHT_DESC::POINT)
-					{
-						ImGui::NextColumn();
-						ImGui::Text("PointRange");
+						ImGui::Text("SpecExp");
 						ImGui::NextColumn();
 						ImGui::PushItemWidth(0.f);
 
-						static _float pointRange = 0.f;
+						ImGui::PushItemWidth(0.f);
 
-						if (ImGui::DragFloat(string("##PointRange" + to_string(i)).c_str(), &pointRange, 1.f, 0.f, 180.f, "%.fdeg"))
+
+						if (ImGui::DragFloat(string("##SpecExp" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->fSpecExp, 0.01f, 1.f, 1000.f))
 						{
-							_float fRange = 1.f / pointRange;
 
-							(*lightvector)[i]->GetLightDesc()->pointLightRangeRcp = fRange;
+						}
+						ImGui::PopItemWidth();
+						ImGui::NextColumn();
+
+						ImGui::Text("AmbientLower");
+						ImGui::NextColumn();
+						ImGui::PushItemWidth(0.f);
+
+
+						if (ImGui::ColorEdit3(string("##AmbientLower" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->vAmbientLowerColor.x, ImGuiColorEditFlags_Float)) // 향 후 수정
+						{
+
 						}
 
 						ImGui::PopItemWidth();
+						ImGui::NextColumn();
+
+						ImGui::Text("AmbientUpper");
+						ImGui::NextColumn();
+						ImGui::PushItemWidth(0.f);
+
+
+						if (ImGui::ColorEdit3(string("##AmbientUpper" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->vAmbientUpperColor.x, ImGuiColorEditFlags_Float)) // 향 후 수정
+						{
+
+						}
+						ImGui::PopItemWidth();
+
+
+
+
+						// 디렉션이 아니면 position이 있으니까.
+						if ((*lightvector)[i]->GetLightDesc()->type != LIGHT_DESC::DIRECTION)
+						{
+							ImGui::NextColumn();
+							ImGui::Text("Position");
+							ImGui::NextColumn();
+							ImGui::PushItemWidth(0.f);
+							if (ImGui::DragFloat3(string("##Position" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->Position.x, 0.1f))
+							{
+
+							}
+							ImGui::PopItemWidth();
+						}
+
+						if ((*lightvector)[i]->GetLightDesc()->type == LIGHT_DESC::SPOT)
+						{
+							ImGui::NextColumn();
+							ImGui::Text("Direction");
+							ImGui::NextColumn();
+							ImGui::PushItemWidth(0.f);
+							if (ImGui::DragFloat3(string("##Direction" + to_string(i)).c_str(), &_mLights[i].second.rotationDeg.x, 1.f, -180.f, 180.f, "%.fdeg"))
+							{
+								XMVECTOR rotQuat = ::XMQuaternionRotationRollPitchYaw(
+									::XMConvertToRadians(_mLights[i].second.rotationDeg.x),
+									::XMConvertToRadians(_mLights[i].second.rotationDeg.y),
+									::XMConvertToRadians(_mLights[i].second.rotationDeg.z));
+
+								XMVECTOR rotQuatInverse = ::XMQuaternionInverse(rotQuat);
+								XMVECTOR lightDir = ::XMQuaternionMultiply(rotQuat, ::XMVectorSet(0.f, 0.f, 1.f, 0.f));
+								::XMStoreFloat3(&(*lightvector)[i]->GetLightDesc()->Direction, ::XMQuaternionMultiply(lightDir, rotQuatInverse));
+							}
+							ImGui::PopItemWidth();
+
+							// Spot Anlges
+							ImGui::NextColumn();
+							ImGui::Text("Spot Angles");
+							ImGui::NextColumn();
+							ImGui::PushItemWidth(0.f);
+							if (ImGui::DragFloat3(string("##Spot Angles" + to_string(i)).c_str(), &_mLights[i].second.spotAngles.x, 1.f, 1.f, 90.f))
+							{
+								if (_mLights[i].second.spotAngles.x > _mLights[i].second.spotAngles.y)
+									_mLights[i].second.spotAngles.x = _mLights[i].second.spotAngles.y;
+
+								_mLights[i].first.fSpotCosOuterCone = cosf(_mLights[i].second.spotAngles.y);
+								_mLights[i].first.fSpotInnerConeRcp = 1.0f / (::cosf(_mLights[i].second.spotAngles.x) - cosf(_mLights[i].second.spotAngles.y));
+								_mLights[i].first.fSpotLightRangeRcp = 1.f / _mLights[i].second.spotAngles.z;
+
+								(*lightvector)[i]->GetLightDesc()->fSpotCosOuterCone = _mLights[i].first.fSpotCosOuterCone;
+								(*lightvector)[i]->GetLightDesc()->fSpotInnerConeRcp = _mLights[i].first.fSpotInnerConeRcp;
+								(*lightvector)[i]->GetLightDesc()->fSpotLightRangeRcp = _mLights[i].first.fSpotLightRangeRcp;
+
+							}
+							ImGui::PopItemWidth();
+						}
+
+
+
+						if ((*lightvector)[i]->GetLightDesc()->type == LIGHT_DESC::DIRECTION)
+						{
+							ImGui::NextColumn();
+							ImGui::Text("Direction");
+							ImGui::NextColumn();
+							ImGui::PushItemWidth(0.f);
+							if (ImGui::DragFloat3(string("##Direction" + to_string(i)).c_str(), &_mLights[i].second.rotationDeg.x, 1.f, -180.f, 180.f, "%.fdeg"))
+							{
+								XMVECTOR rotQuat = ::XMQuaternionRotationRollPitchYaw(
+									::XMConvertToRadians(_mLights[i].second.rotationDeg.x),
+									::XMConvertToRadians(_mLights[i].second.rotationDeg.y),
+									::XMConvertToRadians(_mLights[i].second.rotationDeg.z));
+
+								XMVECTOR rotQuatInverse = ::XMQuaternionInverse(rotQuat);
+								XMVECTOR lightDir = ::XMQuaternionMultiply(rotQuat, ::XMVectorSet(0.f, 0.f, 1.f, 0.f));
+								::XMStoreFloat3(&(*lightvector)[i]->GetLightDesc()->Direction, ::XMQuaternionMultiply(lightDir, rotQuatInverse));
+							}
+
+							ImGui::PopItemWidth();
+						}
+
+
+						if ((*lightvector)[i]->GetLightDesc()->type == LIGHT_DESC::POINT)
+						{
+							ImGui::NextColumn();
+							ImGui::Text("PointRange");
+							ImGui::NextColumn();
+							ImGui::PushItemWidth(0.f);
+
+							static _float pointRange = 0.f;
+
+							if (ImGui::DragFloat(string("##PointRange" + to_string(i)).c_str(), &pointRange, 1.f, 0.f, 180.f, "%.fdeg"))
+							{
+								_float fRange = 1.f / pointRange;
+
+								(*lightvector)[i]->GetLightDesc()->pointLightRangeRcp = fRange;
+							}
+
+							ImGui::PopItemWidth();
+						}
+
 					}
 				}
 				ImGui::NextColumn();
@@ -1613,7 +1675,9 @@ void ImGuiManager::GameObjectUpdate(uint32 objectID, GameObject* pObj)
 			}
 		}
 
-
+		ImGui::SameLine();
+		
+		ImGui::Spacing();
 
 		if (!*enable)
 		{
@@ -2105,6 +2169,86 @@ void ImGuiManager::UpdateMaterialUI(uint32 objectID, GameObject* pObj)
 
 		g_fileDialog.ClearSelected();
 	}
+}
+
+HRESULT ImGuiManager::LightSave(wstring& filePath)
+{
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	auto path = filesystem::path(filePath);
+
+	filesystem::create_directory(path.parent_path());
+
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+
+	wstring finalPath = filePath + L"Light.dat";
+
+	file->Open(finalPath, FileMode::Write);
+
+	vector<OtherLight*> pLightvector = *pGameInstance->getLightList();
+	
+
+	// LightSize
+	uint32 iLightSize = pLightvector.size();
+	file->Write<uint32>(iLightSize);
+
+
+	for (auto& pLight : pLightvector)
+	{
+		LIGHT_DESC LightDesc = *pLight->GetLightDesc();
+		file->Write<LIGHT_DESC>(LightDesc);
+	}
+
+	for (auto& Pair : _mLights)
+	{
+		LightHelper lightHelper = {};
+		lightHelper = Pair.second;
+		file->Write<LightHelper>(lightHelper);
+	}
+
+
+
+
+	RELEASE_INSTANCE(GameInstance);
+
+	return S_OK;
+}
+
+HRESULT ImGuiManager::LightLoad(wstring& filePath)
+{
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+
+	wstring finalPath = filePath + L"Light.dat";
+
+	file->Open(finalPath, FileMode::Read);
+
+	uint32 iLightSize;
+	file->Read<uint32>(iLightSize);
+
+	LIGHT_DESC* pLightArray = new LIGHT_DESC[iLightSize];
+	LightHelper* pLightHelperArray = new LightHelper[iLightSize];
+
+
+	for (uint32 i = 0; i < iLightSize; ++i)
+		file->Read<LIGHT_DESC>(pLightArray[i]);
+
+	for (uint32 i = 0; i < iLightSize; ++i)
+		file->Read<LightHelper>(pLightHelperArray[i]);
+
+	for (uint32 i = 0; i < iLightSize; ++i)
+	{
+		gameInstance->AddLight(pLightArray[i]);
+		_mLights.push_back(make_pair(pLightArray[i], pLightHelperArray[i]));
+	}
+
+	Safe_Delete_Array<LIGHT_DESC*>(pLightArray);
+	Safe_Delete_Array<LightHelper*>(pLightHelperArray);
+
+	RELEASE_INSTANCE(GameInstance);
+
+	return S_OK;
 }
 
 void ImGuiManager::LoadModelList(string path)
