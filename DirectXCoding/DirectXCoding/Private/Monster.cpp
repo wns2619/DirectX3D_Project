@@ -10,6 +10,9 @@
 #include "MonsterRun.h"
 #include "MonsterDance.h"
 #include "TrigerBox.h"
+#include "Cell.h"
+
+uint32 Monster::_iMonsterCount = 0;
 
 Monster::Monster(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: LandObject(device, deviceContext, OBJECT_TYPE::MONSTER)
@@ -48,7 +51,7 @@ HRESULT Monster::Initialize(void* pArg)
 	vector<BinaryAnimation*>& vecAnim = _binaryModel->GetBinaryAnimation();
 	vector<BinaryBone*>& pVecBone = _binaryModel->GetBinaryBones();
 
-	_pAnimator->AddAnimation(State::STATE::IDLE, vecAnim[0], &pVecBone, true, 1.f);
+	_pAnimator->AddAnimation(State::STATE::IDLE, vecAnim[0], &pVecBone, true, 1.5f);
 	_pAnimator->AddAnimation(State::STATE::RUN, vecAnim[1], &pVecBone, true, 2.f);
 	_pAnimator->AddAnimation(State::STATE::DANCE, vecAnim[2], &pVecBone, true, 2.f);
 
@@ -57,6 +60,7 @@ HRESULT Monster::Initialize(void* pArg)
 	_pStateMachine->SetState(State::STATE::IDLE);
 	//_transform->SetState(Transform::STATE::POSITION, ::XMVectorSet(11.f, 0.f, -45.5f, 1.f));
 
+	++_iMonsterCount;
 
 	return S_OK;
 }
@@ -80,7 +84,8 @@ void Monster::Tick(const _float& fTimeDelta)
 		}
 	}
 
-	_transform->Forward(fTimeDelta, _pNavigation);
+	if(_iMonsterCount == 1)
+		_transform->Forward(fTimeDelta, _pNavigation);
 
 	XMVECTOR vPosition = __super::SetUp_OnCell(_transform->GetState(Transform::STATE::POSITION), _pNavigation->GetCurrentIndex());
 	_transform->SetState(Transform::STATE::POSITION, vPosition);
@@ -166,6 +171,29 @@ void Monster::TrigerBoxEvent(Collider* pOther)
 	}
 
 	RELEASE_INSTANCE(GameInstance);
+}
+
+void Monster::MoveAstar(const _float& fTimeDelta)
+{
+	if (_bestList.size() > 1)
+	{
+		Vec3 vPos = _transform->GetState(Transform::STATE::POSITION);
+		Vec3 vDirection = _bestList.front()->GetPosition() - vPos;
+
+		_float fDistance = vDirection.Length();
+
+		if (_bestList.front()->IsIn(_transform->GetState(Transform::STATE::POSITION), _transform->GetWorldMatrixCaculator()))
+			_bestList.pop_front();
+	}
+	else
+	{
+		Vec3 vPos = _transform->GetState(Transform::STATE::POSITION);
+		Vec3 vDirection = _vDestination - vPos;
+		vDirection.y = 0.f;
+		vDirection.Normalize();
+		// TODO
+		// TurnTo -> 포지션 받으면 그 쪽 방향으로 회전 시키는 함수.
+	}
 }
 
 HRESULT Monster::ReadyComponents()

@@ -76,8 +76,7 @@ void GridDoor::Tick(const _float& timeDelta)
 
 void GridDoor::LateTick(const _float& timeDelta)
 {
-	if (!_enabled)
-		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+	__super::LateTick(timeDelta);
 
 #ifdef _DEBUG
 	if (_bIsOpen == false)

@@ -62,8 +62,7 @@ void Cage::Tick(const _float& timeDelta)
 
 void Cage::LateTick(const _float& timeDelta)
 {
-	if (!_enabled)
-		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+	__super::LateTick(timeDelta);
 
 #ifdef _DEBUG
 	_render->AddDebug(_pCollider);

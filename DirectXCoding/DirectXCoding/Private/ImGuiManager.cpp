@@ -703,7 +703,7 @@ HRESULT ImGuiManager::ModelNameCardSection()
 					// 여기까지
 
 					const pair<LAYER_TAG, wstring>& findPrototypename = ImGuiResourceHandler::GetInstance()->FindProtoFilePath(modelPath);
-					const pair<const wstring, const wstring>& findProtoComName = ImGuiResourceHandler::GetInstance()->FindProtoComponentName(modelPath);
+					//const pair<const wstring, const wstring>& findProtoComName = ImGuiResourceHandler::GetInstance()->FindProtoComponentName(modelPath);
 
 
 					ComponentNames comNames;
@@ -715,8 +715,8 @@ HRESULT ImGuiManager::ModelNameCardSection()
 							useModelName = _modelNames[i].first.substr(0, namePosition);
 
 						comNames._protoTypeName = findPrototypename.second;
-						comNames._strModelComponentName = findProtoComName.first;
-						comNames._strShaderName = findProtoComName.second;
+						//comNames._strModelComponentName = findProtoComName.first;
+						//comNames._strShaderName = findProtoComName.second;
 						comNames._strModelName = useModelName;
 						Matrix ScaleMatrix;
 						comNames._saveWorldMatrix *= ScaleMatrix.CreateScale(Vec3(1.f, 1.f, 1.f));

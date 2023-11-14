@@ -8,6 +8,8 @@
 #include "EventManager.h"
 #include "SoundManager.h"
 #include "RenderTargetManager.h"
+#include "FontManager.h"
+#include "Frustum.h"
 
 IMPLEMENT_SINGLETON(GameInstance)
 
@@ -18,14 +20,17 @@ GameInstance::GameInstance()
     , _inputManager(InputManager::GetInstance()), _lightManager(LightManager::GetInstance())
     , _picking(Picking::GetInstance()), _inputHandler(InputHandler::GetInstance()), _collisionManager(CollisionManager::GetInstance())
     , _pEventManager(EventManager::GetInstance()), _pTargetManager(RenderTargetManager::GetInstance())
-    , _pSoundManager(SoundManager::GetInstance())
+    , _pSoundManager(SoundManager::GetInstance()), _pFontManager(FontManager::GetInstance())
+    , _pFrustum(Frustum::GetInstance())
 {
+    Safe_AddRef<FontManager*>(_pFontManager);
     Safe_AddRef<RenderTargetManager*>(_pTargetManager);
     Safe_AddRef<SoundManager*>(_pSoundManager);
     Safe_AddRef<InputHandler*>(_inputHandler);
     Safe_AddRef<InputManager*>(_inputManager);
     Safe_AddRef<Picking*>(_picking);
     Safe_AddRef<CameraHelper*>(_cameraHelper);
+    Safe_AddRef<Frustum*>(_pFrustum);
     Safe_AddRef<LightManager*>(_lightManager);
     Safe_AddRef<ComponentManager*>(_componentManager);
     Safe_AddRef<ObjectManager*>(_objectManager);
@@ -50,6 +55,9 @@ HRESULT GameInstance::Initialize_Engine(uint32 levelNumbers, HINSTANCE instance,
     if (FAILED(_componentManager->ReserveManager(levelNumbers)))
         return E_FAIL;
 
+    if (FAILED(_pFrustum->Initialize()))
+        return E_FAIL;
+
     _pSoundManager->ReadySound();
         
 
@@ -67,6 +75,7 @@ void GameInstance::Tick(_float fTimeDelta)
     _levelManager->Tick(fTimeDelta);
 
     _cameraHelper->Tick();
+    _pFrustum->Tick();
 
     _objectManager->LateTick(fTimeDelta);
     _collisionManager->LateTick(fTimeDelta);
@@ -515,6 +524,36 @@ void GameInstance::StopAll()
 
 void GameInstance::SetChannelVolume(CHANNELID eID, float fVolume)
 {
+    if (nullptr == _pSoundManager)
+        return;
+
+    _pSoundManager->SetChannelVolume(eID, fVolume);
+}
+
+HRESULT GameInstance::AddFont(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const wstring& strFontTag, const wstring& strFontFilePath)
+{
+    if (nullptr == _pFontManager)
+        return E_FAIL;
+
+
+    return _pFontManager->AddFont(pDevice, pDeviceContext, strFontTag, strFontFilePath);
+}
+
+HRESULT GameInstance::RenderFont(const wstring& strFontTag, const wstring& strText, const Vec2& vPos, FXMVECTOR color, _float rotation, Vec2 const& origin, _float scale)
+{
+    if (nullptr == _pFontManager)
+        return E_FAIL;
+
+
+    return _pFontManager->Render(strFontTag, strText, vPos, color,rotation, origin, scale);
+}
+
+_bool GameInstance::IsIn_FrustumWorld(FXMVECTOR vWorldPos, _float fRadius)
+{
+    if (nullptr == _pFrustum)
+        return false;
+
+    return _pFrustum->IsIn_FrustumWorld(vWorldPos, fRadius);
 }
 
 XMVECTOR GameInstance::GetCameraCaculator() const
@@ -529,6 +568,7 @@ void GameInstance::Release_Engine()
 {
     GameInstance::GetInstance()->DestroyInstance();
 
+    FontManager::GetInstance()->DestroyInstance();
     RenderTargetManager::GetInstance()->DestroyInstance();
     SoundManager::GetInstance()->DestroyInstance();
     LevelManager::GetInstance()->DestroyInstance();
@@ -537,6 +577,7 @@ void GameInstance::Release_Engine()
     CollisionManager::GetInstance()->DestroyInstance();
     ComponentManager::GetInstance()->DestroyInstance();
     TimeManager::GetInstance()->DestroyInstance();
+    Frustum::GetInstance()->DestroyInstance();
     CameraHelper::GetInstance()->DestroyInstance();
     LightManager::GetInstance()->DestroyInstance();
     Picking::GetInstance()->DestroyInstance();
@@ -549,6 +590,8 @@ void GameInstance::Free()
 {
     __super::Free();
 
+    Safe_Release<Frustum*>(_pFrustum);
+    Safe_Release<FontManager*>(_pFontManager);
     Safe_Release<RenderTargetManager*>(_pTargetManager);
     Safe_Release<SoundManager*>(_pSoundManager);
     Safe_Release<CameraHelper*>(_cameraHelper);

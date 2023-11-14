@@ -78,6 +78,7 @@ BlendState BS_OneBlend
 {
     BlendEnable[0] = true;
     BlendEnable[1] = true;
+    BlendEnable[2] = true;
 
     SrcBlend = One;
     DestBlend = One;

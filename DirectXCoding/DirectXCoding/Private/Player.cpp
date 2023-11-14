@@ -53,9 +53,9 @@ HRESULT Player::Initialize(void* pArg)
 		static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->GetBinaryModelComponent()->GetBinaryAnimation();
 	vector<BinaryBone*>& pVecBone = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->GetBinaryModelComponent()->GetBinaryBones();
 
-	_pAnimator->AddAnimation(State::STATE::RELOAD, vecAnim[0], &pVecBone);
+	_pAnimator->AddAnimation(State::STATE::RELOAD, vecAnim[0], &pVecBone, false, 1.85f);
 	_pAnimator->AddAnimation(State::STATE::IDLE, vecAnim[1], &pVecBone, true);
-	_pAnimator->AddAnimation(State::STATE::SHOOT, vecAnim[2], &pVecBone);
+	_pAnimator->AddAnimation(State::STATE::SHOOT, vecAnim[2], &pVecBone, false, 2.f);
 
 
 	_pStateMachine->SetAnimator(_pAnimator);
@@ -351,10 +351,6 @@ void Player::TrigerBoxEvent(Collider* pOther)
 			dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
 
 	}
-	else if (id == 234)
-	{
-
-	}
 	else if (id == 236)
 	{
 		if (pGameInstance->keyDown(DIK_E))
@@ -389,6 +385,12 @@ void Player::TrigerBoxEvent(Collider* pOther)
 		if(true == Isobtain)
 			dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
 	}
+
+	if (id == 244)
+		_OnWater = true;
+
+	if (id == 235 || id == 245)
+		dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
 
 	RELEASE_INSTANCE(GameInstance);
 }

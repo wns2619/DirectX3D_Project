@@ -44,7 +44,19 @@ public:
 
 private:
 	void TrigerBoxEvent(Collider* pOther);
+	
 
+public:
+	_bool GetOnWater() { return _bOnWater; }
+	void SetOnWater(_bool water) { _bOnWater = water; }
+
+public: // A*
+	void SetTarget(class GameObject* pGameObject) { _pTargetObject = pGameObject; }
+	class GameObject* GetTargetObject() { return _pTargetObject; }
+
+	Vec4& GetDestination() { return _vDestination; }
+
+	void MoveAstar(const _float& fTimeDelta);
 private:
 	Renderer* _render = nullptr;
 	Shader* _shader = nullptr;
@@ -58,6 +70,17 @@ private:
 private:
 	_bool _bDeadDelay = false;
 	_float _fLifeTime = 0.f;
+
+	_bool _bOnWater = false;
+
+	static uint32 _iMonsterCount;
+
+private: // A*
+	list<Cell*> _bestList;
+	Vec4 _vDestination;
+	GameObject* _pTargetObject = nullptr;
+
+
 
 private:
 	HRESULT ReadyComponents();

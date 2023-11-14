@@ -23,6 +23,14 @@ public:
 	void Tick(const _float& timeDelta);
 	HRESULT Render();
 
+#ifdef _DEBUG
+private:
+	_float _fTimeAcc = 0.f;
+	uint32 _iRenderCount = 0.f;
+	_tchar _szFPS[MAX_PATH] = TEXT("");
+#endif // _DEBUG
+
+
 private:
 	GameInstance* _gameInstance			= nullptr;
 	Renderer* _renderer					= nullptr;

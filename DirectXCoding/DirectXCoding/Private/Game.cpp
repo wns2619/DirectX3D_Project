@@ -42,11 +42,15 @@ HRESULT Game::Initialize(HWND hwnd)
 	if (FAILED(ReadyProtoTypeComponents()))
 		return E_FAIL;
 
+	if (FAILED(_gameInstance->AddFont(_device, _devicecontext, TEXT("DefaultFont"), TEXT("..\\Binaries\\Resources\\Fonts\\DeppartFont.spritefont"))))
+		return E_FAIL;
+
 	 
-	if (FAILED(OpenLevel(LEVEL::EDIT)))
+	if (FAILED(OpenLevel(LEVEL::GAME)))
 		return E_FAIL;
 	
 	//D3D11_BLEND_DESC
+	
 	
 	return S_OK;
 }
@@ -54,6 +58,12 @@ HRESULT Game::Initialize(HWND hwnd)
 void Game::Tick(const _float& timeDelta)
 {
 	//ImGuiManager::GetInstance()->LateTick(timeDelta);
+
+#ifdef _DEBUG
+	//_fTimeAcc += timeDelta;
+#endif // _DEBUG
+
+
 	_gameInstance->Tick(timeDelta);
 	_gameInstance->EventManagerTick();
 
@@ -68,6 +78,21 @@ HRESULT Game::Render()
 
 
 	_renderer->DrawRenderObjects();
+
+#ifdef _DEBUG
+	++_iRenderCount;
+
+	if (1.f <= _fTimeAcc)
+	{
+		_fTimeAcc = 0;
+		wsprintf(_szFPS, TEXT("DEPPART PROTOTYPE : %d"), _iRenderCount);
+
+		_iRenderCount = 0;
+	}
+
+	_gameInstance->RenderFont(TEXT("DefaultFont"), _szFPS, Vec2(0.f, 0.f), Vec4(1.f, 0.f, 0.f, 1.f));
+#endif // _DEBUG
+
 
 
 	if (_gameInstance->GetCurrentLevelIndex() == static_cast<uint32>(LEVEL::EDIT))

@@ -46,8 +46,7 @@ void EventMainDoor::Tick(const _float& timeDelta)
 
 void EventMainDoor::LateTick(const _float& timeDelta)
 {
-	if (!_enabled)
-		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+	__super::LateTick(timeDelta);
 }
 
 HRESULT EventMainDoor::Render()

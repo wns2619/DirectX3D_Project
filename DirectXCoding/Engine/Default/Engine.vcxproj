@@ -43,6 +43,7 @@
     <ClInclude Include="..\Public\Component.h" />
     <ClInclude Include="..\Public\ComponentManager.h" />
     <ClInclude Include="..\Public\ConstantBuffer.h" />
+    <ClInclude Include="..\Public\CustomFont.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Defines.h" />
     <ClInclude Include="..\Public\dirent.h" />
@@ -55,6 +56,8 @@
     <ClInclude Include="..\Public\fmod\fmod_errors.h" />
     <ClInclude Include="..\Public\fmod\fmod_memoryinfo.h" />
     <ClInclude Include="..\Public\fmod\fmod_output.h" />
+    <ClInclude Include="..\Public\FontManager.h" />
+    <ClInclude Include="..\Public\Frustum.h" />
     <ClInclude Include="..\Public\Function.h" />
     <ClInclude Include="..\Public\Functor.h" />
     <ClInclude Include="..\Public\GameInstance.h" />
@@ -155,9 +158,12 @@
     <ClCompile Include="..\Private\Component.cpp" />
     <ClCompile Include="..\Private\ComponentManager.cpp" />
     <ClCompile Include="..\Private\ConstantBuffer.cpp" />
+    <ClCompile Include="..\Private\CustomFont.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp" />
     <ClCompile Include="..\Private\EventManager.cpp" />
     <ClCompile Include="..\Private\FileUtils.cpp" />
+    <ClCompile Include="..\Private\FontManager.cpp" />
+    <ClCompile Include="..\Private\Frustum.cpp" />
     <ClCompile Include="..\Private\GameInstance.cpp" />
     <ClCompile Include="..\Private\GameObject.cpp" />
     <ClCompile Include="..\Private\GraphicsManager.cpp" />

@@ -113,6 +113,13 @@ public: // SoundManager
 	void StopAll();
 	void SetChannelVolume(CHANNELID eID, float fVolume);
 
+public: // FontManger
+	HRESULT AddFont(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const wstring& strFontTag, const wstring& strFontFilePath);
+	HRESULT RenderFont(const wstring& strFontTag, const wstring& strText, const Vec2& vPos, FXMVECTOR color = ::XMVectorZero(), _float rotation = 0.f, Vec2 const& origin = Vec2(0.f, 0.f), _float scale = 1.f);
+	
+public: // Frustum
+	_bool IsIn_FrustumWorld(FXMVECTOR vWorldPos, _float fRadius = 0.f);
+
 private:
 	class TimeManager* _timeManager = nullptr;
 	class GraphicsManager* _graphicManager = nullptr;
@@ -128,6 +135,8 @@ private:
 	class EventManager* _pEventManager = nullptr;
 	class RenderTargetManager* _pTargetManager = nullptr;
 	class SoundManager* _pSoundManager = nullptr;
+	class FontManager* _pFontManager = nullptr;
+	class Frustum* _pFrustum = nullptr;
 
 public:
 	static void Release_Engine();

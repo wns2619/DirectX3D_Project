@@ -48,10 +48,6 @@ HRESULT BodyCam::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	XMMATRIX worldMatrix = ::XMLoadFloat4x4(m_SocketMatrix) * ::XMLoadFloat4x4(&m_SocketPivotMatrix);
-	Vec4 worldPos = worldMatrix.r[3];
-
-
 	_transform->FixRotation(Vec4(0.f, 0.f, 1.f, 1.f), ::XMConvertToRadians(-180));
 	//::ShowCursor(FALSE);
 

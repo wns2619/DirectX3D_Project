@@ -28,7 +28,6 @@ HRESULT Cell::Initialize(const Vec3* pPoints, uint32 iIndex)
 		XMStoreFloat3(&_vNormals[i], XMVector3Normalize(XMLoadFloat3(&_vNormals[i])));
 	}
 
-
 	_viBuffer = VIBufferCell::Create(_device, _deviceContext, _vPoints_Original);
 	if (nullptr == _viBuffer)
 		return E_FAIL;
@@ -42,6 +41,8 @@ void Cell::Update(FXMMATRIX worldMatrix)
 {
 	for (uint32 i = 0; i < POINT_END; ++i)
 		_vPoints_InWorld[i] = ::XMVector3TransformCoord(::XMLoadFloat3(&_vPoints_Original[i]), worldMatrix);
+
+	_vPos = ((static_cast<Vec3>(_vPoints_InWorld[0]) + static_cast<Vec3>(_vPoints_InWorld[1]) + static_cast<Vec3>(_vPoints_InWorld[2]) / 3.f));
 
 	// 정점의 로컬위치에서 월드행렬을 곱한 값을 업데이트마다 갱신해줌.
 }
@@ -103,6 +104,20 @@ _bool Cell::IsOut(FXMVECTOR vPoint, FXMMATRIX worldMatrix, int32* pNeighborIndex
 	}
 
 	return false;
+}
+
+_bool Cell::IsIn(FXMVECTOR vPoint, FXMMATRIX worldMatrix)
+{
+	for (size_t i = 0; i < LINE_END; i++)
+	{
+		Vec3 vSour = XMVector3Normalize(vPoint - ::XMLoadFloat3(&_vPoints_InWorld[i]));
+		Vec3 vDist = XMVector3Normalize(::XMVector3TransformNormal(::XMLoadFloat3(&_vNormals[i]), worldMatrix));
+
+		if (0 < ::XMVectorGetX(::XMVector3Dot(vSour, vDist)))
+			return false;
+	}
+
+	return true;
 }
 
 Vec3 Cell::IsSilde(XMVECTOR& vPoint, FXMVECTOR vLook, FXMMATRIX worldMatrix)

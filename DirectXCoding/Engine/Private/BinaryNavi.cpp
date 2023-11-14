@@ -212,6 +212,128 @@ HRESULT BinaryNavi::SetUp_Neighbors()
 	return S_OK;
 }
 
+void BinaryNavi::StartAStar(const int32& vGoal)
+{
+	Reset();
+
+	if (_cells.empty())
+		return;
+
+	int32 iGoalIndex = vGoal;
+
+	if (0 > _iCurrentIndex || 0 > iGoalIndex || static_cast<uint32>(_iCurrentIndex) >= _cells.size() || static_cast<uint32>(iGoalIndex) >= _cells.size())
+		return;
+
+	if (0 > _iCurrentIndex == iGoalIndex)
+		return;
+
+	if (MakeRoute(_iCurrentIndex, iGoalIndex))
+		MakeBestList(_iCurrentIndex, iGoalIndex);
+}
+
+void BinaryNavi::MakeBestList(int32 iStartIndex, int32 iGoalIndex)
+{
+	vector<Cell*>& vecCell = _cells;
+
+	if (vecCell.empty())
+		return;
+
+	_bestList.push_back(vecCell[iGoalIndex]);
+
+	int32 iRouteIndex = vecCell[iGoalIndex]->GetParentIndex();
+
+	while (true)
+	{
+		if (iRouteIndex == iStartIndex)
+			break;
+
+		_bestList.push_front(vecCell[iRouteIndex]);
+		iRouteIndex = vecCell[iRouteIndex]->GetParentIndex();
+	}
+}
+
+void BinaryNavi::Reset()
+{
+	_closeList.clear();
+	_openList.clear();
+
+	_bestList.clear();
+}
+
+_bool BinaryNavi::MakeRoute(int32 iStartIndex, int32 iGoalIndex)
+{
+	vector<Cell*>& vecCell = _cells;
+
+	if (vecCell.empty())
+		return false;
+
+	if (!_openList.empty())
+		_openList.pop_front();
+
+	_closeList.push_back(iStartIndex);
+
+	for (uint32 i = 0; i < Cell::LINE::LINE_END; ++i)
+	{
+		int32 iIndex = vecCell[iStartIndex]->GetNeighbor(static_cast<Cell::LINE>(i));
+		if (iIndex != -1)
+		{
+			if (iGoalIndex == iIndex)
+			{
+				vecCell[iIndex]->SetParentIndex(iStartIndex);
+				return true;
+			}
+
+			if (false == CheckClose(iIndex) && false == CheckOpen(iIndex))
+			{
+				vecCell[iIndex]->SetParentIndex(iStartIndex);
+				_openList.push_back(iIndex);
+			}
+		}
+	}
+
+	if (_openList.empty())
+		return false;
+
+	int32 iOriginStart = _iCurrentIndex;
+
+	_openList.sort([&vecCell, &iGoalIndex, &iOriginStart](int32 iDst, int32 iSrc)->bool {
+		Vec3 vPCost1 = vecCell[iOriginStart]->GetPosition() - vecCell[iDst]->GetPosition();
+		Vec3 vPCost2 = vecCell[iOriginStart]->GetPosition() - vecCell[iSrc]->GetPosition();
+
+		Vec3 vGCost1 = vecCell[iGoalIndex]->GetPosition() - vecCell[iDst]->GetPosition();
+		Vec3 vGCost2 = vecCell[iGoalIndex]->GetPosition() - vecCell[iSrc]->GetPosition();
+
+		_float fCost1 = vPCost1.Length() + vGCost1.Length();
+		_float fCost2 = vPCost2.Length() + vGCost2.Length();
+
+		return fCost1 < fCost2;
+		});
+
+	return MakeRoute(_openList.front(), iGoalIndex);
+}
+
+_bool BinaryNavi::CheckClose(int32 iIndex)
+{
+	for (int32& iCloseIndex : _closeList)
+	{
+		if (iIndex == iCloseIndex)
+			return true;
+	}
+
+	return false;
+}
+
+_bool BinaryNavi::CheckOpen(int32 iIndex)
+{
+	for (int32& iOpenIndex : _openList)
+	{
+		if (iIndex == iOpenIndex)
+			return true;
+	}
+
+	return false;
+}
+
 BinaryNavi* BinaryNavi::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
 	BinaryNavi* pInstance = new BinaryNavi(device, deviceContext);

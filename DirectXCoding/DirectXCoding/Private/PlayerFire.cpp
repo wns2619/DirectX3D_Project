@@ -25,6 +25,8 @@ State::STATE PlayerFire::UpdateState(const _float& timeDelta)
 {
 	STATE eState = STATE::SHOOT;
 
+	_bWalk = false;
+
 	if (nullptr != _pOwner)
 		eState = KeyInput(timeDelta);
 
@@ -100,41 +102,53 @@ State::STATE PlayerFire::KeyInput(const _float& timeDelta)
 
 	LandObject* pLandObject = static_cast<LandObject*>(_pOwner);
 
+	wstring soundfileName = L"";
+	if (false == dynamic_cast<Player*>(_pOwner)->GetOnWater())
+		soundfileName = TEXT("walkPlayer.wav");
+	else
+		soundfileName = TEXT("walkWATER.wav");
+
 	if (pGameInstance->KeyPressing(DIK_W))
 	{
-		pGameInstance->StopSound(SOUND_PLAYER);
-		pGameInstance->PlaySound(TEXT("walkPlayer.wav"), SOUND_PLAYER, 0.2f);
+		pGameInstance->PlaySound(soundfileName.c_str(), SOUND_PLAYER, 1.f);
 
 		_pOwner->GetTransform()->Forward(timeDelta, pLandObject->GetNavigation());
 		eState = STATE::SHOOT;
+
+		_bWalk = true;
 	}
 	// What Animation
 	else if (pGameInstance->KeyPressing(DIK_S))
 	{
-		pGameInstance->StopSound(SOUND_PLAYER);
-		pGameInstance->PlaySound(TEXT("walkPlayer.wav"), SOUND_PLAYER, 0.2f);
+		pGameInstance->PlaySound(soundfileName.c_str(), SOUND_PLAYER, 1.f);
 
 		_pOwner->GetTransform()->Backward(timeDelta, pLandObject->GetNavigation());
 		eState = STATE::SHOOT;
+
+		_bWalk = true;
 	}
 
 	if (pGameInstance->KeyPressing(DIK_A))
 	{
-		pGameInstance->StopSound(SOUND_PLAYER);
-		pGameInstance->PlaySound(TEXT("walkPlayer.wav"), SOUND_PLAYER, 0.2f);
+		pGameInstance->PlaySound(soundfileName.c_str(), SOUND_PLAYER, 1.f);
 
 		_pOwner->GetTransform()->Left(timeDelta, pLandObject->GetNavigation());
 		eState = STATE::SHOOT;
+
+		_bWalk = true;
 	}
 	else if (pGameInstance->KeyPressing(DIK_D))
 	{
-		pGameInstance->StopSound(SOUND_PLAYER);
-		pGameInstance->PlaySound(TEXT("walkPlayer.wav"), SOUND_PLAYER, 0.2f);
+		pGameInstance->PlaySound(soundfileName.c_str(), SOUND_PLAYER, 1.f);
 
 		_pOwner->GetTransform()->Right(timeDelta, pLandObject->GetNavigation());
 		eState = STATE::SHOOT;
+
+		_bWalk = true;
 	}
 
+	if (false == _bWalk)
+		pGameInstance->StopSound(SOUND_PLAYER);
 
 	RELEASE_INSTANCE(GameInstance);
 
