@@ -30,6 +30,8 @@ public:
 	uint32 GetRotationCount() { return _iRotationCount; }
 
 private:
+	void LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMaxDistance, GameInstance* pGameInstance);
+private:
 	int32 _iRotationTick = 0;
 	uint32 _iRotationCount = 0;
 

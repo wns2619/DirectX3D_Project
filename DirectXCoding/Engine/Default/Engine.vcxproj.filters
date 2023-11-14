@@ -220,6 +220,15 @@
     <Filter Include="01.Utility\06.ShaderFiles\Common">
       <UniqueIdentifier>{670a3a05-21ac-483b-b049-de9ed2b73e5e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\07.Fonts">
+      <UniqueIdentifier>{2cdb8ba9-779f-458d-9147-fcaffeb01890}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\98.Manager\Font">
+      <UniqueIdentifier>{86aa897f-f2e8-432e-b469-85bdaf0f9ffb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\08.Frustum">
+      <UniqueIdentifier>{a633c073-df7e-4642-8e75-0d225844c6f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -483,6 +492,15 @@
     <ClInclude Include="..\Public\RenderTargetManager.h">
       <Filter>01.Utility\98.Manager\RenderTargetManager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CustomFont.h">
+      <Filter>01.Utility\07.Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\FontManager.h">
+      <Filter>01.Utility\98.Manager\Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Frustum.h">
+      <Filter>01.Utility\08.Frustum</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -682,6 +700,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\RenderTargetManager.cpp">
       <Filter>01.Utility\98.Manager\RenderTargetManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CustomFont.cpp">
+      <Filter>01.Utility\07.Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FontManager.cpp">
+      <Filter>01.Utility\98.Manager\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Frustum.cpp">
+      <Filter>01.Utility\08.Frustum</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "MonsterWalk.h"
 #include "GameInstance.h"
+#include "Monster.h"
 
 MonsterWalk::MonsterWalk(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
@@ -17,7 +18,32 @@ State::STATE MonsterWalk::UpdateState(const _float& timeDelta)
 {
 	State::STATE eState = STATE::IDLE;
 
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
+	wstring soundfileName = L"";
+
+	Monster* pOwnerMonster = dynamic_cast<Monster*>(_pOwner);
+
+	if (true == dynamic_cast<Monster*>(_pOwner)->GetOnWater() && false == dynamic_cast<Monster*>(_pOwner)->IsDead())
+		soundfileName = TEXT("walkWATER.wav");
+
+	
+	if (nullptr != pOwnerMonster->GetTargetObject())
+	{
+		// TODO -> 열쇠면 열쇠 쪽으로 순찰
+		// 플레이어를 발견했으면 플레이어 추격.
+		pOwnerMonster->MoveAstar(timeDelta);
+		pOwnerMonster->GetTransform()->Forward(timeDelta, pOwnerMonster->GetNavigation());
+
+		Vec4& vDestination = pOwnerMonster->GetDestination();
+		vDestination = pOwnerMonster->GetTargetObject()->GetTransform()->GetState(Transform::STATE::POSITION);
+		// 도착거리.
+	}
+
+	pGameInstance->PlaySound(soundfileName.c_str(), SOUND_MONSTER, 1.f);
+
+
+	RELEASE_INSTANCE(GameInstance);
 
 	return eState;
 }
@@ -33,6 +59,8 @@ void MonsterWalk::RenderState()
 void MonsterWalk::ChangeSetState()
 {
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	pGameInstance->StopSound(SOUND_MONSTER);
 
 	RELEASE_INSTANCE(GameInstance);
 }

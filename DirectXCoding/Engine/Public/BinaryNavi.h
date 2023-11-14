@@ -31,11 +31,24 @@ public:
 	vector<class Cell*>& GetCell() { return _cells; }
 	HRESULT SetUp_Neighbors();
 
+public: // A*
+	void StartAStar(const int32& vGoal);
+	void MakeBestList(int32 iStartIndex, int32 iGoalIndex);
+	void Reset();
+	_bool MakeRoute(int32 iStartIndex, int32 iGoalIndex);
+	_bool CheckClose(int32 iIndex);
+	_bool CheckOpen(int32 iIndex);
+
 	// Çª½¬ÇÒ ¶§¸¶´Ù SetUp_NeighborsÇÏ°í ·»´õ.
 #ifdef _DEBUG
 public:
 	HRESULT Render();
 #endif
+
+private: // A*
+	list<class Cell*> _bestList;
+	list<int32> _openList;
+	list<int32> _closeList;
 
 private:
 	static Matrix _worldMatrix;

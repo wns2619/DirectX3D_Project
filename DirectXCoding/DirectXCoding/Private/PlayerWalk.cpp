@@ -54,9 +54,17 @@ State::STATE PlayerWalk::KeyInput(const _float& timeDelta)
 
 	LandObject* pLandObject = static_cast<LandObject*>(_pOwner);
 
+	// TODO
+	// 물이 아니라면.
+	wstring soundfileName = L"";
+	if (false == dynamic_cast<Player*>(_pOwner)->GetOnWater())
+		soundfileName = TEXT("walkPlayer.wav");
+	else
+		soundfileName = TEXT("walkWATER.wav");
+
 	if (pGameInstance->KeyPressing(DIK_W))
 	{
-		pGameInstance->PlaySound(TEXT("walkPlayer.wav"), SOUND_PLAYER, 1.f);
+		pGameInstance->PlaySound(soundfileName.c_str(), SOUND_PLAYER, 1.f);
 
 		_pOwner->GetTransform()->Forward(timeDelta, pLandObject->GetNavigation());
 		eState = STATE::IDLE;
@@ -67,7 +75,7 @@ State::STATE PlayerWalk::KeyInput(const _float& timeDelta)
 	else if (pGameInstance->KeyPressing(DIK_S))
 	{
 	
-		pGameInstance->PlaySound(TEXT("walkPlayer.wav"), SOUND_PLAYER, 1.f);
+		pGameInstance->PlaySound(soundfileName.c_str(), SOUND_PLAYER, 1.f);
 
 		_pOwner->GetTransform()->Backward(timeDelta, pLandObject->GetNavigation());
 		eState = STATE::IDLE;
@@ -78,7 +86,7 @@ State::STATE PlayerWalk::KeyInput(const _float& timeDelta)
 	if (pGameInstance->KeyPressing(DIK_A))
 	{
 		
-		pGameInstance->PlaySound(TEXT("walkPlayer.wav"), SOUND_PLAYER, 1.f);
+		pGameInstance->PlaySound(soundfileName.c_str(), SOUND_PLAYER, 1.f);
 
 		_pOwner->GetTransform()->Left(timeDelta, pLandObject->GetNavigation());
 		eState = STATE::IDLE;
@@ -88,7 +96,7 @@ State::STATE PlayerWalk::KeyInput(const _float& timeDelta)
 	else if (pGameInstance->KeyPressing(DIK_D))
 	{
 		
-		pGameInstance->PlaySound(TEXT("walkPlayer.wav"), SOUND_PLAYER, 1.f);
+		pGameInstance->PlaySound(soundfileName.c_str(), SOUND_PLAYER, 1.f);
 
 		_pOwner->GetTransform()->Right(timeDelta, pLandObject->GetNavigation());
 		eState = STATE::IDLE;

@@ -79,13 +79,36 @@ void StaticObject::Tick(const _float& timeDelta)
 
 void StaticObject::LateTick(const _float& timeDelta)
 {
-	if (!_enabled)
-		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	if (true == pGameInstance->IsIn_FrustumWorld(_transform->GetState(Transform::STATE::POSITION), 2.f))
+	{
+
+		if (_id != 2 && _id != 3 && _id != 5 && _id != 85 && _id != 86 && _id != 150 && _id != 20 && _id != 35
+			&& _id != 54 && _id != 56 && _id != 57 && _id != 89 && _id != 108)
+		{
+			if (!_enabled)
+				_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+		}
+
+
 
 #ifdef _DEBUG
-	if (_modelName == "2stBottom")
-		_render->AddDebug(_pNavigation);
+		if (_modelName == "2stBottom")
+			_render->AddDebug(_pNavigation);
 #endif // _DEBUG
+
+	}
+
+	if(_id == 2 || _id == 3 || _id == 5 || _id == 85 || _id == 86 || _id == 150 || _id == 20 || _id == 35 || _id == 54
+		|| _id == 56 || _id == 57 || _id == 89 || _id == 108)
+	{
+		if (!_enabled)
+			_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+	}
+
+	RELEASE_INSTANCE(GameInstance);
 
 }
 

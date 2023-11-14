@@ -53,7 +53,7 @@ void TrigerBox::PriorityTick(const _float& timeDelta)
 
 void TrigerBox::Tick(const _float& timeDelta)
 {
-	//TrigerOccur(timeDelta);
+	TrigerOccur(timeDelta);
 
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
@@ -442,6 +442,48 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 
 
 		RELEASE_INSTANCE(GameInstance);
+	}
+
+	if (_id == 243)
+	{
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		_float fVolume = 0.f;
+		_float fDistance = 0.f;
+
+		LerpSoundPlayer(fVolume, fDistance, 4.5f, pGameInstance);
+
+		if (fDistance <= 4.5f)
+			pGameInstance->PlaySoundLoop(TEXT("dihanie.wav"), SOUND_ENVIRONMENT4, fVolume);
+
+		RELEASE_INSTANCE(GameInstance);
+	}
+
+
+	if ((_id == 235  || _id == 245) && false == _bEventState && true == _bTrigerOn)
+	{
+		LandObject::LANDOBJET_DESC LandObjectDesc = {};
+
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		Transform* pTransform = static_cast<Transform*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::GAME), LAYER_TAG::LAYER_STATIC, TEXT("ComponentTransform"), "2stBottom", 0));
+		BinaryNavi* pNavi = static_cast<BinaryNavi*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::GAME), LAYER_TAG::LAYER_STATIC, TEXT("ComponentNavigation"), "2stBottom", 0));
+
+		vector<Cell*>& vecCells = pNavi->GetCell();
+
+		LandObjectDesc.pCells = &vecCells;
+		LandObjectDesc.pCellTransform = pTransform;
+
+		Monster* pGameObject = dynamic_cast<Monster*>(pGameInstance->CloneGameObject(TEXT("ProtoTypeDanceMonster"), &LandObjectDesc));
+		pGameObject->GetTransform()->SetState(Transform::STATE::POSITION, Vec4(21.656, -1.0f, -1.740, 1.f));
+		pGameObject->GetNavigation()->SetCurrentIndex(464);
+		pGameObject->GetStateMachine()->SetState(State::STATE::IDLE);
+		pGameObject->SetOnWater(true);
+
+		pGameInstance->CreateObject(pGameObject, LAYER_TAG::LAYER_MONSTER);
+		RELEASE_INSTANCE(GameInstance);
+
+		_bEventState = true;
 	}
 
 }

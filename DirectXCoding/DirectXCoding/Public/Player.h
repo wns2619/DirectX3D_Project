@@ -51,10 +51,9 @@ public:
 	vector<class GameObject*>& GetPlyaerPart() { return m_pPlayerPart; }
 	StateMachine* GetStateMachine() { return _pStateMachine; }
 	_bool GetInteraction() { return _bInteraction; }
+	_bool GetOnWater() { return _OnWater; }
 private:
 	vector<class GameObject*> m_pPlayerPart;
-
-
 
 private:
 	Renderer* _render				= nullptr;
@@ -69,6 +68,7 @@ private:
 	_bool _bInteraction = false;
 	_bool _bObtatinKey = false;
 	_bool _bIsJoom = false;
+	_bool _OnWater = false;
 
 private:
 	_bool _bScare = false;

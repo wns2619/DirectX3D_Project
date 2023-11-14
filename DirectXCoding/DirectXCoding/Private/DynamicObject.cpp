@@ -49,8 +49,17 @@ void DynamicObject::Tick(const _float& timeDelta)
 
 void DynamicObject::LateTick(const _float& timeDelta)
 {
-	if (!_enabled)
-		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	if (true == pGameInstance->IsIn_FrustumWorld(_transform->GetState(Transform::STATE::POSITION), 2.f))
+	{
+		if (!_enabled)
+			_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
+	}
+
+
+	RELEASE_INSTANCE(GameInstance);
 }
 
 HRESULT DynamicObject::Render()

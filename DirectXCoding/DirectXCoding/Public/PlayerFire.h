@@ -30,6 +30,7 @@ public:
 
 public:
 	_bool _IsShoot = true;
+	_bool _bWalk = false;
 
 public:
 	static PlayerFire* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, GameObject* pOwner);
