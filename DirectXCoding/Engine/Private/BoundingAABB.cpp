@@ -4,6 +4,7 @@
 
 #include "BoundingOBB.h"
 #include "Bounding_Sphere.h"
+#include "Bounding_Frustum.h"
 
 BoundingAABB::BoundingAABB()
 {
@@ -48,6 +49,9 @@ _bool BoundingAABB::IsCollision(Collider::COLLIDER_TYPE eType, Bounding* pBoundi
 		break;
 	case Engine::Collider::SPHERE:
 		bIntersects = _pAABB->Intersects(*dynamic_cast<Bounding_Sphere*>(pBounding)->GetBounding());
+		break;
+	case Engine::Collider::FRUSTUM:
+		bIntersects = _pAABB->Intersects(*dynamic_cast<Bounding_Frustum*>(pBounding)->GetBounding());
 		break;
 	default:
 		break;

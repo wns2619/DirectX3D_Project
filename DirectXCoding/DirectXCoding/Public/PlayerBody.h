@@ -3,6 +3,10 @@
 #include "Client_Define.h"
 #include "PartObject.h"
 
+BEGIN(Engine)
+class Texture;
+END
+
 BEGIN(Client)
 
 class PlayerBody final : public PartObject
@@ -32,7 +36,10 @@ public:
 	virtual void LateTick(const _float& fTimeDelta) override;
 	virtual HRESULT Render()						override;
 
-	
+private:
+	_float _fLiftTime = 0.f;
+	Texture* _pTexture = nullptr;
+
 private:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();

@@ -48,6 +48,10 @@ public:
 	virtual void OnCollisionStay(class Collider* pOther) {};
 	virtual void OnCollisionExit(class Collider* pOther) {};
 
+	virtual void OnAssistCollisionEnter(class  Collider* pOther) {};
+	virtual void OnAssistCollisionStay(class Collider* pOther) {};
+	virtual void OnAssistCollisionExit(class Collider* pOther) {};
+
 public:
 	// IMGUI
 	string GetModelName() const;

@@ -33,6 +33,7 @@
     <ClInclude Include="..\Public\Bounding.h" />
     <ClInclude Include="..\Public\BoundingAABB.h" />
     <ClInclude Include="..\Public\BoundingOBB.h" />
+    <ClInclude Include="..\Public\Bounding_Frustum.h" />
     <ClInclude Include="..\Public\Bounding_Sphere.h" />
     <ClInclude Include="..\Public\Camera.h" />
     <ClInclude Include="..\Public\CameraHelper.h" />
@@ -142,6 +143,7 @@
     <ClCompile Include="..\Private\BoundingOBB.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
+    <ClCompile Include="..\Private\Bounding_Frustum.cpp" />
     <ClCompile Include="..\Private\Bounding_Sphere.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>

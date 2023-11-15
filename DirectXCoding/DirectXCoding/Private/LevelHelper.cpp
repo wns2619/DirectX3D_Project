@@ -144,15 +144,35 @@ HRESULT LevelHelper::LodingforLevelGame()
         return E_FAIL;
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeOBBCollider"),
-        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::OBB))))
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::OBB, Collider::MAIN_COLLIDER))))
         return E_FAIL;
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAABBCollider"),
-        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::AABB))))
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::AABB, Collider::MAIN_COLLIDER))))
         return E_FAIL;
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeSphereCollider"),
-        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::SPHERE))))
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::SPHERE, Collider::MAIN_COLLIDER))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeFrustumCollider"),
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::FRUSTUM, Collider::MAIN_COLLIDER))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAssistOBBCollider"),
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::OBB, Collider::ASSIST_COLLIDER))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAssistAABBCollider"),
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::AABB, Collider::ASSIST_COLLIDER))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAssistSphereCollider"),
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::SPHERE, Collider::ASSIST_COLLIDER))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAssistFrustumCollider"),
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::FRUSTUM, Collider::ASSIST_COLLIDER))))
         return E_FAIL;
 
     RELEASE_INSTANCE(GameInstance);
@@ -180,15 +200,35 @@ HRESULT LevelHelper::LodingforLevelEdit()
         return E_FAIL;
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeOBBCollider"),
-        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::OBB))))
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::OBB, Collider::MAIN_COLLIDER))))
         return E_FAIL;
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeAABBCollider"),
-        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::AABB))))
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::AABB, Collider::MAIN_COLLIDER))))
         return E_FAIL;
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeSphereCollider"),
-        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::SPHERE))))
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::SPHERE, Collider::MAIN_COLLIDER))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeFrustumCollider"),
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::FRUSTUM, Collider::MAIN_COLLIDER))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeAssistOBBCollider"),
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::OBB, Collider::ASSIST_COLLIDER))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeAssistAABBCollider"),
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::AABB, Collider::ASSIST_COLLIDER))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeAssistSphereCollider"),
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::SPHERE, Collider::ASSIST_COLLIDER))))
+        return E_FAIL;
+
+    if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeAssistFrustumCollider"),
+        Collider::Create(_device, _deviceContext, Collider::COLLIDER_TYPE::FRUSTUM, Collider::ASSIST_COLLIDER))))
         return E_FAIL;
 
     if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeStateMachine"),
@@ -512,6 +552,13 @@ HRESULT LevelHelper::LoadingTexture()
     case Client::LEVEL::GAME:
         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentTextureTerrain"),
             Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\Terrain\\Tile0.jpg")))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeNoiseTexture"),
+            Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\DDS\\NoiseCaustic03.dds")))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

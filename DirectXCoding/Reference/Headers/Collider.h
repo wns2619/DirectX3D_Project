@@ -16,11 +16,11 @@ union COLLIDER_ID
 class ENGINE_DLL Collider final : public Component
 {
 public:
-	enum COLLIDER_TYPE { AABB, OBB, SPHERE, TYPE_END };
-
+	enum COLLIDER_TYPE { AABB, OBB, SPHERE, FRUSTUM, TYPE_END };
+	enum COLLIDER_USAGE { MAIN_COLLIDER, ASSIST_COLLIDER, USAGE_END };
 
 private:
-	explicit Collider(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+	explicit Collider(ID3D11Device* device, ID3D11DeviceContext* deviceContext, COLLIDER_USAGE eUsage);
 	explicit Collider(const Collider& rhs);
 	virtual ~Collider() = default;
 public:
@@ -45,6 +45,7 @@ public:
 	uint32 GetID() { return _iID; }
 private:
 	COLLIDER_TYPE _eColliderType = COLLIDER_TYPE::TYPE_END;
+	COLLIDER_USAGE _eColliderUsage = COLLIDER_USAGE::USAGE_END;
 	class Bounding* _pBounding = nullptr;
 	class GameObject* _pOwner = nullptr;
 
@@ -65,7 +66,7 @@ private:
 
 
 public:
-	static Collider* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, COLLIDER_TYPE eType);
+	static Collider* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, COLLIDER_TYPE eType, COLLIDER_USAGE eUsage);
 	virtual Component* Clone(void* pArg) override;
 	virtual void Free() override;
 };

@@ -1,6 +1,13 @@
 #include "LightHelper.fx"
 #include "GlobalShader.fx"
 
+cbuffer deltatime
+{
+    float _time = 0.f;
+}
+
+Texture2D NoiseMap;
+
 VertexAnimMeshOut VS_MAIN(VertexAnimMesh input)
 {
     VertexAnimMeshOut Out = (VertexAnimMeshOut) 0;
@@ -42,10 +49,20 @@ PS_OUT PS_MAIN(VertexAnimMeshOut input)
     PS_OUT Out = (PS_OUT) 0;
 
     vector vMtrlDiffuse = DiffuseMap.Sample(LinearSampler, input.uv);
-    
-    if (vMtrlDiffuse.a < 0.3f)
+    vector vDissolve = NoiseMap.Sample(LinearSampler, input.uv * 3.f);
+    float dissolveDuration = 1.f;
+  
+
+    if(vMtrlDiffuse.a < 0.3f)
         discard;
     
+ 
+    float fDissolveAlpha = saturate(-_time / dissolveDuration + vDissolve.r);
+ 
+    if (fDissolveAlpha < 0.3f)
+        discard;
+    
+
     Out.vDiffuse = vMtrlDiffuse;
     Out.vNormal = vector(input.normal.xyz * 0.5 + 0.5f, 0.f);
     Out.vDepth = vector(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w / fCameraFar, 0.f, 0.f);

@@ -153,6 +153,8 @@ HRESULT PlayerBody::Bind_ShaderResources()
 	if (FAILED(gameInstance->BindTransformToShader(_shader, "P", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
 		return E_FAIL;
 
+	if(FAILED(_shader->BindRawValue("_time", &_fLiftTime, sizeof(_float))))
+		return E_FAIL;
 
 	Safe_Release<GameInstance*>(gameInstance);
 

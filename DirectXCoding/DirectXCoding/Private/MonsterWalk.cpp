@@ -2,6 +2,9 @@
 #include "MonsterWalk.h"
 #include "GameInstance.h"
 #include "Monster.h"
+#include "DynamicObject.h"
+#include "Player.h"
+#include "Cell.h"
 
 MonsterWalk::MonsterWalk(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
@@ -27,13 +30,20 @@ State::STATE MonsterWalk::UpdateState(const _float& timeDelta)
 	if (true == dynamic_cast<Monster*>(_pOwner)->GetOnWater() && false == dynamic_cast<Monster*>(_pOwner)->IsDead())
 		soundfileName = TEXT("walkWATER.wav");
 
-	
 	if (nullptr != pOwnerMonster->GetTargetObject())
 	{
 		// TODO -> 열쇠면 열쇠 쪽으로 순찰
 		// 플레이어를 발견했으면 플레이어 추격.
 		pOwnerMonster->MoveAstar(timeDelta);
 		pOwnerMonster->GetTransform()->Forward(timeDelta, pOwnerMonster->GetNavigation());
+
+		if (pOwnerMonster->GetTargetObject()->GetObjectType() == OBJECT_TYPE::DYNAMIC)
+			pOwnerMonster->GetNavigation()->StartAStar(679);
+		else
+			pOwnerMonster->GetNavigation()->StartAStar(dynamic_cast<Player*>(pOwnerMonster->GetTargetObject())->GetNavigation()->GetCurrentIndex());
+
+		list<Cell*>& bestCell = pOwnerMonster->GetBestList();
+		bestCell = pOwnerMonster->GetNavigation()->GetBestCell();
 
 		Vec4& vDestination = pOwnerMonster->GetDestination();
 		vDestination = pOwnerMonster->GetTargetObject()->GetTransform()->GetState(Transform::STATE::POSITION);
@@ -86,6 +96,7 @@ void MonsterWalk::LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMa
 	if (fVolume <= 0.f)
 		fVolume = 0.f;
 }
+
 
 MonsterWalk* MonsterWalk::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, GameObject* pOwner)
 {

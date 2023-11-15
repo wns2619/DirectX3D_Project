@@ -58,9 +58,11 @@ HRESULT Monster::Initialize(void* pArg)
 
 	_pStateMachine->SetAnimator(_pAnimator);
 	_pStateMachine->SetState(State::STATE::IDLE);
-	//_transform->SetState(Transform::STATE::POSITION, ::XMVectorSet(11.f, 0.f, -45.5f, 1.f));
+	_transform->SetState(Transform::STATE::POSITION, ::XMVectorSet(11.f, 0.f, -42.5f, 1.f));
+
 
 	++_iMonsterCount;
+	_iMonsterID = _iMonsterCount;
 
 	return S_OK;
 }
@@ -70,7 +72,10 @@ void Monster::Tick(const _float& fTimeDelta)
 	if (_enabled)
 		return;
 
-	if (true == _bDeadDelay)
+	if (_iLife <= 0)
+		_bDeadDelay = true;
+
+	if (true == _bDeadDelay && _iMonsterCount != 1)
 	{
 		_fLifeTime += fTimeDelta;
 
@@ -83,17 +88,21 @@ void Monster::Tick(const _float& fTimeDelta)
 			RELEASE_INSTANCE(GameInstance);
 		}
 	}
+	else
+	{
+		_pStateMachine->UpdateStateMachine(fTimeDelta);
 
-	if(_iMonsterCount == 1)
-		_transform->Forward(fTimeDelta, _pNavigation);
+		if (_iMonsterID == 1)
+			_transform->Forward(fTimeDelta, _pNavigation);
 
-	XMVECTOR vPosition = __super::SetUp_OnCell(_transform->GetState(Transform::STATE::POSITION), _pNavigation->GetCurrentIndex());
-	_transform->SetState(Transform::STATE::POSITION, vPosition);
-
-	_pStateMachine->UpdateStateMachine(fTimeDelta);
+		XMVECTOR vPosition = __super::SetUp_OnCell(_transform->GetState(Transform::STATE::POSITION), _pNavigation->GetCurrentIndex());
+		_transform->SetState(Transform::STATE::POSITION, vPosition);
 
 
-	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
+		_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
+		_pAssistCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
+	}
+
 }
 
 void Monster::LateTick(const _float& fTimeDelta)
@@ -105,6 +114,7 @@ void Monster::LateTick(const _float& fTimeDelta)
 
 #ifdef _DEBUG
 	_render->AddDebug(_pCollider);
+	_render->AddDebug(_pAssistCollider);;
 	_render->AddDebug(_pNavigation);
 #endif // _DEBUG
 }
@@ -138,13 +148,22 @@ HRESULT Monster::Render()
 			return E_FAIL;
 	}
 
+	if (true == _bDeadDelay)
+	{
+		if (FAILED(_shader->BindRawValue("_time", &_fLifeTime, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(_pTexture->BindShaderResource(_shader, "NoiseMap", 0)))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
 void Monster::OnCollisionEnter(Collider* pOther)
 {
-
-
+	if (pOther->GetOwner()->GetModelName() == "PlayerBullet")
+		--_iLife;
 }
 
 void Monster::OnCollisionStay(Collider* pOther)
@@ -156,6 +175,20 @@ void Monster::OnCollisionStay(Collider* pOther)
 void Monster::OnCollisionExit(Collider* pOther)
 {
 
+}
+
+void Monster::OnAssistCollisionEnter(Collider* pOther)
+{
+	if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER)
+		_pTargetObject = pOther->GetOwner();
+}
+
+void Monster::OnAssistCollisionStay(Collider* pOther)
+{
+}
+
+void Monster::OnAssistCollisionExit(Collider* pOther)
+{
 }
 
 void Monster::TrigerBoxEvent(Collider* pOther)
@@ -177,23 +210,37 @@ void Monster::MoveAstar(const _float& fTimeDelta)
 {
 	if (_bestList.size() > 1)
 	{
-		Vec3 vPos = _transform->GetState(Transform::STATE::POSITION);
-		Vec3 vDirection = _bestList.front()->GetPosition() - vPos;
-
-		_float fDistance = vDirection.Length();
-
+		//_transform->TurnTo(_bestList.front()->GetPosition(), fTimeDelta);
+		TargetStare(_bestList.front()->GetPosition(), fTimeDelta);
 		if (_bestList.front()->IsIn(_transform->GetState(Transform::STATE::POSITION), _transform->GetWorldMatrixCaculator()))
 			_bestList.pop_front();
 	}
 	else
 	{
 		Vec3 vPos = _transform->GetState(Transform::STATE::POSITION);
-		Vec3 vDirection = _vDestination - vPos;
-		vDirection.y = 0.f;
-		vDirection.Normalize();
-		// TODO
-		// TurnTo -> 포지션 받으면 그 쪽 방향으로 회전 시키는 함수.
+		TargetStare(_vDestination, fTimeDelta);
 	}
+}
+
+void Monster::TargetStare(XMVECTOR vGoal, const _float& fTimeDelta)
+{
+	Vec3 vDir = vGoal - _transform->GetState(Transform::STATE::POSITION);
+
+	Vec3 vLook = _transform->GetState(Transform::STATE::LOOK);
+	vDir.Normalize();
+	vDir.y = 0.f;
+
+	_float fRotMax = 10.f;
+	_float fRotNormal = 5.f;
+
+	Vec4 RotDir;
+
+	if (3.f < acosf(vDir.Dot(vLook)))
+		RotDir = Vec3::Lerp(vLook, vDir, fRotMax * fTimeDelta);
+	else
+		RotDir = Vec3::Lerp(vLook, vDir, fRotNormal * fTimeDelta);
+
+	_transform->SetLook(RotDir);
 }
 
 HRESULT Monster::ReadyComponents()
@@ -222,7 +269,7 @@ HRESULT Monster::ReadyComponents()
 
 	/* Transform Component */
 	Transform::TRANSFORM_DESC transformDesc;
-	transformDesc.speedPerSec = 5.f;
+	transformDesc.speedPerSec = 0.5f;
 	transformDesc.rotationRadianPerSec = ::XMConvertToRadians(90.f);
 
 		if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
@@ -238,7 +285,7 @@ HRESULT Monster::ReadyComponents()
 		return E_FAIL;
 
 	Navigation::NAVIGATION_DESC NavigationDesc;
-	NavigationDesc._iCurrentIndex = 289;
+	NavigationDesc._iCurrentIndex = 3;
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeNavigation"),
 		TEXT("ComponentNavigation"), reinterpret_cast<Component**>(&_pNavigation), &NavigationDesc)))
@@ -253,6 +300,27 @@ HRESULT Monster::ReadyComponents()
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAABBCollider"),
 		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &aabbDesc)))
+		return E_FAIL;
+
+	Bounding_Frustum::BOUNDING_FRUSTUM_DESC frustumDesc;
+	{
+		frustumDesc.pOwner = this;
+		frustumDesc.vCenter = Vec3(0.f, 1.f, 0.f);
+		frustumDesc.vOrientation = Vec4(0.f, 0.f, 0.f, 1.f);
+		frustumDesc.fLeftSlope = -0.1f;
+		frustumDesc.fRightSlope = 0.1f;
+		frustumDesc.fTopSlope = 0.1f;
+		frustumDesc.fBottomSlope = -0.1f;
+		frustumDesc.fNear = 0.1f;
+		frustumDesc.fFar = 8.f;
+	}
+
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAssistFrustumCollider"),
+		TEXT("ComponentFrustumCollider"), reinterpret_cast<Component**>(&_pAssistCollider), &frustumDesc)))
+		return E_FAIL;
+
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeNoiseTexture"),
+		TEXT("ComponenetTexture"), reinterpret_cast<Component**>(&_pTexture))))
 		return E_FAIL;
 
 
@@ -312,6 +380,7 @@ void Monster::Free()
 {
 	__super::Free();
 
+	Safe_Release<Texture*>(_pTexture);
 	Safe_Release<Shader*>(_shader);
 	Safe_Release<Renderer*>(_render);
 	Safe_Release<StateMachine*>(_pStateMachine);

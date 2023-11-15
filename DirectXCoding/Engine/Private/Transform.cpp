@@ -172,13 +172,13 @@ void Transform::FixRotation(_float x, _float y, _float z)
     SetState(STATE::LOOK, look);
 }
 
-void Transform::Turn(XMVECTOR axis, const _float& timeDelta)
+void Transform::Turn(XMVECTOR axis, const _float& timeDelta, _float fAngle)
 {
     XMVECTOR right = GetState(STATE::RIGHT);
     XMVECTOR up = GetState(STATE::UP);
     XMVECTOR look = GetState(STATE::LOOK);
 
-    XMVECTOR rotationMatrix = ::XMQuaternionRotationAxis(axis, _transformDesc.rotationRadianPerSec * timeDelta);
+    XMVECTOR rotationMatrix = ::XMQuaternionRotationAxis(axis, _transformDesc.rotationRadianPerSec * timeDelta * fAngle);
     _rotation = ::XMQuaternionIdentity();
 
     _rotation = ::XMQuaternionMultiply(_rotation, rotationMatrix);
@@ -191,6 +191,31 @@ void Transform::Turn(XMVECTOR axis, const _float& timeDelta)
     SetState(STATE::UP, up);
     SetState(STATE::LOOK, look);
 
+}
+
+void Transform::TurnTo(XMVECTOR vPoint, const _float& timeDelta)
+{
+    Vec3 vDirection = vPoint - GetState(STATE::POSITION);
+
+    _float fDistance = vDirection.Length();
+    vDirection.y = 0.f;
+    vDirection.Normalize();
+
+    Vec3 vecCross;
+    Vec3 vLook = GetState(STATE::LOOK);
+    Vec3 vUp = GetState(STATE::UP);
+
+    vecCross = vLook.Cross(vUp);
+    
+    _float fAngle = 0.f;
+    if (vecCross.y < 0.f)
+        fAngle = -1.f;
+    else if (vecCross.y > 0)
+        fAngle += 1.f;
+    else
+        fAngle = 0.f;
+
+    Turn(vUp, timeDelta, fAngle);
 }
 
 void Transform::LookAt(FXMVECTOR point)
@@ -222,6 +247,20 @@ void Transform::Chase(FXMVECTOR point, _float const& timeDelta, _float distance)
 void Transform::Translate(Vec3& vTranslation)
 {
     SetState(STATE::POSITION, vTranslation);
+}
+
+void Transform::SetLook(Vec4 vChangeLook)
+{
+    Vec3        vScaled = GetScaled();
+
+    Vec4        vPosition = GetState(STATE::POSITION);
+    Vec4        vLook = XMVector3Normalize(vChangeLook) * vScaled.z;
+    Vec4        vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * vScaled.x;
+    Vec4        vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * vScaled.y;
+
+    SetState(STATE::RIGHT, vRight);
+    SetState(STATE::UP, vUp);
+    SetState(STATE::LOOK, vLook);
 }
 
 void Transform::Move(XMVECTOR moveVector)

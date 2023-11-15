@@ -342,6 +342,8 @@ HRESULT GameScene::ReadyLandObjects(const LAYER_TAG layerTag)
 	if (FAILED(pGameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), LAYER_TAG::LAYER_PLAYER, TEXT("ProtoTypeGameObjectPlayer"), &LandObjectDesc)))
 		return E_FAIL;
 
+	//ReadyLayerMonster(LAYER_TAG::LAYER_MONSTER, &LandObjectDesc);
+
 	return S_OK;
 }
 
@@ -410,6 +412,19 @@ HRESULT GameScene::ReadyLayerPlayer(const LAYER_TAG layerTag, void* pArg)
 
 
     return S_OK;
+}
+
+HRESULT GameScene::ReadyLayerMonster(const LAYER_TAG layerTag, void* pArg)
+{
+	GameInstance* gameInstance = GameInstance::GetInstance();
+	Safe_AddRef<GameInstance*>(gameInstance);
+
+	if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ProtoTypeDanceMonster"), pArg)))
+		return E_FAIL;
+
+	Safe_Release<GameInstance*>(gameInstance);
+
+	return S_OK;
 }
 
 HRESULT GameScene::ReadyLight()
