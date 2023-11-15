@@ -23,6 +23,10 @@ public:
 	virtual void OnCollisionStay(class Collider* pOther);
 	virtual void OnCollisionExit(class Collider* pOther);
 
+	virtual void OnAssistCollisionEnter(class  Collider* pOther);
+	virtual void OnAssistCollisionStay(class Collider* pOther);
+	virtual void OnAssistCollisionExit(class Collider* pOther);
+
 public:
 	const _bool& GetIsBreak() { return _bIsBreak; }
 	const Vec4& GetPrevPosition() { return _vPrevPosition; }

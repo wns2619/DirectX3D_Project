@@ -216,7 +216,7 @@ HRESULT OldWoodDoor::ReadyCollider()
 		sphereDesc.pOwner = this;
 	}
 
-	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeSphereCollider"),
+	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeAssistSphereCollider"),
 		TEXT("ComponentSphereCollider"), reinterpret_cast<Component**>(&_pAssistCollider), &sphereDesc)))
 		return E_FAIL;
 

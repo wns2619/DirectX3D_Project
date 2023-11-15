@@ -15,11 +15,12 @@ CollisionManager::CollisionManager()
 	CheckGroup(LAYER_TAG::LAYER_PLAYER, LAYER_TAG::LAYER_DYNAMIC);
 	CheckGroup(LAYER_TAG::LAYER_PLAYER, LAYER_TAG::LAYER_PUZZLE);
 	CheckGroup(LAYER_TAG::LAYER_PLAYER, LAYER_TAG::LAYER_TRIGER);
-	CheckGroup(LAYER_TAG::LAYER_MONSTER, LAYER_TAG::LAYER_DYNAMIC);
+	//CheckGroup(LAYER_TAG::LAYER_MONSTER, LAYER_TAG::LAYER_DYNAMIC);
 	CheckGroup(LAYER_TAG::LAYER_MONSTER, LAYER_TAG::LAYER_PUZZLE);
 	CheckGroup(LAYER_TAG::LAYER_MONSTER, LAYER_TAG::LAYER_TRIGER);
 	CheckGroup(LAYER_TAG::LAYER_BULLET, LAYER_TAG::LAYER_MONSTER);
 
+	CheckAssisGroup(LAYER_TAG::LAYER_PLAYER, LAYER_TAG::LAYER_MONSTER);
 	CheckAssisGroup(LAYER_TAG::LAYER_DYNAMIC, LAYER_TAG::LAYER_BULLET);
 	CheckAssisGroup(LAYER_TAG::LAYER_DYNAMIC, LAYER_TAG::LAYER_COLLIDER);
 
@@ -103,9 +104,6 @@ void CollisionManager::CheckCollisionByType(LAYER_TAG eLayerTagLeft, LAYER_TAG e
 
 			if (iterL->GetModelName() == "Player" && iterR->GetModelName() == "Bullet")
 				continue;
-			
-			
-
 
 			Collider* pLeftCol = iterL->GetCollider();
 			Collider* pRightCol = iterR->GetCollider();
@@ -218,7 +216,13 @@ void CollisionManager::CheckAssistCollision(LAYER_TAG eLayerTagLeft, LAYER_TAG e
 
 	for (auto& iterL : *pLeftGameObject)
 	{
-		if (nullptr == iterL->GetAssistCollider())
+		_bool NotAssist = false;
+
+		if (nullptr != iterL->GetAssistCollider())
+			NotAssist = false;
+		else if (nullptr != iterL->GetCollider())
+			NotAssist = true;
+		else
 			continue;
 
 
@@ -227,8 +231,17 @@ void CollisionManager::CheckAssistCollision(LAYER_TAG eLayerTagLeft, LAYER_TAG e
 			if (nullptr == iterR->GetCollider() || iterL == iterR)
 				continue;
 
-			Collider* pLeftCol = iterL->GetAssistCollider();
-			Collider* pRightCol = iterR->GetCollider();
+			Collider* pLeftCol = nullptr;
+			if (true == NotAssist)
+				pLeftCol = iterL->GetCollider();
+			else
+				pLeftCol = iterL->GetAssistCollider();
+
+			Collider* pRightCol = nullptr;
+			if (iterR->GetModelName() == "Monster")
+				pRightCol = iterR->GetAssistCollider();
+			else
+				pRightCol = iterR->GetCollider();
 
 			COLLIDER_ID ID;
 			ID.LeftID = pLeftCol->GetID();

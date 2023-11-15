@@ -229,6 +229,9 @@
     <Filter Include="01.Utility\08.Frustum">
       <UniqueIdentifier>{a633c073-df7e-4642-8e75-0d225844c6f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Component\Collider\Base\Frustum">
+      <UniqueIdentifier>{1b0361f2-8dc6-4304-b70c-81b96d5450e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -501,6 +504,9 @@
     <ClInclude Include="..\Public\Frustum.h">
       <Filter>01.Utility\08.Frustum</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Bounding_Frustum.h">
+      <Filter>01.Utility\04.Component\Collider\Base\Frustum</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -709,6 +715,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Frustum.cpp">
       <Filter>01.Utility\08.Frustum</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bounding_Frustum.cpp">
+      <Filter>01.Utility\04.Component\Collider\Base\Frustum</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

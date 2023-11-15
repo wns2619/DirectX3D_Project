@@ -316,6 +316,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		pGameObject->GetTransform()->SetState(Transform::STATE::POSITION, Vec4(4.086, 0.f, -9.718, 1.f));
 		pGameObject->GetNavigation()->SetCurrentIndex(289);
 		pGameObject->GetStateMachine()->SetState(State::STATE::RUN);
+		pGameObject->GetTransform()->SetSpeedPerSec(5.f);
 
 		pGameInstance->CreateObject(pGameObject, LAYER_TAG::LAYER_MONSTER);
 		RELEASE_INSTANCE(GameInstance);
@@ -474,11 +475,15 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		LandObjectDesc.pCells = &vecCells;
 		LandObjectDesc.pCellTransform = pTransform;
 
+		GameObject* pPlayer = pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player");
+
 		Monster* pGameObject = dynamic_cast<Monster*>(pGameInstance->CloneGameObject(TEXT("ProtoTypeDanceMonster"), &LandObjectDesc));
-		pGameObject->GetTransform()->SetState(Transform::STATE::POSITION, Vec4(21.656, -1.0f, -1.740, 1.f));
-		pGameObject->GetNavigation()->SetCurrentIndex(464);
+		pGameObject->GetTransform()->SetState(Transform::STATE::POSITION, Vec4(24.399, -3.058f, 1.8258, 1.f));
+		pGameObject->GetNavigation()->SetCurrentIndex(679);
 		pGameObject->GetStateMachine()->SetState(State::STATE::IDLE);
+		pGameObject->SetTarget(pPlayer);
 		pGameObject->SetOnWater(true);
+		pGameObject->GetTransform()->SetSpeedPerSec(1.f);
 
 		pGameInstance->CreateObject(pGameObject, LAYER_TAG::LAYER_MONSTER);
 		RELEASE_INSTANCE(GameInstance);

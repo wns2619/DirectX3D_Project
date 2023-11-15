@@ -48,6 +48,9 @@ public:
 	void SetState(STATE state, FXMVECTOR vectorState);
 	void SetScaling(const Vec3& vectorScale);
 	void SetWorldMatrix(Matrix WorldMatrix) { _worldMatrix = WorldMatrix; }
+
+	void SetSpeedPerSec(_float speed) { _transformDesc.speedPerSec = speed; }
+
 public:
 	virtual HRESULT InitializePrototype()		override;
 	virtual HRESULT Initialize(void* argument)	override;
@@ -62,11 +65,13 @@ public:
 	void Right(const _float& timeDelta, class BinaryNavi* pNavigation = nullptr);
 	void FixRotation(XMVECTOR axis, const _float radian);
 	void FixRotation(_float x, _float y, _float z);
-	void Turn(XMVECTOR axis, const _float& timeDelta);
+	void Turn(XMVECTOR axis, const _float& timeDelta, _float fAngle = 1.f);
+	void TurnTo(XMVECTOR vPoint, const _float& timeDelta);
 	void LookAt(FXMVECTOR point);
 	void Chase(FXMVECTOR point, _float const& timeDelta, _float distance = 0.1f);
 
 	void Translate(Vec3& vTranslation);
+	void SetLook(Vec4 vChangeLook);
 
 public: // custom Movement
 	void Move(XMVECTOR moveVector);

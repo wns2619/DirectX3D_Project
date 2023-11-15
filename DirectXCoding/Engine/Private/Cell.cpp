@@ -42,7 +42,7 @@ void Cell::Update(FXMMATRIX worldMatrix)
 	for (uint32 i = 0; i < POINT_END; ++i)
 		_vPoints_InWorld[i] = ::XMVector3TransformCoord(::XMLoadFloat3(&_vPoints_Original[i]), worldMatrix);
 
-	_vPos = ((static_cast<Vec3>(_vPoints_InWorld[0]) + static_cast<Vec3>(_vPoints_InWorld[1]) + static_cast<Vec3>(_vPoints_InWorld[2]) / 3.f));
+	_vPos = ((static_cast<Vec3>(_vPoints_InWorld[0]) + static_cast<Vec3>(_vPoints_InWorld[1]) + static_cast<Vec3>(_vPoints_InWorld[2]))) / 3.f;
 
 	// 정점의 로컬위치에서 월드행렬을 곱한 값을 업데이트마다 갱신해줌.
 }

@@ -113,39 +113,6 @@ HRESULT Surefire::Ready_Components()
 		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform), &transformDesc)))
 		return E_FAIL;
 
-	// Light Add
-
-	//GameInstance* gameInstance = GET_INSTANCE(GameInstance);
-
-	//LIGHT_DESC lightDesc;
-	//ZeroMemory(&lightDesc, sizeof(lightDesc));
-	//{
-	//	lightDesc.type = LIGHT_DESC::SPOT;
-
-
-	//	lightDesc.Position = Vec4(11.f, 1.3f, -45.5f, 1.f);
-	//	lightDesc.vAmbientLowerColor = Color(1.f, 1.f, 1.f, 1.f);
-	//	lightDesc.vAmbientUpperColor = Color(1.f, 1.f, 1.f, 1.f);
-	//	lightDesc.Direction = Vec3(1.f, 0.f, 1.f);
-	//	lightDesc.Diffuse = Vec4(1.f, 1.f, 1.f, 1.f);
-
-	//	// SpecularIntensity or SpecExponent
-	//	lightDesc.fSpecExp = 100.f;
-	//	lightDesc.fSpecIntensity = 10.f;
-
-	//	// Spot
-	//	lightDesc.fSpotLightRangeRcp = 1.0f / 10.f;
-	//	lightDesc.fSpotCosOuterCone = ::cosf(0.5f / 180.f);
-	//	lightDesc.fSpotInnerConeRcp = 1.f / ::cosf(0.1f / 180.f);
-	//	lightDesc.PlayerLight = true;
-	//}
-
-	//if (FAILED(gameInstance->AddLight(lightDesc)))
-	//	return E_FAIL;
-
-
-
-	//RELEASE_INSTANCE(GameInstance);
 
 	return S_OK;
 }

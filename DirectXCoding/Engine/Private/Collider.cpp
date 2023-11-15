@@ -5,11 +5,12 @@
 #include "BoundingOBB.h"
 #include "Bounding_Sphere.h"
 #include "GameObject.h"
+#include "Bounding_Frustum.h"
 
 uint32 Collider::_giNextID = 0;
 
-Collider::Collider(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-    : Component(device, deviceContext, COMPONENT_TYPE::COLLIDER)
+Collider::Collider(ID3D11Device* device, ID3D11DeviceContext* deviceContext, COLLIDER_USAGE eUsage)
+    : Component(device, deviceContext, COMPONENT_TYPE::COLLIDER), _eColliderUsage(eUsage)
 {
 
 }
@@ -17,6 +18,7 @@ Collider::Collider(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 Collider::Collider(const Collider& rhs)
     : Component(rhs)
     , _eColliderType(rhs._eColliderType)
+    , _eColliderUsage(rhs._eColliderUsage)
 #ifdef _DEBUG
     , _pBatch(rhs._pBatch)
     , _pEffect(rhs._pEffect)
@@ -84,6 +86,9 @@ HRESULT Collider::Initialize(void* argument)
     case Engine::Collider::SPHERE:
         _pBounding = Bounding_Sphere::Create(pBoundingDesc);
         break;
+    case Engine::Collider::FRUSTUM:
+        _pBounding = Bounding_Frustum::Create(pBoundingDesc);
+        break;
     default:
         break;
     }
@@ -131,28 +136,36 @@ void Collider::OnCollisionEnter(Collider* other)
 {
     ++_iCol;
 
-    _pOwner->OnCollisionEnter(other);
+    if (COLLIDER_USAGE::MAIN_COLLIDER == _eColliderUsage)
+        _pOwner->OnCollisionEnter(other);
+    else
+        _pOwner->OnAssistCollisionEnter(other);
 
 }
 
 void Collider::OnCollisionStay(Collider* other)
 {
-
-    _pOwner->OnCollisionStay(other);
+    if (COLLIDER_USAGE::MAIN_COLLIDER == _eColliderUsage)
+        _pOwner->OnCollisionStay(other);
+    else
+        _pOwner->OnAssistCollisionStay(other);
 
 }
 
 void Collider::OnCollisionExit(Collider* other)
 {
-
-    _pOwner->OnCollisionExit(other);
-
     --_iCol;
+    
+    if (COLLIDER_USAGE::MAIN_COLLIDER == _eColliderUsage)
+        _pOwner->OnCollisionExit(other);
+    else
+        _pOwner->OnAssistCollisionExit(other);
+
 }
 
-Collider* Collider::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, COLLIDER_TYPE eType)
+Collider* Collider::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, COLLIDER_TYPE eType, COLLIDER_USAGE eUsage)
 {
-    Collider* pInstance = new Collider(device, deviceContext);
+    Collider* pInstance = new Collider(device, deviceContext, eUsage);
 
     if (FAILED(pInstance->InitializePrototype(eType)))
     {

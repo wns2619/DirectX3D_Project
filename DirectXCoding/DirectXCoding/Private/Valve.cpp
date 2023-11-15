@@ -53,16 +53,17 @@ void Valve::Tick(const _float& timeDelta)
 			_transform->Turn(Vec4(0.f, 0.f, 1.f, 1.f), timeDelta);
 
 
-		if (_id == 184)
+	
+		if (-99 == _iRotationTick)
 		{
-			if (-99 == _iRotationTick)
+			_iRotationTick = 100;
+			_bIsRotation = false;
+
+			_iRotationCount++;
+
+			if (_iRotationCount == 2)
 			{
-				_iRotationTick = 100;
-				_bIsRotation = false;
-
-				_iRotationCount++;
-
-				if (_iRotationCount == 2)
+				if (_id == 184)
 				{
 					GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
@@ -72,11 +73,13 @@ void Valve::Tick(const _float& timeDelta)
 					RELEASE_INSTANCE(GameInstance);
 				}
 
-
-				if (_iRotationCount == 3)
-					_bIsOpen = true;
 			}
+
+
+			if (_iRotationCount == 3)
+				_bIsOpen = true;
 		}
+		
 	}
 
 

@@ -20,6 +20,7 @@
 #include "BoundingOBB.h"
 #include "BoundingAABB.h"
 #include "Bounding_Sphere.h"
+#include "Bounding_Frustum.h"
 
 
 BEGIN(Engine)

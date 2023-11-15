@@ -3,6 +3,7 @@
 #include "DebugDraw.h"
 #include "BoundingAABB.h"
 #include "Bounding_Sphere.h"
+#include "Bounding_Frustum.h"
 
 BoundingOBB::BoundingOBB()
 {
@@ -41,6 +42,9 @@ _bool BoundingOBB::IsCollision(Collider::COLLIDER_TYPE eType, Bounding* pBoundin
 		break;
 	case Engine::Collider::SPHERE:
 		testfalse = _pOBB->Intersects(*dynamic_cast<Bounding_Sphere*>(pBounding)->GetBounding());
+		break;
+	case Engine::Collider::FRUSTUM:
+		testfalse = _pOBB->Intersects(*dynamic_cast<Bounding_Frustum*>(pBounding)->GetBounding());
 		break;
 	default:
 		break;

@@ -97,22 +97,10 @@ HRESULT BreakDoor::Render()
 
 void BreakDoor::OnCollisionEnter(Collider* pOther)
 {
-	if (pOther->GetOwner()->GetModelName() == "PlayerBullet")
-	{
-		_bIsBreak = true;
-		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
-
-		pGameInstance->DeleteObject(pOther->GetOwner());
-
-		RELEASE_INSTANCE(GameInstance);
-	}
 }
 
 void BreakDoor::OnCollisionStay(Collider* pOther)
 {
-	if (pOther->GetOwner()->GetModelName() == "PlayerBullet")
-		_bIsBreak = true;
-
 	if (_bIsBreak == true)
 	{
 		if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER && _id == 172)
@@ -227,6 +215,29 @@ void BreakDoor::OnCollisionExit(Collider* pOther)
 {
 }
 
+void BreakDoor::OnAssistCollisionEnter(Collider* pOther)
+{
+	if (pOther->GetOwner()->GetModelName() == "PlayerBullet")
+	{
+		_bIsBreak = true;
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		pGameInstance->DeleteObject(pOther->GetOwner());
+
+		RELEASE_INSTANCE(GameInstance);
+	}
+}
+
+void BreakDoor::OnAssistCollisionStay(Collider* pOther)
+{
+	if (pOther->GetOwner()->GetModelName() == "PlayerBullet")
+		_bIsBreak = true;
+}
+
+void BreakDoor::OnAssistCollisionExit(Collider* pOther)
+{
+}
+
 HRESULT BreakDoor::ReadyCollider()
 {
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
@@ -261,7 +272,7 @@ HRESULT BreakDoor::ReadyCollider()
 		sphereDesc.pOwner = this;
 	}
 
-	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeSphereCollider"),
+	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeAssistSphereCollider"),
 		TEXT("ComponentSphereCollider"), reinterpret_cast<Component**>(&_pAssistCollider), &sphereDesc)))
 		return E_FAIL;
 

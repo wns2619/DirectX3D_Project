@@ -371,7 +371,7 @@ HRESULT GridDoor::ReadyCollider()
 		sphereDesc.vCenter = Vec3(30.f, sphereDesc.fRadius * 10, 0.f);
 	}
 
- 	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeSphereCollider"),
+ 	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeAssistSphereCollider"),
 		TEXT("ComponentSphereCollider"), reinterpret_cast<Component**>(&_pAssistCollider), &sphereDesc)))
 		return E_FAIL;
 

@@ -29,6 +29,7 @@ public:
 	void SetCurrentIndex(int32 iIndex) { _iCurrentIndex = iIndex; }
 public:
 	vector<class Cell*>& GetCell() { return _cells; }
+	list<class Cell*>& GetBestCell() { return _bestList; }
 	HRESULT SetUp_Neighbors();
 
 public: // A*

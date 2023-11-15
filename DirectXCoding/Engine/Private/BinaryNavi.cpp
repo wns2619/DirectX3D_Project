@@ -224,7 +224,7 @@ void BinaryNavi::StartAStar(const int32& vGoal)
 	if (0 > _iCurrentIndex || 0 > iGoalIndex || static_cast<uint32>(_iCurrentIndex) >= _cells.size() || static_cast<uint32>(iGoalIndex) >= _cells.size())
 		return;
 
-	if (0 > _iCurrentIndex == iGoalIndex)
+	if (_iCurrentIndex == iGoalIndex)
 		return;
 
 	if (MakeRoute(_iCurrentIndex, iGoalIndex))
