@@ -25,6 +25,9 @@ HRESULT MonsterBody::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+		_pDissolveTime = static_cast<MonsterPartObject::PART_DESC*>(pArg)->pDissolveTime;
+
 	return S_OK;
 }
 
@@ -96,6 +99,10 @@ HRESULT MonsterBody::Ready_Components()
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
 
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeDissolveTexture"),
+		TEXT("ComponentTexture"), reinterpret_cast<Component**>(&_pTexture))))
+		return E_FAIL;
+
 
 	RELEASE_INSTANCE(GameInstance);
 
@@ -111,9 +118,15 @@ HRESULT MonsterBody::Bind_ShaderResources()
 	if (FAILED(_pShader->BindMatrix("W", &_mWorldMatrix)))
 		return E_FAIL;
 
+	if (FAILED(_pTexture->BindShaderResource(_pShader, "NoiseMap", 0)))
+		return E_FAIL;
+
 	if (FAILED(gameInstance->BindTransformToShader(_pShader, "V", CameraHelper::TRANSFORMSTATE::D3DTS_VIEW)))
 		return E_FAIL;
 	if (FAILED(gameInstance->BindTransformToShader(_pShader, "P", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
+		return E_FAIL;
+
+	if (FAILED(_pShader->BindRawValue("_time", _pDissolveTime, sizeof(_float))))
 		return E_FAIL;
 
 	Safe_Release<GameInstance*>(gameInstance);

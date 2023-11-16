@@ -80,7 +80,7 @@ private:
 	STATE_DESC _comNames;
 
 private: // Stat
-	uint32 _iLife = 3;
+	int32 _iLife = 3;
 
 private:
 	_bool _bDeadDelay = false;

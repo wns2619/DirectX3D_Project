@@ -79,4 +79,5 @@ void MonsterPartObject::Free()
 
 	Safe_Release<Transform*>(_pParentTransform);
 	Safe_Release<Shader*>(_pShader);
+	Safe_Release<Texture*>(_pTexture);
 }

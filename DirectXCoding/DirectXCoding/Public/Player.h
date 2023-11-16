@@ -62,8 +62,8 @@ private:
 	Animator* _pAnimator			= nullptr;
 
 	uint32 animationcount = 0;
-
-
+private:
+	_float _fLifeTime = 0.f;
 
 private:
 	_bool _bInteraction = false;

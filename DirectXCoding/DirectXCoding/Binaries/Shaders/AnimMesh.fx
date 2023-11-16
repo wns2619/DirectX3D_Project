@@ -50,18 +50,22 @@ PS_OUT PS_MAIN(VertexAnimMeshOut input)
 
     vector vMtrlDiffuse = DiffuseMap.Sample(LinearSampler, input.uv);
     vector vDissolve = NoiseMap.Sample(LinearSampler, input.uv * 3.f);
-    float dissolveDuration = 1.f;
+    float dissolveDuration = 5.f;
   
 
     if(vMtrlDiffuse.a < 0.3f)
         discard;
     
- 
-    float fDissolveAlpha = saturate(1.f - _time / dissolveDuration + vDissolve.r);
+   
+    float outlineThreshold = 0.5f;
+    float outlineWidth = 0.3f;
+    float edgeStart = outlineThreshold;
+    float edgeEnd = outlineThreshold + outlineWidth;
+    
+    float fDissolveAlpha = saturate(_time > 0 ? 1.f - _time / dissolveDuration + vDissolve.r : 1.f);
     if (fDissolveAlpha < 0.3f)
         discard;
-    
-
+ 
     Out.vDiffuse = vMtrlDiffuse;
     Out.vNormal = vector(input.normal.xyz * 0.5 + 0.5f, 0.f);
     Out.vDepth = vector(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w / fCameraFar, 0.f, 0.f);

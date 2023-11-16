@@ -28,6 +28,9 @@ HRESULT MonsterLight::Initialize(void* pArg)
 
 		if (FAILED(__super::Initialize(pArg)))
 			return E_FAIL;
+
+		if (nullptr != pArg)
+			_pDissolveTime = static_cast<MonsterPartObject::PART_DESC*>(pArg)->pDissolveTime;
 	}
 
 	if (FAILED(ReadyComponents()))

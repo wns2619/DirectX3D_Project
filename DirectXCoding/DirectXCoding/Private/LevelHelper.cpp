@@ -565,6 +565,13 @@ HRESULT LevelHelper::LoadingTexture()
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
         }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeDissolveTexture"),
+            Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\Dissolve.png")))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
         break;
     case Client::LEVEL::EDIT:
         break;

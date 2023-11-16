@@ -14,7 +14,8 @@ class PartObject abstract : public GameObject
 public:
 	typedef struct tagPartDesc
 	{
-		Transform* pParentTransform;
+		Transform* pParentTransform = nullptr;;
+		_float* pLifeTime = nullptr;
 	}PART_DESC;
 
 protected:
@@ -48,7 +49,7 @@ protected:
 protected:
 	_bool _bObtainGun = false;
 	_bool _bObtainLight = false;
-	_float _fLifeTime = 0.f;
+	_float* _pLifeTime = nullptr;
 
 protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	Shader* _shader = nullptr;

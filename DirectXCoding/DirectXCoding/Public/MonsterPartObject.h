@@ -5,6 +5,7 @@
 BEGIN(Engine)
 class Shader;
 class Transform;
+class Texture;
 END
 
 BEGIN(Client)
@@ -15,6 +16,7 @@ public:
 	struct PART_DESC
 	{
 		Transform* pParentTransform = nullptr;
+		_float* pDissolveTime = nullptr;
 	};
 
 protected:
@@ -36,10 +38,11 @@ public:
 protected:
 	Transform* _pParentTransform = nullptr;
 	Matrix _mWorldMatrix;
-	_float _fLifeTime = 0.f;
+	_float* _pDissolveTime = nullptr;
 
 protected:
 	Shader* _pShader = nullptr;
+	Texture* _pTexture = nullptr;
 
 protected:
 	HRESULT	Compute_RenderMatrix(FXMMATRIX ChildeMatrix);

@@ -206,7 +206,7 @@ void Player::OnCollisionStay(Collider* pOther)
 				{
 					static_cast<Valve*>(pOther->GetOwner())->SetRotate(true);
 					pGameInstance->StopSound(SOUND_ENVIRONMENT5);
-					pGameInstance->PlaySound(TEXT("valve (mp3cut.net).wav"), SOUND_SCARE1, 0.2f);
+					pGameInstance->PlaySound(TEXT("valve (mp3cut.net).wav"), SOUND_ENVIRONMENT5, 0.2f);
 				}
 			}
 		}
@@ -483,6 +483,7 @@ HRESULT Player::ReadyPlayerPart()
 	// Player Body
 	PartObject::PART_DESC PartDesc;
 	PartDesc.pParentTransform = _transform;
+	PartDesc.pLifeTime = &_fLifeTime;
 
 	pPlayerPart = gameInstance->CloneGameObject(TEXT("ProtoTypeGameObjectPlayerBody"), &PartDesc);
 	if (nullptr == pPlayerPart)
@@ -495,6 +496,7 @@ HRESULT Player::ReadyPlayerPart()
 
 	BodyCam::BODYCAM_DESC BodyCamDesc;
 	BodyCamDesc.pParentTransform = _transform;
+	BodyCamDesc.pLifeTime = &_fLifeTime;
 	BodyCamDesc.SocketMatrix = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketBonePtr("Head_Cam");
 	BodyCamDesc.SocketPivot = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketPivotMatrix();
 	BodyCamDesc.vEye = Vec4(0.f, 10.f, 8.f, 1.f);
@@ -514,6 +516,7 @@ HRESULT Player::ReadyPlayerPart()
 		// SureFire
 	Surefire::FLASHLIGHT_DESC surefireDesc;
 	surefireDesc.pParentTransform = _transform;
+	surefireDesc.pLifeTime = &_fLifeTime;
 	surefireDesc.SocketMatrix = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketBonePtr("gun_root");
 	surefireDesc.SocketPivot = static_cast<PlayerBody*>(m_pPlayerPart[PART_BODY])->Get_SocketPivotMatrix();
 

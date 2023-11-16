@@ -131,6 +131,10 @@ HRESULT PlayerBody::Bind_ShaderResources()
 	if (FAILED(gameInstance->BindTransformToShader(_shader, "P", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
 		return E_FAIL;
 
+	if (FAILED(_shader->BindRawValue("_time", _pLifeTime, sizeof(_float))))
+		return E_FAIL;
+
+
 	Safe_Release<GameInstance*>(gameInstance);
 
 	return S_OK;
@@ -155,7 +159,7 @@ GameObject* PlayerBody::Clone(void* pArg)
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Created : Player Body");
+		MSG_BOX("Failed to Cloned : Player Body");
 		Safe_Release<PlayerBody*>(pInstance);
 	}
 

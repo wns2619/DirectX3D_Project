@@ -35,9 +35,6 @@ HRESULT Surefire::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	//_transform->FixRotation(Vec3(0.f, -1.f, 0.f), ::XMConvertToRadians(180));
-
-
 
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
@@ -112,6 +109,7 @@ HRESULT Surefire::Ready_Components()
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentTransform"),
 		TEXT("ComponentTransform"), reinterpret_cast<Component**>(&_transform), &transformDesc)))
 		return E_FAIL;
+
 
 
 	return S_OK;

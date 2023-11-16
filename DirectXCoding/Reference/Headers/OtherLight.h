@@ -31,7 +31,7 @@ private:
 
 private:
 	// Blink
-	_float _fMaxBlinkRange = 10.f;
+	_float _fMaxBlinkRange = 8.f;
 	_float _fMinBlinkRange = 2.f;
 	_float _fBlinkSpeed = 1.f;
 
