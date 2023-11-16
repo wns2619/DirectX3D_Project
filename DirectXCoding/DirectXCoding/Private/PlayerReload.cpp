@@ -57,7 +57,7 @@ State::STATE PlayerReload::KeyInput(const _float& timeDelta)
 	LandObject* pLandObject = static_cast<LandObject*>(_pOwner);
 
 	wstring soundfileName = L"";
-	if (false == dynamic_cast<Player*>(_pOwner)->GetOnWater())
+	if (false == static_cast<Player*>(_pOwner)->GetOnWater())
 		soundfileName = TEXT("walkPlayer.wav");
 	else
 		soundfileName = TEXT("walkWATER.wav");

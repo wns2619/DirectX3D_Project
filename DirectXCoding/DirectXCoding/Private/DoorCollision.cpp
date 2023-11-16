@@ -80,11 +80,11 @@ void DoorCollision::OnCollisionStay(Collider* pOther)
 	Vec3 extents = 0.5f * Vec3(::fabs(vFinalCenter.x), ::fabs(vFinalCenter.y), ::fabs(vFinalCenter.z));
 
 	if (extents.x >= extents.y && extents.x >= extents.z)
-		dynamic_cast<DynamicObject*>(pOther->GetOwner())->SetOpen(true);
+		static_cast<DynamicObject*>(pOther->GetOwner())->SetOpen(true);
 	else if (extents.y >= extents.x && extents.y >= extents.z)
-		dynamic_cast<DynamicObject*>(pOther->GetOwner())->SetOpen(true);
+		static_cast<DynamicObject*>(pOther->GetOwner())->SetOpen(true);
 	else
-		dynamic_cast<DynamicObject*>(pOther->GetOwner())->SetOpen(true);
+		static_cast<DynamicObject*>(pOther->GetOwner())->SetOpen(true);
 
 
 	RELEASE_INSTANCE(GameInstance);

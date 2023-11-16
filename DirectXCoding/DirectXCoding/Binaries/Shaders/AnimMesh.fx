@@ -57,8 +57,7 @@ PS_OUT PS_MAIN(VertexAnimMeshOut input)
         discard;
     
  
-    float fDissolveAlpha = saturate(-_time / dissolveDuration + vDissolve.r);
- 
+    float fDissolveAlpha = saturate(1.f - _time / dissolveDuration + vDissolve.r);
     if (fDissolveAlpha < 0.3f)
         discard;
     

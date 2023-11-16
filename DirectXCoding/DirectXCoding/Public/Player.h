@@ -75,6 +75,10 @@ private:
 	_bool _bScare = false;
 	uint32 _iPeriod = 0;
 	int32 _iPulseTick = 11;
+
+
+private:
+	_float _fChangeSoubd = 0.f;
 private:
 	HRESULT ReadyComponents();
 	HRESULT BindShaderResuorces();

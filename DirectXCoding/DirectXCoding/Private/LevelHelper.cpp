@@ -18,6 +18,8 @@
 #include "DoorCollision.h"
 #include "Monster.h"
 #include "TrigerBox.h"
+#include "MonsterBody.h"
+#include "MonsterLight.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -2131,6 +2133,20 @@ HRESULT LevelHelper::LoadingObject()
             return E_FAIL;
         }
 
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeDanceMonsterBody"),
+            MonsterBody::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeDanceMonsterLight"),
+            MonsterLight::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeTrigerBox"),
             TrigerBox::Create(_device, _deviceContext))))
         {
@@ -2309,6 +2325,20 @@ HRESULT LevelHelper::LoadingObject()
 
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeDanceMonster"),
             Monster::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeDanceMonsterBody"),
+            MonsterBody::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeDanceMonsterLight"),
+            MonsterLight::Create(_device, _deviceContext))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

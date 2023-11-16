@@ -40,7 +40,7 @@ void GridDoor::Tick(const _float& timeDelta)
 		return;
 
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
-	Player* pPlayer = dynamic_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
+	Player* pPlayer = static_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
 	_bool keyObtain = false;
 
 	if (nullptr != pPlayer)
@@ -101,7 +101,7 @@ HRESULT GridDoor::Render()
 
 
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
-	Player* pPlayer = dynamic_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
+	Player* pPlayer = static_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
 	_bool keyObtain = false;
 
 	if (nullptr != pPlayer)
@@ -153,7 +153,7 @@ void GridDoor::OnCollisionStay(Collider* pOther)
 	{
 		if (pGameInstance->keyDown(DIK_E))
 		{
-			Player* pPlayer = dynamic_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
+			Player* pPlayer = static_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
 			_bGridDoorKey = pPlayer->GetObtainKey();
 		}
 	}

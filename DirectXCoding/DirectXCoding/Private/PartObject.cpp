@@ -80,6 +80,7 @@ GameObject* PartObject::Clone(void* pArg)
 void PartObject::Free()
 {
     __super::Free();
-
+    
+    Safe_Release<Shader*>(_shader);
     Safe_Release<Transform*>(_pParentTransform);
 }

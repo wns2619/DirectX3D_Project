@@ -43,8 +43,8 @@ void Cage::Tick(const _float& timeDelta)
 
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
-	uint32 targetRotationCount = dynamic_cast<Valve*>(_pTargetObject)->GetRotationCount();
-	_bool targetRotation = dynamic_cast<Valve*>(_pTargetObject)->GetIsRotatate();
+	uint32 targetRotationCount = static_cast<Valve*>(_pTargetObject)->GetRotationCount();
+	_bool targetRotation = static_cast<Valve*>(_pTargetObject)->GetIsRotatate();
 
 	if (true == targetRotation && targetRotationCount + 1 <= 3)
 	{

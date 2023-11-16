@@ -2,6 +2,10 @@
 
 #include "DynamicObject.h"
 
+BEGIN(Engine)
+class GameInstance;
+END
+
 BEGIN(Client)
 
 class Valve final : public DynamicObject

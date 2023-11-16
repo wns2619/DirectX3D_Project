@@ -241,7 +241,7 @@ void TrigerBox::LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMaxD
 
 	uint32 iCurrentLevel = pGameInstance->GetCurrentLevelIndex();
 
-	Transform* pPlayerTransform = dynamic_cast<Transform*>(pGameInstance->GetComponent(iCurrentLevel, LAYER_TAG::LAYER_PLAYER, TEXT("ComponentTransform"), "Player"));
+	Transform* pPlayerTransform = static_cast<Transform*>(pGameInstance->GetComponent(iCurrentLevel, LAYER_TAG::LAYER_PLAYER, TEXT("ComponentTransform"), "Player"));
 
 	Vec4 vPlayerPos = pPlayerTransform->GetState(Transform::STATE::POSITION);
 
@@ -262,7 +262,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		if (_iTurnCount < 120)
 		{
 			++_iTurnCount;
-			dynamic_cast<EventMainDoor*>(_pTargetObject)->GetTransform()->Turn(Vec4(0.f, 1.f, 0.f, 1.f), timeDelta);
+			static_cast<EventMainDoor*>(_pTargetObject)->GetTransform()->Turn(Vec4(0.f, 1.f, 0.f, 1.f), timeDelta);
 		}
 	}
 
@@ -289,8 +289,8 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 				pGameInstance->PlaySound(TEXT("LampBreak.wav"), SOUND_SCARE3, 1.f);
 				_bEventState = true;
 
-				uint32 iTurnOffLight[7] = { 0, 1, 2, 3, 4, 5, 6 };
-				pGameInstance->SelectTurnOffLight(iTurnOffLight, 7);
+				uint32 iTurnOffLight[9] = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+				pGameInstance->SelectTurnOffLight(iTurnOffLight, 9);
 
 
 				RELEASE_INSTANCE(GameInstance);
@@ -312,7 +312,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		LandObjectDesc.pCells = &vecCells;
 		LandObjectDesc.pCellTransform = pTransform;
 
-		Monster* pGameObject = dynamic_cast<Monster*>(pGameInstance->CloneGameObject(TEXT("ProtoTypeDanceMonster"), &LandObjectDesc));
+		Monster* pGameObject = static_cast<Monster*>(pGameInstance->CloneGameObject(TEXT("ProtoTypeDanceMonster"), &LandObjectDesc));
 		pGameObject->GetTransform()->SetState(Transform::STATE::POSITION, Vec4(4.086, 0.f, -9.718, 1.f));
 		pGameObject->GetNavigation()->SetCurrentIndex(289);
 		pGameObject->GetStateMachine()->SetState(State::STATE::RUN);
@@ -336,7 +336,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		uint32 pLight[4] = { 7, 8, 9, 10 };
 		pGameInstance->SelectTurnOffLight(pLight, 4);
 
-		Player* pPlayer = dynamic_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
+		Player* pPlayer = static_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
 		pPlayer->SetScare(true);
 
 		_bEventState = true;
@@ -405,11 +405,11 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
 		uint32 iLevel = pGameInstance->GetCurrentLevelIndex();
-		Player* pPlayer = dynamic_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
+		Player* pPlayer = static_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
 		if (nullptr == pPlayer)
 			return;
 
-		_bool obtain = dynamic_cast<PlayerBody*>(pPlayer->GetPlyaerPart()[Player::PART::PART_BODY])->IsObtainingLight();
+		_bool obtain = static_cast<PlayerBody*>(pPlayer->GetPlyaerPart()[Player::PART::PART_BODY])->IsObtainingLight();
 
 		if (true == obtain)
 		{
@@ -426,11 +426,11 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
 		uint32 iLevel = pGameInstance->GetCurrentLevelIndex();
-		Player* pPlayer = dynamic_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
+		Player* pPlayer = static_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
 		if (nullptr == pPlayer)
 			return;
 
-		_bool obtain = dynamic_cast<PlayerBody*>(pPlayer->GetPlyaerPart()[Player::PART::PART_BODY])->IsObtainingLight();
+		_bool obtain = static_cast<PlayerBody*>(pPlayer->GetPlyaerPart()[Player::PART::PART_BODY])->IsObtainingLight();
 
 		if (true == obtain)
 		{
@@ -451,17 +451,17 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 
 		_float fVolume = 0.f;
 		_float fDistance = 0.f;
+		
+		LerpSoundPlayer(fVolume, fDistance, 6.f, pGameInstance);
 
-		LerpSoundPlayer(fVolume, fDistance, 4.5f, pGameInstance);
-
-		if (fDistance <= 4.5f)
+		if (fDistance <= 6.f)
 			pGameInstance->PlaySoundLoop(TEXT("dihanie.wav"), SOUND_ENVIRONMENT4, fVolume);
 
 		RELEASE_INSTANCE(GameInstance);
 	}
 
 
-	if ((_id == 235  || _id == 245) && false == _bEventState && true == _bTrigerOn)
+	if (_id == 245 && false == _bEventState && true == _bTrigerOn)
 	{
 		LandObject::LANDOBJET_DESC LandObjectDesc = {};
 
@@ -477,10 +477,11 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 
 		GameObject* pPlayer = pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player");
 
-		Monster* pGameObject = dynamic_cast<Monster*>(pGameInstance->CloneGameObject(TEXT("ProtoTypeDanceMonster"), &LandObjectDesc));
-		pGameObject->GetTransform()->SetState(Transform::STATE::POSITION, Vec4(24.399, -3.058f, 1.8258, 1.f));
-		pGameObject->GetNavigation()->SetCurrentIndex(679);
-		pGameObject->GetStateMachine()->SetState(State::STATE::IDLE);
+		Monster* pGameObject = static_cast<Monster*>(pGameInstance->CloneGameObject(TEXT("ProtoTypeDanceMonster"), &LandObjectDesc));
+		pGameObject->GetTransform()->SetState(Transform::STATE::POSITION, Vec4(20.7711, -3.058f, -1.9880, 1.f));
+		pGameObject->GetTransform()->FixRotation(Vec4(0.f, 1.f, 0.f, 0.f), ::XMConvertToRadians(90.f));
+		pGameObject->GetNavigation()->SetCurrentIndex(465);
+		pGameObject->GetStateMachine()->SetState(State::STATE::RUN);
 		pGameObject->SetTarget(pPlayer);
 		pGameObject->SetOnWater(true);
 		pGameObject->GetTransform()->SetSpeedPerSec(1.f);

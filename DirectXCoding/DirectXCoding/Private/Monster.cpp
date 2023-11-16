@@ -11,6 +11,8 @@
 #include "MonsterDance.h"
 #include "TrigerBox.h"
 #include "Cell.h"
+#include "MonsterBody.h"
+#include "MonsterLight.h"
 
 uint32 Monster::_iMonsterCount = 0;
 
@@ -35,10 +37,17 @@ HRESULT Monster::InitializePrototype()
 
 HRESULT Monster::Initialize(void* pArg)
 {
-	
+
+	++_iMonsterCount;
+	_iMonsterID = _iMonsterCount;
+
+
 	__super::Initialize(pArg);
 
 	if (FAILED(ReadyComponents()))
+		return E_FAIL;
+
+	if (FAILED(ReadyMonsterPart()))
 		return E_FAIL;
 
 	State* pState = MonsterWalk::Create(_device, _deviceContext, this);
@@ -48,8 +57,8 @@ HRESULT Monster::Initialize(void* pArg)
 	pState = MonsterDance::Create(_device, _deviceContext, this);
 	_pStateMachine->AddState(State::STATE::DANCE, pState);
 
-	vector<BinaryAnimation*>& vecAnim = _binaryModel->GetBinaryAnimation();
-	vector<BinaryBone*>& pVecBone = _binaryModel->GetBinaryBones();
+	vector<BinaryAnimation*>& vecAnim = static_cast<MonsterBody*>(_pMonsterPart[PART_BODY])->GetBinaryModelComponent()->GetBinaryAnimation();
+	vector<BinaryBone*>& pVecBone = static_cast<MonsterBody*>(_pMonsterPart[PART_BODY])->GetBinaryModelComponent()->GetBinaryBones();
 
 	_pAnimator->AddAnimation(State::STATE::IDLE, vecAnim[0], &pVecBone, true, 1.5f);
 	_pAnimator->AddAnimation(State::STATE::RUN, vecAnim[1], &pVecBone, true, 2.f);
@@ -61,8 +70,6 @@ HRESULT Monster::Initialize(void* pArg)
 	_transform->SetState(Transform::STATE::POSITION, ::XMVectorSet(11.f, 0.f, -42.5f, 1.f));
 
 
-	++_iMonsterCount;
-	_iMonsterID = _iMonsterCount;
 
 	return S_OK;
 }
@@ -72,42 +79,48 @@ void Monster::Tick(const _float& fTimeDelta)
 	if (_enabled)
 		return;
 
-	if (_iLife <= 0)
-		_bDeadDelay = true;
-
-	if (true == _bDeadDelay && _iMonsterCount != 1)
+	if (true == _bDeadDelay)
 	{
-		_fLifeTime += fTimeDelta;
-
-		if (_fLifeTime >= 1.f)
+		if (1 == _iMonsterID)
 		{
-			GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+			_fSurpriseTime += fTimeDelta;
 
-			pGameInstance->DeleteObject(this);
+			if (_fSurpriseTime >= 0.5f)
+			{
+				GameInstance* pGameInstancec = GET_INSTANCE(GameInstance);
 
-			RELEASE_INSTANCE(GameInstance);
+				pGameInstancec->DeleteObject(this);
+
+				RELEASE_INSTANCE(GameInstance);
+			}
 		}
 	}
-	else
-	{
-		_pStateMachine->UpdateStateMachine(fTimeDelta);
-
-		if (_iMonsterID == 1)
-			_transform->Forward(fTimeDelta, _pNavigation);
-
-		XMVECTOR vPosition = __super::SetUp_OnCell(_transform->GetState(Transform::STATE::POSITION), _pNavigation->GetCurrentIndex());
-		_transform->SetState(Transform::STATE::POSITION, vPosition);
 
 
-		_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
-		_pAssistCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
-	}
+	XMVECTOR vPosition = __super::SetUp_OnCell(_transform->GetState(Transform::STATE::POSITION), _pNavigation->GetCurrentIndex());
+	_transform->SetState(Transform::STATE::POSITION, vPosition);
+	_pStateMachine->UpdateStateMachine(fTimeDelta);
+	
+
+	if (1 == _iMonsterID)
+		_transform->Forward(fTimeDelta, _pNavigation);
+	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
+	_pAssistCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
+	
+	
+	for (auto& pPart : _pMonsterPart)
+		if (nullptr != pPart)
+			pPart->Tick(fTimeDelta);
 
 }
 
 void Monster::LateTick(const _float& fTimeDelta)
 {
 	_pStateMachine->UpdateLateStateMachine(fTimeDelta);
+
+	for (auto& pPart : _pMonsterPart)
+		if (nullptr != pPart)
+			pPart->LateTick(fTimeDelta);
 
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
@@ -121,41 +134,9 @@ void Monster::LateTick(const _float& fTimeDelta)
 
 HRESULT Monster::Render()
 {
-	if (_enabled)
-		return S_OK;
-
-	if (FAILED(BindShaderResuorces()))
-		return E_FAIL;
-
-
-	uint32 numMeshes = _binaryModel->GetNumMeshes();
-
-	for (size_t i = 0; i < numMeshes; i++)
-	{
-		if (FAILED(_binaryModel->BindBoneMatrices(_shader, i, "BoneMatrices")))
-			return E_FAIL;
-
-		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
-			return E_FAIL;
-
-		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "NormalMap", i, TextureType_NORMALS)))
-			return E_FAIL;
-
-		if (FAILED(_shader->Begin(0)))
-			return E_FAIL;
-
-		if (FAILED(_binaryModel->Render(i)))
-			return E_FAIL;
-	}
-
-	if (true == _bDeadDelay)
-	{
-		if (FAILED(_shader->BindRawValue("_time", &_fLifeTime, sizeof(_float))))
-			return E_FAIL;
-
-		if (FAILED(_pTexture->BindShaderResource(_shader, "NoiseMap", 0)))
-			return E_FAIL;
-	}
+	for (auto& pPart : _pMonsterPart)
+		if (nullptr != pPart)
+			pPart->Render();
 
 	return S_OK;
 }
@@ -179,8 +160,29 @@ void Monster::OnCollisionExit(Collider* pOther)
 
 void Monster::OnAssistCollisionEnter(Collider* pOther)
 {
-	if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER)
+	if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER && _iMonsterID == 2)
+	{
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+		
+		if (false == _bRunOnWater)
+		{
+			pGameInstance->StopSound(SOUND_MONSTER2);
+			pGameInstance->PlaySound(TEXT("Scream.wav"), SOUND_MONSTER2, 1.f);
+
+			LIGHT_DESC* pLightDesc = static_cast<MonsterLight*>(_pMonsterPart[PART_LIGHT])->GetOwnLight()->GetLightDesc();
+			pLightDesc->Diffuse = Color(1.f, 0.525f, 0.347f, 1.f);
+
+			_transform->SetSpeedPerSec(1.5f);
+
+			
+		}
+
 		_pTargetObject = pOther->GetOwner();
+		_bRunOnWater = true;
+		_bOnWater = false;
+
+		RELEASE_INSTANCE(GameInstance);
+	}
 }
 
 void Monster::OnAssistCollisionStay(Collider* pOther)
@@ -199,7 +201,7 @@ void Monster::TrigerBoxEvent(Collider* pOther)
 
 	if (id == 234)
 	{
-		dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+		static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
 		_bDeadDelay = true;
 	}
 
@@ -210,7 +212,6 @@ void Monster::MoveAstar(const _float& fTimeDelta)
 {
 	if (_bestList.size() > 1)
 	{
-		//_transform->TurnTo(_bestList.front()->GetPosition(), fTimeDelta);
 		TargetStare(_bestList.front()->GetPosition(), fTimeDelta);
 		if (_bestList.front()->IsIn(_transform->GetState(Transform::STATE::POSITION), _transform->GetWorldMatrixCaculator()))
 			_bestList.pop_front();
@@ -255,16 +256,6 @@ HRESULT Monster::ReadyComponents()
 	/* Renderer Component */
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentRenderer"),
 		TEXT("ComponentRenderer"), reinterpret_cast<Component**>(&_render))))
-		return E_FAIL;
-
-	if (FAILED(__super::AddComponent(level,
-		TEXT("ProtoTypeComponentAnimMesh"),
-		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
-		return E_FAIL;
-
-
-	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeDanceMonster"),
-		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
 
 	/* Transform Component */
@@ -312,17 +303,12 @@ HRESULT Monster::ReadyComponents()
 		frustumDesc.fTopSlope = 0.1f;
 		frustumDesc.fBottomSlope = -0.1f;
 		frustumDesc.fNear = 0.1f;
-		frustumDesc.fFar = 8.f;
+		frustumDesc.fFar = 5.f;
 	}
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAssistFrustumCollider"),
 		TEXT("ComponentFrustumCollider"), reinterpret_cast<Component**>(&_pAssistCollider), &frustumDesc)))
 		return E_FAIL;
-
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeNoiseTexture"),
-		TEXT("ComponenetTexture"), reinterpret_cast<Component**>(&_pTexture))))
-		return E_FAIL;
-
 
 	RELEASE_INSTANCE(GameInstance);
 
@@ -345,6 +331,43 @@ HRESULT Monster::BindShaderResuorces()
 		return E_FAIL;
 
 	Safe_Release<GameInstance*>(gameInstance);
+
+	return S_OK;
+}
+
+HRESULT Monster::ReadyMonsterPart()
+{
+	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
+
+	GameObject* pMonsterPart = nullptr;
+
+	// Monster Body
+	PartObject::PART_DESC PartDesc;
+	PartDesc.pParentTransform = _transform;
+
+	pMonsterPart = gameInstance->CloneGameObject(TEXT("ProtoTypeDanceMonsterBody"), &PartDesc);
+	if (nullptr == pMonsterPart)
+		return E_FAIL;
+	_pMonsterPart.push_back(pMonsterPart);
+
+
+	// TODO MonsterID가 2번째 인 친구한테만 달자.
+
+	if (_iMonsterID == 2)
+	{
+		MonsterLight::MONSTER_FLASH MonsterLightDesc;
+		MonsterLightDesc.pParentTransform = _transform;
+		MonsterLightDesc.pSocketMatrix = static_cast<MonsterBody*>(_pMonsterPart[PART_BODY])->GetSocketBoneMatrix("mixamorig5:Spine1");
+		MonsterLightDesc.mSocketPivot = static_cast<MonsterBody*>(_pMonsterPart[PART_BODY])->GetSocketPivotMatrix();
+
+		pMonsterPart = gameInstance->CloneGameObject(TEXT("ProtoTypeDanceMonsterLight"), &MonsterLightDesc);
+		if (nullptr == pMonsterPart)
+			return E_FAIL;
+		_pMonsterPart.push_back(pMonsterPart);
+	}
+
+
+	RELEASE_INSTANCE(GameInstance);
 
 	return S_OK;
 }
@@ -380,7 +403,11 @@ void Monster::Free()
 {
 	__super::Free();
 
-	Safe_Release<Texture*>(_pTexture);
+	for (auto& pPart : _pMonsterPart)
+		Safe_Release<GameObject*>(pPart);
+
+	_pMonsterPart.clear();
+
 	Safe_Release<Shader*>(_shader);
 	Safe_Release<Renderer*>(_render);
 	Safe_Release<StateMachine*>(_pStateMachine);

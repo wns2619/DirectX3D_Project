@@ -35,16 +35,16 @@ _bool Bounding_Sphere::IsCollision(Collider::COLLIDER_TYPE eType, Bounding* pBou
 	switch (eType)
 	{
 	case Engine::Collider::AABB:
-		bIntersects = _pSphere->Intersects(*dynamic_cast<BoundingAABB*>(pBounding)->GetBounding());
+		bIntersects = _pSphere->Intersects(*static_cast<BoundingAABB*>(pBounding)->GetBounding());
 		break;
 	case Engine::Collider::OBB:
-		bIntersects = _pSphere->Intersects(*dynamic_cast<BoundingOBB*>(pBounding)->GetBounding());
+		bIntersects = _pSphere->Intersects(*static_cast<BoundingOBB*>(pBounding)->GetBounding());
 		break;
 	case Engine::Collider::SPHERE:
-		bIntersects = _pSphere->Intersects(*dynamic_cast<Bounding_Sphere*>(pBounding)->GetBounding());
+		bIntersects = _pSphere->Intersects(*static_cast<Bounding_Sphere*>(pBounding)->GetBounding());
 		break;
 	case Engine::Collider::FRUSTUM:
-		bIntersects = _pSphere->Intersects(*dynamic_cast<Bounding_Frustum*>(pBounding)->GetBounding());
+		bIntersects = _pSphere->Intersects(*static_cast<Bounding_Frustum*>(pBounding)->GetBounding());
 		break;
 	default:
 		break;

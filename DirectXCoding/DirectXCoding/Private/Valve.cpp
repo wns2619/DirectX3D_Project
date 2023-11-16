@@ -195,7 +195,7 @@ void Valve::LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMaxDista
 
 	uint32 iCurrentLevel = pGameInstance->GetCurrentLevelIndex();
 
-	Transform* pPlayerTransform = dynamic_cast<Transform*>(pGameInstance->GetComponent(iCurrentLevel, LAYER_TAG::LAYER_PLAYER, TEXT("ComponentTransform"), "Player"));
+	Transform* pPlayerTransform = static_cast<Transform*>(pGameInstance->GetComponent(iCurrentLevel, LAYER_TAG::LAYER_PLAYER, TEXT("ComponentTransform"), "Player"));
 
 	Vec4 vPlayerPos = pPlayerTransform->GetState(Transform::STATE::POSITION);
 

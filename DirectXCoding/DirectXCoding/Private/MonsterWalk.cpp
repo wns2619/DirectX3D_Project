@@ -25,9 +25,9 @@ State::STATE MonsterWalk::UpdateState(const _float& timeDelta)
 
 	wstring soundfileName = L"";
 
-	Monster* pOwnerMonster = dynamic_cast<Monster*>(_pOwner);
+	Monster* pOwnerMonster = static_cast<Monster*>(_pOwner);
 
-	if (true == dynamic_cast<Monster*>(_pOwner)->GetOnWater() && false == dynamic_cast<Monster*>(_pOwner)->IsDead())
+	if (true == static_cast<Monster*>(_pOwner)->GetOnWater() && false == static_cast<Monster*>(_pOwner)->IsDead())
 		soundfileName = TEXT("walkWATER.wav");
 
 	if (nullptr != pOwnerMonster->GetTargetObject())
@@ -40,7 +40,7 @@ State::STATE MonsterWalk::UpdateState(const _float& timeDelta)
 		if (pOwnerMonster->GetTargetObject()->GetObjectType() == OBJECT_TYPE::DYNAMIC)
 			pOwnerMonster->GetNavigation()->StartAStar(679);
 		else
-			pOwnerMonster->GetNavigation()->StartAStar(dynamic_cast<Player*>(pOwnerMonster->GetTargetObject())->GetNavigation()->GetCurrentIndex());
+			pOwnerMonster->GetNavigation()->StartAStar(static_cast<Player*>(pOwnerMonster->GetTargetObject())->GetNavigation()->GetCurrentIndex());
 
 		list<Cell*>& bestCell = pOwnerMonster->GetBestList();
 		bestCell = pOwnerMonster->GetNavigation()->GetBestCell();
@@ -48,6 +48,8 @@ State::STATE MonsterWalk::UpdateState(const _float& timeDelta)
 		Vec4& vDestination = pOwnerMonster->GetDestination();
 		vDestination = pOwnerMonster->GetTargetObject()->GetTransform()->GetState(Transform::STATE::POSITION);
 		// µµÂø°Å¸®.
+
+
 	}
 
 	pGameInstance->PlaySound(soundfileName.c_str(), SOUND_MONSTER, 1.f);
@@ -84,7 +86,7 @@ void MonsterWalk::LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMa
 
 	uint32 iCurrentLevel = pGameInstance->GetCurrentLevelIndex();
 
-	Transform* pPlayerTransform = dynamic_cast<Transform*>(pGameInstance->GetComponent(iCurrentLevel, LAYER_TAG::LAYER_PLAYER, TEXT("ComponentTransform"), "Player"));
+	Transform* pPlayerTransform = static_cast<Transform*>(pGameInstance->GetComponent(iCurrentLevel, LAYER_TAG::LAYER_PLAYER, TEXT("ComponentTransform"), "Player"));
 
 	Vec4 vPlayerPos = pPlayerTransform->GetState(Transform::STATE::POSITION);
 

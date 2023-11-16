@@ -45,7 +45,7 @@ void BreakDoor::Tick(const _float& timeDelta)
 	{
 		if (false == _bIsOpen)
 		{
-			_vPrevPosition = dynamic_cast<Bounding_Sphere*>(_pAssistCollider->GetBounding())->GetBounding()->Center;
+			_vPrevPosition = static_cast<Bounding_Sphere*>(_pAssistCollider->GetBounding())->GetBounding()->Center;
 			_transform->Turn(Vec4(0.f, 1.f, 0.f, 1.f), timeDelta);
 		}
 	}

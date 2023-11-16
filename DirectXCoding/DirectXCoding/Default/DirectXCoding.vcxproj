@@ -208,7 +208,10 @@
     <ClInclude Include="..\Public\LevelLoading.h" />
     <ClInclude Include="..\Public\Logo.h" />
     <ClInclude Include="..\Public\Monster.h" />
+    <ClInclude Include="..\Public\MonsterBody.h" />
     <ClInclude Include="..\Public\MonsterDance.h" />
+    <ClInclude Include="..\Public\MonsterLight.h" />
+    <ClInclude Include="..\Public\MonsterPartObject.h" />
     <ClInclude Include="..\Public\MonsterRun.h" />
     <ClInclude Include="..\Public\MonsterWalk.h" />
     <ClInclude Include="..\Public\OldWoodDoor.h" />
@@ -294,7 +297,10 @@
     <ClCompile Include="..\Private\LevelLoading.cpp" />
     <ClCompile Include="..\Private\Logo.cpp" />
     <ClCompile Include="..\Private\Monster.cpp" />
+    <ClCompile Include="..\Private\MonsterBody.cpp" />
     <ClCompile Include="..\Private\MonsterDance.cpp" />
+    <ClCompile Include="..\Private\MonsterLight.cpp" />
+    <ClCompile Include="..\Private\MonsterPartObject.cpp" />
     <ClCompile Include="..\Private\MonsterRun.cpp" />
     <ClCompile Include="..\Private\MonsterWalk.cpp" />
     <ClCompile Include="..\Private\OldWoodDoor.cpp" />

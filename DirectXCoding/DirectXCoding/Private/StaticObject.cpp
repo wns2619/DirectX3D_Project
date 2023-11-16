@@ -86,7 +86,7 @@ void StaticObject::LateTick(const _float& timeDelta)
 	{
 
 		if (_id != 2 && _id != 3 && _id != 5 && _id != 85 && _id != 86 && _id != 150 && _id != 20 && _id != 35
-			&& _id != 54 && _id != 56 && _id != 57 && _id != 89 && _id != 108)
+			&& _id != 54 && _id != 56 && _id != 57 && _id != 89 && _id != 108 && _id != 11)
 		{
 			if (!_enabled)
 				_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
@@ -102,7 +102,7 @@ void StaticObject::LateTick(const _float& timeDelta)
 	}
 
 	if(_id == 2 || _id == 3 || _id == 5 || _id == 85 || _id == 86 || _id == 150 || _id == 20 || _id == 35 || _id == 54
-		|| _id == 56 || _id == 57 || _id == 89 || _id == 108)
+		|| _id == 56 || _id == 57 || _id == 89 || _id == 108 || _id == 11)
 	{
 		if (!_enabled)
 			_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
@@ -151,7 +151,7 @@ void StaticObject::LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fM
 
 	uint32 iCurrentLevel = pGameInstance->GetCurrentLevelIndex();
 
-	Transform* pPlayerTransform = dynamic_cast<Transform*>(pGameInstance->GetComponent(iCurrentLevel, LAYER_TAG::LAYER_PLAYER, TEXT("ComponentTransform"), "Player"));
+	Transform* pPlayerTransform = static_cast<Transform*>(pGameInstance->GetComponent(iCurrentLevel, LAYER_TAG::LAYER_PLAYER, TEXT("ComponentTransform"), "Player"));
 
 	Vec4 vPlayerPos = pPlayerTransform->GetState(Transform::STATE::POSITION);
 

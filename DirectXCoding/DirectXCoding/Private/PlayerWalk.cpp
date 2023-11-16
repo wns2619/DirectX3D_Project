@@ -57,7 +57,7 @@ State::STATE PlayerWalk::KeyInput(const _float& timeDelta)
 	// TODO
 	// 물이 아니라면.
 	wstring soundfileName = L"";
-	if (false == dynamic_cast<Player*>(_pOwner)->GetOnWater())
+	if (false == static_cast<Player*>(_pOwner)->GetOnWater())
 		soundfileName = TEXT("walkPlayer.wav");
 	else
 		soundfileName = TEXT("walkWATER.wav");
@@ -105,7 +105,7 @@ State::STATE PlayerWalk::KeyInput(const _float& timeDelta)
 	}
 
 
-	if(true == dynamic_cast<Player*>(_pOwner)->GetIsJoom())
+	if(true == static_cast<Player*>(_pOwner)->GetIsJoom())
 		if (pGameInstance->mouseDown(DIMK::DIMK_LBUTTON))
 			eState = STATE::SHOOT;
 	

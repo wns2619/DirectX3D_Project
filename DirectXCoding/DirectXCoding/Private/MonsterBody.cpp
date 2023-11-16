@@ -1,27 +1,24 @@
 #include "pch.h"
-#include "PlayerBody.h"
+#include "MonsterBody.h"
 #include "GameInstance.h"
 
-PlayerBody::PlayerBody(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: PartObject(pDevice, pContext)
+MonsterBody::MonsterBody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+	: MonsterPartObject(pDevice, pDeviceContext)
 {
-
 }
 
-PlayerBody::PlayerBody(const PlayerBody& rhs)
-	: PartObject(rhs)
+MonsterBody::MonsterBody(const MonsterBody& rhs)
+	: MonsterPartObject(rhs)
 {
-
 }
 
-HRESULT PlayerBody::InitializePrototype()
+HRESULT MonsterBody::InitializePrototype()
 {
 	return S_OK;
 }
 
-HRESULT PlayerBody::Initialize(void* pArg)
+HRESULT MonsterBody::Initialize(void* pArg)
 {
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -31,59 +28,47 @@ HRESULT PlayerBody::Initialize(void* pArg)
 	return S_OK;
 }
 
-void PlayerBody::Tick(const _float& fTimeDelta)
+void MonsterBody::Tick(const _float& fTimeDelta)
 {
-
 	Compute_RenderMatrix(_transform->GetWorldMatrix());
 }
 
-void PlayerBody::LateTick(const _float& fTimeDelta)
+void MonsterBody::LateTick(const _float& fTimeDelta)
 {
 }
 
-HRESULT PlayerBody::Render()
+HRESULT MonsterBody::Render()
 {
-	if (_enabled)
-		return S_OK;
-
 
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
-
 
 	uint32 numMeshes = _binaryModel->GetNumMeshes();
 
 	for (size_t i = 0; i < numMeshes; i++)
 	{
-		if (FAILED(_binaryModel->BindBoneMatrices(_shader, i, "BoneMatrices")))
+
+		if (FAILED(_binaryModel->BindBoneMatrices(_pShader, i, "BoneMatrices")))
 			return E_FAIL;
 
-		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
+		if (FAILED(_binaryModel->BindMaterialTexture(_pShader, "DiffuseMap", i, TextureType_DIFFUSE)))
 			return E_FAIL;
 
-		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "NormalMap", i, TextureType_NORMALS)))
+		if (FAILED(_binaryModel->BindMaterialTexture(_pShader, "NormalMap", i, TextureType_NORMALS)))
 			return E_FAIL;
 
-		if (FAILED(_shader->Begin(0)))
+		if (FAILED(_pShader->Begin(0)))
 			return E_FAIL;
-
-		if (false == _bObtainGun)
-			continue;
-
-		if (false == _bObtainLight && i == 3)
-			continue;	
 
 		if (FAILED(_binaryModel->Render(i)))
 			return E_FAIL;
 	}
 
-
 	return S_OK;
 }
 
-HRESULT PlayerBody::Ready_Components()
+HRESULT MonsterBody::Ready_Components()
 {
-
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 	uint32 level = static_cast<uint32>(LEVEL::GAME);
 
@@ -93,11 +78,11 @@ HRESULT PlayerBody::Ready_Components()
 	/* Shader Component */
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME),
 		TEXT("ProtoTypeComponentAnimMesh"),
-		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_shader))))
+		TEXT("Component_Shader"), reinterpret_cast<Component**>(&_pShader))))
 		return E_FAIL;
 
 	/* Transform Component */
-	
+
 	Transform::TRANSFORM_DESC transformDesc;
 	transformDesc.speedPerSec = 5.f;
 	transformDesc.rotationRadianPerSec = ::XMConvertToRadians(40.f);
@@ -107,7 +92,7 @@ HRESULT PlayerBody::Ready_Components()
 		return E_FAIL;
 
 	/* Model Component */
-	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeModelPlayer"),
+	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeDanceMonster"),
 		TEXT("ComponentModel"), reinterpret_cast<Component**>(&_binaryModel))))
 		return E_FAIL;
 
@@ -117,18 +102,18 @@ HRESULT PlayerBody::Ready_Components()
 	return S_OK;
 }
 
-HRESULT PlayerBody::Bind_ShaderResources()
+HRESULT MonsterBody::Bind_ShaderResources()
 {
 	GameInstance* gameInstance = GameInstance::GetInstance();
 	Safe_AddRef<GameInstance*>(gameInstance);
 
 
-	if (FAILED(_shader->BindMatrix("W", &_WorldMatrix)))
+	if (FAILED(_pShader->BindMatrix("W", &_mWorldMatrix)))
 		return E_FAIL;
 
-	if (FAILED(gameInstance->BindTransformToShader(_shader, "V", CameraHelper::TRANSFORMSTATE::D3DTS_VIEW)))
+	if (FAILED(gameInstance->BindTransformToShader(_pShader, "V", CameraHelper::TRANSFORMSTATE::D3DTS_VIEW)))
 		return E_FAIL;
-	if (FAILED(gameInstance->BindTransformToShader(_shader, "P", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
+	if (FAILED(gameInstance->BindTransformToShader(_pShader, "P", CameraHelper::TRANSFORMSTATE::D3DTS_PROJ)))
 		return E_FAIL;
 
 	Safe_Release<GameInstance*>(gameInstance);
@@ -136,33 +121,34 @@ HRESULT PlayerBody::Bind_ShaderResources()
 	return S_OK;
 }
 
-PlayerBody* PlayerBody::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+MonsterBody* MonsterBody::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	PlayerBody* pInstance = new PlayerBody(pDevice, pContext);
+	MonsterBody* pInstance = new MonsterBody(pDevice, pContext);
 
 	if (FAILED(pInstance->InitializePrototype()))
 	{
-		MSG_BOX("Failed to Created : Player Body");
-		Safe_Release<PlayerBody*>(pInstance);
+		MSG_BOX("Failed to Created : MonsterBody");
+		Safe_Release<MonsterBody*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-GameObject* PlayerBody::Clone(void* pArg)
+GameObject* MonsterBody::Clone(void* pArg)
 {
-	PlayerBody* pInstance = new PlayerBody(*this);
+	MonsterBody* pInstance = new MonsterBody(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Created : Player Body");
-		Safe_Release<PlayerBody*>(pInstance);
+		MSG_BOX("Failed to Cloned : MonsterBody");
+		Safe_Release<MonsterBody*>(pInstance);
 	}
 
 	return pInstance;
 }
 
-void PlayerBody::Free()
+void MonsterBody::Free()
 {
 	__super::Free();
+
 }

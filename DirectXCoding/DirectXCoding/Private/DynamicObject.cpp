@@ -91,14 +91,14 @@ HRESULT DynamicObject::Render()
 
 _bool DynamicObject::CheckOBBOverlap(class Collider* pOther)
 {
-	ContainmentType containment = dynamic_cast<BoundingOBB*>(_pCollider->GetBounding())->
-		GetBounding()->Contains(*dynamic_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding());
+	ContainmentType containment = static_cast<BoundingOBB*>(_pCollider->GetBounding())->
+		GetBounding()->Contains(*static_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding());
 
 
 	if (containment == INTERSECTS)
 	{
-		XMVECTOR collisionDepth = ::XMVectorSubtract(::XMLoadFloat3(&dynamic_cast<BoundingOBB*>(_pCollider->GetBounding())->
-			GetBounding()->Center), ::XMLoadFloat3(&dynamic_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding()->Center));
+		XMVECTOR collisionDepth = ::XMVectorSubtract(::XMLoadFloat3(&static_cast<BoundingOBB*>(_pCollider->GetBounding())->
+			GetBounding()->Center), ::XMLoadFloat3(&static_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding()->Center));
 
 		Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
 		vPos.z -= collisionDepth.m128_f32[2];

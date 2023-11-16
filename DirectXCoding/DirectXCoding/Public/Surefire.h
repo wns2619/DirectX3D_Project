@@ -2,6 +2,10 @@
 
 #include "PartObject.h"
 
+BEGIN(Engine)
+class OtherLight;
+END
+
 BEGIN(Client)
 
 class Surefire final : public PartObject
@@ -37,7 +41,7 @@ private:
 	HRESULT Ready_Components();
 
 private:
-	class OtherLight* _pLight = nullptr;
+	OtherLight* _pLight = nullptr;
 
 public:
 	static Surefire* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

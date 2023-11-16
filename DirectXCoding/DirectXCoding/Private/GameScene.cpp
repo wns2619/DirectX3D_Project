@@ -437,19 +437,72 @@ HRESULT GameScene::ReadyLight()
 
 	file->Open(finalPath, FileMode::Read);
 
+
 	uint32 iLightSize;
 	file->Read<uint32>(iLightSize);
 
-	LIGHT_DESC* pLightArray = new LIGHT_DESC[iLightSize];
-
-
 	for (uint32 i = 0; i < iLightSize; ++i)
-		file->Read<LIGHT_DESC>(pLightArray[i]);
+	{
+		LIGHT_DESC lightDesc;
 
-	for (uint32 i = 0; i < iLightSize; ++i)
-		gameInstance->AddLight(pLightArray[i]);
+		uint32 iLightType;
+		file->Read<uint32>(iLightType);
 
-	Safe_Delete_Array<LIGHT_DESC*>(pLightArray);
+		lightDesc.type = iLightType;
+
+		switch (lightDesc.type)
+		{
+		case LIGHT_DESC::TYPE::DIRECTION:
+			file->Read<Vec4>(lightDesc.Position);
+			file->Read<Vec4>(lightDesc.Diffuse);
+			file->Read<Vec4>(lightDesc.vAmbientLowerColor);
+			file->Read<Vec4>(lightDesc.vAmbientUpperColor);
+			file->Read<Vec4>(lightDesc.Specular);
+			file->Read<Vec3>(lightDesc.Direction);
+			file->Read<_float>(lightDesc.fSpecIntensity);
+			file->Read<_float>(lightDesc.fSpecExp);
+			file->Read<_bool>(lightDesc.PlayerLight);
+			file->Read<_bool>(lightDesc.bEnable);
+			file->Read<_bool>(lightDesc.bSelect);
+			file->Read<_bool>(lightDesc.MonsterLight);
+			break;
+		case LIGHT_DESC::TYPE::POINT:
+			file->Read<Vec4>(lightDesc.Position);
+			file->Read<Vec4>(lightDesc.Diffuse);
+			file->Read<Vec4>(lightDesc.vAmbientLowerColor);
+			file->Read<Vec4>(lightDesc.vAmbientUpperColor);
+			file->Read<Vec4>(lightDesc.Specular);
+			file->Read<Vec3>(lightDesc.Direction);
+			file->Read<_float>(lightDesc.fSpecIntensity);
+			file->Read<_float>(lightDesc.fSpecExp);
+			file->Read<_float>(lightDesc.pointLightRangeRcp);
+			file->Read<_bool>(lightDesc.PlayerLight);
+			file->Read<_bool>(lightDesc.bEnable);
+			file->Read<_bool>(lightDesc.bSelect);
+			file->Read<_bool>(lightDesc.MonsterLight);
+			break;
+		case LIGHT_DESC::TYPE::SPOT:
+			file->Read<Vec4>(lightDesc.Position);
+			file->Read<Vec4>(lightDesc.Diffuse);
+			file->Read<Vec4>(lightDesc.vAmbientLowerColor);
+			file->Read<Vec4>(lightDesc.vAmbientUpperColor);
+			file->Read<Vec4>(lightDesc.Specular);
+			file->Read<Vec3>(lightDesc.Direction);
+			file->Read<_float>(lightDesc.fSpecIntensity);
+			file->Read<_float>(lightDesc.fSpecExp);
+			file->Read<_float>(lightDesc.fSpotLightRangeRcp);
+			file->Read<_float>(lightDesc.fSpotCosOuterCone);
+			file->Read<_float>(lightDesc.fSpotInnerConeRcp);
+			file->Read<_bool>(lightDesc.PlayerLight);
+			file->Read<_bool>(lightDesc.bEnable);
+			file->Read<_bool>(lightDesc.bSelect);
+			file->Read<_bool>(lightDesc.MonsterLight);
+			break;
+		}
+
+		gameInstance->AddLight(lightDesc);
+	}
+
 
 	RELEASE_INSTANCE(GameInstance);
 

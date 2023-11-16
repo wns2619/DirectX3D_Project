@@ -143,24 +143,24 @@ void Player::OnCollisionStay(Collider* pOther)
 			if (pGameInstance->keyDown(DIK_E))
 			{
 				if(pOther->GetOwner()->GetIdNumber() != 188 && pOther->GetOwner()->GetIdNumber() != 195)
-					dynamic_cast<DynamicObject*>(pOther->GetOwner())->SetRotate(true);
+					static_cast<DynamicObject*>(pOther->GetOwner())->SetRotate(true);
 				else
 				{
 					if(true == _bObtatinKey)
-						dynamic_cast<DynamicObject*>(pOther->GetOwner())->SetRotate(true);
+						static_cast<DynamicObject*>(pOther->GetOwner())->SetRotate(true);
 				}
 			}
 		}
 		else if (pOther->GetOwner()->GetModelName() == "BasementWoodDoorMain")
 		{
 			if (pGameInstance->keyDown(DIK_E))
-				dynamic_cast<DynamicObject*>(pOther->GetOwner())->SetRotate(true);
+				static_cast<DynamicObject*>(pOther->GetOwner())->SetRotate(true);
 		}
 		else if (pOther->GetOwner()->GetModelName() == "Gun")
 		{
 			if (pGameInstance->keyDown(DIK_E))
 			{
-				dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->SetObtainGun(true);
+				static_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->SetObtainGun(true);
 
 				pGameInstance->StopSound(SOUND_PICKUP);
 				pGameInstance->PlaySound(TEXT("PickUp.wav"), SOUND_PICKUP, 1.f);
@@ -172,11 +172,11 @@ void Player::OnCollisionStay(Collider* pOther)
 		{
 			if (pGameInstance->keyDown(DIK_E))
 			{
-				dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->SetObtainLight(true);
+				static_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->SetObtainLight(true);
 
-				uint32 pLightNum[2] = { 14, 15 };
-				pGameInstance->SelectTurnOffLight(pLightNum, 2);
-				OtherLight* pLight = pGameInstance->FindLightFromID(16);
+				uint32 pLightNum[1] = { 15 };
+				pGameInstance->SelectTurnOffLight(pLightNum, 1);
+				OtherLight* pLight = pGameInstance->FindLightFromID(24);
 				pLight->GetLightDesc()->bEnable = false;
 
 				pGameInstance->StopAll();
@@ -190,6 +190,10 @@ void Player::OnCollisionStay(Collider* pOther)
 			if (pGameInstance->keyDown(DIK_E))
 			{
 				SetObtainKey(true);
+
+				pGameInstance->StopAll();
+				pGameInstance->PlaySound(TEXT("PickUp2.wav"), SOUND_PICKUP, 1.f);
+
 				pGameInstance->DeleteObject(pOther->GetOwner());
 			}
 		}
@@ -197,11 +201,11 @@ void Player::OnCollisionStay(Collider* pOther)
 		{
 			if (pGameInstance->keyDown(DIK_E))
 			{
-				if (false == dynamic_cast<Valve*>(pOther->GetOwner())->GetIsOpen() &&
-					false == dynamic_cast<Valve*>(pOther->GetOwner())->GetIsRotatate())
+				if (false == static_cast<Valve*>(pOther->GetOwner())->GetIsOpen() &&
+					false == static_cast<Valve*>(pOther->GetOwner())->GetIsRotatate())
 				{
-					dynamic_cast<Valve*>(pOther->GetOwner())->SetRotate(true);
-					pGameInstance->StopSound(SOUND_SCARE1);
+					static_cast<Valve*>(pOther->GetOwner())->SetRotate(true);
+					pGameInstance->StopSound(SOUND_ENVIRONMENT5);
 					pGameInstance->PlaySound(TEXT("valve (mp3cut.net).wav"), SOUND_SCARE1, 0.2f);
 				}
 			}
@@ -241,24 +245,24 @@ void Player::KeyInput(const _float& timeDelta)
 
 	if (gameInstance->Get_DIMouseState(DIMK_RBUTTON))
 	{
-		_float fFov = dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->PlayerCameraFov();
+		_float fFov = static_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->PlayerCameraFov();
 		
 		if (::XMConvertToRadians(42.5f) <= fFov)
 		{
-			dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->AddPlayerCameraFov(::XMConvertToRadians(-1.f));
+			static_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->AddPlayerCameraFov(::XMConvertToRadians(-1.f));
 
-			Vec4 vPos = dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->GetState(Transform::STATE::POSITION);
+			Vec4 vPos = static_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->GetState(Transform::STATE::POSITION);
 			vPos.x += -0.006f;
 			vPos.y += 0.002f;
 
-			dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
-			dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->Turn(Vec4(0.f, 1.f, 0.f, 1.f), timeDelta);
+			static_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+			static_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->Turn(Vec4(0.f, 1.f, 0.f, 1.f), timeDelta);
 
 
-			Vec4 vCameraPos = dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->GetTransform()->GetState(Transform::STATE::POSITION);
+			Vec4 vCameraPos = static_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->GetTransform()->GetState(Transform::STATE::POSITION);
 			vCameraPos.x -= 0.0005f;
 
-			dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->GetTransform()->SetState(Transform::STATE::POSITION, vCameraPos);
+			static_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->GetTransform()->SetState(Transform::STATE::POSITION, vCameraPos);
 			
 		}
 		else
@@ -267,25 +271,25 @@ void Player::KeyInput(const _float& timeDelta)
 	}
 	else
 	{
-		_float fFov = dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->PlayerCameraFov();
+		_float fFov = static_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->PlayerCameraFov();
 
 		if (::XMConvertToRadians(70.f) > fFov)
 		{
-			dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->AddPlayerCameraFov(::XMConvertToRadians(1.f));
+			static_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->AddPlayerCameraFov(::XMConvertToRadians(1.f));
 
-			Vec4 vPos = dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->GetState(Transform::STATE::POSITION);
+			Vec4 vPos = static_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->GetState(Transform::STATE::POSITION);
 
 			vPos.x -= -0.006f;
 			vPos.y -= 0.002f;
 
-			dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
-			dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->Turn(Vec4(0.f, -1.f, 0.f, 1.f), timeDelta);
+			static_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+			static_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->GetTransform()->Turn(Vec4(0.f, -1.f, 0.f, 1.f), timeDelta);
 
 
-			Vec4 vCameraPos = dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->GetTransform()->GetState(Transform::STATE::POSITION);
+			Vec4 vCameraPos = static_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->GetTransform()->GetState(Transform::STATE::POSITION);
 			vCameraPos.x += 0.0005f;
 
-			dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->GetTransform()->SetState(Transform::STATE::POSITION, vCameraPos);
+			static_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->GetTransform()->SetState(Transform::STATE::POSITION, vCameraPos);
 
 		}
 		else
@@ -296,13 +300,13 @@ void Player::KeyInput(const _float& timeDelta)
 	if (true == _bScare)
 	{
 		// TODO : Ä«¸Þ¶ó ÁÜÀÎ ÁÜ ¾Æ¿ô. ¸î ÃÊ°£ ½ÃÅ°°í ´Ù½Ã ¿ø»ó º¹±Í. 
-		_float fFov = dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->PlayerCameraFov();
+		_float fFov = static_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->PlayerCameraFov();
 
 		if (_iPeriod == 2)
 		{
 			if (::XMConvertToRadians(70.f) > fFov)
 			{
-				dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->AddPlayerCameraFov(::XMConvertToRadians(2.f));
+				static_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->AddPlayerCameraFov(::XMConvertToRadians(2.f));
 				_bScare = false;
 			}
 		}
@@ -311,9 +315,9 @@ void Player::KeyInput(const _float& timeDelta)
 		if (_iPeriod < 2)
 		{
 			if (0 < _iPulseTick)
-				dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->AddPlayerCameraFov(::XMConvertToRadians(-2.f));
+				static_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->AddPlayerCameraFov(::XMConvertToRadians(-2.f));
 			else
-				dynamic_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->AddPlayerCameraFov(::XMConvertToRadians(2.f));
+				static_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->AddPlayerCameraFov(::XMConvertToRadians(2.f));
 		}
 		--_iPulseTick;
 
@@ -339,26 +343,26 @@ void Player::TrigerBoxEvent(Collider* pOther)
 	uint32 id = pOther->GetOwner()->GetIdNumber();
 
 	if (id == 230)
-		dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+		static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
 	else if (id == 231)
-		dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+		static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
 	else if (id == 232)
 	{
 		// TODO : Monster appeared
-		const _bool& Isobtain = dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->IsObtainingLight();
+		const _bool& Isobtain = static_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->IsObtainingLight();
 
 		if (true == Isobtain)
-			dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+			static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
 
 	}
 	else if (id == 236)
 	{
 		if (pGameInstance->keyDown(DIK_E))
 		{
-			dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+			static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
 			{
 				pGameInstance->PlaySound(TEXT("sveton.wav"), SOUND_SCARE1, 1.f);
-				OtherLight* pLight = pGameInstance->FindLightFromID(10);
+				OtherLight* pLight = pGameInstance->FindLightFromID(4);
 
 				pLight->GetLightDesc()->Diffuse = Color(1.f, 0.f, 0.f, 1.f);
 				pGameInstance->AllTurnOnLight();
@@ -370,27 +374,36 @@ void Player::TrigerBoxEvent(Collider* pOther)
 		// 
 	}
 	else if (id == 240)
-		dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+		static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
 	else if (id == 241)
 	{
-		const _bool& Isobtain = dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->IsObtainingLight();
+		const _bool& Isobtain = static_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->IsObtainingLight();
 
 		if (true == Isobtain)
-			dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+			static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
 	}
 	else if (id == 242)
 	{
-		const _bool& Isobtain = dynamic_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->IsObtainingLight();
+		const _bool& Isobtain = static_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->IsObtainingLight();
 
 		if(true == Isobtain)
-			dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+			static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
 	}
 
 	if (id == 244)
+	{
+		if (false == _OnWater)
+		{
+			pGameInstance->StopAll();
+			pGameInstance->PlayBGM(TEXT("gool.wav"), 0.1f);
+		}
+		
+
 		_OnWater = true;
+	}
 
 	if (id == 235 || id == 245)
-		dynamic_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+		static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
 
 	RELEASE_INSTANCE(GameInstance);
 }

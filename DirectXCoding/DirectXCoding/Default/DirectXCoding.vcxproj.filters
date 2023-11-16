@@ -155,6 +155,18 @@
     <Filter Include="소스 파일\02.GameObjects\08. Water">
       <UniqueIdentifier>{79221f50-601c-4f73-b597-2dcf7d4fba7b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\07. Monster\MonsterPart">
+      <UniqueIdentifier>{d633a439-1075-438b-b413-a1167d9732f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\07. Monster\MonsterPart\BodyLight">
+      <UniqueIdentifier>{f509e661-4a53-4f7a-a524-6d1889500e09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\07. Monster\MonsterPart\Weapon">
+      <UniqueIdentifier>{53b54abd-762c-43b7-8e88-3e348821ee6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\07. Monster\MonsterPart\Body">
+      <UniqueIdentifier>{fa3dfa71-076c-45d6-856c-c83e1cd79dbc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -346,6 +358,15 @@
     <ClInclude Include="..\Public\Water.h">
       <Filter>소스 파일\02.GameObjects\08. Water</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MonsterPartObject.h">
+      <Filter>소스 파일\02.GameObjects\07. Monster\MonsterPart</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterBody.h">
+      <Filter>소스 파일\02.GameObjects\07. Monster\MonsterPart\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterLight.h">
+      <Filter>소스 파일\02.GameObjects\07. Monster\MonsterPart\BodyLight</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -489,9 +510,6 @@
     <ClCompile Include="..\Private\Bullet.cpp">
       <Filter>소스 파일\02.GameObjects\03.Player\Bullet</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Monster.cpp">
-      <Filter>소스 파일\02.GameObjects\07. Monster</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\MonsterWalk.cpp">
       <Filter>소스 파일\02.GameObjects\07. Monster\State</Filter>
     </ClCompile>
@@ -512,6 +530,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>소스 파일\02.GameObjects\03.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterPartObject.cpp">
+      <Filter>소스 파일\02.GameObjects\07. Monster\MonsterPart</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterBody.cpp">
+      <Filter>소스 파일\02.GameObjects\07. Monster\MonsterPart\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster.cpp">
+      <Filter>소스 파일\02.GameObjects\07. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterLight.cpp">
+      <Filter>소스 파일\02.GameObjects\07. Monster\MonsterPart\BodyLight</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

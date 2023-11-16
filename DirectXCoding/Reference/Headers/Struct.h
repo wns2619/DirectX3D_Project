@@ -120,15 +120,26 @@ namespace Engine
 
 	struct LIGHT_DESC
 	{
+		// State
+		_bool PlayerLight = false;
+		_bool MonsterLight = false;
+		_bool bEnable = false;
+		_bool bSelect = false;
+
 		enum TYPE { DIRECTION, POINT, SPOT, LIGHT_END };
 		int32 type = LIGHT_END;
 
-		// Public
-		Vec4 Position;
-		Vec4 Emissive;
-		Vec4 Diffuse; // Color
-		Vec4 Ambient;
-		Vec4 Specular;
+		// Specular 
+		_float fSpecExp = 0.f;
+		_float fSpecIntensity = 0.f;
+
+		// Point
+		_float pointLightRangeRcp = 0.f;
+
+		// Spot
+		_float fSpotLightRangeRcp = 0.f;
+		_float fSpotCosOuterCone = 0.f;
+		_float fSpotInnerConeRcp = 0.f;
 
 		Vec3 Direction;
 
@@ -136,23 +147,12 @@ namespace Engine
 		Vec4 vAmbientLowerColor;
 		Vec4 vAmbientUpperColor;
 
-		// Specular 
-		_float fSpecExp				= 0.f;
-		_float fSpecIntensity		= 0.f;
-
-		// Point
-		_float pointLightRangeRcp	= 0.f;
-
-		// Spot
-		_float fSpotLightRangeRcp	= 0.f;
-		_float fSpotCosOuterCone	= 0.f;
-		_float fSpotInnerConeRcp	= 0.f;
-
-
-		// State
-		_bool PlayerLight = false;
-		_bool bEnable = false;
-		_bool bSelect = false;
+		// Public
+		Vec4 Position;
+		Vec4 Emissive;
+		Vec4 Diffuse; // Color
+		Vec4 Ambient;
+		Vec4 Specular;
 	};
 
 	struct MESH_MATERIAL

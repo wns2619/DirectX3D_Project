@@ -370,7 +370,7 @@ void ImGuiManager::MouseMove()
 
 					if (pObj->GetObjectType() == OBJECT_TYPE::PLAYER)
 					{
-						vector<GameObject*>& playerPart = dynamic_cast<Player*>(pObj)->GetPlyaerPart();
+						vector<GameObject*>& playerPart = static_cast<Player*>(pObj)->GetPlyaerPart();
 						ObjectMesh = playerPart[Player::PART::PART_BODY]->GetBinaryModelComponent();
 					}
 					else
@@ -590,7 +590,7 @@ void ImGuiManager::MainSection()
 			wstring lightPath = L"..\\Binaries\\Data\\";
 			LightLoad(lightPath);
 
-			_pNaviGation = dynamic_cast<BinaryNavi*>(gameInstance->GetComponent(static_cast<uint32>(LEVEL::EDIT), LAYER_TAG::LAYER_STATIC,
+			_pNaviGation = static_cast<BinaryNavi*>(gameInstance->GetComponent(static_cast<uint32>(LEVEL::EDIT), LAYER_TAG::LAYER_STATIC,
 				TEXT("ComponentNavigation"), "2stBottom", 0));
 		}
 
@@ -1406,10 +1406,12 @@ HRESULT ImGuiManager::MainLightSection()
 					_bool* enable = &lightDesc->bEnable;
 					_bool* select = &lightDesc->bSelect;
 					_bool* PlayerLight = &lightDesc->PlayerLight;
+					_bool* MonsterLight = &lightDesc->MonsterLight;
 
 					string enabledLabel = "Enabled##" + to_string(iLightID);
 					string selectLabel = "Select##" + to_string(iLightID);
 					string playerLightLabel = "PlayerLight##" + to_string(iLightID);
+					string MonsterLightLabel = "MonsterLight##" + to_string(iLightID);
 
 					if (ImGui::Checkbox(playerLightLabel.c_str(), PlayerLight))
 					{
@@ -1439,9 +1441,14 @@ HRESULT ImGuiManager::MainLightSection()
 							iter->second.second = nullptr;
 							_SelectLight.erase(iter);
 						}
-
 					}
 
+					ImGui::Spacing();
+
+					if (ImGui::Checkbox(MonsterLightLabel.c_str(), MonsterLight))
+					{
+
+					}
 
 					if (ImGui::CollapsingHeader("LightInfo"))
 					{
@@ -1553,10 +1560,13 @@ HRESULT ImGuiManager::MainLightSection()
 							ImGui::Text("Spot Angles");
 							ImGui::NextColumn();
 							ImGui::PushItemWidth(0.f);
-							if (ImGui::DragFloat3(string("##Spot Angles" + to_string(i)).c_str(), &_mLights[i].second.spotAngles.x, 1.f, 1.f, 90.f))
+							if (ImGui::DragFloat3(string("##Spot Angles" + to_string(i)).c_str(), &_mLights[i].second.spotAngles.x, 0.1f, 0.1f, 90.f))
 							{
 								if (_mLights[i].second.spotAngles.x > _mLights[i].second.spotAngles.y)
 									_mLights[i].second.spotAngles.x = _mLights[i].second.spotAngles.y;
+
+	/*							if (_mLights[i].second.spotAngles.y < _mLights[i].second.spotAngles.x)
+									_mLights[i].second.spotAngles.y = _mLights[i].second.spotAngles.x;*/
 
 								_mLights[i].first.fSpotCosOuterCone = cosf(_mLights[i].second.spotAngles.y);
 								_mLights[i].first.fSpotInnerConeRcp = 1.0f / (::cosf(_mLights[i].second.spotAngles.x) - cosf(_mLights[i].second.spotAngles.y));
@@ -2192,11 +2202,64 @@ HRESULT ImGuiManager::LightSave(wstring& filePath)
 	uint32 iLightSize = pLightvector.size();
 	file->Write<uint32>(iLightSize);
 
-
-	for (auto& pLight : pLightvector)
+	for (uint32 i = 0; i < iLightSize; ++i)
 	{
-		LIGHT_DESC LightDesc = *pLight->GetLightDesc();
-		file->Write<LIGHT_DESC>(LightDesc);
+		LIGHT_DESC lightDesc = *pLightvector[i]->GetLightDesc();
+
+		uint32 iLightType = pLightvector[i]->GetLightDesc()->type;
+		file->Write<uint32>(iLightType);
+
+		
+		switch (iLightType)
+		{
+		case LIGHT_DESC::TYPE::DIRECTION:
+			file->Write<Vec4>(lightDesc.Position);
+			file->Write<Vec4>(lightDesc.Diffuse);
+			file->Write<Vec4>(lightDesc.vAmbientLowerColor);
+			file->Write<Vec4>(lightDesc.vAmbientUpperColor);
+			file->Write<Vec4>(lightDesc.Specular);
+			file->Write<Vec3>(lightDesc.Direction);
+			file->Write<_float>(lightDesc.fSpecIntensity);
+			file->Write<_float>(lightDesc.fSpecExp);
+			file->Write<_bool>(lightDesc.PlayerLight);
+			file->Write<_bool>(lightDesc.bEnable);
+			file->Write<_bool>(lightDesc.bSelect);
+			file->Write<_bool>(lightDesc.MonsterLight);
+			break;
+		case LIGHT_DESC::TYPE::POINT:
+			file->Write<Vec4>(lightDesc.Position);
+			file->Write<Vec4>(lightDesc.Diffuse);
+			file->Write<Vec4>(lightDesc.vAmbientLowerColor);
+			file->Write<Vec4>(lightDesc.vAmbientUpperColor);
+			file->Write<Vec4>(lightDesc.Specular);
+			file->Write<Vec3>(lightDesc.Direction);
+			file->Write<_float>(lightDesc.fSpecIntensity);
+			file->Write<_float>(lightDesc.fSpecExp);
+			file->Write<_float>(lightDesc.pointLightRangeRcp);
+			file->Write<_bool>(lightDesc.PlayerLight);
+			file->Write<_bool>(lightDesc.bEnable);
+			file->Write<_bool>(lightDesc.bSelect);
+			file->Write<_bool>(lightDesc.MonsterLight);
+			break;
+		case LIGHT_DESC::TYPE::SPOT:
+			file->Write<Vec4>(lightDesc.Position);
+			file->Write<Vec4>(lightDesc.Diffuse);
+			file->Write<Vec4>(lightDesc.vAmbientLowerColor);
+			file->Write<Vec4>(lightDesc.vAmbientUpperColor);
+			file->Write<Vec4>(lightDesc.Specular);
+			file->Write<Vec3>(lightDesc.Direction);
+			file->Write<_float>(lightDesc.fSpecIntensity);
+			file->Write<_float>(lightDesc.fSpecExp);
+			file->Write<_float>(lightDesc.fSpotLightRangeRcp);
+			file->Write<_float>(lightDesc.fSpotCosOuterCone);
+			file->Write<_float>(lightDesc.fSpotInnerConeRcp);
+			file->Write<_bool>(lightDesc.PlayerLight);
+			file->Write<_bool>(lightDesc.bEnable);
+			file->Write<_bool>(lightDesc.bSelect);
+			file->Write<_bool>(lightDesc.MonsterLight);
+			break;
+		}
+
 	}
 
 	for (auto& Pair : _mLights)
@@ -2232,7 +2295,66 @@ HRESULT ImGuiManager::LightLoad(wstring& filePath)
 
 
 	for (uint32 i = 0; i < iLightSize; ++i)
-		file->Read<LIGHT_DESC>(pLightArray[i]);
+	{
+		LIGHT_DESC lightDesc;
+
+		uint32 iLightType;
+		file->Read<uint32>(iLightType);
+
+		lightDesc.type = iLightType;
+		
+		switch (lightDesc.type)
+		{
+		case LIGHT_DESC::TYPE::DIRECTION:
+			file->Read<Vec4>(lightDesc.Position);
+			file->Read<Vec4>(lightDesc.Diffuse);
+			file->Read<Vec4>(lightDesc.vAmbientLowerColor);
+			file->Read<Vec4>(lightDesc.vAmbientUpperColor);
+			file->Read<Vec4>(lightDesc.Specular);
+			file->Read<Vec3>(lightDesc.Direction);
+			file->Read<_float>(lightDesc.fSpecIntensity);
+			file->Read<_float>(lightDesc.fSpecExp);
+			file->Read<_bool>(lightDesc.PlayerLight);
+			file->Read<_bool>(lightDesc.bEnable);
+			file->Read<_bool>(lightDesc.bSelect);
+			file->Read<_bool>(lightDesc.MonsterLight);
+			break;
+		case LIGHT_DESC::TYPE::POINT:
+			file->Read<Vec4>(lightDesc.Position);
+			file->Read<Vec4>(lightDesc.Diffuse);
+			file->Read<Vec4>(lightDesc.vAmbientLowerColor);
+			file->Read<Vec4>(lightDesc.vAmbientUpperColor);
+			file->Read<Vec4>(lightDesc.Specular);
+			file->Read<Vec3>(lightDesc.Direction);
+			file->Read<_float>(lightDesc.fSpecIntensity);
+			file->Read<_float>(lightDesc.fSpecExp);
+			file->Read<_float>(lightDesc.pointLightRangeRcp);
+			file->Read<_bool>(lightDesc.PlayerLight);
+			file->Read<_bool>(lightDesc.bEnable);
+			file->Read<_bool>(lightDesc.bSelect);
+			file->Read<_bool>(lightDesc.MonsterLight);
+			break;
+		case LIGHT_DESC::TYPE::SPOT:
+			file->Read<Vec4>(lightDesc.Position);
+			file->Read<Vec4>(lightDesc.Diffuse);
+			file->Read<Vec4>(lightDesc.vAmbientLowerColor);
+			file->Read<Vec4>(lightDesc.vAmbientUpperColor);
+			file->Read<Vec4>(lightDesc.Specular);
+			file->Read<Vec3>(lightDesc.Direction);
+			file->Read<_float>(lightDesc.fSpecIntensity);
+			file->Read<_float>(lightDesc.fSpecExp);
+			file->Read<_float>(lightDesc.fSpotLightRangeRcp);
+			file->Read<_float>(lightDesc.fSpotCosOuterCone);
+			file->Read<_float>(lightDesc.fSpotInnerConeRcp);
+			file->Read<_bool>(lightDesc.PlayerLight);
+			file->Read<_bool>(lightDesc.bEnable);
+			file->Read<_bool>(lightDesc.bSelect);
+			file->Read<_bool>(lightDesc.MonsterLight);
+			break;
+		}
+
+		pLightArray[i] = lightDesc;
+	}
 
 	for (uint32 i = 0; i < iLightSize; ++i)
 		file->Read<LightHelper>(pLightHelperArray[i]);

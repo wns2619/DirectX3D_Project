@@ -30,7 +30,7 @@ State::STATE PlayerFire::UpdateState(const _float& timeDelta)
 	if (nullptr != _pOwner)
 		eState = KeyInput(timeDelta);
 
-	StateMachine* pStateMachine = dynamic_cast<Player*>(_pOwner)->GetStateMachine();
+	StateMachine* pStateMachine = static_cast<Player*>(_pOwner)->GetStateMachine();
 	if (nullptr == pStateMachine)
 		return eState;
 
@@ -41,7 +41,7 @@ State::STATE PlayerFire::UpdateState(const _float& timeDelta)
 
 		Matrix CameraMatrix = pCamera->GetInverseTransformCalculator(CameraHelper::TRANSFORMSTATE::D3DTS_VIEW);
 
-		BinaryModel* pModel = dynamic_cast<Player*>(_pOwner)->GetPlyaerPart()[Player::PART::PART_BODY]->GetBinaryModelComponent();
+		BinaryModel* pModel = static_cast<Player*>(_pOwner)->GetPlyaerPart()[Player::PART::PART_BODY]->GetBinaryModelComponent();
 		if (pModel == nullptr)
 			return STATE::SHOOT;
 
@@ -51,7 +51,7 @@ State::STATE PlayerFire::UpdateState(const _float& timeDelta)
 		Matrix pivotMatrix = pModel->GetPivotMatrix();
 
 		
-		dynamic_cast<BodyCam*>(dynamic_cast<Player*>(_pOwner)->GetPlyaerPart()[Player::PART::PART_CAMERA])->StartCameraShake();
+		static_cast<BodyCam*>(static_cast<Player*>(_pOwner)->GetPlyaerPart()[Player::PART::PART_CAMERA])->StartCameraShake();
 
 
 		Vec4 vSliderPos = Vec4(mSliderMatrix._41, mSliderMatrix._42, mSliderMatrix._43, mSliderMatrix._44);
@@ -103,7 +103,7 @@ State::STATE PlayerFire::KeyInput(const _float& timeDelta)
 	LandObject* pLandObject = static_cast<LandObject*>(_pOwner);
 
 	wstring soundfileName = L"";
-	if (false == dynamic_cast<Player*>(_pOwner)->GetOnWater())
+	if (false == static_cast<Player*>(_pOwner)->GetOnWater())
 		soundfileName = TEXT("walkPlayer.wav");
 	else
 		soundfileName = TEXT("walkWATER.wav");

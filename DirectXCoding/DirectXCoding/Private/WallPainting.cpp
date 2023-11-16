@@ -34,10 +34,10 @@ void WallPainting::Tick(const _float& timeDelta)
 {	
 	if (nullptr != _pTargetObject)
 	{
-		if (true == dynamic_cast<BreakDoor*>(_pTargetObject)->GetIsBreak())
+		if (true == static_cast<BreakDoor*>(_pTargetObject)->GetIsBreak())
 		{
 
-			if (false == dynamic_cast<BreakDoor*>(_pTargetObject)->GetIsOpen())
+			if (false == static_cast<BreakDoor*>(_pTargetObject)->GetIsOpen())
 			{
 				Matrix MyWorld = _transform->GetWorldMatrix();
 				XMVECTOR TargetRotation = _pTargetObject->GetTransform()->GetWorldRotation();
@@ -48,13 +48,13 @@ void WallPainting::Tick(const _float& timeDelta)
 
 				XMVECTOR vMyPosition = _transform->GetState(Transform::STATE::POSITION);
 				XMVECTOR vTargetPosition =
-					::XMLoadFloat3(&dynamic_cast<Bounding_Sphere*>
+					::XMLoadFloat3(&static_cast<Bounding_Sphere*>
 						(_pTargetObject->GetAssistCollider()->GetBounding())->GetBounding()->Center);
 
 				XMVECTOR relativePosition = vMyPosition - vTargetPosition;
 
 				Vec4 targetMoment = vTargetPosition - 
-					::XMLoadFloat4(&dynamic_cast<BreakDoor*>(_pTargetObject)->GetPrevPosition());
+					::XMLoadFloat4(&static_cast<BreakDoor*>(_pTargetObject)->GetPrevPosition());
 				targetMoment.Normalize();
 
 				vMyPosition += targetMoment * timeDelta * 1.2f;

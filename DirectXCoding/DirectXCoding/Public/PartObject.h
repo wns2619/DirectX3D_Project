@@ -2,6 +2,13 @@
 
 #include "GameObject.h"
 
+BEGIN(Engine)
+class Shader;
+class Transform;
+END
+
+BEGIN(Client)
+
 class PartObject abstract : public GameObject
 {
 public:
@@ -41,6 +48,7 @@ protected:
 protected:
 	_bool _bObtainGun = false;
 	_bool _bObtainLight = false;
+	_float _fLifeTime = 0.f;
 
 protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	Shader* _shader = nullptr;
@@ -54,3 +62,4 @@ public:
 	virtual void Free() override;
 };
 
+END

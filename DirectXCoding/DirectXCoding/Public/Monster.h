@@ -17,6 +17,9 @@ BEGIN(Client)
 class Monster final : public LandObject
 {
 public:
+	enum MONSTER_PART { PART_BODY, PART_LIGHT, PART_MONSTER, PART_END };
+
+public:
 	struct STATE_DESC
 	{
 		wstring _strShaderName;
@@ -53,6 +56,7 @@ private:
 
 public:
 	_bool GetOnWater() { return _bOnWater; }
+	_bool GetRunOnWater() { return _bRunOnWater; }
 	void SetOnWater(_bool water) { _bOnWater = water; }
 
 	uint32 GetMonsterID() { return _iMonsterID; }
@@ -66,7 +70,6 @@ public: // A*
 	void MoveAstar(const _float& fTimeDelta);
 	void TargetStare(XMVECTOR vGoal, const _float& fTimeDelta);
 private:
-	Texture* _pTexture = nullptr;
 	Renderer* _render = nullptr;
 	Shader* _shader = nullptr;
 	StateMachine* _pStateMachine = nullptr;
@@ -81,21 +84,30 @@ private: // Stat
 
 private:
 	_bool _bDeadDelay = false;
+
+	_float _fSurpriseTime = 0.f;
 	_float _fLifeTime = 0.f;
 
+	// Basement
 	_bool _bOnWater = false;
+	_bool _bRunOnWater = false;
+
 
 	static uint32 _iMonsterCount;
 	uint32 _iMonsterID;
+
+	vector<class GameObject*> _pMonsterPart;
+
 private: // A*
 	list<Cell*> _bestList;
 	Vec4 _vDestination;
 	GameObject* _pTargetObject = nullptr;
 
-
+	
 private:
 	HRESULT ReadyComponents();
 	HRESULT BindShaderResuorces();
+	HRESULT ReadyMonsterPart();
 
 public:
 	static Monster* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
