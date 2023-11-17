@@ -76,7 +76,7 @@ void Surefire::Tick(const _float& fTimeDelta)
 		Vec3 vLook = _pParentTransform->GetState(Transform::STATE::LOOK);
 		vLook.Normalize();
 
-		Vec4 vPosition = _pParentTransform->GetState(Transform::STATE::POSITION);
+		Vec4 vPosition = Vec4(_WorldMatrix._41, _WorldMatrix._42, _WorldMatrix._43, 1.f);
 
 		_pLight->GetLightDesc()->Position = vPosition;
 		::XMStoreFloat3(&_pLight->GetLightDesc()->Direction, -vLook);

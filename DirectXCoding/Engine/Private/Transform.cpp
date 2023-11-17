@@ -172,6 +172,8 @@ void Transform::FixRotation(_float x, _float y, _float z)
     SetState(STATE::LOOK, look);
 }
 
+
+
 void Transform::Turn(XMVECTOR axis, const _float& timeDelta, _float fAngle)
 {
     XMVECTOR right = GetState(STATE::RIGHT);

@@ -18,7 +18,7 @@ class Monster final : public LandObject
 {
 public:
 	enum MONSTER_PART { PART_BODY, PART_LIGHT, PART_MONSTER, PART_END };
-
+	enum MONSTER_TEXTURE { MONSTER_DIFFUSE, MONSTER_NORMAL, MONSTER_TEXTURE_END, };
 public:
 	struct STATE_DESC
 	{
@@ -67,9 +67,12 @@ public: // A*
 	Vec4& GetDestination() { return _vDestination; }
 	list<Cell*>& GetBestList() { return _bestList; }
 
+	vector<class GameObject*>& GetMonsterPart() { return _pMonsterPart; }
+
 	void MoveAstar(const _float& fTimeDelta);
 	void TargetStare(XMVECTOR vGoal, const _float& fTimeDelta);
 private:
+	Texture* _pTexture[MONSTER_TEXTURE_END] = { nullptr, nullptr };
 	Renderer* _render = nullptr;
 	Shader* _shader = nullptr;
 	StateMachine* _pStateMachine = nullptr;

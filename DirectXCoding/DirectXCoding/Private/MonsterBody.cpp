@@ -26,7 +26,11 @@ HRESULT MonsterBody::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (nullptr != pArg)
+	{
 		_pDissolveTime = static_cast<MonsterPartObject::PART_DESC*>(pArg)->pDissolveTime;
+		_pMeshTexture[0] = static_cast<MonsterPartObject::PART_DESC*>(pArg)->pTexture[0];
+		_pMeshTexture[1] = static_cast<MonsterPartObject::PART_DESC*>(pArg)->pTexture[1];
+	}
 
 	return S_OK;
 }
@@ -48,17 +52,42 @@ HRESULT MonsterBody::Render()
 
 	uint32 numMeshes = _binaryModel->GetNumMeshes();
 
+
 	for (size_t i = 0; i < numMeshes; i++)
 	{
 
 		if (FAILED(_binaryModel->BindBoneMatrices(_pShader, i, "BoneMatrices")))
 			return E_FAIL;
 
-		if (FAILED(_binaryModel->BindMaterialTexture(_pShader, "DiffuseMap", i, TextureType_DIFFUSE)))
-			return E_FAIL;
+		if (nullptr == _pMeshTexture[0] && nullptr == _pMeshTexture[1])
+		{
+			if (FAILED(_binaryModel->BindMaterialTexture(_pShader, "DiffuseMap", i, TextureType_DIFFUSE)))
+				return E_FAIL;
 
-		if (FAILED(_binaryModel->BindMaterialTexture(_pShader, "NormalMap", i, TextureType_NORMALS)))
-			return E_FAIL;
+			if (FAILED(_binaryModel->BindMaterialTexture(_pShader, "NormalMap", i, TextureType_NORMALS)))
+				return E_FAIL;
+		}
+		else
+		{
+			if (i == 0)
+			{
+				if (FAILED(_pMeshTexture[0]->BindShaderResource(_pShader, "DiffuseMap", 0)))
+					return E_FAIL;
+
+				if (FAILED(_pMeshTexture[1]->BindShaderResource(_pShader, "NormalMap", 0)))
+					return E_FAIL;
+			}
+			else
+			{
+				if (FAILED(_binaryModel->BindMaterialTexture(_pShader, "DiffuseMap", i, TextureType_DIFFUSE)))
+					return E_FAIL;
+
+				if (FAILED(_binaryModel->BindMaterialTexture(_pShader, "NormalMap", i, TextureType_NORMALS)))
+					return E_FAIL;
+			}
+
+		}
+
 
 		if (FAILED(_pShader->Begin(0)))
 			return E_FAIL;
@@ -66,6 +95,8 @@ HRESULT MonsterBody::Render()
 		if (FAILED(_binaryModel->Render(i)))
 			return E_FAIL;
 	}
+	
+
 
 	return S_OK;
 }

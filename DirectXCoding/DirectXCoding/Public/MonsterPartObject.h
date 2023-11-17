@@ -17,6 +17,7 @@ public:
 	{
 		Transform* pParentTransform = nullptr;
 		_float* pDissolveTime = nullptr;
+		Texture* pTexture[2] = { nullptr, nullptr };
 	};
 
 protected:
@@ -42,6 +43,7 @@ protected:
 
 protected:
 	Shader* _pShader = nullptr;
+	Texture* _pMeshTexture[2] = { nullptr, nullptr };
 	Texture* _pTexture = nullptr;
 
 protected:

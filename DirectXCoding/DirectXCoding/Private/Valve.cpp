@@ -90,7 +90,7 @@ void Valve::Tick(const _float& timeDelta)
 		_float fVolume = 0.f;
 		_float fDistance = 0.f;
 
-		//LerpSoundPlayer(fVolume, fDistance, 3.5f, pGameInstance);
+		LerpSoundPlayer(fVolume, fDistance, 3.5f, pGameInstance);
 		
 		if (fDistance <= 3.5f)
 			pGameInstance->PlaySoundLoop(TEXT("myhi.wav"), SOUND_ENVIRONMENT3, fVolume);
@@ -188,7 +188,7 @@ void Valve::OnCollisionExit(Collider* pOther)
 
 void Valve::LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMaxDistance, GameInstance* pGameInstance)
 {
-	const _float fMaxVolume = 0.3f;
+	const _float fMaxVolume = 0.1f;
 	const _float fMinVolume = 0.f;
 
 	Vec4 vThisPos = _transform->GetState(Transform::STATE::POSITION);

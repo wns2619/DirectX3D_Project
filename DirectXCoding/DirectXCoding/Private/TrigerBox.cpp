@@ -11,6 +11,7 @@
 #include "PlayerBody.h"
 #include "Player.h"
 #include "Monster.h"
+#include "MonsterLight.h"
 
 TrigerBox::TrigerBox(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: StaticObject(device, deviceContext)
@@ -317,6 +318,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		pGameObject->GetNavigation()->SetCurrentIndex(289);
 		pGameObject->GetStateMachine()->SetState(State::STATE::RUN);
 		pGameObject->GetTransform()->SetSpeedPerSec(5.f);
+		static_cast<MonsterLight*>(pGameObject->GetMonsterPart()[Monster::PART_LIGHT])->GetOwnLight()->GetLightDesc()->bEnable = true;
 
 		pGameInstance->CreateObject(pGameObject, LAYER_TAG::LAYER_MONSTER);
 		RELEASE_INSTANCE(GameInstance);
@@ -485,6 +487,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		pGameObject->SetTarget(pPlayer);
 		pGameObject->SetOnWater(true);
 		pGameObject->GetTransform()->SetSpeedPerSec(1.f);
+		static_cast<MonsterLight*>(pGameObject->GetMonsterPart()[Monster::PART_LIGHT])->GetOwnLight()->GetLightDesc()->bEnable = false;
 
 		pGameInstance->CreateObject(pGameObject, LAYER_TAG::LAYER_MONSTER);
 		RELEASE_INSTANCE(GameInstance);

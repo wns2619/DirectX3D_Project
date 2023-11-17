@@ -367,6 +367,9 @@
     <ClInclude Include="..\Public\MonsterLight.h">
       <Filter>소스 파일\02.GameObjects\07. Monster\MonsterPart\BodyLight</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MonsterAxe.h">
+      <Filter>소스 파일\02.GameObjects\07. Monster\MonsterPart\Weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -542,6 +545,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\MonsterLight.cpp">
       <Filter>소스 파일\02.GameObjects\07. Monster\MonsterPart\BodyLight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterAxe.cpp">
+      <Filter>소스 파일\02.GameObjects\07. Monster\MonsterPart\Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -28,6 +28,8 @@ HRESULT PlayerBody::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	_pLifeTime = static_cast<PART_DESC*>(pArg)->pLifeTime;
+
 	return S_OK;
 }
 

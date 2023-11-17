@@ -232,6 +232,12 @@
     <Filter Include="01.Utility\04.Component\Collider\Base\Frustum">
       <UniqueIdentifier>{1b0361f2-8dc6-4304-b70c-81b96d5450e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Component\VIBuffer\Instancing">
+      <UniqueIdentifier>{9679d9f9-0fd6-4a00-b213-e8c1d3771778}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Component\VIBuffer\Instancing\Rect">
+      <UniqueIdentifier>{24c8e359-6660-4571-8278-44d63c27fb7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -507,6 +513,12 @@
     <ClInclude Include="..\Public\Bounding_Frustum.h">
       <Filter>01.Utility\04.Component\Collider\Base\Frustum</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBufferInstancing.h">
+      <Filter>01.Utility\04.Component\VIBuffer\Instancing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_RectInstance.h">
+      <Filter>01.Utility\04.Component\VIBuffer\Instancing\Rect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -718,6 +730,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Bounding_Frustum.cpp">
       <Filter>01.Utility\04.Component\Collider\Base\Frustum</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBufferInstancing.cpp">
+      <Filter>01.Utility\04.Component\VIBuffer\Instancing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_RectInstance.cpp">
+      <Filter>01.Utility\04.Component\VIBuffer\Instancing\Rect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

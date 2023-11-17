@@ -110,6 +110,20 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC	Elements[iNumElements];
 	};
 
+	struct ENGINE_DLL VTXINSTANCE
+	{
+		Vec4 vRight;
+		Vec4 vUp;
+		Vec4 vLook;
+		Vec4 vTranslation;
+	};
+
+	struct ENGINE_DLL VTX_RECT_INSTANCE
+	{
+		static const uint32 iNumElements = 6;
+		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
+	};
+
 	struct ENGINE_DLL TexturePaths
 	{
 		wstring diffusePath = L"";
@@ -117,6 +131,7 @@ namespace Engine
 		wstring normalPath = L"";
 		wstring displacementPath = L"";
 	};
+
 
 	struct LIGHT_DESC
 	{

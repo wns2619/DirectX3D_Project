@@ -20,6 +20,7 @@
 #include "TrigerBox.h"
 #include "MonsterBody.h"
 #include "MonsterLight.h"
+#include "MonsterAxe.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -253,6 +254,10 @@ HRESULT LevelHelper::LodingforLevelEdit()
     // Monster
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Monster\\DanceMonster.dat", LAYER_TAG::LAYER_MONSTER, TEXT("ProtoTypeDanceMonster"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Monster\\DanceMonster.dat", TEXT("ProtoTypeDanceMonster"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Monster\\Axe.dat", LAYER_TAG::LAYER_MONSTER, TEXT("ProtoTypeAxe"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Monster\\Axe.dat", TEXT("ProtoTypeAxe"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+
 
 
     // STATIC
@@ -568,6 +573,33 @@ HRESULT LevelHelper::LoadingTexture()
 
         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeDissolveTexture"),
             Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\Dissolve.png")))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeMonsterDiffuse1"),
+            Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\MyModels\\Monster\\rczrozp_4K_Albedo.dds")))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeMonsterDiffuse2"),
+            Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\MyModels\\Monster\\rczrpxp0_4K_Albedo 1.dds")))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeMonsterNormal1"),
+            Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\MyModels\\Monster\\rczrozp_4K_Normal.dds")))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeMonsterNormal2"),
+            Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\MyModels\\Monster\\rczrpxp0_4K_Normal.dds")))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
@@ -1232,6 +1264,14 @@ HRESULT LevelHelper::LoadingMesh()
             return E_FAIL;
         }
 
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeAxe"),
+            BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Monster\\Axe.dat", modelInitializMatrix))))
+
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
     }
         break;
     case Client::LEVEL::EDIT:
@@ -1872,6 +1912,14 @@ HRESULT LevelHelper::LoadingMesh()
              return E_FAIL;
          }
 
+         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeAxe"),
+             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::NONE, "..\\Binaries\\Resources\\MyModels\\Monster\\Axe.dat", modelInitializMatrix))))
+
+         {
+             RELEASE_INSTANCE(GameInstance);
+             return E_FAIL;
+         }
+
     } 
         break;
     default:
@@ -2175,6 +2223,13 @@ HRESULT LevelHelper::LoadingObject()
             return E_FAIL;
         }
 
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeAxe"),
+            MonsterAxe::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
         break;
     case Client::LEVEL::EDIT:
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectEditTerrain"),
@@ -2368,6 +2423,13 @@ HRESULT LevelHelper::LoadingObject()
 
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeWater"),
             Water::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeAxe"),
+            MonsterAxe::Create(_device, _deviceContext))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

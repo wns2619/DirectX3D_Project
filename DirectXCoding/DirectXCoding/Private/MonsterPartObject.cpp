@@ -79,5 +79,10 @@ void MonsterPartObject::Free()
 
 	Safe_Release<Transform*>(_pParentTransform);
 	Safe_Release<Shader*>(_pShader);
+
+	for (uint32 i = 0; i < 2; ++i)
+		Safe_Release<Texture*>(_pMeshTexture[i]);
+
 	Safe_Release<Texture*>(_pTexture);
+
 }
