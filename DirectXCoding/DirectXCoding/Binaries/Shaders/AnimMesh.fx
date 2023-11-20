@@ -30,9 +30,10 @@ VertexAnimMeshOut VS_MAIN(VertexAnimMesh input)
     Out.position = mul(bonePosition, WVP);
     Out.uv = input.uv;
     Out.normal = normalize(mul(meshNormal, W));
-    Out.tangent = normalize(mul(float4(input.tangent, 0.f), W));
     Out.worldPosition = mul(bonePosition, W);
     Out.vProjPos = Out.position;
+    Out.tangent = normalize(mul(float4(input.tangent, 0.f), W));
+    Out.bittangent = normalize(cross(Out.normal.xyz, Out.tangent));
     
     return Out;
 }
@@ -50,8 +51,14 @@ PS_OUT PS_MAIN(VertexAnimMeshOut input)
 
     vector vMtrlDiffuse = DiffuseMap.Sample(LinearSampler, input.uv);
     vector vDissolve = NoiseMap.Sample(LinearSampler, input.uv * 3.f);
+    vector vNormalDesc = NormalMap.Sample(LinearSampler, input.uv);
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+    
+    float3x3 WorldMatrix = float3x3(input.tangent, input.bittangent, input.normal.xyz);
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+    
     float dissolveDuration = 5.f;
-  
+ 
 
     if(vMtrlDiffuse.a < 0.3f)
         discard;
@@ -63,11 +70,12 @@ PS_OUT PS_MAIN(VertexAnimMeshOut input)
     float edgeEnd = outlineThreshold + outlineWidth;
     
     float fDissolveAlpha = saturate(_time > 0 ? 1.f - _time / dissolveDuration + vDissolve.r : 1.f);
+    
     if (fDissolveAlpha < 0.3f)
         discard;
  
     Out.vDiffuse = vMtrlDiffuse;
-    Out.vNormal = vector(input.normal.xyz * 0.5 + 0.5f, 0.f);
+    Out.vNormal = vector(vNormal.xyz * 0.5 + 0.5f, 0.f);
     Out.vDepth = vector(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w / fCameraFar, 0.f, 0.f);
 
     

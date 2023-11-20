@@ -211,11 +211,11 @@ void TrigerBox::EventTarget()
 
 	vector<GameObject*>* pGameList = pGameInstance->GetCurrentObjectList(LAYER_TAG::LAYER_DYNAMIC);
 
-	if (_id == 230)
+	if (_id == 232)
 	{
 		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
 			{
-				if (pObject->GetIdNumber() == 196)
+				if (pObject->GetIdNumber() == 197)
 					return true;
 
 				return false;
@@ -233,9 +233,8 @@ void TrigerBox::EventTarget()
 	RELEASE_INSTANCE(GameInstance);
 }
 
-void TrigerBox::LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMaxDistance, GameInstance* pGameInstance)
+void TrigerBox::LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMaxDistance, GameInstance* pGameInstance, _float fMaxSound)
 {
-	const _float fMaxVolume = 0.3f;
 	const _float fMinVolume = 0.f;
 
 	Vec4 vThisPos = _transform->GetState(Transform::STATE::POSITION);
@@ -249,7 +248,7 @@ void TrigerBox::LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMaxD
 	Vec4 vDir = vPlayerPos - vThisPos;
 	fDistance = vDir.Length();
 
-	fVolume = fMaxVolume - (fDistance / fMaxDistance) * (fMaxVolume - fMinVolume);
+	fVolume = fMaxSound - (fDistance / fMaxDistance) * (fMaxSound - fMinVolume);
 
 	if (fVolume <= 0.f)
 		fVolume = 0.f;
@@ -257,7 +256,7 @@ void TrigerBox::LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMaxD
 
 void TrigerBox::TrigerOccur(const _float& timeDelta)
 {
-	if (_id == 230 && true == _bTrigerOn)
+	if (_id == 232 && true == _bTrigerOn)
 	{
 
 		if (_iTurnCount < 120)
@@ -268,7 +267,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 	}
 
 
-	if (_id == 231 && true == _bTrigerOn)
+	if (_id == 233 && true == _bTrigerOn)
 	{
 		_fEventSound += timeDelta;
 
@@ -299,7 +298,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		}
 	}
 
-	if (_id == 232 && true == _bTrigerOn && false == _bEventState)
+	if (_id == 234 && true == _bTrigerOn && false == _bEventState)
 	{
 		LandObject::LANDOBJET_DESC LandObjectDesc = {};
 
@@ -326,7 +325,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		_bEventState = true;
 	}
 
-	if (_id == 234 && true == _bTrigerOn && false == _bEventState)
+	if (_id == 236 && true == _bTrigerOn && false == _bEventState)
 	{
 		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
@@ -346,7 +345,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		RELEASE_INSTANCE(GameInstance);
 	}
 
-	if (_id == 236 && true == _bTrigerOn)
+	if (_id == 238 && true == _bTrigerOn)
 	{
 
 		if (_fEventSound <= 2.3f)
@@ -368,7 +367,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		}
 	}
 
-	if (_id == 237 || _id == 238 || _id == 239)
+	if (_id == 239 || _id == 240 || _id == 241)
 	{
 		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
@@ -383,7 +382,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		RELEASE_INSTANCE(GameInstance);
 	}
 
-	if (_id == 240 && true == _bTrigerOn)
+	if (_id == 242 && true == _bTrigerOn)
 	{
 
 		if (false == _bEventState)
@@ -401,7 +400,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 
 	}
 
-	if (_id == 241 && true == _bTrigerOn && false == _bEventState)
+	if (_id == 243 && true == _bTrigerOn && false == _bEventState)
 	{
 
 		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
@@ -423,7 +422,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		RELEASE_INSTANCE(GameInstance);
 	}
 
-	if (_id == 242 && true == _bTrigerOn && false == _bEventState)
+	if (_id == 244 && true == _bTrigerOn && false == _bEventState)
 	{
 		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
@@ -447,7 +446,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		RELEASE_INSTANCE(GameInstance);
 	}
 
-	if (_id == 243)
+	if (_id == 245)
 	{
 		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
@@ -463,7 +462,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 	}
 
 
-	if (_id == 245 && false == _bEventState && true == _bTrigerOn)
+	if (_id == 247 && false == _bEventState && true == _bTrigerOn)
 	{
 		LandObject::LANDOBJET_DESC LandObjectDesc = {};
 
@@ -486,13 +485,188 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		pGameObject->GetStateMachine()->SetState(State::STATE::RUN);
 		pGameObject->SetTarget(pPlayer);
 		pGameObject->SetOnWater(true);
-		pGameObject->GetTransform()->SetSpeedPerSec(1.f);
+		pGameObject->GetTransform()->SetSpeedPerSec(1.5f);
 		static_cast<MonsterLight*>(pGameObject->GetMonsterPart()[Monster::PART_LIGHT])->GetOwnLight()->GetLightDesc()->bEnable = false;
 
 		pGameInstance->CreateObject(pGameObject, LAYER_TAG::LAYER_MONSTER);
 		RELEASE_INSTANCE(GameInstance);
 
 		_bEventState = true;
+	}
+
+	if (_id == 248 && false == _bEventState && true == _bTrigerOn)
+	{
+		_bEventState = true;
+
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		pGameInstance->PlaySoundLoop(TEXT("High Violin Note.wav"), SOUND_SCARE2, 1.f);
+
+		RELEASE_INSTANCE(GameInstance);
+	}
+
+	if (_id == 249 && false == _bEventState && true == _bTrigerOn)
+	{
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		_bEventState = true;
+
+		pGameInstance->StopAll();
+
+		RELEASE_INSTANCE(GameInstance);
+	}
+
+	if (_id == 250 && false == _bEventState && true == _bTrigerOn)
+	{
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+
+		vector<GameObject*>& pObjList = pGameInstance->GetLayerObject(LAYER_TAG::LAYER_DYNAMIC);
+
+		auto iter = find_if(pObjList.begin(), pObjList.end(), [&](GameObject* pObj) {
+			if (pObj->GetIdNumber() == 187)
+				return true;
+
+			return false;
+			});
+
+		if (nullptr != *iter)
+		{
+			_bool Isopen = dynamic_cast<DynamicObject*>(*iter)->GetIsOpen();
+
+			if (true == Isopen)
+			{
+				pGameInstance->PlaySoundLoop(TEXT("High Violin Note.wav"), SOUND_SCARE2, 1.f);
+
+				_bEventState = true;
+			}
+		}
+
+		RELEASE_INSTANCE(GameInstance);
+	}
+
+	if (_id == 251 && false == _bEventState && true == _bTrigerOn)
+	{
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		// 그로울링 + scary
+		pGameInstance->StopSound(SOUND_SCARE1);
+		pGameInstance->PlaySound(TEXT("scary pad 2_9.wav"), SOUND_SCARE1, 1.f);
+		pGameInstance->PlaySoundLoop(TEXT("Very Low Growling.wav"), SOUND_SCARE3, 1.f);
+
+		_bEventState = true;
+
+		RELEASE_INSTANCE(GameInstance);
+	}
+
+	if (_id == 252)
+	{
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		vector<GameObject*>& pObjList = pGameInstance->GetLayerObject(LAYER_TAG::LAYER_TRIGER);
+
+		auto iter = find_if(pObjList.begin(), pObjList.end(), [&](GameObject* pObj) {
+			if (pObj->GetIdNumber() == 251)
+				return true;
+
+			return false;
+			});
+
+
+		auto iter2 = find_if(pObjList.begin(), pObjList.end(), [&](GameObject* pObj) {
+			if (pObj->GetIdNumber() == 253)
+				return true;
+
+			return false;
+			});
+
+		if (nullptr != *iter && nullptr != *iter2)
+		{
+			_bool IsTrigetOn = static_cast<TrigerBox*>(*iter)->GetTriger();
+			_bool IsTrigerOn = static_cast<TrigerBox*>(*iter2)->GetTriger();
+
+			if (true == IsTrigetOn && false == IsTrigerOn)
+			{
+				_float fVolume = 0.f;
+				_float fDistance = 0.f;
+
+				LerpSoundPlayer(fVolume, fDistance, 15.f, pGameInstance, 0.05f);
+
+				if (fDistance <= 10.2f)
+					pGameInstance->PlaySoundLoop(TEXT("MonsterCrying.wav"), SOUND_SCARE4, fVolume);
+			}
+		}
+
+
+		RELEASE_INSTANCE(GameInstance);
+	}
+
+
+	if (_id == 253 && false == _bEventState && true == _bTrigerOn)
+	{
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		pGameInstance->StopAll();
+		pGameInstance->PlaySoundLoop(TEXT("highlightSound.wav"), SOUND_ENVIRONMENT, 0.8f);
+
+		_bEventState = true;
+
+		RELEASE_INSTANCE(GameInstance);
+	}
+	else if (_id == 253 && true == _bEventState)
+	{
+		// 모든 라이트가 감소됐다가 다시 켜져야함.
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		vector<OtherLight*>* vecOtherLight = pGameInstance->getLightList();
+
+		for (auto& pLight : *vecOtherLight)
+		{
+			LIGHT_DESC::TYPE eType = static_cast<LIGHT_DESC::TYPE>(pLight->GetLightDesc()->type);
+
+			_fBlinkTime += timeDelta * timeDelta;
+			//_PlayerLightOff += timeDelta * 0.5f;
+
+			Vec3 vCurrentRange = Vec3(pLight->GetLightDesc()->pointLightRangeRcp, 0.f ,0.f);
+			Vec3 vResult;
+
+			if (true == _bToMax)
+			{
+				vResult = Vec3::SmoothStep(vCurrentRange, _fMaxBlinkRange, timeDelta * 6.f);
+
+				if ((_fMaxBlinkRange.x - vResult.x) <= 0.01f)
+				{
+					_bToMax = false;
+					_bToMin = true;
+				}
+
+			}
+			
+			if (true == _bToMin)
+			{
+				vResult = Vec3::SmoothStep(vCurrentRange, _fMinBlinkRange, timeDelta * 6.f);
+
+				if ((vResult.x - _fMinBlinkRange.x) <= 0.01f)
+				{
+					_bToMax = true;
+					_bToMin = false;
+				}
+			}
+
+			pLight->GetLightDesc()->pointLightRangeRcp = vResult.x;
+
+
+			//_float fRange = _fMinBlinkRange + 0.5f * (_fMaxBlinkRange - _fMinBlinkRange) * (1.f + sinf(_fBlinkSpeed * _fBlinkTime));
+
+			//if (fRange <= 1.f)
+			//	pLight->GetLightDesc()->bEnable = true;
+			//else
+			//	pLight->GetLightDesc()->bEnable = false;
+
+			
+		}
+
+		RELEASE_INSTANCE(GameInstance);
 	}
 
 }

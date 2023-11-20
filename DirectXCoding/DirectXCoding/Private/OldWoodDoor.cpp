@@ -76,6 +76,10 @@ HRESULT OldWoodDoor::Render()
 		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
 			return E_FAIL;
 
+		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "NormalMap", i, TextureType_NORMALS)))
+			return E_FAIL;
+
+
 		if (FAILED(_shader->Begin(0)))
 			return E_FAIL;
 
@@ -205,6 +209,12 @@ HRESULT OldWoodDoor::ReadyCollider()
 		aabbDesc.pOwner = this;
 	}
 
+	if (206 == _id)
+	{
+		aabbDesc.vCenter = Vec3(0.f, 100.f, 50.f);
+		aabbDesc.vExtents = Vec3(7.5f, 100.f, 47.5f);
+	}
+
 	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeAABBCollider"),
 		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &aabbDesc)))
 		return E_FAIL;
@@ -212,9 +222,12 @@ HRESULT OldWoodDoor::ReadyCollider()
 	Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
 	{
 		sphereDesc.fRadius = 15.f;
-		sphereDesc.vCenter = Vec3(20.f, sphereDesc.fRadius * 10, 0.f);
+		sphereDesc.vCenter = Vec3(35.f, sphereDesc.fRadius * 10, 0.f);
 		sphereDesc.pOwner = this;
 	}
+
+	if (206 == _id)
+		sphereDesc.vCenter = Vec3(55.f, sphereDesc.fRadius * 10, 0.f);
 
 	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeAssistSphereCollider"),
 		TEXT("ComponentSphereCollider"), reinterpret_cast<Component**>(&_pAssistCollider), &sphereDesc)))

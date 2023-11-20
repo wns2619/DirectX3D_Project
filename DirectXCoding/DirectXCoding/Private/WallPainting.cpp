@@ -127,11 +127,11 @@ void WallPainting::DoorTargetSet()
 
 	vector<GameObject*>* pGameList = pGameInstance->GetCurrentObjectList(LAYER_TAG::LAYER_DYNAMIC);
 
-	if (_id == 212)
+	if (_id == 214)
 	{
 		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
 			{
-				if (pObject->GetIdNumber() == 172)
+				if (pObject->GetIdNumber() == 173)
 					return true;
 
 				return false;
@@ -139,11 +139,11 @@ void WallPainting::DoorTargetSet()
 
 		_pTargetObject = *iter;
 	}
-	else if (_id == 213)
+	else if (_id == 215)
 	{
 		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
 			{
-				if (pObject->GetIdNumber() == 183)
+				if (pObject->GetIdNumber() == 184)
 					return true;
 
 				return false;

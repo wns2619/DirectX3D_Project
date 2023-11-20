@@ -108,7 +108,7 @@ void Monster::Tick(const _float& fTimeDelta)
 			GameInstance* pGameInstancec = GET_INSTANCE(GameInstance);
 
 			pGameInstancec->DeleteObject(this);
-			//pGameInstancec->StopSound(SOUND_MONSTER);
+			pGameInstancec->StopSound(SOUND_MONSTER);
 			pGameInstancec->StopSound(SOUND_MONSTER3);
 
 			RELEASE_INSTANCE(GameInstance);
@@ -186,7 +186,7 @@ void Monster::OnAssistCollisionEnter(Collider* pOther)
 	{
 		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 		
-		if (false == _bRunOnWater)
+		if (false == _bRunOnWater && 0 < _iLife)
 		{
 			pGameInstance->StopSound(SOUND_MONSTER);
 			pGameInstance->StopSound(SOUND_MONSTER2);
@@ -195,7 +195,7 @@ void Monster::OnAssistCollisionEnter(Collider* pOther)
 			LIGHT_DESC* pLightDesc = static_cast<MonsterLight*>(_pMonsterPart[PART_LIGHT])->GetOwnLight()->GetLightDesc();
 			pLightDesc->Diffuse = Color(1.f, 0.525f, 0.347f, 1.f);
 
-			_transform->SetSpeedPerSec(2.f);
+			_transform->SetSpeedPerSec(2.5f);
 		}
 
 		_pTargetObject = pOther->GetOwner();
@@ -220,7 +220,7 @@ void Monster::TrigerBoxEvent(Collider* pOther)
 
 	uint32 id = pOther->GetOwner()->GetIdNumber();
 
-	if (id == 234)
+	if (id == 236)
 	{
 		static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
 		_bDeadDelay = true;

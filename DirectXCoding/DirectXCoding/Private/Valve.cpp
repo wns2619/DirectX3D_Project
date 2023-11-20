@@ -45,9 +45,9 @@ void Valve::Tick(const _float& timeDelta)
 	{
 		--_iRotationTick;
 
-		if (_id == 184)
+		if (_id == 185)
 			_transform->Turn(Vec4(1.f, 0.f, 0.f, 1.f), timeDelta);
-		else if (_id == 185)
+		else if (_id == 186)
 			_transform->Turn(Vec4(-1.f, 0.f, 0.f, 1.f), timeDelta);
 		else
 			_transform->Turn(Vec4(0.f, 0.f, 1.f, 1.f), timeDelta);
@@ -63,7 +63,7 @@ void Valve::Tick(const _float& timeDelta)
 
 			if (_iRotationCount == 2)
 			{
-				if (_id == 184)
+				if (_id == 185)
 				{
 					GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
@@ -83,14 +83,14 @@ void Valve::Tick(const _float& timeDelta)
 	}
 
 
-	if (_id == 185)
+	if (_id == 186)
 	{
 		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
 		_float fVolume = 0.f;
 		_float fDistance = 0.f;
 
-		LerpSoundPlayer(fVolume, fDistance, 3.5f, pGameInstance);
+		//LerpSoundPlayer(fVolume, fDistance, 3.5f, pGameInstance);
 		
 		if (fDistance <= 3.5f)
 			pGameInstance->PlaySoundLoop(TEXT("myhi.wav"), SOUND_ENVIRONMENT3, fVolume);
@@ -127,6 +127,10 @@ HRESULT Valve::Render()
 	{
 		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
 			return E_FAIL;
+
+		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "NormalMap", i, TextureType_NORMALS)))
+			return E_FAIL;
+
 
 		if (FAILED(_shader->Begin(0)))
 			return E_FAIL;

@@ -197,6 +197,9 @@ HRESULT BinaryModel::BinaryModelStatic(shared_ptr<FileUtils> file, const string&
 			file->Read<Vec3>(pVertices[i].normal);
 			file->Read<Vec2>(pVertices[i].texcoord);
 			file->Read<Vec3>(pVertices[i].tangent);
+			Matrix ModelInitializeMatrix;
+			ModelInitializeMatrix = ModelInitializeMatrix.CreateRotationY(180.f);
+			XMStoreFloat3(&pVertices[i].tangent, ::XMVector3TransformNormal(pVertices[i].tangent, ModelInitializeMatrix));
 			file->Read<Vec3>(pVertices[i].bitangent);
 
 			pPosition[i] = pVertices[i].position;
@@ -328,6 +331,9 @@ HRESULT BinaryModel::BinaryModelDynamic(shared_ptr<FileUtils> file, const string
 			file->Read<Vec3>(pVertices[i].normal);
 			file->Read<Vec2>(pVertices[i].texcoord);
 			file->Read<Vec3>(pVertices[i].tangent);
+			Matrix ModelInitializeMatrix;
+			ModelInitializeMatrix = ModelInitializeMatrix.CreateRotationY(180.f);
+			XMStoreFloat3(&pVertices[i].tangent, ::XMVector3TransformNormal(pVertices[i].tangent, ModelInitializeMatrix));
 			file->Read<Vec3>(pVertices[i].bitangent);
 			file->Read<XMUINT4>(pVertices[i].blendIndices);
 			file->Read<Vec4>(pVertices[i].blendWeights);

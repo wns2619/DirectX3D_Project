@@ -48,9 +48,8 @@ HRESULT Game::Initialize(HWND hwnd)
 	 
 	if (FAILED(OpenLevel(LEVEL::GAME)))
 		return E_FAIL;
-	
-	//D3D11_BLEND_DESC
-	
+
+
 	
 	return S_OK;
 }

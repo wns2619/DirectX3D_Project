@@ -36,7 +36,7 @@ public:
 
 public:
 	void EventTarget();
-	void LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMaxDistance, GameInstance* pGameInstance);
+	void LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMaxDistance, GameInstance* pGameInstance, _float fMaxSound = 0.3f);
 
 	void TrigerOccur(const _float& timeDelta);
 
@@ -52,6 +52,16 @@ private:
 
 private: //event
 	_bool _bEventState = false;
+
+	Vec3 _fMaxBlinkRange = Vec3(2.f,0.f,0.f);
+	Vec3 _fMinBlinkRange = Vec3(0.f,0.f,0.f);
+	_float _fBlinkSpeed = 3.f;
+	_float _fBlinkTime = 0.f;
+
+	_float _PlayerLightOff = 0.f;
+
+	_bool _bToMax = true;
+	_bool _bToMin = false;
 
 private:
 	virtual HRESULT ReadyComponents() override;

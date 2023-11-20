@@ -86,6 +86,10 @@ HRESULT Cage::Render()
 		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
 			return E_FAIL;
 
+		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "NormalMap", i, TextureType_NORMALS)))
+			return E_FAIL;
+
+
 		if (FAILED(_shader->Begin(0)))
 			return E_FAIL;
 
@@ -113,7 +117,7 @@ HRESULT Cage::ReadyCollider()
 		aabbDesc.pOwner = this;
 	}
 	
-	if (_id == 205)
+	if (_id == 207)
 		aabbDesc.vExtents = Vec3(5.f, 120.f, 80.f);
 
 	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeAABBCollider"),
@@ -261,22 +265,7 @@ void Cage::ValveTargetSet()
 
 	vector<GameObject*>* pGameList = pGameInstance->GetCurrentObjectList(LAYER_TAG::LAYER_DYNAMIC);
 
-	if (_id == 205)
-	{
-		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
-			{
-				if (pObject->GetIdNumber() == 184)
-					return true;
-
-				return false;
-			});
-
-		if (nullptr == (*iter))
-			return;
-
-		_pTargetObject = *iter;
-	}
-	else if (_id == 206)
+	if (_id == 207)
 	{
 		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
 			{
@@ -291,7 +280,7 @@ void Cage::ValveTargetSet()
 
 		_pTargetObject = *iter;
 	}
-	else if (_id == 207)
+	else if (_id == 208)
 	{
 		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
 			{
@@ -306,11 +295,26 @@ void Cage::ValveTargetSet()
 
 		_pTargetObject = *iter;
 	}
-	else if (_id == 208)
+	else if (_id == 209)
 	{
 		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
 			{
 				if (pObject->GetIdNumber() == 187)
+					return true;
+
+				return false;
+			});
+
+		if (nullptr == (*iter))
+			return;
+
+		_pTargetObject = *iter;
+	}
+	else if (_id == 210)
+	{
+		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
+			{
+				if (pObject->GetIdNumber() == 188)
 					return true;
 
 				return false;

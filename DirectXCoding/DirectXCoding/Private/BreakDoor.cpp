@@ -82,6 +82,10 @@ HRESULT BreakDoor::Render()
 		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
 			return E_FAIL;
 
+		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "NormalMap", i, TextureType_NORMALS)))
+			return E_FAIL;
+
+
 		if (FAILED(_shader->Begin(0)))
 			return E_FAIL;
 
@@ -103,7 +107,7 @@ void BreakDoor::OnCollisionStay(Collider* pOther)
 {
 	if (_bIsBreak == true)
 	{
-		if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER && _id == 172)
+		if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER && _id == 173)
 		{
 			GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
@@ -255,7 +259,7 @@ HRESULT BreakDoor::ReadyCollider()
 		aabbDesc.pOwner = this;
 	}
 
-	if (_id == 183)
+	if (_id == 184)
 	{
 		aabbDesc.vCenter = Vec3(0.f, 0.f, 45.f);
 		aabbDesc.vExtents = Vec3(7.5f, 100.f, 40.f);

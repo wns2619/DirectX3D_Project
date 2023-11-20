@@ -142,7 +142,7 @@ void Player::OnCollisionStay(Collider* pOther)
 		{
 			if (pGameInstance->keyDown(DIK_E))
 			{
-				if(pOther->GetOwner()->GetIdNumber() != 188 && pOther->GetOwner()->GetIdNumber() != 195)
+				if(pOther->GetOwner()->GetIdNumber() != 189 && pOther->GetOwner()->GetIdNumber() != 196)
 					static_cast<DynamicObject*>(pOther->GetOwner())->SetRotate(true);
 				else
 				{
@@ -342,20 +342,18 @@ void Player::TrigerBoxEvent(Collider* pOther)
 
 	uint32 id = pOther->GetOwner()->GetIdNumber();
 
-	if (id == 230)
+	if (id != 234 && id != 238 && id != 243 && id != 244 && id != 246 && id != 236 && id != 249 && id != 250
+		&& id != 251 && id != 252 && id != 254 && id != 255)
 		static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
-	else if (id == 231)
-		static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
-	else if (id == 232)
+	else if (id == 234)
 	{
 		// TODO : Monster appeared
 		const _bool& Isobtain = static_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->IsObtainingLight();
 
 		if (true == Isobtain)
 			static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
-
 	}
-	else if (id == 236)
+	else if (id == 238)
 	{
 		if (pGameInstance->keyDown(DIK_E))
 		{
@@ -368,42 +366,103 @@ void Player::TrigerBoxEvent(Collider* pOther)
 				pGameInstance->AllTurnOnLight();
 			}
 		}
-
-		// TODO Light를 붉게 만들고
-		// Sound 2개 재생.
-		// 
 	}
-	else if (id == 240)
-		static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
-	else if (id == 241)
+	else if (id == 243)
 	{
 		const _bool& Isobtain = static_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->IsObtainingLight();
 
 		if (true == Isobtain)
 			static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
 	}
-	else if (id == 242)
+	else if (id == 244)
 	{
 		const _bool& Isobtain = static_cast<PlayerBody*>(m_pPlayerPart[PART::PART_BODY])->IsObtainingLight();
 
-		if(true == Isobtain)
+		if (true == Isobtain)
 			static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
 	}
-
-	if (id == 244)
+	else if (id == 246)
 	{
 		if (false == _OnWater)
 		{
 			pGameInstance->StopAll();
 			pGameInstance->PlayBGM(TEXT("gool.wav"), 0.1f);
 		}
-		
-
 		_OnWater = true;
 	}
+	else if (id == 249)
+	{
+		vector<GameObject*>& pObjList = pGameInstance->GetLayerObject(LAYER_TAG::LAYER_DYNAMIC);
 
-	if (id == 235 || id == 245)
-		static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+		auto iter = find_if(pObjList.begin(), pObjList.end(), [&](GameObject* pObj) {
+			if (pObj->GetIdNumber() == 187)
+				return true;
+
+			return false;
+			});
+
+		if (nullptr != *iter)
+		{
+			_bool Isopen = static_cast<DynamicObject*>(*iter)->GetIsOpen();
+
+			if (true == Isopen)
+				static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+		}
+	}
+	else if (id == 250)
+	{
+		vector<GameObject*>& pObjList = pGameInstance->GetLayerObject(LAYER_TAG::LAYER_DYNAMIC);
+
+		auto iter = find_if(pObjList.begin(), pObjList.end(), [&](GameObject* pObj) {
+			if (pObj->GetIdNumber() == 187)
+				return true;
+
+			return false;
+			});
+
+		if (nullptr != *iter)
+		{
+			_bool Isopen = static_cast<DynamicObject*>(*iter)->GetIsOpen();
+
+			if (true == Isopen)
+				static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+		}
+	}
+	else if (id == 251)
+	{
+		vector<GameObject*>& pObjList = pGameInstance->GetLayerObject(LAYER_TAG::LAYER_DYNAMIC);
+
+		auto iter = find_if(pObjList.begin(), pObjList.end(), [&](GameObject* pObj) {
+			if (pObj->GetIdNumber() == 187)
+				return true;
+
+			return false;
+			});
+
+		if (nullptr != *iter)
+		{
+			_bool Isopen = static_cast<DynamicObject*>(*iter)->GetIsOpen();
+
+			if (true == Isopen)
+				static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
+		}
+	}
+	else if (id == 252)
+	{
+
+	}
+	else if (id == 253)
+	{
+
+	}
+	else if (id == 254)
+	{
+
+	}
+	else if (id == 255)
+	{
+
+	}
 
 	RELEASE_INSTANCE(GameInstance);
 }

@@ -40,7 +40,7 @@ HRESULT GameScene::Initialize()
 
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
-	pGameInstance->PlayBGM(TEXT("gool.wav"), 0.1f);
+	pGameInstance->PlayBGM(TEXT("gool.wav"), 0.3f);
 
 	RELEASE_INSTANCE(GameInstance);
 

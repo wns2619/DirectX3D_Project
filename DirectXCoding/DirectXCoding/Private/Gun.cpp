@@ -73,6 +73,10 @@ HRESULT Gun::Render()
 		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
 			return E_FAIL;
 
+		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "NormalMap", i, TextureType_NORMALS)))
+			return E_FAIL;
+
+
 		if (FAILED(_shader->Begin(0)))
 			return E_FAIL;
 

@@ -47,14 +47,14 @@ void GridDoor::Tick(const _float& timeDelta)
 		keyObtain = pPlayer->GetObtainKey();
 
 	// ¿©±â¼­ ¹¹°¡ 
-	if (_id != 195 && true == _bIsRotation)
+	if (_id != 196 && true == _bIsRotation)
 	{
-		if(_id != 188)
+		if(_id != 189)
 			_transform->Turn(Vec4(0.f, -1.f, 0.f, 1.f), timeDelta);
-		if (_id == 188 && true == keyObtain)
+		if (_id == 189 && true == keyObtain)
 			_transform->Turn(Vec4(0.f, -1.f, 0.f, 1.f), timeDelta);
 	}
-	else if (_id == 195 && true == _bIsRotation)
+	else if (_id == 196 && true == _bIsRotation)
 	{
 		if(true == keyObtain)
 			_transform->Turn(Vec4(0.f, 1.f, 0.f, 1.f), timeDelta);
@@ -64,11 +64,6 @@ void GridDoor::Tick(const _float& timeDelta)
 	{
 		_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 		_pAssistCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
-	}
-	else
-	{
-		//Safe_Release<Collider*>(_pCollider);
-		//Safe_Release<Collider*>(_pAssistCollider);
 	}
 
 	RELEASE_INSTANCE(GameInstance);
@@ -112,15 +107,19 @@ HRESULT GridDoor::Render()
 		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
 			return E_FAIL;
 
+		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "NormalMap", i, TextureType_NORMALS)))
+			return E_FAIL;
+
+
 		if (FAILED(_shader->Begin(0)))
 			return E_FAIL;
 
-		if (_id != 188 && _id != 195)
+		if (_id != 189 && _id != 196)
 		{
 			if (FAILED(_binaryModel->Render(i)))
 				return E_FAIL;
 		}
-		else if (_id == 188 || _id == 195)
+		else if (_id == 189 || _id == 196)
 		{
 			if (true == _bGridDoorKey)
 			{
@@ -155,6 +154,17 @@ void GridDoor::OnCollisionStay(Collider* pOther)
 		{
 			Player* pPlayer = static_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
 			_bGridDoorKey = pPlayer->GetObtainKey();
+
+			if ((_id == 189 || _id == 196) && false == _bGridDoorKey)
+			{
+				pGameInstance->StopSound(SOUND_ENVIRONMENT5);
+				pGameInstance->PlaySound(TEXT("closeddoor2.wav"), SOUND_ENVIRONMENT5, 1.f);
+			}
+			else if((_id == 189 || _id == 196) && true == _bGridDoorKey)
+			{
+				pGameInstance->StopSound(SOUND_ENVIRONMENT5);
+				pGameInstance->PlaySound(TEXT("unlock.wav"), SOUND_ENVIRONMENT5, 1.f);
+			}
 		}
 	}
 
@@ -323,7 +333,7 @@ HRESULT GridDoor::ReadyCollider()
 		aabbDesc.pOwner = this;
 	}
 
-	if (_id == 188)
+	if (_id == 189)
 	{
 		Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
 		sphereDesc.vCenter = Vec3(45.f, 110.f, 0.f);
@@ -334,7 +344,7 @@ HRESULT GridDoor::ReadyCollider()
 			TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &sphereDesc)))
 			return E_FAIL;
 	}
-	else if(_id == 195)
+	else if(_id == 196)
 	{
 		Bounding_Sphere::BOUNDING_SPHERE_DESC sphereDesc;
 		sphereDesc.vCenter = Vec3(45.f, 110.f, 0.f);
@@ -359,13 +369,13 @@ HRESULT GridDoor::ReadyCollider()
 		sphereDesc.pOwner = this;
 	}
 
-	if (_id == 188)
+	if (_id == 189)
 	{
 		sphereDesc.fRadius = 20.f;
 		sphereDesc.vCenter = Vec3(15.f, sphereDesc.fRadius * 10, 0.f);
 	}
 
-	if (_id == 195)
+	if (_id == 196)
 	{
 		sphereDesc.fRadius = 20.f;
 		sphereDesc.vCenter = Vec3(30.f, sphereDesc.fRadius * 10, 0.f);

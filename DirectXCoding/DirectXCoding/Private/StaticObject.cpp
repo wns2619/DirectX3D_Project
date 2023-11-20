@@ -59,22 +59,22 @@ void StaticObject::Tick(const _float& timeDelta)
 	if (_enabled)
 		return;
 
-	if (_modelName == "Ventilator")
-	{
+	//if (_modelName == "Ventilator")
+	//{
 
-		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+	//	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
-		_float fVolume = 0.f;
-		_float fDistance = 5.f;
+	//	_float fVolume = 0.f;
+	//	_float fDistance = 5.f;
 
-		LerpSoundPlayer(fVolume, fDistance, 2.f, pGameInstance);
+	//	LerpSoundPlayer(fVolume, fDistance, 2.f, pGameInstance);
 
-		if (fDistance <= 5.f)
-			pGameInstance->PlaySoundLoop(TEXT("condicioner.wav"), SOUND_ENVIRONMENT, fVolume);
+	//	if (fDistance <= 5.f)
+	//		pGameInstance->PlaySoundLoop(TEXT("condicioner.wav"), SOUND_ENVIRONMENT, fVolume);
 
-		RELEASE_INSTANCE(GameInstance);
+	//	RELEASE_INSTANCE(GameInstance);
 
-	}
+	//}
 }
 
 void StaticObject::LateTick(const _float& timeDelta)
