@@ -36,6 +36,7 @@ public:
 
 public:
 	void AddPlayerCameraFov(_float fov) { _fFov += fov; }
+	void SetCameraFov(_float fov) { _fFov = fov; }
 	_float PlayerCameraFov() { return _fFov; }
 
 public:

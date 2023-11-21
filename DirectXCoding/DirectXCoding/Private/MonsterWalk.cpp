@@ -5,6 +5,7 @@
 #include "DynamicObject.h"
 #include "Player.h"
 #include "Cell.h"
+#include "MonsterLight.h"
 
 MonsterWalk::MonsterWalk(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
@@ -25,37 +26,107 @@ State::STATE MonsterWalk::UpdateState(const _float& timeDelta)
 
 	wstring soundfileName = L"";
 
+
+	_float fVolume = 0.f;
+	_float fDistance = 5.f;
+
 	Monster* pOwnerMonster = static_cast<Monster*>(_pOwner);
 
 	if (true == static_cast<Monster*>(_pOwner)->GetOnWater() && false == static_cast<Monster*>(_pOwner)->IsDead())
 		soundfileName = TEXT("walkWATER.wav");
+	else if (pOwnerMonster->GetMonsterID() == 4 || pOwnerMonster->GetMonsterID() == 5)
+		soundfileName = TEXT("MonsterCrying.wav");
 
-	if (nullptr != pOwnerMonster->GetTargetObject())
+	if (0 < pOwnerMonster->GetLife() && false == pOwnerMonster->GetDeadDelay())
 	{
-		// TODO -> 열쇠면 열쇠 쪽으로 순찰
-		// 플레이어를 발견했으면 플레이어 추격.
-		pOwnerMonster->MoveAstar(timeDelta);
-		pOwnerMonster->GetTransform()->Forward(timeDelta, pOwnerMonster->GetNavigation());
+		LerpSoundPlayer(fVolume, fDistance, 13.f, pGameInstance);
 
-		if (pOwnerMonster->GetTargetObject()->GetObjectType() == OBJECT_TYPE::DYNAMIC)
-			pOwnerMonster->GetNavigation()->StartAStar(679);
-		else
-			pOwnerMonster->GetNavigation()->StartAStar(static_cast<Player*>(pOwnerMonster->GetTargetObject())->GetNavigation()->GetCurrentIndex());
+		if (nullptr != pOwnerMonster->GetTargetObject())
+		{
+			// TODO -> 열쇠면 열쇠 쪽으로 순찰
+			// 플레이어를 발견했으면 플레이어 추격.
+			pOwnerMonster->MoveAstar(timeDelta);
+			pOwnerMonster->GetTransform()->Forward(timeDelta, pOwnerMonster->GetNavigation());
 
-		list<Cell*>& bestCell = pOwnerMonster->GetBestList();
-		bestCell = pOwnerMonster->GetNavigation()->GetBestCell();
+			if (pOwnerMonster->GetTargetObject()->GetObjectType() == OBJECT_TYPE::DYNAMIC)
+				pOwnerMonster->GetNavigation()->StartAStar(679);
+			else
+				pOwnerMonster->GetNavigation()->StartAStar(static_cast<Player*>(pOwnerMonster->GetTargetObject())->GetNavigation()->GetCurrentIndex());
 
-		Vec4& vDestination = pOwnerMonster->GetDestination();
-		vDestination = pOwnerMonster->GetTargetObject()->GetTransform()->GetState(Transform::STATE::POSITION);
-		// 도착거리.
+			list<Cell*>& bestCell = pOwnerMonster->GetBestList();
+			bestCell = pOwnerMonster->GetNavigation()->GetBestCell();
 
+			Vec4& vDestination = pOwnerMonster->GetDestination();
+			vDestination = pOwnerMonster->GetTargetObject()->GetTransform()->GetState(Transform::STATE::POSITION);
 
+		}
+
+		if (pOwnerMonster->GetMonsterID() == 2)
+			pGameInstance->PlaySound(soundfileName.c_str(), SOUND_MONSTER, fVolume);
+		else if (pOwnerMonster->GetMonsterID() == 4)
+			pGameInstance->PlaySound(soundfileName.c_str(), SOUND_MONSTER2, fVolume);
+		else if (pOwnerMonster->GetMonsterID() == 5)
+			pGameInstance->PlaySound(soundfileName.c_str(), SOUND_MONSTER3, fVolume);
 	}
+	else
+	{
+		if (true == pOwnerMonster->GetDeadDelay())
+		{
+			if (1 == pOwnerMonster->GetMonsterID())
+			{
+				_float& SurpriseTime = pOwnerMonster->GetSurpriseTime();
 
-	pGameInstance->PlaySound(soundfileName.c_str(), SOUND_MONSTER, 1.f);
+				SurpriseTime += timeDelta;
 
+				if (SurpriseTime >= 0.5f)
+				{
+					pGameInstance->DeleteObject(pOwnerMonster);
+					pGameInstance->StopSound(SOUND_MONSTER);
+				}
+			}
+		}
 
+		if (0 >= pOwnerMonster->GetLife())
+		{
+			_float& LifeTime = pOwnerMonster->GetLifeTime();
+
+			LifeTime += timeDelta * 3.f;
+
+			LerpSoundTime(fVolume, LifeTime, 8.f, pGameInstance);
+			if (LifeTime >= 8.f)
+			{
+				pGameInstance->DeleteObject(pOwnerMonster);
+
+				if (2 == pOwnerMonster->GetMonsterID())
+				{
+					pGameInstance->StopSound(SOUND_MONSTER);
+					pGameInstance->StopSound(SOUND_MONSTER3);
+				}
+				else if (4 == pOwnerMonster->GetMonsterID())
+					pGameInstance->StopSound(SOUND_MONSTER2);
+				else if (5 == pOwnerMonster->GetMonsterID())
+					pGameInstance->StopSound(SOUND_MONSTER3);
+
+				if (2 == pOwnerMonster->GetMonsterID() || 3 == pOwnerMonster->GetMonsterID())
+					static_cast<MonsterLight*>(pOwnerMonster->GetMonsterPart()[Monster::MONSTER_PART::PART_LIGHT])->GetOwnLight()->GetLightDesc()->bEnable = true;
+			}
+			else
+			{
+				if (2 == pOwnerMonster->GetMonsterID())
+				{
+					pGameInstance->PlaySound(TEXT("walkWATER.wav"), SOUND_MONSTER, fVolume);
+					pGameInstance->PlaySound(TEXT("RUNWATER.wav"), SOUND_MONSTER3, fVolume);
+				}
+				else if (4 == pOwnerMonster->GetMonsterID())
+					pGameInstance->PlaySound(soundfileName.c_str(), SOUND_MONSTER2, fVolume);
+				else if(5 == pOwnerMonster->GetMonsterID())
+					pGameInstance->PlaySound(soundfileName.c_str(), SOUND_MONSTER3, fVolume);
+			}
+		}
+	}
+	
 	RELEASE_INSTANCE(GameInstance);
+
 
 	return eState;
 }
@@ -94,6 +165,17 @@ void MonsterWalk::LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMa
 	fDistance = vDir.Length();
 
 	fVolume = fMaxVolume - (fDistance / fMaxDistance) * (fMaxVolume - fMinVolume);
+
+	if (fVolume <= 0.f)
+		fVolume = 0.f;
+}
+
+void MonsterWalk::LerpSoundTime(_float& fVolume, _float& time, _float fMaxTime, GameInstance* pGameInstance)
+{
+	const _float fMaxVolume = 0.3f;
+	const _float fMinVolume = 0.f;
+	
+	fVolume = fMaxVolume - (time / fMaxTime) * (fMaxVolume - fMinVolume);
 
 	if (fVolume <= 0.f)
 		fVolume = 0.f;

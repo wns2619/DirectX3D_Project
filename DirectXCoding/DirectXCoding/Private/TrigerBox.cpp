@@ -317,7 +317,6 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		pGameObject->GetNavigation()->SetCurrentIndex(289);
 		pGameObject->GetStateMachine()->SetState(State::STATE::RUN);
 		pGameObject->GetTransform()->SetSpeedPerSec(5.f);
-		static_cast<MonsterLight*>(pGameObject->GetMonsterPart()[Monster::PART_LIGHT])->GetOwnLight()->GetLightDesc()->bEnable = true;
 
 		pGameInstance->CreateObject(pGameObject, LAYER_TAG::LAYER_MONSTER);
 		RELEASE_INSTANCE(GameInstance);
@@ -609,62 +608,107 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		pGameInstance->StopAll();
 		pGameInstance->PlaySoundLoop(TEXT("highlightSound.wav"), SOUND_ENVIRONMENT, 0.8f);
 
+
+		LandObject::LANDOBJET_DESC LandObjectDesc = {};
+
+		Transform* pTransform = static_cast<Transform*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::GAME), LAYER_TAG::LAYER_STATIC, TEXT("ComponentTransform"), "2stBottom", 0));
+		BinaryNavi* pNavi = static_cast<BinaryNavi*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::GAME), LAYER_TAG::LAYER_STATIC, TEXT("ComponentNavigation"), "2stBottom", 0));
+
+		vector<Cell*>& vecCells = pNavi->GetCell();
+
+		LandObjectDesc.pCells = &vecCells;
+		LandObjectDesc.pCellTransform = pTransform;
+
+		GameObject* pPlayer = pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player");
+
+		Monster* pGameObject = static_cast<Monster*>(pGameInstance->CloneGameObject(TEXT("ProtoTypeDanceMonster"), &LandObjectDesc));
+		pGameObject->GetTransform()->SetState(Transform::STATE::POSITION, Vec4(20.7711, -3.058f, -1.9880, 1.f));
+		pGameObject->GetNavigation()->SetCurrentIndex(465);
+		pGameObject->GetStateMachine()->SetState(State::STATE::RUN);
+		pGameObject->SetTarget(pPlayer);
+		pGameObject->GetTransform()->SetSpeedPerSec(1.f);
+		static_cast<MonsterLight*>(pGameObject->GetMonsterPart()[Monster::PART_LIGHT])->GetOwnLight()->GetLightDesc()->bEnable = false;
+
+		pGameInstance->CreateObject(pGameObject, LAYER_TAG::LAYER_MONSTER);
+
+
+		pGameObject = static_cast<Monster*>(pGameInstance->CloneGameObject(TEXT("ProtoTypeDanceMonster"), &LandObjectDesc));
+		pGameObject->GetTransform()->SetState(Transform::STATE::POSITION, Vec4(11.8908, -3.058f, -16.2216, 1.f));
+		pGameObject->GetNavigation()->SetCurrentIndex(566);
+		pGameObject->GetStateMachine()->SetState(State::STATE::IDLE);
+		pGameObject->SetTarget(pPlayer);
+		pGameObject->GetTransform()->SetSpeedPerSec(1.5f);
+
+		pGameInstance->CreateObject(pGameObject, LAYER_TAG::LAYER_MONSTER);
+
+
+		pGameObject = static_cast<Monster*>(pGameInstance->CloneGameObject(TEXT("ProtoTypeDanceMonster"), &LandObjectDesc));
+		pGameObject->GetTransform()->SetState(Transform::STATE::POSITION, Vec4(12.2680, -3.058f, -6.9177, 1.f));
+		pGameObject->GetNavigation()->SetCurrentIndex(495);
+		pGameObject->GetStateMachine()->SetState(State::STATE::IDLE);
+		pGameObject->SetTarget(pPlayer);
+		pGameObject->GetTransform()->SetSpeedPerSec(1.f);
+
+		pGameInstance->CreateObject(pGameObject, LAYER_TAG::LAYER_MONSTER);
+
 		_bEventState = true;
 
 		RELEASE_INSTANCE(GameInstance);
 	}
-	else if (_id == 253 && true == _bEventState)
+	else if (_id == 253/* && true == _bTrigerOn && _bLastScene == false*/)
 	{
-		// 모든 라이트가 감소됐다가 다시 켜져야함.
+		// 모든 라이트가 감소됐다가 다시 켜져야함. 비네트로 처리
+		Renderer::DEFERRED_DESC& deferredOption = _render->GetDeferredOption();
+
+
+		Vec2 vCurrent = Vec2(deferredOption.fFadeRange, 0.f);
+		Vec2 vResult;
+
 		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
-		vector<OtherLight*>* vecOtherLight = pGameInstance->getLightList();
+		uint32 iMonsterSize = pGameInstance->GetLayerObject(LAYER_TAG::LAYER_MONSTER).size();
 
-		for (auto& pLight : *vecOtherLight)
-		{
-			LIGHT_DESC::TYPE eType = static_cast<LIGHT_DESC::TYPE>(pLight->GetLightDesc()->type);
-
-			_fBlinkTime += timeDelta * timeDelta;
-			//_PlayerLightOff += timeDelta * 0.5f;
-
-			Vec3 vCurrentRange = Vec3(pLight->GetLightDesc()->pointLightRangeRcp, 0.f ,0.f);
-			Vec3 vResult;
-
+		//if (iMonsterSize <= 0)
+		//{
+		//	if (0.05f >= _fMaxBlinkRange.Length() - vCurrent.Length())
+		//		vResult = Vec2::SmoothStep(vCurrent, _fMaxBlinkRange, timeDelta * 6.f);
+		//	else
+		//	{
+		//		deferredOption.fFadeRange = _fMaxBlinkRange.x;
+		//		pGameInstance->StopAll();
+		//		_bLastScene = true;
+		//	}
+		//}
+		//else
+		//{
 			if (true == _bToMax)
 			{
-				vResult = Vec3::SmoothStep(vCurrentRange, _fMaxBlinkRange, timeDelta * 6.f);
-
-				if ((_fMaxBlinkRange.x - vResult.x) <= 0.01f)
+				if (0.05f <= _fMaxBlinkRange.Length() - vCurrent.Length())
+					vResult = Vec2::SmoothStep(vCurrent, _fMaxBlinkRange, timeDelta * 6.f);
+				else
 				{
 					_bToMax = false;
 					_bToMin = true;
 				}
-
 			}
-			
-			if (true == _bToMin)
+			else if (true == _bToMin)
 			{
-				vResult = Vec3::SmoothStep(vCurrentRange, _fMinBlinkRange, timeDelta * 6.f);
-
-				if ((vResult.x - _fMinBlinkRange.x) <= 0.01f)
+				if (0.05f <= vCurrent.Length() - _fMinBlinkRange.Length())
+					vResult = Vec2::SmoothStep(vCurrent, _fMinBlinkRange, timeDelta * 6.f);
+				else
 				{
-					_bToMax = true;
 					_bToMin = false;
+					_bToMax = true;
 				}
 			}
 
-			pLight->GetLightDesc()->pointLightRangeRcp = vResult.x;
+			deferredOption.fFadeRange = vResult.x;
+		//}
+		
 
 
-			//_float fRange = _fMinBlinkRange + 0.5f * (_fMaxBlinkRange - _fMinBlinkRange) * (1.f + sinf(_fBlinkSpeed * _fBlinkTime));
 
-			//if (fRange <= 1.f)
-			//	pLight->GetLightDesc()->bEnable = true;
-			//else
-			//	pLight->GetLightDesc()->bEnable = false;
 
-			
-		}
 
 		RELEASE_INSTANCE(GameInstance);
 	}

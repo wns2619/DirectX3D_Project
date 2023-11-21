@@ -250,6 +250,8 @@ HRESULT Renderer::RenderDeferred()
 		return E_FAIL;
 	if (FAILED(_pShader->BindMatrix("P", &_mProjMatrix)))
 		return E_FAIL;
+	if (FAILED(_pShader->BindRawValue("VignetteRadius", &_DeferredOption.fFadeRange, sizeof(_float))))
+		return E_FAIL;
 
 	if (FAILED(_pTargetManager->BindSRV(_pShader, TEXT("Target_Diffuse"), "DiffuseMap")))
 		return E_FAIL;

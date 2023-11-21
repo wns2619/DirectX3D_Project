@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Monster.h"
 #include "Player.h"
+#include "MonsterLight.h"
 MonsterRun::MonsterRun(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
 }
@@ -25,11 +26,11 @@ State::STATE MonsterRun::UpdateState(const _float& timeDelta)
 
 	Monster* pOwnerMonster = static_cast<Monster*>(_pOwner);
 
-	if (false == _pOwner->IsDead())
+	if (0 < pOwnerMonster->GetLife() && false == pOwnerMonster->GetDeadDelay())
 	{
 		LerpSoundPlayer(fVolume, fDistance, 13.f, pGameInstance);
 
-		if (false == pOwnerMonster->GetOnWater() && false == pOwnerMonster->GetRunOnWater())
+		if (false == pOwnerMonster->GetOnWater() && false == pOwnerMonster->GetRunOnWater() && pOwnerMonster->GetMonsterID() == 1)
 			pGameInstance->PlaySound(TEXT("Steps.wav"), SOUND_MONSTER, fVolume);
 		else if (true == pOwnerMonster->GetOnWater() && false == pOwnerMonster->GetRunOnWater())
 			pGameInstance->PlaySound(TEXT("walkWATER.wav"), SOUND_MONSTER, fVolume);
@@ -55,10 +56,55 @@ State::STATE MonsterRun::UpdateState(const _float& timeDelta)
 			vDestination = pOwnerMonster->GetTargetObject()->GetTransform()->GetState(Transform::STATE::POSITION);
 			// µµÂø°Å¸®.
 		}
-
 	}
 	else
-		pGameInstance->StopSound(SOUND_MONSTER);
+	{
+		if (true == pOwnerMonster->GetDeadDelay())
+		{
+			if (1 == pOwnerMonster->GetMonsterID())
+			{
+				_float& SurpriseTime = pOwnerMonster->GetSurpriseTime();
+
+				SurpriseTime += timeDelta;
+
+				if (SurpriseTime >= 0.5f)
+				{
+					pGameInstance->DeleteObject(pOwnerMonster);
+					pGameInstance->StopSound(SOUND_MONSTER);
+				}
+			}
+		}
+
+		if (0 >= pOwnerMonster->GetLife())
+		{
+			_float& LifeTime = pOwnerMonster->GetLifeTime();
+
+			LifeTime += timeDelta * 3.f;
+
+			LerpSoundTime(fVolume, LifeTime, 8.f);
+			if (LifeTime >= 8.f)
+			{
+				pGameInstance->DeleteObject(pOwnerMonster);
+
+				if (2 == pOwnerMonster->GetMonsterID())
+				{
+					pGameInstance->StopSound(SOUND_MONSTER);
+					pGameInstance->StopSound(SOUND_MONSTER3);
+				}
+
+				if (2 == pOwnerMonster->GetMonsterID() || 3 == pOwnerMonster->GetMonsterID())
+					static_cast<MonsterLight*>(pOwnerMonster->GetMonsterPart()[Monster::MONSTER_PART::PART_LIGHT])->GetOwnLight()->GetLightDesc()->bEnable = true;
+			}
+			else
+			{
+				if (2 == pOwnerMonster->GetMonsterID())
+				{
+					pGameInstance->PlaySound(TEXT("walkWATER.wav"), SOUND_MONSTER, fVolume);
+					pGameInstance->PlaySound(TEXT("RUNWATER.wav"), SOUND_MONSTER3, fVolume);
+				}
+			}
+		}
+	}
 
 	RELEASE_INSTANCE(GameInstance);
 
@@ -100,6 +146,17 @@ void MonsterRun::LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMax
 	fDistance = vDir.Length();
 
 	fVolume = fMaxVolume - (fDistance / fMaxDistance) * (fMaxVolume - fMinVolume);
+
+	if (fVolume <= 0.f)
+		fVolume = 0.f;
+}
+
+void MonsterRun::LerpSoundTime(_float& fVolume, _float& time, _float fMaxTime)
+{
+	const _float fMaxVolume = 0.3f;
+	const _float fMinVolume = 0.f;
+
+	fVolume = fMaxVolume - (time / fMaxTime) * (fMaxVolume - fMinVolume);
 
 	if (fVolume <= 0.f)
 		fVolume = 0.f;

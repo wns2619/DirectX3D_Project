@@ -26,6 +26,10 @@ cbuffer SpotLightConstants : register(b3)
     float  SpotCosInnerConeRcp  : packoffset(c3.y);
 }
 
+cbuffer Vignette : register(b1)
+{
+    float VignetteRadius : packoffset(c0.x);
+};
 
 struct PS_OUT_LIGHT
 {
@@ -345,16 +349,11 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     
     
     // Vignette
-     // Calculate the distance from the center of the viewport.
-    float viewportRadius = 0.6f; // Adjust this as needed.
-    float distance = length(In.vTexcoord - float2(0.5, 0.5)) / viewportRadius;
-    
-    // Calculate the vignette factor (adjust the falloff as needed).
+    float distance = length(In.vTexcoord - float2(0.5, 0.5)) / VignetteRadius;
     float vignette = 1.0 - smoothstep(0.0, 1.0, distance);
-    vDiffuse *= vignette;
+    
 
-
-    Out.vColor = vDiffuse * vShade + vSpecular;
+    Out.vColor = (vDiffuse * vShade + vSpecular) * vignette;
     
     
     return Out;

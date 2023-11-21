@@ -22,7 +22,7 @@ VertexAnimMeshOut VS_MAIN(VertexAnimMesh input)
     
     vector bonePosition = mul(float4(input.position, 1.f), BoneMatrix);
     vector meshNormal = mul(float4(input.normal, 0.f), BoneMatrix);
-    
+    vector tangentNormal = mul(float4(input.tangent, 0.f), BoneMatrix);
     
     matrix WVP = ComputeTransformMatrix(W, V, P);
     
@@ -32,7 +32,7 @@ VertexAnimMeshOut VS_MAIN(VertexAnimMesh input)
     Out.normal = normalize(mul(meshNormal, W));
     Out.worldPosition = mul(bonePosition, W);
     Out.vProjPos = Out.position;
-    Out.tangent = normalize(mul(float4(input.tangent, 0.f), W));
+    Out.tangent = normalize(mul(tangentNormal, W));
     Out.bittangent = normalize(cross(Out.normal.xyz, Out.tangent));
     
     return Out;

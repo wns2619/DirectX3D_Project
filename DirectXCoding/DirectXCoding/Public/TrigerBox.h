@@ -49,19 +49,20 @@ private:
 	uint32 _iTurnCount = 0;
 
 	_float _fEventSound = 0.f;
-
+	
+	_bool _bLastScene = false;
 private: //event
 	_bool _bEventState = false;
 
-	Vec3 _fMaxBlinkRange = Vec3(2.f,0.f,0.f);
-	Vec3 _fMinBlinkRange = Vec3(0.f,0.f,0.f);
-	_float _fBlinkSpeed = 3.f;
-	_float _fBlinkTime = 0.f;
-
+	Vec2 _fMaxBlinkRange = Vec2(0.6f,0.f);
+	Vec2 _fMinBlinkRange = Vec2(0.f,0.f);
 	_float _PlayerLightOff = 0.f;
 
 	_bool _bToMax = true;
 	_bool _bToMin = false;
+	_bool _bStartRange = true;
+
+	Vec3 _vOriginRange;
 
 private:
 	virtual HRESULT ReadyComponents() override;

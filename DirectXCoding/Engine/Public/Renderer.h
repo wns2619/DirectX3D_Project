@@ -9,10 +9,15 @@ class GameObject;
 class ENGINE_DLL Renderer final : public Component
 {
 public:
+	struct DEFERRED_DESC
+	{
+		_float fFadeRange = 0.6f;
+	};
+
+public:
 	enum class RENDERGROUP { PRIORITY = 0, NONLIGHT, NONBLEND, BLEND, UI, RENDER_END };
 	
 private:
-
 	explicit Renderer(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	explicit Renderer(const Renderer& rhs) = delete;
 	virtual ~Renderer() = default;
@@ -24,6 +29,9 @@ public:
 public:
 	HRESULT	AddRenderGroup(RENDERGROUP renderGroup, GameObject* gameObject);
 	HRESULT	DrawRenderObjects();
+
+public:
+	DEFERRED_DESC& GetDeferredOption() { return _DeferredOption; }
 
 #ifdef _DEBUG
 	HRESULT AddDebug(class Component* pDebug)
@@ -46,6 +54,8 @@ private:
 
 	Matrix _mWorldMatrix, _mViewMatrix, _mProjMatrix;
 
+private:
+	DEFERRED_DESC _DeferredOption;
 #ifdef _DEBUG
 private:
 	list<class Component*> _renderDebug;

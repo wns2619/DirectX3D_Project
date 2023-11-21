@@ -57,9 +57,15 @@ private:
 public:
 	_bool GetOnWater() { return _bOnWater; }
 	_bool GetRunOnWater() { return _bRunOnWater; }
-	void SetOnWater(_bool water) { _bOnWater = water; }
-
 	uint32 GetMonsterID() { return _iMonsterID; }
+	const int32& GetLife() { return _iLife; }
+	_float& GetLifeTime() { return _fLifeTime; }
+	_float& GetSurpriseTime() { return _fSurpriseTime; }
+	const _bool& GetDeadDelay() { return _bDeadDelay; }
+
+
+	void SetOnWater(_bool water) { _bOnWater = water; }
+	void SetLife(int32 life) { _iLife = life; }
 public: // A*
 	void SetTarget(class GameObject* pGameObject) { _pTargetObject = pGameObject; }
 	class GameObject* GetTargetObject() { return _pTargetObject; }

@@ -300,16 +300,19 @@ void Player::KeyInput(const _float& timeDelta)
 	if (true == _bScare)
 	{
 		// TODO : 카메라 줌인 줌 아웃. 몇 초간 시키고 다시 원상 복귀. 
-		_float fFov = static_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->PlayerCameraFov();
+		_float fFov;
+
+		if (true == _bOriginalFovStore)
+		{
+			_fOriginalFov = static_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->PlayerCameraFov();
+			fFov = _fOriginalFov;
+			_bOriginalFovStore = false;
+		}
+		else
+			fFov = static_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->PlayerCameraFov();
 
 		if (_iPeriod == 2)
-		{
-			if (::XMConvertToRadians(70.f) > fFov)
-			{
-				static_cast<BodyCam*>(m_pPlayerPart[PART::PART_CAMERA])->AddPlayerCameraFov(::XMConvertToRadians(2.f));
-				_bScare = false;
-			}
-		}
+			_bScare = false;
 
 
 		if (_iPeriod < 2)
@@ -321,7 +324,7 @@ void Player::KeyInput(const _float& timeDelta)
 		}
 		--_iPulseTick;
 
-		if (-10 == _iPulseTick)
+		if (-10 == _iPulseTick && _iPeriod < 2)
 		{
 			_iPulseTick = 11;
 			++_iPeriod;

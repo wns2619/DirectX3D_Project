@@ -73,9 +73,10 @@ private:
 
 private:
 	_bool _bScare = false;
+	_bool _bOriginalFovStore = true;
 	uint32 _iPeriod = 0;
 	int32 _iPulseTick = 11;
-
+	_float _fOriginalFov = 0.f;
 
 private:
 	_float _fChangeSoubd = 0.f;

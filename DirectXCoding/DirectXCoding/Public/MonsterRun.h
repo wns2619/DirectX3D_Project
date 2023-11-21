@@ -30,7 +30,7 @@ public:
 public:
 	virtual void ChangeSetState() override;
 	void LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMaxDistance, GameInstance* pGameInstance);
-
+	void LerpSoundTime(_float& fVolume, _float& time, _float fMaxTime);
 public:
 	static MonsterRun* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext, GameObject* pOwner);
 	virtual void Free() override;

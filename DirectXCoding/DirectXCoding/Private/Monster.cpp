@@ -61,7 +61,7 @@ HRESULT Monster::Initialize(void* pArg)
 	vector<BinaryAnimation*>& vecAnim = static_cast<MonsterBody*>(_pMonsterPart[PART_BODY])->GetBinaryModelComponent()->GetBinaryAnimation();
 	vector<BinaryBone*>& pVecBone = static_cast<MonsterBody*>(_pMonsterPart[PART_BODY])->GetBinaryModelComponent()->GetBinaryBones();
 
-	_pAnimator->AddAnimation(State::STATE::IDLE, vecAnim[0], &pVecBone, true, 1.5f);
+	_pAnimator->AddAnimation(State::STATE::IDLE, vecAnim[0], &pVecBone, true, 2.5f);
 	_pAnimator->AddAnimation(State::STATE::RUN, vecAnim[1], &pVecBone, true, 2.f);
 	_pAnimator->AddAnimation(State::STATE::DANCE, vecAnim[2], &pVecBone, true, 2.f);
 
@@ -81,56 +81,21 @@ void Monster::Tick(const _float& fTimeDelta)
 	if (_enabled)
 		return;
 
-	if (true == _bDeadDelay)
-	{
-		if (1 == _iMonsterID)
-		{
-			_fSurpriseTime += fTimeDelta;
 
-			if (_fSurpriseTime >= 0.5f)
-			{
-				GameInstance* pGameInstancec = GET_INSTANCE(GameInstance);
-
-				pGameInstancec->DeleteObject(this);
-				pGameInstancec->StopSound(SOUND_MONSTER);
-
-				RELEASE_INSTANCE(GameInstance);
-			}
-		}
-	}
-
-	if (0 >= _iLife)
-	{
-		_fLifeTime += fTimeDelta * 3.f;
-
-		if (_fLifeTime >= 8.f)
-		{
-			GameInstance* pGameInstancec = GET_INSTANCE(GameInstance);
-
-			pGameInstancec->DeleteObject(this);
-			pGameInstancec->StopSound(SOUND_MONSTER);
-			pGameInstancec->StopSound(SOUND_MONSTER3);
-
-			RELEASE_INSTANCE(GameInstance);
-		}
-	}
-	else
-	{
-		XMVECTOR vPosition = __super::SetUp_OnCell(_transform->GetState(Transform::STATE::POSITION), _pNavigation->GetCurrentIndex());
-		_transform->SetState(Transform::STATE::POSITION, vPosition);
-		_pStateMachine->UpdateStateMachine(fTimeDelta);
+	XMVECTOR vPosition = __super::SetUp_OnCell(_transform->GetState(Transform::STATE::POSITION), _pNavigation->GetCurrentIndex());
+	_transform->SetState(Transform::STATE::POSITION, vPosition);
+	_pStateMachine->UpdateStateMachine(fTimeDelta);
 
 
-		if (1 == _iMonsterID)
-			_transform->Forward(fTimeDelta, _pNavigation);
-		_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
-		_pAssistCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
+	if (1 == _iMonsterID)
+		_transform->Forward(fTimeDelta, _pNavigation);
 
-		for (auto& pPart : _pMonsterPart)
-			if (nullptr != pPart)
-				pPart->Tick(fTimeDelta);
-	}
+	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
+	_pAssistCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 
+	for (auto& pPart : _pMonsterPart)
+		if (nullptr != pPart)
+			pPart->Tick(fTimeDelta);
 
 }
 
@@ -141,6 +106,7 @@ void Monster::LateTick(const _float& fTimeDelta)
 	for (auto& pPart : _pMonsterPart)
 		if (nullptr != pPart)
 			pPart->LateTick(fTimeDelta);
+
 
 	if (!_enabled)
 		_render->AddRenderGroup(Renderer::RENDERGROUP::NONBLEND, this);
@@ -331,7 +297,7 @@ HRESULT Monster::ReadyComponents()
 		TEXT("ComponentAssistCollider"), reinterpret_cast<Component**>(&_pAssistCollider), &frustumDesc)))
 		return E_FAIL;
 
-	if (_iMonsterID == 1 || _iMonsterID == 2)
+	if (_iMonsterID == 1 || _iMonsterID == 2 || _iMonsterCount == 3 || _iMonsterCount == 5)
 	{
 		if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeMonsterDiffuse2"),
 			TEXT("ComponentDiffuseTexture"), reinterpret_cast<Component**>(&_pTexture[MONSTER_DIFFUSE]))))
@@ -390,17 +356,20 @@ HRESULT Monster::ReadyMonsterPart()
 
 	// TODO MonsterID가 2번째 인 친구한테만 달자.
 
-	
-	MonsterLight::MONSTER_FLASH MonsterLightDesc;
-	MonsterLightDesc.pParentTransform = _transform;
-	MonsterLightDesc.pSocketMatrix = static_cast<MonsterBody*>(_pMonsterPart[PART_BODY])->GetSocketBoneMatrix("mixamorig5:Spine1");
-	MonsterLightDesc.mSocketPivot = static_cast<MonsterBody*>(_pMonsterPart[PART_BODY])->GetSocketPivotMatrix();
-	MonsterLightDesc.pDissolveTime = &_fLifeTime;
+	if (2 == _iMonsterID || 3 == _iMonsterID)
+	{
+		MonsterLight::MONSTER_FLASH MonsterLightDesc;
+		MonsterLightDesc.pParentTransform = _transform;
+		MonsterLightDesc.pSocketMatrix = static_cast<MonsterBody*>(_pMonsterPart[PART_BODY])->GetSocketBoneMatrix("mixamorig5:Spine1");
+		MonsterLightDesc.mSocketPivot = static_cast<MonsterBody*>(_pMonsterPart[PART_BODY])->GetSocketPivotMatrix();
+		MonsterLightDesc.pDissolveTime = &_fLifeTime;
 
-	pMonsterPart = gameInstance->CloneGameObject(TEXT("ProtoTypeDanceMonsterLight"), &MonsterLightDesc);
-	if (nullptr == pMonsterPart)
-		return E_FAIL;
-	_pMonsterPart.push_back(pMonsterPart);
+		pMonsterPart = gameInstance->CloneGameObject(TEXT("ProtoTypeDanceMonsterLight"), &MonsterLightDesc);
+		if (nullptr == pMonsterPart)
+			return E_FAIL;
+		_pMonsterPart.push_back(pMonsterPart);
+	}
+
 
 	MonsterAxe::MONSTER_AXE AxeDesc;
 	AxeDesc.pDissolveTime = &_fLifeTime;
