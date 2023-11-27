@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "Bounding_Sphere.h"
+#include "ValveUI.h"
 
 Valve::Valve(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::VALVE)
@@ -26,6 +27,9 @@ HRESULT Valve::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (FAILED(ReadyCollider()))
+		return E_FAIL;
+
+	if (FAILED(ReadyValveUI()))
 		return E_FAIL;
 
 	if (nullptr != pArg)
@@ -99,11 +103,26 @@ void Valve::Tick(const _float& timeDelta)
 	}
 
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
+
+
+	if (true == _bOnUI)
+	{
+		for (auto& pPart : _valvePart)
+			pPart->Tick(timeDelta);
+	}
+
 }
 
 void Valve::LateTick(const _float& timeDelta)
 {
 	__super::LateTick(timeDelta);
+
+	if (true == _bOnUI)
+	{
+		for (auto& pPart : _valvePart)
+			pPart->LateTick(timeDelta);
+	}
+
 
 #ifdef _DEBUG
 	_render->AddDebug(_pCollider);
@@ -138,6 +157,14 @@ HRESULT Valve::Render()
 		if (FAILED(_binaryModel->Render(i)))
 			return E_FAIL;
 	}
+
+
+	if (true == _bOnUI)
+	{
+		for (auto& pPart : _valvePart)
+			pPart->Render();
+	}
+
 
 	return S_OK;
 
@@ -182,12 +209,14 @@ void Valve::OnCollisionEnter(Collider* pOther)
 
 void Valve::OnCollisionStay(Collider* pOther)
 {
-
+	if (OBJECT_TYPE::PLAYER == pOther->GetOwner()->GetObjectType())
+		_bOnUI = true;
 }
 
 void Valve::OnCollisionExit(Collider* pOther)
 {
-
+	if (OBJECT_TYPE::PLAYER == pOther->GetOwner()->GetObjectType())
+		_bOnUI = false;
 }
 
 void Valve::LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMaxDistance, GameInstance* pGameInstance)
@@ -210,6 +239,28 @@ void Valve::LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMaxDista
 
 	if (fVolume <= 0.f)
 		fVolume = 0.f;
+}
+
+HRESULT Valve::ReadyValveUI()
+{
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	GameObject* pValvePart = nullptr;
+
+	ValveUI::PART_DESC PartDesc;
+	PartDesc.pParentTransform = _transform;
+	PartDesc.iID = _id;
+
+	pValvePart = pGameInstance->CloneGameObject(TEXT("ProtoTypeValveUI"), &PartDesc);
+	if (nullptr == pValvePart)
+		return E_FAIL;
+
+	_valvePart.push_back(pValvePart);
+
+
+	RELEASE_INSTANCE(GameInstance);
+
+	return S_OK;
 }
 
 Valve* Valve::Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
@@ -241,4 +292,9 @@ GameObject* Valve::Clone(void* argument)
 void Valve::Free()
 {
 	__super::Free();
+
+	for (auto& pPart : _valvePart)
+		Safe_Release<GameObject*>(pPart);
+
+	_valvePart.clear();
 }

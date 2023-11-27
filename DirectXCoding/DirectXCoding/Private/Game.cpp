@@ -59,7 +59,7 @@ void Game::Tick(const _float& timeDelta)
 	//ImGuiManager::GetInstance()->LateTick(timeDelta);
 
 #ifdef _DEBUG
-	//_fTimeAcc += timeDelta;
+	_fTimeAcc += timeDelta;
 #endif // _DEBUG
 
 
@@ -89,7 +89,7 @@ HRESULT Game::Render()
 		_iRenderCount = 0;
 	}
 
-	_gameInstance->RenderFont(TEXT("DefaultFont"), _szFPS, Vec2(0.f, 0.f), Vec4(1.f, 0.f, 0.f, 1.f));
+	_gameInstance->RenderFont(TEXT("DefaultFont"), _szFPS, Vec2(0.f, 0.f), Vec4(1.f, 0.f, 0.f, 1.f), 0.f, Vec2(0.f,0.f), 0.5f);
 #endif // _DEBUG
 
 
@@ -133,6 +133,10 @@ HRESULT Game::ReadyProtoTypeComponents()
 	
 	if(FAILED(_gameInstance->AddProtoType(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentVIBufferRect"),
 		VIBufferRect::Create(_device, _devicecontext))))
+		return E_FAIL;
+
+	if (FAILED(_gameInstance->AddProtoType(static_cast<uint32>(LEVEL::STATIC), TEXT("ProtoTypeComponentVIBufferNormalRect"),
+		VIBufferNormalRect::Create(_device, _devicecontext))))
 		return E_FAIL;
 
 	/* ProtoType Component Transform */

@@ -139,6 +139,8 @@ HRESULT StaticObject::Render()
 	}
 
 
+
+
 	return S_OK;
 }
 

@@ -10,6 +10,8 @@ BEGIN(Client)
 
 class Valve final : public DynamicObject
 {
+public:
+	enum PART { PART_UI, PART_END };
 private:
 	explicit Valve(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	explicit Valve(const Valve& rhs);
@@ -38,6 +40,12 @@ private:
 private:
 	int32 _iRotationTick = 0;
 	uint32 _iRotationCount = 0;
+
+private:
+	vector<GameObject*> _valvePart;
+	_bool _bOnUI = false;
+
+	HRESULT ReadyValveUI();
 
 public:
 	static Valve* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);

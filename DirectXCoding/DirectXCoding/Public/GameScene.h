@@ -23,6 +23,7 @@ public:
 	HRESULT ReadyLayerPlayer(const LAYER_TAG layerTag, void* pArg);
 	HRESULT ReadyLayerMonster(const LAYER_TAG layerTag, void* pArg);
 	HRESULT ReadyLight();
+	HRESULT ReadyUI(const LAYER_TAG layerTag);
 
 public:
 	static GameScene* Create(ID3D11Device* _device, ID3D11DeviceContext* _deviceContext);

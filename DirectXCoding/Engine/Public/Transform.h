@@ -65,6 +65,7 @@ public:
 	void Right(const _float& timeDelta, class BinaryNavi* pNavigation = nullptr);
 	void FixRotation(XMVECTOR axis, const _float radian);
 	void FixRotation(_float x, _float y, _float z);
+	void BillBoardRotate(XMVECTOR axis, const _float fRadian);
 	void Turn(XMVECTOR axis, const _float& timeDelta, _float fAngle = 1.f);
 	void TurnTo(XMVECTOR vPoint, const _float& timeDelta);
 	void LookAt(FXMVECTOR point);

@@ -11,6 +11,7 @@ Texture::Texture(const Texture& rhs)
 	: Component(rhs)
 	, _numTextures(rhs._numTextures)
 	, _shaderResourceViews(rhs._shaderResourceViews)
+	, _texturePath(rhs._texturePath)
 {
 	for (size_t i = 0; i < _numTextures; i++)
 		Safe_AddRef<ID3D11ShaderResourceView*>(_shaderResourceViews[i]);

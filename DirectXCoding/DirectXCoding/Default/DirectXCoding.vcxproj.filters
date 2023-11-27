@@ -167,6 +167,15 @@
     <Filter Include="소스 파일\02.GameObjects\07. Monster\MonsterPart\Body">
       <UniqueIdentifier>{fa3dfa71-076c-45d6-856c-c83e1cd79dbc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\09.UI">
+      <UniqueIdentifier>{a2bcb976-6b6e-4f2c-99ad-2b2a8cd104d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\06. Dynamic\Valve\ValveUI">
+      <UniqueIdentifier>{06d0cec9-115c-4950-bda7-d6b4199118d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\06. Dynamic\Valve\ValveBody">
+      <UniqueIdentifier>{fe8c1ca9-0e5c-4430-acfa-8ce538be7647}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -370,6 +379,15 @@
     <ClInclude Include="..\Public\MonsterAxe.h">
       <Filter>소스 파일\02.GameObjects\07. Monster\MonsterPart\Weapon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ValveUI.h">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\Valve\ValveUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ValveBody.h">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\Valve\ValveBody</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RouteUI.h">
+      <Filter>소스 파일\02.GameObjects\09.UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -549,6 +567,15 @@
     <ClCompile Include="..\Private\MonsterAxe.cpp">
       <Filter>소스 파일\02.GameObjects\07. Monster\MonsterPart\Weapon</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\ValveUI.cpp">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\Valve\ValveUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ValveBody.cpp">
+      <Filter>소스 파일\02.GameObjects\06. Dynamic\Valve\ValveBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RouteUI.cpp">
+      <Filter>소스 파일\02.GameObjects\09.UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Binaries\Shaders\HillsShader.fx">
@@ -567,6 +594,9 @@
       <Filter>소스 파일\98.Shaders\Common</Filter>
     </FxCompile>
     <FxCompile Include="..\Binaries\Shaders\Shader_VtxPosTex.fx">
+      <Filter>소스 파일\98.Shaders\ObjectShader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Binaries\Shaders\Shader_Rect.fx">
       <Filter>소스 파일\98.Shaders\ObjectShader</Filter>
     </FxCompile>
   </ItemGroup>

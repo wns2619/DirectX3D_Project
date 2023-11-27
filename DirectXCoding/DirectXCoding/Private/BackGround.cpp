@@ -60,6 +60,7 @@ HRESULT BackGround::Render()
 		return E_FAIL;
 
 	_shader->Begin(0);
+	
 
 	_viBuffer->Render();
 

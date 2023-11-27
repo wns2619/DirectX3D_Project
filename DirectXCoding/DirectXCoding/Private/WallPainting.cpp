@@ -93,7 +93,7 @@ HRESULT WallPainting::Render()
 	Color vColor = Color(1.f,1.f,1.f,1.f);
 
 	if (_modelName == "EvilGraffiti" || _modelName == "ShootGraffiti")
-		vColor = Color(0.5f, 0.f, 0.f, 1.f);
+		vColor = Color(1.f, 0.f, 0.f, 1.f);
 	else if (_modelName == "HumanGraffiti")
 		vColor = Color(0.f, 0.9f, 0.f, 1.f);
 	else if (_modelName == "WayGraffiti")

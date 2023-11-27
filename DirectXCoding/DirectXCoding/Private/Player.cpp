@@ -123,6 +123,7 @@ HRESULT Player::Render()
 			pPart->Render();
 	}
 
+
 	return S_OK;
 }
 

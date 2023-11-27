@@ -238,6 +238,9 @@
     <Filter Include="01.Utility\04.Component\VIBuffer\Instancing\Rect">
       <UniqueIdentifier>{24c8e359-6660-4571-8278-44d63c27fb7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Component\VIBuffer\Rect\NormalRect">
+      <UniqueIdentifier>{8270a1a3-217a-4ab2-96da-9b97986d5bd8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\SimpleMath.h">
@@ -519,6 +522,9 @@
     <ClInclude Include="..\Public\VIBuffer_RectInstance.h">
       <Filter>01.Utility\04.Component\VIBuffer\Instancing\Rect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBufferNormalRect.h">
+      <Filter>01.Utility\04.Component\VIBuffer\Rect\NormalRect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\SimpleMath.cpp">
@@ -736,6 +742,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_RectInstance.cpp">
       <Filter>01.Utility\04.Component\VIBuffer\Instancing\Rect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBufferNormalRect.cpp">
+      <Filter>01.Utility\04.Component\VIBuffer\Rect\NormalRect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

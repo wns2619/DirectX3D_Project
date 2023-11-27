@@ -223,12 +223,15 @@
     <ClInclude Include="..\Public\PlayerFire.h" />
     <ClInclude Include="..\Public\PlayerReload.h" />
     <ClInclude Include="..\Public\PlayerWalk.h" />
+    <ClInclude Include="..\Public\RouteUI.h" />
     <ClInclude Include="..\Public\StaticObject.h" />
     <ClInclude Include="..\Public\Surefire.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\ToolCamera.h" />
     <ClInclude Include="..\Public\TrigerBox.h" />
     <ClInclude Include="..\Public\Valve.h" />
+    <ClInclude Include="..\Public\ValveBody.h" />
+    <ClInclude Include="..\Public\ValveUI.h" />
     <ClInclude Include="..\Public\WallPainting.h" />
     <ClInclude Include="..\Public\Water.h" />
     <ClInclude Include="DirectXCoding.h" />
@@ -319,6 +322,7 @@
     <ClCompile Include="..\Private\PlayerWalk.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
+    <ClCompile Include="..\Private\RouteUI.cpp" />
     <ClCompile Include="..\Private\StaticObject.cpp" />
     <ClCompile Include="..\Private\Surefire.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp">
@@ -327,6 +331,8 @@
     <ClCompile Include="..\Private\ToolCamera.cpp" />
     <ClCompile Include="..\Private\TrigerBox.cpp" />
     <ClCompile Include="..\Private\Valve.cpp" />
+    <ClCompile Include="..\Private\ValveBody.cpp" />
+    <ClCompile Include="..\Private\ValveUI.cpp" />
     <ClCompile Include="..\Private\WallPainting.cpp" />
     <ClCompile Include="..\Private\Water.cpp" />
     <ClCompile Include="DirectXCoding.cpp">
@@ -360,6 +366,12 @@
     </FxCompile>
     <FxCompile Include="..\Binaries\Shaders\HillsShader.fx" />
     <FxCompile Include="..\Binaries\Shaders\LightHelper.fx">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+    </FxCompile>
+    <FxCompile Include="..\Binaries\Shaders\Shader_Rect.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>

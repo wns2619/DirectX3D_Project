@@ -34,6 +34,8 @@ HRESULT GameScene::Initialize()
     if (FAILED(ReadyLandObjects(LAYER_TAG::LAYER_STATIC)))
         return E_FAIL;
 
+	if (FAILED(ReadyUI(LAYER_TAG::LAYER_UI)))
+		return E_FAIL;
 
 	//if (FAILED(ReadyLayerCamera(LAYER_TAG::LAYER_CAMERA)))
 	//	return E_FAIL;
@@ -505,6 +507,19 @@ HRESULT GameScene::ReadyLight()
 
 
 	RELEASE_INSTANCE(GameInstance);
+
+	return S_OK;
+}
+
+HRESULT GameScene::ReadyUI(const LAYER_TAG layerTag)
+{
+	GameInstance* gameInstance = GameInstance::GetInstance();
+	Safe_AddRef<GameInstance*>(gameInstance);
+
+	if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ProtoTypeRouteUI"))))
+		return E_FAIL;
+
+	Safe_Release<GameInstance*>(gameInstance);
 
 	return S_OK;
 }

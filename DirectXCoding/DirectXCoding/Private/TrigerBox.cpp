@@ -54,7 +54,7 @@ void TrigerBox::PriorityTick(const _float& timeDelta)
 
 void TrigerBox::Tick(const _float& timeDelta)
 {
-	TrigerOccur(timeDelta);
+	//TrigerOccur(timeDelta);
 
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
@@ -655,7 +655,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 
 		RELEASE_INSTANCE(GameInstance);
 	}
-	else if (_id == 253/* && true == _bTrigerOn && _bLastScene == false*/)
+	else if (_id == 253 && true == _bTrigerOn && _bLastScene == false)
 	{
 		// 모든 라이트가 감소됐다가 다시 켜져야함. 비네트로 처리
 		Renderer::DEFERRED_DESC& deferredOption = _render->GetDeferredOption();
@@ -668,19 +668,19 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 
 		uint32 iMonsterSize = pGameInstance->GetLayerObject(LAYER_TAG::LAYER_MONSTER).size();
 
-		//if (iMonsterSize <= 0)
-		//{
-		//	if (0.05f >= _fMaxBlinkRange.Length() - vCurrent.Length())
-		//		vResult = Vec2::SmoothStep(vCurrent, _fMaxBlinkRange, timeDelta * 6.f);
-		//	else
-		//	{
-		//		deferredOption.fFadeRange = _fMaxBlinkRange.x;
-		//		pGameInstance->StopAll();
-		//		_bLastScene = true;
-		//	}
-		//}
-		//else
-		//{
+		if (iMonsterSize <= 0)
+		{
+			if (0.05f >= _fMaxBlinkRange.Length() - vCurrent.Length())
+				vResult = Vec2::SmoothStep(vCurrent, _fMaxBlinkRange, timeDelta * 6.f);
+			else
+			{
+				deferredOption.fFadeRange = _fMaxBlinkRange.x;
+				pGameInstance->StopAll();
+				_bLastScene = true;
+			}
+		}
+		else
+		{
 			if (true == _bToMax)
 			{
 				if (0.05f <= _fMaxBlinkRange.Length() - vCurrent.Length())
@@ -703,13 +703,8 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 			}
 
 			deferredOption.fFadeRange = vResult.x;
-		//}
+		}
 		
-
-
-
-
-
 		RELEASE_INSTANCE(GameInstance);
 	}
 

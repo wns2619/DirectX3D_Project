@@ -98,9 +98,12 @@ pass name                                                              \
 {                                                                      \
     SetRasterizerState(RS_Default);                                    \
     SetDepthStencilState(DSS_Default, 0);                              \
-	SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff); \
+	SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff); \
     SetVertexShader(CompileShader(vs_5_0, vs()));                      \
     SetPixelShader(CompileShader(ps_5_0, ps()));                       \
+    GeometryShader = NULL;                                             \
+    HullShader = NULL;                                                 \
+    DomainShader = NULL;                                               \
 }
 
 #define SOLID_PASS_WATER_VP(name, vs, ps)                                   \
@@ -111,6 +114,23 @@ pass name                                                                   \
 	SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);   \
     SetVertexShader(CompileShader(vs_5_0, vs()));                           \
     SetPixelShader(CompileShader(ps_5_0, ps()));                            \
+    GeometryShader = NULL;                                                  \
+    HullShader = NULL;                                                      \
+    DomainShader = NULL;                                                    \
+}
+
+
+#define SOLID_PASS_UseGeometry_VP(name, vs, ps)                             \
+pass name                                                                   \
+{                                                                           \
+    SetRasterizerState(RS_Default);                                         \
+    SetDepthStencilState(DSS_Default, 0);                                   \
+	SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);   \
+    SetVertexShader(CompileShader(vs_5_0, vs()));                           \
+    SetPixelShader(CompileShader(ps_5_0, ps()));                            \
+    SetGeometryShader(CompileShader(gs_5_0, gs()));                         \
+    HullShader = NULL;                                                      \
+    DomainShader = NULL;                                                    \
 }
 
 float3 CameraPosition()

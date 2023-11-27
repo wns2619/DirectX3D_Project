@@ -148,7 +148,6 @@ void Transform::FixRotation(_float x, _float y, _float z)
 {
     Vec3 scale = GetScaled();
 
-
     XMVECTOR right = ::XMVectorSet(1.f, 0.f, 0.f, 0.f) * scale.x;
     XMVECTOR up = ::XMVectorSet(0.f, 1.f, 0.f, 0.f) * scale.y;
     XMVECTOR look = ::XMVectorSet(0.f, 0.f, 1.f, 0.f) * scale.z;
@@ -172,6 +171,24 @@ void Transform::FixRotation(_float x, _float y, _float z)
     SetState(STATE::LOOK, look);
 }
 
+void Transform::BillBoardRotate(XMVECTOR axis, const _float fRadian)
+{
+    Vec3 scale = GetScaled();
+
+    XMVECTOR right = GetState(STATE::RIGHT);
+    XMVECTOR up = GetState(STATE::UP);
+    XMVECTOR look = GetState(STATE::LOOK);
+
+    Matrix rotationMatrix = ::XMMatrixRotationAxis(axis, fRadian);
+
+    right = ::XMVector4Transform(right, rotationMatrix);
+    up = ::XMVector4Transform(up, rotationMatrix);
+    look = ::XMVector4Transform(look, rotationMatrix);
+
+    SetState(STATE::RIGHT, right);
+    SetState(STATE::UP, up);
+    SetState(STATE::LOOK, look);
+}
 
 
 void Transform::Turn(XMVECTOR axis, const _float& timeDelta, _float fAngle)
@@ -192,7 +209,6 @@ void Transform::Turn(XMVECTOR axis, const _float& timeDelta, _float fAngle)
     SetState(STATE::RIGHT, right);
     SetState(STATE::UP, up);
     SetState(STATE::LOOK, look);
-
 }
 
 void Transform::TurnTo(XMVECTOR vPoint, const _float& timeDelta)

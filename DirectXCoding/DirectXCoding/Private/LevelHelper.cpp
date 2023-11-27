@@ -21,6 +21,8 @@
 #include "MonsterBody.h"
 #include "MonsterLight.h"
 #include "MonsterAxe.h"
+#include "ValveUI.h"
+#include "RouteUI.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -604,8 +606,49 @@ HRESULT LevelHelper::LoadingTexture()
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
         }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeValveUI"),
+            Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\PNG\\e.png")))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeRouteUI"),
+            Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\PNG\\Purpose.png")))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
         break;
     case Client::LEVEL::EDIT:
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeValveUI"),
+            Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\PNG\\e.png")))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeDissolveTexture"),
+            Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\Dissolve.png")))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeMonsterDiffuse1"),
+            Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\MyModels\\Monster\\rczrozp_4K_Albedo.dds")))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeRouteUI"),
+            Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\PNG\\Purpose.png")))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
         break;
     default:
         break;
@@ -1978,6 +2021,14 @@ HRESULT LevelHelper::LoadingShader()
             return E_FAIL;
         }
 
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeShaderRect"),
+            Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/Shader_Rect.fx"), VertexTextureData::Elements,
+                VertexTextureData::numElements))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
         break;
     case Client::LEVEL::EDIT:
         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentDefaultMeshShader"),
@@ -1998,6 +2049,14 @@ HRESULT LevelHelper::LoadingShader()
         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentShaderVertexTextureData"),
             Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/Shader_VtxPosTex.fx"), VertexTextureNormalData::Elements,
                 VertexTextureNormalData::numElements))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeShaderRect"),
+            Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/Shader_Rect.fx"), VertexTextureData::Elements,
+                VertexTextureData::numElements))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
@@ -2230,6 +2289,20 @@ HRESULT LevelHelper::LoadingObject()
             return E_FAIL;
         }
 
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeValveUI"),
+            ValveUI::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeRouteUI"),
+            RouteUI::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
         break;
     case Client::LEVEL::EDIT:
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeGameObjectEditTerrain"),
@@ -2430,6 +2503,21 @@ HRESULT LevelHelper::LoadingObject()
 
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeAxe"),
             MonsterAxe::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeValveUI"),
+            ValveUI::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeRouteUI"),
+            RouteUI::Create(_device, _deviceContext))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
