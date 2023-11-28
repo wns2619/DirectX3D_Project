@@ -254,8 +254,8 @@ HRESULT LevelHelper::LodingforLevelEdit()
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Player\\surefire.dat", TEXT("ProtoTypeModelsurefire"), TEXT("ProtoTypeComponentAnimMesh"));*/
    
     // Monster
-    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Monster\\DanceMonster.dat", LAYER_TAG::LAYER_MONSTER, TEXT("ProtoTypeDanceMonster"));
-    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Monster\\DanceMonster.dat", TEXT("ProtoTypeDanceMonster"), TEXT("ProtoTypeComponentDefaultMeshShader"));
+    ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Monster\\DanceMonster.fbx", LAYER_TAG::LAYER_MONSTER, TEXT("ProtoTypeDanceMonster"));
+    ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Monster\\DanceMonster.fbx", TEXT("ProtoTypeDanceMonster"), TEXT("ProtoTypeComponentAnimMesh"));
 
     ImGuiResourceHandler::GetInstance()->AddProtoFilePath("..\\Binaries\\Resources\\MyModels\\Monster\\Axe.dat", LAYER_TAG::LAYER_MONSTER, TEXT("ProtoTypeAxe"));
     ImGuiResourceHandler::GetInstance()->AddProtoComponentName("..\\Binaries\\Resources\\MyModels\\Monster\\Axe.dat", TEXT("ProtoTypeAxe"), TEXT("ProtoTypeComponentDefaultMeshShader"));
@@ -1914,7 +1914,7 @@ HRESULT LevelHelper::LoadingMesh()
          }
 
          if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeDanceMonster"),
-             BinaryModel::Create(_device, _deviceContext, BinaryModel::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\MyModels\\Monster\\DanceMonster.dat", modelInitializMatrix))))
+             Model::Create(_device, _deviceContext, Model::MODEL_TYPE::ANIM, "..\\Binaries\\Resources\\MyModels\\Monster\\DanceMonster.fbx", modelInitializMatrix))))
 
          {
              RELEASE_INSTANCE(GameInstance);

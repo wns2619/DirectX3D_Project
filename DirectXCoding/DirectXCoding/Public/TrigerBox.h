@@ -31,6 +31,7 @@ public:
 
 public:
 	const _bool& GetTriger() { return _bTrigerOn; }
+	const _bool& GetLastScene() { return _bLastScene; }
 
 	void TrigerSet(_bool triger) { _bTrigerOn = triger; }
 

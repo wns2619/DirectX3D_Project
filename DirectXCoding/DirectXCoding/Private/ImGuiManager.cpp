@@ -703,7 +703,7 @@ HRESULT ImGuiManager::ModelNameCardSection()
 					// 여기까지
 
 					const pair<LAYER_TAG, wstring>& findPrototypename = ImGuiResourceHandler::GetInstance()->FindProtoFilePath(modelPath);
-					//const pair<const wstring, const wstring>& findProtoComName = ImGuiResourceHandler::GetInstance()->FindProtoComponentName(modelPath);
+					const pair<const wstring, const wstring>& findProtoComName = ImGuiResourceHandler::GetInstance()->FindProtoComponentName(modelPath);
 
 
 					ComponentNames comNames;
@@ -715,8 +715,8 @@ HRESULT ImGuiManager::ModelNameCardSection()
 							useModelName = _modelNames[i].first.substr(0, namePosition);
 
 						comNames._protoTypeName = findPrototypename.second;
-						//comNames._strModelComponentName = findProtoComName.first;
-						//comNames._strShaderName = findProtoComName.second;
+						comNames._strModelComponentName = findProtoComName.first;
+						comNames._strShaderName = findProtoComName.second;
 						comNames._strModelName = useModelName;
 						Matrix ScaleMatrix;
 						comNames._saveWorldMatrix *= ScaleMatrix.CreateScale(Vec3(1.f, 1.f, 1.f));
@@ -724,20 +724,20 @@ HRESULT ImGuiManager::ModelNameCardSection()
 	
 
 
-					if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), findPrototypename.first, findPrototypename.second, &comNames)))
+			/*		if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::EDIT), findPrototypename.first, findPrototypename.second, &comNames)))
 					{
 						RELEASE_INSTANCE(GameInstance);
 						return E_FAIL;
-					}
+					}*/
 
-				/*	size_t dotPosition = modelPath.find_last_of(".");
+					size_t dotPosition = modelPath.find_last_of(".");
 					string fileExtension = "";
 
 					if (dotPosition != std::string::npos && dotPosition > 0)
-						fileExtension = modelPath.substr(0, dotPosition);*/
+						fileExtension = modelPath.substr(0, dotPosition);
 
 					//BinaryModelSave(modelPath, Utils::ToWString(fileExtension));
-					//BinaryAnimModelSave(modelPath, Utils::ToWString(fileExtension));
+					BinaryAnimModelSave(modelPath, Utils::ToWString(fileExtension));
 		
 				}
 				else
@@ -2412,7 +2412,7 @@ void ImGuiManager::LoadModelList(string path)
 					// string은 파인드 함수는 문자열을 찾지 못하면 npos를 리턴함.
 					fileExtension = name.substr(i + 1, name.length() - 1);
 					// substr(), str의 n번 째 index부터 k개의 문자를 부분 문자열로 반환함.
-					if (fileExtension == "obj" || fileExtension == "DAT" || fileExtension == "dat")
+					if (fileExtension == "obj" || fileExtension == "FBX" || fileExtension == "fbx")
 					{
 						modelNames.push_back(name);
 					}

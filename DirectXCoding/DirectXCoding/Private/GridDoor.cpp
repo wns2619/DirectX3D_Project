@@ -152,13 +152,15 @@ void GridDoor::OnCollisionStay(Collider* pOther)
 	{
 		if (pGameInstance->keyDown(DIK_E))
 		{
-			Player* pPlayer = static_cast<Player*>(pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player"));
+			Player* pPlayer = static_cast<Player*>(pOther->GetOwner());
 			_bGridDoorKey = pPlayer->GetObtainKey();
 
 			if ((_id == 189 || _id == 196) && false == _bGridDoorKey)
 			{
 				pGameInstance->StopSound(SOUND_ENVIRONMENT5);
 				pGameInstance->PlaySound(TEXT("closeddoor2.wav"), SOUND_ENVIRONMENT5, 1.f);
+				pPlayer->SetCollDynamic(true);
+				pPlayer->SetEventText(TEXT("Closed"));
 			}
 			else if((_id == 189 || _id == 196) && true == _bGridDoorKey)
 			{
@@ -314,6 +316,8 @@ void GridDoor::OnCollisionExit(Collider* pOther)
 	if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER)
 	{
 		// F UI 사라지게.
+		Player* pPlayer = static_cast<Player*>(pOther->GetOwner());
+		pPlayer->SetCollDynamic(false);
 	}
 }
 

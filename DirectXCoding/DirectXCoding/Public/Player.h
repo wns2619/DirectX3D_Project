@@ -47,11 +47,15 @@ public:
 	void SetInteration(_bool interaction) { _bInteraction = interaction; }
 	void SetObtainKey(_bool obtain) { _bObtatinKey = obtain; }
 	void SetScare(_bool scare) { _bScare = scare; }
+	void SetCollDynamic(_bool Coll) { _bCollDynamic = Coll; }
+	void SetEventText(wstring strText) { _strEventText = strText; }
 public:
 	vector<class GameObject*>& GetPlyaerPart() { return m_pPlayerPart; }
 	StateMachine* GetStateMachine() { return _pStateMachine; }
 	_bool GetInteraction() { return _bInteraction; }
 	_bool GetOnWater() { return _OnWater; }
+	const _bool& GetCollDynamic() { return _bCollDynamic; }
+	const wstring& GetEventText() { return _strEventText; }
 private:
 	vector<class GameObject*> m_pPlayerPart;
 
@@ -70,6 +74,10 @@ private:
 	_bool _bObtatinKey = false;
 	_bool _bIsJoom = false;
 	_bool _OnWater = false;
+	_bool _bCollDynamic = false;
+	
+private:
+	wstring _strEventText = L"";
 
 private:
 	_bool _bScare = false;

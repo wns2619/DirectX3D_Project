@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "RouteUI.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 RouteUI::RouteUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: GameObject(pDevice, pDeviceContext, OBJECT_TYPE::UI)
@@ -39,19 +40,33 @@ HRESULT RouteUI::Initialize(void* pArg)
 
 HRESULT RouteUI::Render()
 {
-	if (FAILED(Bind_ShaderResources()))
-		return E_FAIL;
+	//if (FAILED(Bind_ShaderResources()))
+	//	return E_FAIL;
 
-	if(FAILED(_pShader->Begin(0)))
-		return E_FAIL;
+	//if(FAILED(_pShader->Begin(0)))
+	//	return E_FAIL;
 
-	if (FAILED(_pVIBuffer->Render()))
-		return E_FAIL;
+	//if (FAILED(_pVIBuffer->Render()))
+	//	return E_FAIL;
 
 	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
-	pGameInstance->RenderFont(TEXT("DefaultFont"), TEXT("TEST"), Vec2(_fX, 70.f), Vec4(1.f, 1.f, 1.f, 1.f), 0.f,
-		Vec2(0.f, 0.f), 0.7f);
+	Player* pPlayer = static_cast<Player*>(pGameInstance->GetLayerObject(LAYER_TAG::LAYER_PLAYER).front());
+
+	if (nullptr != pPlayer)
+	{
+		const _bool& bCollDynamic = pPlayer->GetCollDynamic();
+
+		if (true == bCollDynamic)
+		{
+			const wstring& strEvent = pPlayer->GetEventText();
+
+			pGameInstance->RenderFont(TEXT("DefaultFont"), strEvent, Vec2(_fX, 800.f), Vec4(1.f, 0.f, 0.f, 1.f), 0.f,
+				Vec2(0.f, 0.f), 0.5f);
+		}
+	}
+
+
 
 	RELEASE_INSTANCE(GameInstance);
 

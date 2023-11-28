@@ -37,6 +37,7 @@ public:
 
 public:
 	const _bool& IsObtainingLight() { return _bObtainLight; }
+	const _bool& GetGun() { return _bObtainGun; }
 
 public:
 	void SetObtainLight(_bool obtain) { _bObtainLight = obtain; }

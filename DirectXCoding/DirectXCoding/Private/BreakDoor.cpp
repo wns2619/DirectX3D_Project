@@ -4,6 +4,8 @@
 #include "GameInstance.h"
 #include "BoundingOBB.h"
 #include "WallPainting.h"
+#include "Player.h"
+#include "PlayerBody.h"
 
 BreakDoor::BreakDoor(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::BREAK_DOOR)
@@ -111,20 +113,28 @@ void BreakDoor::OnCollisionStay(Collider* pOther)
 		{
 			GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
-			if (false == _bChageMoment)
+			GameObject* pPart = static_cast<Player*>(pOther->GetOwner())->GetPlyaerPart()[Player::PART_BODY];
+
+			_bool bGun = static_cast<PlayerBody*>(pPart)->GetGun();
+
+			if (true == bGun)
 			{
-				_fTime += pGameInstance->ComputeTimeDelta(TEXT("Timer_60")) * 130.f;
-
-				if (_fTime >= 0.65f)
+				if (false == _bChageMoment)
 				{
-					pGameInstance->StopAll();
-					pGameInstance->PlayBGM(TEXT("bass #30425.wav"), 0.15f);
-					pGameInstance->StopSound(SOUND_SCARE1);
-					pGameInstance->PlaySound(TEXT("scary pad 2_12.wav"), SOUND_SCARE1, 0.8f);
+					_fTime += pGameInstance->ComputeTimeDelta(TEXT("Timer_60")) * 130.f;
 
-					_bChageMoment = true;
+					if (_fTime >= 0.65f)
+					{
+						pGameInstance->StopAll();
+						pGameInstance->PlayBGM(TEXT("bass #30425.wav"), 0.15f);
+						pGameInstance->StopSound(SOUND_SCARE1);
+						pGameInstance->PlaySound(TEXT("scary pad 2_12.wav"), SOUND_SCARE1, 0.8f);
+
+						_bChageMoment = true;
+					}
 				}
 			}
+
 			RELEASE_INSTANCE(GameInstance);
 		}
 	}
@@ -134,6 +144,15 @@ void BreakDoor::OnCollisionStay(Collider* pOther)
 	{
 		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 		
+		if (_id == 173 && pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER)
+		{
+			Player* pPlayer = static_cast<Player*>(pOther->GetOwner());
+			{
+				pPlayer->SetCollDynamic(true);
+				pPlayer->SetEventText(TEXT("Need a Something"));
+			}
+		}
+
 		if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER)
 		{
 
@@ -217,6 +236,13 @@ void BreakDoor::OnCollisionStay(Collider* pOther)
 
 void BreakDoor::OnCollisionExit(Collider* pOther)
 {
+
+	if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER && _id == 173)
+	{
+		Player* pPlayer = static_cast<Player*>(pOther->GetOwner());
+		pPlayer->SetCollDynamic(false);
+	}
+
 }
 
 void BreakDoor::OnAssistCollisionEnter(Collider* pOther)
@@ -240,6 +266,7 @@ void BreakDoor::OnAssistCollisionStay(Collider* pOther)
 
 void BreakDoor::OnAssistCollisionExit(Collider* pOther)
 {
+
 }
 
 HRESULT BreakDoor::ReadyCollider()

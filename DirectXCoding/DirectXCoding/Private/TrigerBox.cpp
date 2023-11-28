@@ -12,6 +12,7 @@
 #include "Player.h"
 #include "Monster.h"
 #include "MonsterLight.h"
+#include "PlayerBody.h"
 
 TrigerBox::TrigerBox(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: StaticObject(device, deviceContext)
@@ -54,7 +55,7 @@ void TrigerBox::PriorityTick(const _float& timeDelta)
 
 void TrigerBox::Tick(const _float& timeDelta)
 {
-	//TrigerOccur(timeDelta);
+	TrigerOccur(timeDelta);
 
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
@@ -82,127 +83,99 @@ void TrigerBox::OnCollisionEnter(Collider* pOther)
 
 void TrigerBox::OnCollisionStay(Collider* pOther)
 {
-	//GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+	if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER && _id == 256)
+	{
+		GameObject* pPart = static_cast<Player*>(pOther->GetOwner())->GetPlyaerPart()[Player::PART_BODY];
+		const _bool& IsLight = static_cast<PlayerBody*>(pPart)->IsObtainingLight();
 
-	//if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER && _id == 236)
-	//{
-
-	//	Vec3 vPlayerCenter = static_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding()->Center;
-	//	Vec3 vthisCenter = static_cast<BoundingAABB*>(_pCollider->GetBounding())->GetBounding()->Center;
-
-
-	//	Vec3 vFinalCenter = vPlayerCenter - vthisCenter;
-
-	//	Vec3 vPlayerExtents = static_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding()->Extents;
-	//	Vec3 vThisExtents = static_cast<BoundingAABB*>(_pCollider->GetBounding())->GetBounding()->Extents;
-
-	//	Vec3 extents = 0.5f * Vec3(::fabs(vFinalCenter.x), ::fabs(vFinalCenter.y), ::fabs(vFinalCenter.z));
-
-	//	if (extents.x >= extents.y && extents.x >= extents.z)
-	//	{
-	//		// 충돌이 X 축에서 발생.
-
-	//		// TODO -> Left or Right
-
-	//		if (vPlayerCenter.x > vthisCenter.x)
-	//		{
-	//			_float vFinalExtents = fabs((vPlayerExtents.x + vThisExtents.x)) - fabs(vFinalCenter.x);
-
-	//			Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
-	//			vPos.x += vFinalExtents;
-
-	//			pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
-	//		}
-	//		else
-	//		{
-	//			_float vFinalExtents = fabs((vPlayerExtents.x + vThisExtents.x)) - fabs(vFinalCenter.x);
-
-	//			Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
-	//			vPos.x -= vFinalExtents;
-
-	//			pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
-	//		}
-	//	}
-	//	else if (extents.y >= extents.x && extents.y >= extents.z)
-	//	{
-	//		if (vPlayerCenter.y > vthisCenter.y)
-	//		{
-	//			if (_id == 205)
-	//			{
-	//				_float vFinalExtents = fabs((vPlayerExtents.x + vThisExtents.x)) - fabs(vFinalCenter.x);
-
-	//				Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
-	//				vPos.x -= vFinalExtents;
-
-	//				pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
-	//			}
-	//			else
-	//			{
-	//				_float vFinalExtents = fabs((vPlayerExtents.z + vThisExtents.z)) - fabs(vFinalCenter.z);
-
-	//				Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
-	//				vPos.z -= vFinalExtents;
-
-	//				pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
-	//			}
-
-	//		}
-	//		else
-	//		{
-	//			if (_id == 205)
-	//			{
-	//				_float vFinalExtents = fabs((vPlayerExtents.x + vThisExtents.x)) - fabs(vFinalCenter.x);
-
-	//				Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
-	//				vPos.x += vFinalExtents;
-
-	//				pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
-	//			}
-	//			else
-	//			{
-	//				_float vFinalExtents = fabs((vPlayerExtents.z + vThisExtents.z)) - fabs(vFinalCenter.z);
-
-	//				Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
-	//				vPos.z += vFinalExtents;
-
-	//				pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
-	//			}
-
-	//		}
-	//	}
-	//	else
-	//	{
-	//		// Z축에서 발생. 
-
-	//		// TODO -> Back or Front.
-	//		if (vPlayerCenter.z > vthisCenter.z)
-	//		{
-	//			_float vFinalExtents = fabs((vPlayerExtents.z + vThisExtents.z)) - fabs(vFinalCenter.z);
-
-	//			Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
-	//			vPos.z += vFinalExtents;
-
-	//			pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
-	//		}
-	//		else
-	//		{
-	//			_float vFinalExtents = fabs((vPlayerExtents.z + vThisExtents.z)) - fabs(vFinalCenter.z);
-
-	//			Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
-	//			vPos.z -= vFinalExtents;
-
-	//			pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
-	//		}
-	//	}
-	//}
+		if (false == IsLight)
+		{
+			Player* pPlayer = static_cast<Player*>(pOther->GetOwner());
+			pPlayer->SetCollDynamic(true);
+			pPlayer->SetEventText(TEXT("Need a Flash"));
 
 
-	//RELEASE_INSTANCE(GameInstance);
+			Vec3 vPlayerCenter = static_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding()->Center;
+			Vec3 vthisCenter = static_cast<BoundingAABB*>(_pCollider->GetBounding())->GetBounding()->Center;
+
+
+			Vec3 vFinalCenter = vPlayerCenter - vthisCenter;
+
+			Vec3 vPlayerExtents = static_cast<BoundingAABB*>(pOther->GetBounding())->GetBounding()->Extents;
+			Vec3 vThisExtents = static_cast<BoundingAABB*>(_pCollider->GetBounding())->GetBounding()->Extents;
+
+			Vec3 extents = 0.5f * Vec3(::fabs(vFinalCenter.x), ::fabs(vFinalCenter.y), ::fabs(vFinalCenter.z));
+
+			if (extents.x >= extents.y && extents.x >= extents.z)
+			{
+				// 충돌이 X 축에서 발생.
+
+				// TODO -> Left or Right
+
+				if (vPlayerCenter.x > vthisCenter.x)
+				{
+					_float vFinalExtents = fabs((vPlayerExtents.x + vThisExtents.x)) - fabs(vFinalCenter.x);
+
+					Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
+					vPos.x += vFinalExtents;
+
+					pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+				}
+				else
+				{
+					_float vFinalExtents = fabs((vPlayerExtents.x + vThisExtents.x)) - fabs(vFinalCenter.x);
+
+					Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
+					vPos.x -= vFinalExtents;
+
+					pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+				}
+			}
+			else if (extents.y >= extents.x && extents.y >= extents.z)
+			{
+				if (vPlayerCenter.y > vthisCenter.y)
+				{
+				}
+				else
+				{
+
+				}
+			}
+			else
+			{
+				// Z축에서 발생. 
+
+				// TODO -> Back or Front.
+				if (vPlayerCenter.z > vthisCenter.z)
+				{
+					_float vFinalExtents = fabs((vPlayerExtents.z + vThisExtents.z)) - fabs(vFinalCenter.z);
+
+					Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
+					vPos.z += vFinalExtents;
+
+					pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+				}
+				else
+				{
+					_float vFinalExtents = fabs((vPlayerExtents.z + vThisExtents.z)) - fabs(vFinalCenter.z);
+
+					Vec4 vPos = pOther->GetOwner()->GetTransform()->GetState(Transform::STATE::POSITION);
+					vPos.z -= vFinalExtents;
+
+					pOther->GetOwner()->GetTransform()->SetState(Transform::STATE::POSITION, vPos);
+				}
+			}
+		}
+	}
 }
 
 void TrigerBox::OnCollisionExit(Collider* pOther)
 {
-
+	if (256 == _id)
+	{
+		Player* pPlayer = static_cast<Player*>(pOther->GetOwner());
+		pPlayer->SetCollDynamic(false);
+	}
 }
 
 void TrigerBox::EventTarget()
@@ -445,7 +418,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		RELEASE_INSTANCE(GameInstance);
 	}
 
-	if (_id == 245)
+	if (_id == 245 && _bLastScene == false)
 	{
 		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
@@ -706,6 +679,17 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		}
 		
 		RELEASE_INSTANCE(GameInstance);
+	}
+	else if (_id == 254 && true == _bLastScene && false == _bEventState)
+	{
+		/*GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		pGameInstance->StopSound(SOUND_ENVIRONMENT4);
+		pGameInstance->PlaySoundLoop(TEXT("dihanie.wav"), SOUND_ENVIRONMENT4, 1.f);
+
+		_bEventState = true;
+
+		RELEASE_INSTANCE(GameInstance);*/
 	}
 
 }

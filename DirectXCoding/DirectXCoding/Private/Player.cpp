@@ -129,8 +129,8 @@ HRESULT Player::Render()
 
 void Player::OnCollisionEnter(Collider* pOther)
 {
-	
-
+	//if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::DYNAMIC)
+	//	_bCollDynamic = true;
 }
 
 void Player::OnCollisionStay(Collider* pOther)
@@ -224,7 +224,6 @@ void Player::OnCollisionStay(Collider* pOther)
 
 void Player::OnCollisionExit(Collider* pOther)
 {
-
 }
 
 void Player::KeyInput(const _float& timeDelta)
@@ -461,7 +460,15 @@ void Player::TrigerBoxEvent(Collider* pOther)
 	}
 	else if (id == 254)
 	{
+		if (true == static_cast<TrigerBox*>(pOther->GetOwner())->GetLastScene())
+		{
+			GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
+			pGameInstance->StopSound(SOUND_ENVIRONMENT4);
+			pGameInstance->PlaySoundLoop(TEXT("dihanie.wav"), SOUND_ENVIRONMENT4, 1.f);
+
+			RELEASE_INSTANCE(GameInstance);
+		}
 	}
 	else if (id == 255)
 	{

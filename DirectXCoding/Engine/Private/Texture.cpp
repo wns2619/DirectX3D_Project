@@ -39,7 +39,7 @@ HRESULT Texture::InitializePrototype(const wstring& textureFilePath, uint32 numT
 		ID3D11ShaderResourceView* resourceView = nullptr;
 
 		if (false == lstrcmp(lext, TEXT(".dds")))
-			hr = CreateDDSTextureFromFile(_device, ltextureFilePath, nullptr, &resourceView);
+ 			hr = CreateDDSTextureFromFile(_device, ltextureFilePath, nullptr, &resourceView);
 		else if (false == lstrcmp(lext, TEXT(".tga")))
 			return E_FAIL;
 		else
