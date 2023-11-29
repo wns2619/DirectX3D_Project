@@ -214,6 +214,7 @@
     <ClInclude Include="..\Public\MonsterLight.h" />
     <ClInclude Include="..\Public\MonsterPartObject.h" />
     <ClInclude Include="..\Public\MonsterRun.h" />
+    <ClInclude Include="..\Public\MonsterSeat.h" />
     <ClInclude Include="..\Public\MonsterWalk.h" />
     <ClInclude Include="..\Public\OldWoodDoor.h" />
     <ClInclude Include="..\Public\PartObject.h" />
@@ -307,6 +308,7 @@
     <ClCompile Include="..\Private\MonsterLight.cpp" />
     <ClCompile Include="..\Private\MonsterPartObject.cpp" />
     <ClCompile Include="..\Private\MonsterRun.cpp" />
+    <ClCompile Include="..\Private\MonsterSeat.cpp" />
     <ClCompile Include="..\Private\MonsterWalk.cpp" />
     <ClCompile Include="..\Private\OldWoodDoor.cpp" />
     <ClCompile Include="..\Private\PartObject.cpp" />

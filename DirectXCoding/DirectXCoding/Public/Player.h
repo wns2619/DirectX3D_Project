@@ -75,6 +75,7 @@ private:
 	_bool _bIsJoom = false;
 	_bool _OnWater = false;
 	_bool _bCollDynamic = false;
+	_bool _bLastEvent = false;
 	
 private:
 	wstring _strEventText = L"";

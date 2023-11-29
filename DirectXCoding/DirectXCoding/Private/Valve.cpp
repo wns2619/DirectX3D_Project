@@ -94,7 +94,7 @@ void Valve::Tick(const _float& timeDelta)
 		_float fVolume = 0.f;
 		_float fDistance = 0.f;
 
-		//LerpSoundPlayer(fVolume, fDistance, 3.5f, pGameInstance);
+		LerpSoundPlayer(fVolume, fDistance, 3.5f, pGameInstance);
 		
 		if (fDistance <= 3.5f)
 			pGameInstance->PlaySoundLoop(TEXT("myhi.wav"), SOUND_ENVIRONMENT3, fVolume);

@@ -418,9 +418,30 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		RELEASE_INSTANCE(GameInstance);
 	}
 
-	if (_id == 245 && _bLastScene == false)
+	if (_id == 245 && false == _bEventState)
 	{
 		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		vector<GameObject*>& vecTriger = pGameInstance->GetLayerObject(LAYER_TAG::LAYER_TRIGER);
+
+		auto iter = find_if(vecTriger.begin(), vecTriger.end(), [&](GameObject* pObj) {
+			if (pObj->GetIdNumber() == 253)
+				return true;
+
+			return false;
+			});
+
+		if (nullptr != *iter)
+		{
+			if (true == static_cast<TrigerBox*>(*iter)->_bLastScene)
+			{
+				_bEventState = true;
+				pGameInstance->StopSound(SOUND_ENVIRONMENT4);
+				RELEASE_INSTANCE(GameInstance);
+
+				return;
+			}
+		}
 
 		_float fVolume = 0.f;
 		_float fDistance = 0.f;
@@ -429,6 +450,8 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 
 		if (fDistance <= 6.f)
 			pGameInstance->PlaySoundLoop(TEXT("dihanie.wav"), SOUND_ENVIRONMENT4, fVolume);
+
+
 
 		RELEASE_INSTANCE(GameInstance);
 	}
@@ -579,7 +602,7 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
 		pGameInstance->StopAll();
-		pGameInstance->PlaySoundLoop(TEXT("highlightSound.wav"), SOUND_ENVIRONMENT, 0.8f);
+		pGameInstance->PlaySoundLoop(TEXT("highlightSound.wav"), SOUND_ENVIRONMENT6, 0.8f);
 
 
 		LandObject::LANDOBJET_DESC LandObjectDesc = {};
@@ -680,17 +703,11 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 		
 		RELEASE_INSTANCE(GameInstance);
 	}
-	else if (_id == 254 && true == _bLastScene && false == _bEventState)
+	else if (_id == 254 && false == _bEventState)
 	{
-		/*GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 
-		pGameInstance->StopSound(SOUND_ENVIRONMENT4);
-		pGameInstance->PlaySoundLoop(TEXT("dihanie.wav"), SOUND_ENVIRONMENT4, 1.f);
-
-		_bEventState = true;
-
-		RELEASE_INSTANCE(GameInstance);*/
 	}
+	
 
 }
 

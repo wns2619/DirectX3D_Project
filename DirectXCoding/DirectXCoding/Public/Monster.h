@@ -83,6 +83,7 @@ private:
 	Shader* _shader = nullptr;
 	StateMachine* _pStateMachine = nullptr;
 	Animator* _pAnimator = nullptr;
+	Matrix* _pBoneMatrix = nullptr;
 
 	uint32 animationcount = 0;
 
@@ -96,6 +97,7 @@ private:
 
 	_float _fSurpriseTime = 0.f;
 	_float _fLifeTime = 0.f;
+	_float _fLastMonsterTime = 0.f;
 
 	// Basement
 	_bool _bOnWater = false;

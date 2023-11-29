@@ -14,6 +14,7 @@
 #include "MonsterBody.h"
 #include "MonsterLight.h"
 #include "MonsterAxe.h"
+#include "MonsterSeat.h"
 
 uint32 Monster::_iMonsterCount = 0;
 
@@ -51,8 +52,12 @@ HRESULT Monster::Initialize(void* pArg)
 	if (FAILED(ReadyMonsterPart()))
 		return E_FAIL;
 
+	_transform->SetState(Transform::STATE::POSITION, ::XMVectorSet(-0.6492f, 0.f, -5.5467f, 1.f));
+
 	State* pState = MonsterWalk::Create(_device, _deviceContext, this);
 	_pStateMachine->AddState(State::STATE::IDLE, pState);
+	pState = MonsterSeat::Create(_device, _deviceContext, this);
+	_pStateMachine->AddState(State::STATE::SEAT, pState);
 	pState = MonsterRun::Create(_device, _deviceContext, this);
 	_pStateMachine->AddState(State::STATE::RUN, pState);
 	pState = MonsterDance::Create(_device, _deviceContext, this);
@@ -62,14 +67,17 @@ HRESULT Monster::Initialize(void* pArg)
 	vector<BinaryBone*>& pVecBone = static_cast<MonsterBody*>(_pMonsterPart[PART_BODY])->GetBinaryModelComponent()->GetBinaryBones();
 
 	_pAnimator->AddAnimation(State::STATE::IDLE, vecAnim[0], &pVecBone, true, 2.5f);
-	_pAnimator->AddAnimation(State::STATE::RUN, vecAnim[1], &pVecBone, true, 2.f);
-	_pAnimator->AddAnimation(State::STATE::DANCE, vecAnim[2], &pVecBone, true, 2.f);
-
-
+	_pAnimator->AddAnimation(State::STATE::SEAT, vecAnim[1], &pVecBone, true, 2.5f);
+	_pAnimator->AddAnimation(State::STATE::RUN, vecAnim[2], &pVecBone, true, 2.f);
+	_pAnimator->AddAnimation(State::STATE::DANCE, vecAnim[3], &pVecBone, true, 1.5f);
+	
+	if (7 == _iMonsterID)
+		_pBoneMatrix = _pMonsterPart[PART_BODY]->GetBinaryModelComponent()->GetBoneMatrix("mixamorig5:Spine");
 
 	_pStateMachine->SetAnimator(_pAnimator);
-	_pStateMachine->SetState(State::STATE::IDLE);
-	_transform->SetState(Transform::STATE::POSITION, ::XMVectorSet(11.f, 0.f, -42.5f, 1.f));
+
+	if(1 == _iMonsterID)
+		_pStateMachine->SetState(State::STATE::SEAT);
 
 
 
@@ -87,11 +95,21 @@ void Monster::Tick(const _float& fTimeDelta)
 	_pStateMachine->UpdateStateMachine(fTimeDelta);
 
 
-	if (1 == _iMonsterID)
+	if (2 == _iMonsterID)
 		_transform->Forward(fTimeDelta, _pNavigation);
+
+	if (7 == _iMonsterID)
+	{
+		// TODO 점점 오른쪽으로 진행하게.
+		_fLastMonsterTime += fTimeDelta;
+
+		if(_fLastMonsterTime <= 3.f)
+			_transform->Right(fTimeDelta, _pNavigation);
+	}
 
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 	_pAssistCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
+
 
 	for (auto& pPart : _pMonsterPart)
 		if (nullptr != pPart)
@@ -113,7 +131,7 @@ void Monster::LateTick(const _float& fTimeDelta)
 
 #ifdef _DEBUG
 	_render->AddDebug(_pCollider);
-	_render->AddDebug(_pAssistCollider);;
+	_render->AddDebug(_pAssistCollider);
 	_render->AddDebug(_pNavigation);
 #endif // _DEBUG
 }
@@ -148,7 +166,7 @@ void Monster::OnCollisionExit(Collider* pOther)
 
 void Monster::OnAssistCollisionEnter(Collider* pOther)
 {
-	if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER && _iMonsterID == 2)
+	if (pOther->GetOwner()->GetObjectType() == OBJECT_TYPE::PLAYER && _iMonsterID == 3)
 	{
 		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
 		
@@ -263,7 +281,7 @@ HRESULT Monster::ReadyComponents()
 		return E_FAIL;
 
 	Navigation::NAVIGATION_DESC NavigationDesc;
-	NavigationDesc._iCurrentIndex = 3;
+	NavigationDesc._iCurrentIndex = 316;
 
 	if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeNavigation"),
 		TEXT("ComponentNavigation"), reinterpret_cast<Component**>(&_pNavigation), &NavigationDesc)))
@@ -297,7 +315,7 @@ HRESULT Monster::ReadyComponents()
 		TEXT("ComponentAssistCollider"), reinterpret_cast<Component**>(&_pAssistCollider), &frustumDesc)))
 		return E_FAIL;
 
-	if (_iMonsterID == 1 || _iMonsterID == 2 || _iMonsterCount == 3 || _iMonsterCount == 5)
+	if (_iMonsterID == 2 || _iMonsterID == 3 || _iMonsterCount == 4 || _iMonsterCount == 6)
 	{
 		if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeMonsterDiffuse2"),
 			TEXT("ComponentDiffuseTexture"), reinterpret_cast<Component**>(&_pTexture[MONSTER_DIFFUSE]))))
@@ -356,7 +374,7 @@ HRESULT Monster::ReadyMonsterPart()
 
 	// TODO MonsterID가 2번째 인 친구한테만 달자.
 
-	if (2 == _iMonsterID || 3 == _iMonsterID)
+	if (3 == _iMonsterID || 4 == _iMonsterID)
 	{
 		MonsterLight::MONSTER_FLASH MonsterLightDesc;
 		MonsterLightDesc.pParentTransform = _transform;

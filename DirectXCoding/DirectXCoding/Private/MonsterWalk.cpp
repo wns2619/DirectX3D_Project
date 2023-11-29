@@ -34,7 +34,7 @@ State::STATE MonsterWalk::UpdateState(const _float& timeDelta)
 
 	if (true == static_cast<Monster*>(_pOwner)->GetOnWater() && false == static_cast<Monster*>(_pOwner)->IsDead())
 		soundfileName = TEXT("walkWATER.wav");
-	else if (pOwnerMonster->GetMonsterID() == 4 || pOwnerMonster->GetMonsterID() == 5)
+	else if (pOwnerMonster->GetMonsterID() == 5 || pOwnerMonster->GetMonsterID() == 6)
 		soundfileName = TEXT("MonsterCrying.wav");
 
 	if (0 < pOwnerMonster->GetLife() && false == pOwnerMonster->GetDeadDelay())
@@ -61,18 +61,18 @@ State::STATE MonsterWalk::UpdateState(const _float& timeDelta)
 
 		}
 
-		if (pOwnerMonster->GetMonsterID() == 2)
+		if (pOwnerMonster->GetMonsterID() == 3)
 			pGameInstance->PlaySound(soundfileName.c_str(), SOUND_MONSTER, fVolume);
-		else if (pOwnerMonster->GetMonsterID() == 4)
-			pGameInstance->PlaySound(soundfileName.c_str(), SOUND_MONSTER2, fVolume);
 		else if (pOwnerMonster->GetMonsterID() == 5)
+			pGameInstance->PlaySound(soundfileName.c_str(), SOUND_MONSTER2, fVolume);
+		else if (pOwnerMonster->GetMonsterID() == 6)
 			pGameInstance->PlaySound(soundfileName.c_str(), SOUND_MONSTER3, fVolume);
 	}
 	else
 	{
 		if (true == pOwnerMonster->GetDeadDelay())
 		{
-			if (1 == pOwnerMonster->GetMonsterID())
+			if (2 == pOwnerMonster->GetMonsterID())
 			{
 				_float& SurpriseTime = pOwnerMonster->GetSurpriseTime();
 
@@ -97,29 +97,29 @@ State::STATE MonsterWalk::UpdateState(const _float& timeDelta)
 			{
 				pGameInstance->DeleteObject(pOwnerMonster);
 
-				if (2 == pOwnerMonster->GetMonsterID())
+				if (3 == pOwnerMonster->GetMonsterID())
 				{
 					pGameInstance->StopSound(SOUND_MONSTER);
 					pGameInstance->StopSound(SOUND_MONSTER3);
 				}
-				else if (4 == pOwnerMonster->GetMonsterID())
-					pGameInstance->StopSound(SOUND_MONSTER2);
 				else if (5 == pOwnerMonster->GetMonsterID())
+					pGameInstance->StopSound(SOUND_MONSTER2);
+				else if (6 == pOwnerMonster->GetMonsterID())
 					pGameInstance->StopSound(SOUND_MONSTER3);
 
-				if (2 == pOwnerMonster->GetMonsterID() || 3 == pOwnerMonster->GetMonsterID())
+				if (3 == pOwnerMonster->GetMonsterID() || 4 == pOwnerMonster->GetMonsterID())
 					static_cast<MonsterLight*>(pOwnerMonster->GetMonsterPart()[Monster::MONSTER_PART::PART_LIGHT])->GetOwnLight()->GetLightDesc()->bEnable = true;
 			}
 			else
 			{
-				if (2 == pOwnerMonster->GetMonsterID())
+				if (3 == pOwnerMonster->GetMonsterID())
 				{
 					pGameInstance->PlaySound(TEXT("walkWATER.wav"), SOUND_MONSTER, fVolume);
 					pGameInstance->PlaySound(TEXT("RUNWATER.wav"), SOUND_MONSTER3, fVolume);
 				}
-				else if (4 == pOwnerMonster->GetMonsterID())
+				else if (5 == pOwnerMonster->GetMonsterID())
 					pGameInstance->PlaySound(soundfileName.c_str(), SOUND_MONSTER2, fVolume);
-				else if(5 == pOwnerMonster->GetMonsterID())
+				else if(6 == pOwnerMonster->GetMonsterID())
 					pGameInstance->PlaySound(soundfileName.c_str(), SOUND_MONSTER3, fVolume);
 			}
 		}

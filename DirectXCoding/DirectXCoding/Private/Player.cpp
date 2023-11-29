@@ -12,6 +12,7 @@
 #include "BinaryBone.h"
 #include "DynamicObjectGroup.h"
 #include "TrigerBox.h"
+#include "Monster.h"
 
 Player::Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: LandObject(device, deviceContext, OBJECT_TYPE::PLAYER)
@@ -460,19 +461,64 @@ void Player::TrigerBoxEvent(Collider* pOther)
 	}
 	else if (id == 254)
 	{
-		if (true == static_cast<TrigerBox*>(pOther->GetOwner())->GetLastScene())
-		{
-			GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+		//if (true == static_cast<TrigerBox*>(pOther->GetOwner())->GetLastScene())
+		//{
+		//	//pGameInstance->StopSound(SOUND_ENVIRONMENT4);
+		//	pGameInstance->PlaySoundLoop(TEXT("dihanie.wav"), SOUND_ENVIRONMENT4, 1.f);
 
-			pGameInstance->StopSound(SOUND_ENVIRONMENT4);
-			pGameInstance->PlaySoundLoop(TEXT("dihanie.wav"), SOUND_ENVIRONMENT4, 1.f);
+		//	LandObject::LANDOBJET_DESC LandObjectDesc = {};
 
-			RELEASE_INSTANCE(GameInstance);
-		}
+		//	Transform* pTransform = static_cast<Transform*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::GAME), LAYER_TAG::LAYER_STATIC, TEXT("ComponentTransform"), "2stBottom", 0));
+		//	BinaryNavi* pNavi = static_cast<BinaryNavi*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::GAME), LAYER_TAG::LAYER_STATIC, TEXT("ComponentNavigation"), "2stBottom", 0));
+
+		//	vector<Cell*>& vecCells = pNavi->GetCell();
+
+		//	LandObjectDesc.pCells = &vecCells;
+		//	LandObjectDesc.pCellTransform = pTransform;
+
+		//	GameObject* pPlayer = pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player");
+
+		//	Monster* pGameObject = static_cast<Monster*>(pGameInstance->CloneGameObject(TEXT("ProtoTypeDanceMonster"), &LandObjectDesc));
+		//	pGameObject->GetTransform()->SetState(Transform::STATE::POSITION, Vec4(3.9486, 0.f, -10.0021, 1.f));
+		//	pGameObject->GetNavigation()->SetCurrentIndex(767);
+		//	pGameObject->GetStateMachine()->SetState(State::STATE::DANCE);
+		//	pGameObject->GetTransform()->SetSpeedPerSec(1.f);
+		//	//static_cast<MonsterLight*>(pGameObject->GetMonsterPart()[Monster::PART_LIGHT])->GetOwnLight()->GetLightDesc()->bEnable = false;
+
+		//	pGameInstance->CreateObject(pGameObject, LAYER_TAG::LAYER_MONSTER);
+		//}
 	}
 	else if (id == 255)
 	{
+		if (false == _bLastEvent)
+		{
+			pGameInstance->StopSound(SOUND_ENVIRONMENT4);
+			pGameInstance->PlaySoundLoop(TEXT("dihanie.wav"), SOUND_ENVIRONMENT4, 1.f);
+		
+			LandObject::LANDOBJET_DESC LandObjectDesc = {};
+		
+			Transform* pTransform = static_cast<Transform*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::GAME), LAYER_TAG::LAYER_STATIC, TEXT("ComponentTransform"), "2stBottom", 0));
+			BinaryNavi* pNavi = static_cast<BinaryNavi*>(pGameInstance->GetComponent(static_cast<uint32>(LEVEL::GAME), LAYER_TAG::LAYER_STATIC, TEXT("ComponentNavigation"), "2stBottom", 0));
+		
+			vector<Cell*>& vecCells = pNavi->GetCell();
+		
+			LandObjectDesc.pCells = &vecCells;
+			LandObjectDesc.pCellTransform = pTransform;
+		
+			GameObject* pPlayer = pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player");
+		
+			Monster* pGameObject = static_cast<Monster*>(pGameInstance->CloneGameObject(TEXT("ProtoTypeDanceMonster"), &LandObjectDesc));
+			pGameObject->GetTransform()->SetState(Transform::STATE::POSITION, Vec4(4.7459, 0.f, -9.9274, 1.f));
+			pGameObject->GetNavigation()->SetCurrentIndex(767);
+			pGameObject->GetStateMachine()->SetState(State::STATE::DANCE);
+			pGameObject->GetTransform()->FixRotation(Vec4(0.f, 1.f, 0.f, 1.f), ::XMConvertToRadians(90.f));
+			pGameObject->GetTransform()->SetSpeedPerSec(1.f);
+			//static_cast<MonsterLight*>(pGameObject->GetMonsterPart()[Monster::PART_LIGHT])->GetOwnLight()->GetLightDesc()->bEnable = false;
+		
+			pGameInstance->CreateObject(pGameObject, LAYER_TAG::LAYER_MONSTER);
 
+			_bLastEvent = true;
+		}
 	}
 
 	RELEASE_INSTANCE(GameInstance);

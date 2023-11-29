@@ -35,6 +35,7 @@ VertexAnimMeshOut VS_MAIN(VertexAnimMesh input)
     Out.tangent = normalize(mul(tangentNormal, W));
     Out.bittangent = normalize(cross(Out.normal.xyz, Out.tangent));
     
+    
     return Out;
 }
 

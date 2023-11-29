@@ -344,7 +344,7 @@ HRESULT GameScene::ReadyLandObjects(const LAYER_TAG layerTag)
 	if (FAILED(pGameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), LAYER_TAG::LAYER_PLAYER, TEXT("ProtoTypeGameObjectPlayer"), &LandObjectDesc)))
 		return E_FAIL;
 
-	//ReadyLayerMonster(LAYER_TAG::LAYER_MONSTER, &LandObjectDesc);
+	ReadyLayerMonster(LAYER_TAG::LAYER_MONSTER, &LandObjectDesc);
 
 	return S_OK;
 }

@@ -388,6 +388,9 @@
     <ClInclude Include="..\Public\RouteUI.h">
       <Filter>소스 파일\02.GameObjects\09.UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MonsterSeat.h">
+      <Filter>소스 파일\02.GameObjects\07. Monster\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -575,6 +578,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\RouteUI.cpp">
       <Filter>소스 파일\02.GameObjects\09.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterSeat.cpp">
+      <Filter>소스 파일\02.GameObjects\07. Monster\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

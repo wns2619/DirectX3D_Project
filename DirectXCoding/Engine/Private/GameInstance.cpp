@@ -92,7 +92,7 @@ void GameInstance::Clear(uint32 levelIndex)
 _float GameInstance::ComputeTimeDelta(const wstring& timerTag)
 {
     if (nullptr == _timeManager)
-        return static_cast<_float>(E_FAIL);
+        return 0.f;
 
     return _timeManager->Compute_TimeDelta(timerTag);
 }

@@ -15,14 +15,7 @@ HRESULT MonsterDance::ReadyState(GameObject* pOwner)
 
 State::STATE MonsterDance::UpdateState(const _float& timeDelta)
 {
-	State::STATE eState = STATE::IDLE;
-
-	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
-
-	if (pGameInstance->keyDown(DIK_Z))
-		eState = STATE::RUN;
-
-	RELEASE_INSTANCE(GameInstance);
+	State::STATE eState = STATE::DANCE;
 
 	return eState;
 }

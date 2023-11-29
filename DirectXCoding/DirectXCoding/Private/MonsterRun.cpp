@@ -30,7 +30,7 @@ State::STATE MonsterRun::UpdateState(const _float& timeDelta)
 	{
 		LerpSoundPlayer(fVolume, fDistance, 13.f, pGameInstance);
 
-		if (false == pOwnerMonster->GetOnWater() && false == pOwnerMonster->GetRunOnWater() && pOwnerMonster->GetMonsterID() == 1)
+		if (false == pOwnerMonster->GetOnWater() && false == pOwnerMonster->GetRunOnWater() && pOwnerMonster->GetMonsterID() == 2)
 			pGameInstance->PlaySound(TEXT("Steps.wav"), SOUND_MONSTER, fVolume);
 		else if (true == pOwnerMonster->GetOnWater() && false == pOwnerMonster->GetRunOnWater())
 			pGameInstance->PlaySound(TEXT("walkWATER.wav"), SOUND_MONSTER, fVolume);
@@ -51,7 +51,7 @@ State::STATE MonsterRun::UpdateState(const _float& timeDelta)
 
 			list<Cell*>& bestCell = pOwnerMonster->GetBestList();
 			bestCell = pOwnerMonster->GetNavigation()->GetBestCell();
-
+			 
 			Vec4& vDestination = pOwnerMonster->GetDestination();
 			vDestination = pOwnerMonster->GetTargetObject()->GetTransform()->GetState(Transform::STATE::POSITION);
 			// µµÂø°Å¸®.
@@ -61,7 +61,7 @@ State::STATE MonsterRun::UpdateState(const _float& timeDelta)
 	{
 		if (true == pOwnerMonster->GetDeadDelay())
 		{
-			if (1 == pOwnerMonster->GetMonsterID())
+			if (2 == pOwnerMonster->GetMonsterID())
 			{
 				_float& SurpriseTime = pOwnerMonster->GetSurpriseTime();
 
@@ -86,18 +86,18 @@ State::STATE MonsterRun::UpdateState(const _float& timeDelta)
 			{
 				pGameInstance->DeleteObject(pOwnerMonster);
 
-				if (2 == pOwnerMonster->GetMonsterID())
+				if (3 == pOwnerMonster->GetMonsterID())
 				{
 					pGameInstance->StopSound(SOUND_MONSTER);
 					pGameInstance->StopSound(SOUND_MONSTER3);
 				}
 
-				if (2 == pOwnerMonster->GetMonsterID() || 3 == pOwnerMonster->GetMonsterID())
+				if (3 == pOwnerMonster->GetMonsterID() || 4 == pOwnerMonster->GetMonsterID())
 					static_cast<MonsterLight*>(pOwnerMonster->GetMonsterPart()[Monster::MONSTER_PART::PART_LIGHT])->GetOwnLight()->GetLightDesc()->bEnable = true;
 			}
 			else
 			{
-				if (2 == pOwnerMonster->GetMonsterID())
+				if (3 == pOwnerMonster->GetMonsterID())
 				{
 					pGameInstance->PlaySound(TEXT("walkWATER.wav"), SOUND_MONSTER, fVolume);
 					pGameInstance->PlaySound(TEXT("RUNWATER.wav"), SOUND_MONSTER3, fVolume);
