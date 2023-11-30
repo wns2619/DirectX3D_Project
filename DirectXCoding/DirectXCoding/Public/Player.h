@@ -56,6 +56,7 @@ public:
 	_bool GetOnWater() { return _OnWater; }
 	const _bool& GetCollDynamic() { return _bCollDynamic; }
 	const wstring& GetEventText() { return _strEventText; }
+	const _bool& GetLastEvent() { return _bLastEvent; }
 private:
 	vector<class GameObject*> m_pPlayerPart;
 

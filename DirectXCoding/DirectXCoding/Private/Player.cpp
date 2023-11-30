@@ -508,16 +508,18 @@ void Player::TrigerBoxEvent(Collider* pOther)
 			GameObject* pPlayer = pGameInstance->GetLayerObjectTag(LAYER_TAG::LAYER_PLAYER, "Player");
 		
 			Monster* pGameObject = static_cast<Monster*>(pGameInstance->CloneGameObject(TEXT("ProtoTypeDanceMonster"), &LandObjectDesc));
-			pGameObject->GetTransform()->SetState(Transform::STATE::POSITION, Vec4(4.7459, 0.f, -9.9274, 1.f));
+			pGameObject->GetTransform()->SetState(Transform::STATE::POSITION, Vec4(4.827, 0.f, -10.6094, 1.f));
 			pGameObject->GetNavigation()->SetCurrentIndex(767);
 			pGameObject->GetStateMachine()->SetState(State::STATE::DANCE);
 			pGameObject->GetTransform()->FixRotation(Vec4(0.f, 1.f, 0.f, 1.f), ::XMConvertToRadians(90.f));
-			pGameObject->GetTransform()->SetSpeedPerSec(1.f);
+			pGameObject->GetTransform()->SetSpeedPerSec(0.1f);
 			//static_cast<MonsterLight*>(pGameObject->GetMonsterPart()[Monster::PART_LIGHT])->GetOwnLight()->GetLightDesc()->bEnable = false;
 		
 			pGameInstance->CreateObject(pGameObject, LAYER_TAG::LAYER_MONSTER);
 
 			_bLastEvent = true;
+
+			static_cast<TrigerBox*>(pOther->GetOwner())->TrigerSet(true);
 		}
 	}
 

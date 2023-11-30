@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "BoundingOBB.h"
+#include "Player.h"
 
 OldWoodDoor::OldWoodDoor(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	: DynamicObject(device, deviceContext, DYNAMIC_TYPE::OLD_DOOR)
@@ -42,6 +43,23 @@ void OldWoodDoor::Tick(const _float& timeDelta)
 	if (true == _bIsRotation)
 		_transform->Turn(Vec4(0.f, 1.f, 0.f, 1.f), timeDelta);
 
+	if (_id == 206 && true == _bIsRotation)
+	{
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		Player* pPlayer = static_cast<Player*>(pGameInstance->GetLayerObject(LAYER_TAG::LAYER_PLAYER).front());
+
+		if (nullptr != pPlayer)
+		{
+			const _bool& LastEvent = pPlayer->GetLastEvent();
+
+			if (true == LastEvent)
+				_transform->Turn(Vec4(0.f, 1.f, 0.f, 1.f), timeDelta);
+		}
+
+		RELEASE_INSTANCE(GameInstance);
+	}
+
 	if (_bIsOpen == false)
 	{
 		_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
@@ -76,7 +94,7 @@ HRESULT OldWoodDoor::Render()
 		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
 			return E_FAIL;
 
-		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "NormalMap", i, TextureType_NORMALS)))
+		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "NormalTexture", i, TextureType_NORMALS)))
 			return E_FAIL;
 
 
@@ -209,11 +227,11 @@ HRESULT OldWoodDoor::ReadyCollider()
 		aabbDesc.pOwner = this;
 	}
 
-	//if (206 == _id)
-	//{
-	//	aabbDesc.vCenter = Vec3(0.f, 100.f, 50.f);
-	//	aabbDesc.vExtents = Vec3(7.5f, 100.f, 47.5f);
-	//}
+	if (206 == _id)
+	{
+		aabbDesc.vCenter = Vec3(0.f, 100.f, 50.f);
+		aabbDesc.vExtents = Vec3(7.5f, 100.f, 47.5f);
+	}
 
 	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeAABBCollider"),
 		TEXT("ComponentCollider"), reinterpret_cast<Component**>(&_pCollider), &aabbDesc)))
@@ -226,8 +244,8 @@ HRESULT OldWoodDoor::ReadyCollider()
 		sphereDesc.pOwner = this;
 	}
 
-	/*if (206 == _id)
-		sphereDesc.vCenter = Vec3(55.f, sphereDesc.fRadius * 10, 0.f);*/
+	if (206 == _id)
+		sphereDesc.vCenter = Vec3(55.f, sphereDesc.fRadius * 10, 0.f);
 
 	if (FAILED(__super::AddComponent(level, TEXT("ProtoTypeAssistSphereCollider"),
 		TEXT("ComponentSphereCollider"), reinterpret_cast<Component**>(&_pAssistCollider), &sphereDesc)))

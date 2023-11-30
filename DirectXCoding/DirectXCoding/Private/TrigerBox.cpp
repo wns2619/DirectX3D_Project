@@ -55,7 +55,7 @@ void TrigerBox::PriorityTick(const _float& timeDelta)
 
 void TrigerBox::Tick(const _float& timeDelta)
 {
-	TrigerOccur(timeDelta);
+	//TrigerOccur(timeDelta);
 
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }
@@ -189,6 +189,26 @@ void TrigerBox::EventTarget()
 		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
 			{
 				if (pObject->GetIdNumber() == 197)
+					return true;
+
+				return false;
+			});
+
+		if (nullptr == (*iter))
+		{
+			RELEASE_INSTANCE(GameInstance);
+			return;
+		}
+
+		_pTargetObject = *iter;
+	}
+
+
+	if (_id == 255)
+	{
+		auto iter = find_if(pGameList->begin(), pGameList->end(), [&](GameObject* pObject)
+			{
+				if (pObject->GetIdNumber() == 206)
 					return true;
 
 				return false;
@@ -706,6 +726,14 @@ void TrigerBox::TrigerOccur(const _float& timeDelta)
 	else if (_id == 254 && false == _bEventState)
 	{
 
+	}
+	else if (_id == 255 && true == _bTrigerOn)
+	{
+		if (_iTurnCount < 30)
+		{
+			++_iTurnCount;
+			static_cast<EventMainDoor*>(_pTargetObject)->GetTransform()->Turn(Vec4(0.f, 1.f, 0.f, 1.f), timeDelta);
+		}
 	}
 	
 

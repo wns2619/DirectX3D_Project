@@ -26,6 +26,9 @@ public:
 public:
 	virtual HRESULT ReadyCollider()					override;
 
+private:
+	_float _fTime = 0.f;
+
 public:
 	static OldWoodDoor* Create(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	virtual GameObject* Clone(void* argument) override;
