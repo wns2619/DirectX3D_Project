@@ -55,7 +55,7 @@ void TrigerBox::PriorityTick(const _float& timeDelta)
 
 void TrigerBox::Tick(const _float& timeDelta)
 {
-	//TrigerOccur(timeDelta);
+	TrigerOccur(timeDelta);
 
 	_pCollider->GetBounding()->Update(_transform->GetWorldMatrixCaculator());
 }

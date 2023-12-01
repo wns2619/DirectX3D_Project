@@ -50,16 +50,11 @@ State::STATE PlayerFire::UpdateState(const _float& timeDelta)
 		Matrix mSliderMatrix = pBone->GetSliderPos();
 		Matrix pivotMatrix = pModel->GetPivotMatrix();
 
-		
-		static_cast<BodyCam*>(static_cast<Player*>(_pOwner)->GetPlyaerPart()[Player::PART::PART_CAMERA])->StartCameraShake();
-
-
 		Vec4 vSliderPos = Vec4(mSliderMatrix._41, mSliderMatrix._42, mSliderMatrix._43, mSliderMatrix._44);
 		vSliderPos = ::XMVector3TransformCoord(vSliderPos, pivotMatrix);
 
 		Matrix finalMatrix = _pOwner->GetTransform()->GetWorldMatrix();
 		vSliderPos = ::XMVector3TransformCoord(vSliderPos, finalMatrix);
-
 
 		bullDesc.vPos = vSliderPos;
 		bullDesc.fBulletSpeed = 25.f;
@@ -67,6 +62,21 @@ State::STATE PlayerFire::UpdateState(const _float& timeDelta)
 
 		GameObject* pGameObject = pGameInstance->CloneGameObject(TEXT("ProtoTypePlayerBullet"), &bullDesc);			
 		pGameInstance->CreateObject(pGameObject, static_cast<LAYER_TAG>(LAYER_TAG::LAYER_BULLET));
+
+		VIBufferInstancing::INSTANCE_DESC InstanceDesc = {};
+		InstanceDesc.vCenter = Vec3(0.f, 0.f, 0.f);
+		InstanceDesc.vRange = Vec3(2.f, 1.f, 2.f);
+		InstanceDesc.fScaleMin = 0.2f;
+		InstanceDesc.fScaleMax = 0.4f;
+		InstanceDesc.iNumInstance = 20;
+		InstanceDesc.fLifeTimeMin = 0.5f;
+		InstanceDesc.fLifeTimeMax = 2.0f;
+		InstanceDesc.fSpeedMin = 1.f;
+		InstanceDesc.fSpeedMax = 3.f;
+		InstanceDesc.iNumInstance = 1.f;
+
+		pGameObject = pGameInstance->CloneGameObject(TEXT("ProtoTypeFireParticle"), &InstanceDesc);
+		pGameInstance->CreateObject(pGameObject, static_cast<LAYER_TAG>(LAYER_TAG::LAYER_PARTICLE));
 
 		_IsShoot = false;
 

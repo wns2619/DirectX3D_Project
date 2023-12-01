@@ -133,10 +133,5 @@ pass name                                                                   \
     DomainShader = NULL;                                                    \
 }
 
-float3 CameraPosition()
-{
-    return -V._41_42_43;
-}
-
 
 #endif

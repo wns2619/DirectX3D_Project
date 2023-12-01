@@ -22,6 +22,7 @@ public:
 	HRESULT ReadyLayerCamera(const LAYER_TAG layerTag);
 	HRESULT ReadyLayerPlayer(const LAYER_TAG layerTag, void* pArg);
 	HRESULT ReadyLayerMonster(const LAYER_TAG layerTag, void* pArg);
+	HRESULT ReadyLayerParticle(const LAYER_TAG layerTag);
 	HRESULT ReadyLight();
 	HRESULT ReadyUI(const LAYER_TAG layerTag);
 

@@ -124,6 +124,21 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
 	};
 
+	struct ENGINE_DLL VTXPOINT
+	{
+		Vec3 vPosition;
+		Vec2 vPSize;
+
+		static const unsigned int iNumElements = 2;
+		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
+	};
+
+	struct ENGINE_DLL VTX_POINT_INSTANCE
+	{
+		static const unsigned int iNumElements = 6;
+		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
+	};
+
 	struct ENGINE_DLL TexturePaths
 	{
 		wstring diffusePath = L"";

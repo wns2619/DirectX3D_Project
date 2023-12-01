@@ -14,27 +14,47 @@ HRESULT RenderTarget::Initialize(uint32 iSizeX, uint32 iSizeY, DXGI_FORMAT ePixe
 {
 	_vColor = vColor;
 
-	D3D11_TEXTURE2D_DESC		TextureDesc = {};
+	D3D11_TEXTURE2D_DESC		TextureDesc =
+	{
+		iSizeX,
+		iSizeY,
+		1,
+		1,
+		ePixelFormat,
+		1,
+		0,
+		D3D11_USAGE_DEFAULT,
+		D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
+		0,
+		0
+	};
 
-	TextureDesc.Width = iSizeX;
-	TextureDesc.Height = iSizeY;
-	TextureDesc.MipLevels = 1;
-	TextureDesc.ArraySize = 1;
-	TextureDesc.Format = ePixelFormat;
+	//TextureDesc.Width = iSizeX;
+	//TextureDesc.Height = iSizeY;
+	//TextureDesc.MipLevels = 1;
+	//TextureDesc.ArraySize = 1;
+	//TextureDesc.Format = ePixelFormat;
 
-	TextureDesc.SampleDesc.Quality = 0;
-	TextureDesc.SampleDesc.Count = 1;
+	//TextureDesc.SampleDesc.Quality = 0;
+	//TextureDesc.SampleDesc.Count = 1;
 
-	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
-	TextureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-	TextureDesc.CPUAccessFlags = 0;
-	TextureDesc.MiscFlags = 0;
+	//TextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	//TextureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	//TextureDesc.CPUAccessFlags = 0;
+	//TextureDesc.MiscFlags = 0;
 
 	if (FAILED(_pDevice->CreateTexture2D(&TextureDesc, nullptr, &_pTexture2D)))
 		return E_FAIL;
 
-	if (FAILED(_pDevice->CreateRenderTargetView(_pTexture2D, nullptr, &_pRTV)))
+	D3D11_RENDER_TARGET_VIEW_DESC rtsvd = {
+		ePixelFormat,
+		D3D11_RTV_DIMENSION_TEXTURE2D
+	};
+
+	if (FAILED(_pDevice->CreateRenderTargetView(_pTexture2D, &rtsvd, &_pRTV)))
 		return E_FAIL;
+
+
 
 	if (FAILED(_pDevice->CreateShaderResourceView(_pTexture2D, nullptr, &_pSRV)))
 		return E_FAIL;

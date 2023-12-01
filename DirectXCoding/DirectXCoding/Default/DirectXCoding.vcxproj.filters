@@ -176,6 +176,15 @@
     <Filter Include="소스 파일\02.GameObjects\06. Dynamic\Valve\ValveBody">
       <UniqueIdentifier>{fe8c1ca9-0e5c-4430-acfa-8ce538be7647}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObjects\10. Effect">
+      <UniqueIdentifier>{1c49f225-c996-4885-8191-838373be91e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\98.Shaders\Effect">
+      <UniqueIdentifier>{ebe88cb7-0082-4fd6-a933-387192cd2adb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObjects\09.UI\BloodUI">
+      <UniqueIdentifier>{3ee24b95-bba9-4866-a7bd-c03ac396ea97}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -391,6 +400,12 @@
     <ClInclude Include="..\Public\MonsterSeat.h">
       <Filter>소스 파일\02.GameObjects\07. Monster\State</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\FireEffect.h">
+      <Filter>소스 파일\02.GameObjects\10. Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BloodUI.h">
+      <Filter>소스 파일\02.GameObjects\09.UI\BloodUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCoding.cpp">
@@ -582,6 +597,12 @@
     <ClCompile Include="..\Private\MonsterSeat.cpp">
       <Filter>소스 파일\02.GameObjects\07. Monster\State</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\FireEffect.cpp">
+      <Filter>소스 파일\02.GameObjects\10. Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BloodUI.cpp">
+      <Filter>소스 파일\02.GameObjects\09.UI\BloodUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Binaries\Shaders\HillsShader.fx">
@@ -604,6 +625,9 @@
     </FxCompile>
     <FxCompile Include="..\Binaries\Shaders\Shader_Rect.fx">
       <Filter>소스 파일\98.Shaders\ObjectShader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Binaries\Shaders\Point_InstanceShader.fx">
+      <Filter>소스 파일\98.Shaders\Effect</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -1,6 +1,9 @@
 #include "GlobalShader.fx"
 
 Texture2D<vector> UITexture : register(t0);
+Texture2D<vector> UITextureArray0[4];
+
+float fTime = 0.f;
 
 struct VS_IN
 {
@@ -51,7 +54,32 @@ PS_OUT PS_MAIN(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_UI_ARRAY(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    vector vMtrlDiffuse = vector(1.f, 1.f, 1.f, 1.f);
+    
+    if (fTime < 1.f)
+        vMtrlDiffuse = UITextureArray0[0].Sample(LinearSampler, In.vTexcoord);
+    else if (fTime < 2.f)
+        vMtrlDiffuse = UITextureArray0[1].Sample(LinearSampler, In.vTexcoord);
+    else if (fTime < 3.f)
+        vMtrlDiffuse = UITextureArray0[2].Sample(LinearSampler, In.vTexcoord);
+    else
+    {
+        vMtrlDiffuse = UITextureArray0[3].Sample(LinearSampler, In.vTexcoord);
+        vMtrlDiffuse.a = lerp(vMtrlDiffuse.a, 0.f, fTime * 0.08f);
+    }
+    
+    
+    Out.vColor = vMtrlDiffuse;
+    
+    return Out;
+}
+
 technique11 UITechnique
 {
     SOLID_PASS_VP(UI, VS_MAIN, PS_MAIN)
+    SOLID_PASS_VP(UIArray, VS_MAIN, PS_UI_ARRAY)
 }

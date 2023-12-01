@@ -1474,7 +1474,7 @@ HRESULT ImGuiManager::MainLightSection()
 						ImGui::PushItemWidth(0.f);
 
 
-						if (ImGui::DragFloat(string("##Intensity" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->fSpecIntensity, 0.01f, 0.01f, 30.f))
+						if (ImGui::DragFloat(string("##Intensity" + to_string(i)).c_str(), &(*lightvector)[i]->GetLightDesc()->fSpecIntensity, 0.01f, 0.01f, 30.f)) 
 						{
 
 						}

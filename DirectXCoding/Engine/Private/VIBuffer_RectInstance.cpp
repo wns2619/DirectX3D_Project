@@ -92,8 +92,8 @@ HRESULT VIBuffer_RectInstance::InitializePrototype(uint32 iNumInstance)
 
 	Safe_Delete_Array<_ushort*>(pIndices);
 
-	if (FAILED(__super::InitializePrototype()))
-		return E_FAIL;
+	//if (FAILED(__super::InitializePrototype()))
+	//	return E_FAIL;
 
 	return S_OK;
 }

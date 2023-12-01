@@ -94,7 +94,7 @@ HRESULT OldWoodDoor::Render()
 		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "DiffuseMap", i, TextureType_DIFFUSE)))
 			return E_FAIL;
 
-		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "NormalTexture", i, TextureType_NORMALS)))
+		if (FAILED(_binaryModel->BindMaterialTexture(_shader, "NormalMap", i, TextureType_NORMALS)))
 			return E_FAIL;
 
 

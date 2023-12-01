@@ -15,6 +15,7 @@
 #include "MonsterLight.h"
 #include "MonsterAxe.h"
 #include "MonsterSeat.h"
+#include "BloodUI.h"
 
 uint32 Monster::_iMonsterCount = 0;
 
@@ -53,6 +54,7 @@ HRESULT Monster::Initialize(void* pArg)
 		return E_FAIL;
 
 	_transform->SetState(Transform::STATE::POSITION, ::XMVectorSet(-0.6492f, 0.f, -5.5467f, 1.f));
+	//_transform->SetState(Transform::STATE::POSITION, Vec4(10.5f, 0.f, -41.7f,1.f));
 
 	State* pState = MonsterWalk::Create(_device, _deviceContext, this);
 	_pStateMachine->AddState(State::STATE::IDLE, pState);
@@ -150,7 +152,27 @@ HRESULT Monster::Render()
 void Monster::OnCollisionEnter(Collider* pOther)
 {
 	if (pOther->GetOwner()->GetModelName() == "PlayerBullet")
+	{
 		--_iLife;
+		GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+		vector<GameObject*>& vecObject = pGameInstance->GetLayerObject(LAYER_TAG::LAYER_UI);
+
+		auto iter = find_if(vecObject.begin(), vecObject.end(), [&](GameObject* pObj) {
+			if (pObj->GetModelName() == "BloodUI")
+				return true;
+
+			return false;
+			});
+
+		if (nullptr != *iter)
+		{
+			static_cast<BloodUI*>(*iter)->SetHit(true);
+			static_cast<BloodUI*>(*iter)->SetResetTime(0.f);
+		}
+
+		RELEASE_INSTANCE(GameInstance);
+	}
 }
 
 void Monster::OnCollisionStay(Collider* pOther)
@@ -322,7 +344,7 @@ HRESULT Monster::ReadyComponents()
 			return E_FAIL;
 
 		if (FAILED(__super::AddComponent(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeMonsterNormal2"),
-			TEXT("ComponentNormalTexture"), reinterpret_cast<Component**>(&_pTexture[MONSTER_NORMAL]))))
+			TEXT("ComponentNormalMap"), reinterpret_cast<Component**>(&_pTexture[MONSTER_NORMAL]))))
 			return E_FAIL;
 	}
 

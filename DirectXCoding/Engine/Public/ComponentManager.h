@@ -22,6 +22,7 @@
 #include "Bounding_Sphere.h"
 #include "Bounding_Frustum.h"
 #include "VIBufferNormalRect.h"
+#include "VIBuffer_PointInstance.h"
 
 BEGIN(Engine)
 

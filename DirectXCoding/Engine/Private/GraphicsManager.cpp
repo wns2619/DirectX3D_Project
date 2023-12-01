@@ -172,32 +172,49 @@ HRESULT GraphicsManager::CreateDepthStencilView(GRAPHIC_DESC desc)
 	if (nullptr == _device)
 		return E_FAIL;
 
-	ID3D11Texture2D* DepthStencilTexture = nullptr;
+	//ID3D11Texture2D* DepthStencilTexture = nullptr;
 
-	D3D11_TEXTURE2D_DESC texDesc;
-	ZeroMemory(&texDesc, sizeof(texDesc));
+	D3D11_TEXTURE2D_DESC texDesc = {
+		desc.iWinSizeX,
+		desc.iWinSizeY,
+		1,
+		1,
+		DXGI_FORMAT_R24G8_TYPELESS,
+		1,
+		0,
+		D3D11_USAGE_DEFAULT,
+		D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE,
+		0,
+		0,
+	};
+	//ZeroMemory(&texDesc, sizeof(texDesc));
 
-	texDesc.Width = desc.iWinSizeX;
-	texDesc.Height = desc.iWinSizeY;
-	texDesc.MipLevels = 1;
-	texDesc.ArraySize = 1;
-	texDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	//texDesc.Width = desc.iWinSizeX;
+	//texDesc.Height = desc.iWinSizeY;
+	//texDesc.MipLevels = 1;
+	//texDesc.ArraySize = 1;
+	//texDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	texDesc.SampleDesc.Quality = 0;
-	texDesc.SampleDesc.Count = 1;
+	//texDesc.SampleDesc.Quality = 0;
+	//texDesc.SampleDesc.Count = 1;
 
-	texDesc.Usage = D3D11_USAGE_DEFAULT;
-	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	texDesc.CPUAccessFlags = 0;
-	texDesc.MiscFlags = 0;
+	//texDesc.Usage = D3D11_USAGE_DEFAULT;
+	//texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	//texDesc.CPUAccessFlags = 0;
+	//texDesc.MiscFlags = 0;
 
-	if (FAILED(_device->CreateTexture2D(&texDesc, nullptr, &DepthStencilTexture)))
+	if (FAILED(_device->CreateTexture2D(&texDesc, nullptr, &_pDepthTexture)))
 		return E_FAIL;
 
-	if (FAILED(_device->CreateDepthStencilView(DepthStencilTexture, nullptr, &_depthStencilView)))
+	D3D11_DEPTH_STENCIL_VIEW_DESC dsvd = {
+		DXGI_FORMAT_D24_UNORM_S8_UINT,
+		D3D11_DSV_DIMENSION_TEXTURE2D,
+		0
+	};
+
+	if (FAILED(_device->CreateDepthStencilView(_pDepthTexture, &dsvd, &_depthStencilView)))
 		return E_FAIL;
 
-	Safe_Release<ID3D11Texture2D*>(DepthStencilTexture);
 
 	return S_OK;
 
@@ -233,12 +250,32 @@ HRESULT GraphicsManager::CreateVignetteView()
 	return S_OK;
 }
 
+HRESULT GraphicsManager::CreateShaderResourceView()
+{
+	D3D11_SHADER_RESOURCE_VIEW_DESC dsrvd = {
+		DXGI_FORMAT_R24_UNORM_X8_TYPELESS,
+		D3D11_SRV_DIMENSION_TEXTURE2D,
+		0,
+		0
+	};
+	dsrvd.Texture2D.MipLevels = 1;
+
+	if (FAILED(_device->CreateShaderResourceView(_pDepthTexture, &dsrvd, &_pDepthStencilResourceView)))
+		return E_FAIL;
+
+	Safe_Release<ID3D11Texture2D*>(_pDepthTexture);
+
+	return S_OK;
+}
+
 void GraphicsManager::Free()
 {
 	Safe_Release<IDXGISwapChain*>(_swapChain);
 	Safe_Release<ID3D11DepthStencilView*>(_depthStencilView);
 	Safe_Release<ID3D11RenderTargetView*>(_renderTargetView);
 	Safe_Release<ID3D11RenderTargetView*>(_vignetteTargetView);
+	Safe_Release<ID3D11ShaderResourceView*>(_pDepthStencilResourceView);
+	Safe_Release<ID3D11Texture2D*>(_pDepthTexture);
 	Safe_Release<ID3D11DeviceContext*>(_deviceContext);
 
 //	#if defined(DEBUG) || defined(_DEBUG)

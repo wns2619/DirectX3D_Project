@@ -27,6 +27,7 @@
 #include <DirectXTK\SpriteBatch.h>
 #include <DirectXTK\SpriteFont.h>
 
+#include <random>
 
 // Assimp
 #include <assimp/Importer.hpp>

@@ -221,7 +221,7 @@ void Valve::OnCollisionExit(Collider* pOther)
 
 void Valve::LerpSoundPlayer(_float& fVolume, _float& fDistance, _float fMaxDistance, GameInstance* pGameInstance)
 {
-	const _float fMaxVolume = 0.1f;
+	const _float fMaxVolume = 0.4f;
 	const _float fMinVolume = 0.f;
 
 	Vec4 vThisPos = _transform->GetState(Transform::STATE::POSITION);

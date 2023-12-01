@@ -37,6 +37,9 @@ HRESULT GameScene::Initialize()
 	if (FAILED(ReadyUI(LAYER_TAG::LAYER_UI)))
 		return E_FAIL;
 
+	//if (FAILED(ReadyLayerParticle(LAYER_TAG::LAYER_PARTICLE)))
+	//	return E_FAIL;
+
 	//if (FAILED(ReadyLayerCamera(LAYER_TAG::LAYER_CAMERA)))
 	//	return E_FAIL;
 
@@ -429,6 +432,18 @@ HRESULT GameScene::ReadyLayerMonster(const LAYER_TAG layerTag, void* pArg)
 	return S_OK;
 }
 
+HRESULT GameScene::ReadyLayerParticle(const LAYER_TAG layerTag)
+{
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	if (FAILED(pGameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ProtoTypeFireParticle"))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(GameInstance);
+
+	return S_OK;
+}
+
 HRESULT GameScene::ReadyLight()
 {
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
@@ -517,6 +532,9 @@ HRESULT GameScene::ReadyUI(const LAYER_TAG layerTag)
 	Safe_AddRef<GameInstance*>(gameInstance);
 
 	if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ProtoTypeRouteUI"))))
+		return E_FAIL;
+
+	if (FAILED(gameInstance->AddGameObject(static_cast<uint32>(LEVEL::GAME), layerTag, TEXT("ProtoTypeBlood1UI"))))
 		return E_FAIL;
 
 	Safe_Release<GameInstance*>(gameInstance);

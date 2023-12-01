@@ -3,6 +3,8 @@
 #include "VIBufferRect.h"
 #include "Shader.h"
 #include "TimeManager.h"
+#include "GameInstance.h"
+#include "Viewport.h"
 
 OtherLight::OtherLight()
 {
@@ -64,6 +66,16 @@ HRESULT OtherLight::Render(Shader* pShader, VIBufferRect* pVIBuffer)
 				return E_FAIL;
 
 			RELEASE_INSTANCE(TimeManager);
+		}
+		else if (_ownLightNumber == 11)
+		{
+			GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+			
+			Viewport& _vp = pGameInstance->GetViewPort();
+
+			Matrix matPointProj;
+			matPointProj = ::XMMatrixPerspectiveFovLH(XM_PI * 0.5, _vp.GetWidth() / _vp.GetHeight(), 5.f, _lightDesc.pointLightRangeRcp);
+			Vec2 vLightPerspectiveValues = Vec2(matPointProj.m[2][2], matPointProj.m[3][2]);
 		}
 		else
 			if(FAILED(pShader->BindRawValue("PointLightRangeRcp", &_lightDesc.pointLightRangeRcp, sizeof(_float))))

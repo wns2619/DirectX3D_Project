@@ -8,10 +8,17 @@ VIBufferInstancing::VIBufferInstancing(ID3D11Device* pDevice, ID3D11DeviceContex
 
 VIBufferInstancing::VIBufferInstancing(const VIBufferInstancing& rhs)
     : VIBuffer(rhs)
+    , _iStrideInstance(rhs._iStrideInstance)
+    , _iNumInstance(rhs._iNumInstance)
+    , _iNumIndicesPerInstance(rhs._iNumIndicesPerInstance)
+    , _pInstanceVertices(rhs._pInstanceVertices)
+    , _pSpeeds(rhs._pSpeeds)
+    , _pLifeTimes(rhs._pLifeTimes)
+    , _pTimeAccs(rhs._pTimeAccs)
 {
 }
 
-HRESULT VIBufferInstancing::InitializePrototype()
+HRESULT VIBufferInstancing::InitializePrototype(const INSTANCE_DESC& InstanceDesc)
 {
     _iStrideInstance = sizeof(VTXINSTANCE);
 
@@ -24,30 +31,67 @@ HRESULT VIBufferInstancing::InitializePrototype()
     _BufferDesc._bufferDesc.MiscFlags = 0;
     _BufferDesc._bufferDesc.StructureByteStride = _iStrideInstance;
 
-    VTXINSTANCE* pVertices = new VTXINSTANCE[_iNumInstance];
-    ::ZeroMemory(pVertices, sizeof(VTXINSTANCE) * _iNumInstance);
+    _pInstanceVertices = new VTXINSTANCE[_iNumInstance];
+    ::ZeroMemory(_pInstanceVertices, sizeof(VTXINSTANCE) * _iNumInstance);
+
+
+    //random_device		RandomDevice;
+
+    //mt19937_64								RandomNumber;
+    //uniform_real_distribution<float>		RandomX;
+    //uniform_real_distribution<float>		RandomY;
+    //uniform_real_distribution<float>		RandomZ;
+
+    //uniform_real_distribution<float>		ScaleRandom;
+    //uniform_real_distribution<float>		SpeedRandom;
+    //uniform_real_distribution<float>		LifeTimeRandom;
+
+    //SpeedRandom = uniform_real_distribution<float>(InstanceDesc.fSpeedMin, InstanceDesc.fSpeedMax);
+    //LifeTimeRandom = uniform_real_distribution<float>(InstanceDesc.fLifeTimeMin, InstanceDesc.fLifeTimeMax);
+
+    _pSpeeds = new _float[InstanceDesc.iNumInstance];
+    _pLifeTimes = new _float[InstanceDesc.iNumInstance];
+    _pTimeAccs = new _float[InstanceDesc.iNumInstance];
+
+    for (size_t i = 0; i < InstanceDesc.iNumInstance; i++)
+    {
+        //_pSpeeds[i] = SpeedRandom(RandomDevice);
+        _pLifeTimes[i] = 1.f;
+        _pTimeAccs[i] = 0.f;
+    }
+
+    //RandomNumber = mt19937_64(RandomDevice());
+    //RandomX = uniform_real_distribution<float>(InstanceDesc.vRange.x * -0.5f, InstanceDesc.vRange.x * 0.5f);
+    //RandomY = uniform_real_distribution<float>(InstanceDesc.vRange.y * -0.5f, InstanceDesc.vRange.y * 0.5f);
+    //RandomZ = uniform_real_distribution<float>(InstanceDesc.vRange.z * -0.5f, InstanceDesc.vRange.z * 0.5f);
+
+    //ScaleRandom = uniform_real_distribution<float>(InstanceDesc.fScaleMin, InstanceDesc.fScaleMax);
 
     for (uint32 i = 0; i < _iNumInstance; ++i)
     {
-        pVertices[i].vRight = Vec4(1.f, 0.f, 0.f, 0.f);
-        pVertices[i].vUp = Vec4(0.f, 1.f, 0.f, 0.f);
-        pVertices[i].vLook = Vec4(0.f, 0.f, 1.f, 0.f);
-        pVertices[i].vTranslation = Vec4(rand() % 5, rand() % 5, rand() % 5, 1.f);
+        //_float		fScale = ScaleRandom(RandomNumber);
+
+        _pInstanceVertices[i].vRight = Vec4(1.f, 0.f, 0.f, 0.f);
+        _pInstanceVertices[i].vUp = Vec4(0.f, 1.f, 0.f, 0.f);
+        _pInstanceVertices[i].vLook = Vec4(0.f, 0.f, 1.f, 0.f);
+        _pInstanceVertices[i].vTranslation = Vec4(
+            InstanceDesc.vCenter.x,
+            InstanceDesc.vCenter.y,
+            InstanceDesc.vCenter.z,
+            1.f);
     }
 
     ::ZeroMemory(&_BufferDesc._subResourceData, sizeof(_BufferDesc._subResourceData));
-    _BufferDesc._subResourceData.pSysMem = pVertices;
-
-    if (FAILED(__super::CreateBuffer(&_pVBInstance)))
-        return E_FAIL;
-
-    Safe_Delete_Array<VTXINSTANCE*>(pVertices);
+    _BufferDesc._subResourceData.pSysMem = _pInstanceVertices;
 
     return S_OK;
 }
 
 HRESULT VIBufferInstancing::Initialize(void* argument)
 {
+    if (FAILED(__super::CreateBuffer(&_pVBInstance)))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -83,6 +127,14 @@ HRESULT VIBufferInstancing::Render()
 void VIBufferInstancing::Free()
 {
     __super::Free();
+
+    if (false == _isCloned)
+    {
+        Safe_Delete_Array<VTXINSTANCE*>(_pInstanceVertices);
+        Safe_Delete_Array<_float*>(_pTimeAccs);
+        Safe_Delete_Array<_float*>(_pLifeTimes);
+        Safe_Delete_Array<_float*>(_pSpeeds);
+    }
 
     Safe_Release<ID3D11Buffer*>(_pVBInstance);
 }

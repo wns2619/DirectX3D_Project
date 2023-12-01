@@ -31,13 +31,15 @@ private:
 	ID3D11RenderTargetView* _vignetteTargetView = nullptr;
 
 	ID3D11DepthStencilView* _depthStencilView = nullptr;
+	ID3D11ShaderResourceView* _pDepthStencilResourceView = nullptr;
+	ID3D11Texture2D* _pDepthTexture = nullptr;
 
 private:
 	HRESULT	CreateSwapChain(GRAPHIC_DESC desc);
 	HRESULT CreateRenderTargetView();
 	HRESULT CreateDepthStencilView(GRAPHIC_DESC desc);
 	HRESULT CreateVignetteView();
-
+	HRESULT CreateShaderResourceView();
 public:
 	virtual void Free() override;
 

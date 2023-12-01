@@ -23,6 +23,8 @@
 #include "MonsterAxe.h"
 #include "ValveUI.h"
 #include "RouteUI.h"
+#include "FireEffect.h"
+#include "BloodUI.h"
 
 LevelHelper::LevelHelper(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     : _device(device), _deviceContext(deviceContext)
@@ -620,6 +622,27 @@ HRESULT LevelHelper::LoadingTexture()
             return E_FAIL;
         }
 
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeGunFire"),
+            Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\PNG\\Gunfire.png")))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeBlood1"),
+            Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\PNG\\sgepbixp_2K_AlbedoBLUR%d.png"), 4))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeBlood2"),
+            Texture::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\PNG\\shdwbbkc_2K_AlbedoBLUR%d.png"), 4))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
         break;
     case Client::LEVEL::EDIT:
         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeValveUI"),
@@ -675,6 +698,25 @@ HRESULT LevelHelper::LoadingMesh()
     {
         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypeComponentVIBufferTerrain"),
             VIBufferTerrain::Create(_device, _deviceContext, TEXT("..\\Binaries\\Resources\\Textures\\Terrain\\Height1.bmp")))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        VIBufferInstancing::INSTANCE_DESC InstanceDesc = {};
+        InstanceDesc.vCenter = Vec3(0.f, 0.f, 0.f);
+        InstanceDesc.vRange = Vec3(2.f, 1.f, 2.f);
+        InstanceDesc.fScaleMin = 0.2f;
+        InstanceDesc.fScaleMax = 0.4f;
+        InstanceDesc.iNumInstance = 20;
+        InstanceDesc.fLifeTimeMin = 0.5f;
+        InstanceDesc.fLifeTimeMax = 2.0f;
+        InstanceDesc.fSpeedMin = 1.f;
+        InstanceDesc.fSpeedMax = 3.f;
+        InstanceDesc.iNumInstance = 1.f;
+
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypePointBuffer"),
+            VIBuffer_PointInstance::Create(_device, _deviceContext, InstanceDesc))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;
@@ -2029,6 +2071,14 @@ HRESULT LevelHelper::LoadingShader()
             return E_FAIL;
         }
 
+        if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::GAME), TEXT("ProtoTypePointInstance"),
+            Shader::Create(_device, _deviceContext, TEXT("../Binaries/Shaders/Point_InstanceShader.fx"), VTX_POINT_INSTANCE::Elements,
+                VTX_POINT_INSTANCE::iNumElements))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
         break;
     case Client::LEVEL::EDIT:
         if (FAILED(gameInstance->AddProtoType(static_cast<uint32>(LEVEL::EDIT), TEXT("ProtoTypeComponentDefaultMeshShader"),
@@ -2298,6 +2348,21 @@ HRESULT LevelHelper::LoadingObject()
 
         if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeRouteUI"),
             RouteUI::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeBlood1UI"),
+            BloodUI::Create(_device, _deviceContext))))
+        {
+            RELEASE_INSTANCE(GameInstance);
+            return E_FAIL;
+        }
+
+
+        if (FAILED(gameInstance->AddProtoType(TEXT("ProtoTypeFireParticle"),
+            FireEffect::Create(_device, _deviceContext))))
         {
             RELEASE_INSTANCE(GameInstance);
             return E_FAIL;

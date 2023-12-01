@@ -56,7 +56,7 @@ HRESULT Player::Initialize(void* pArg)
 
 	_pAnimator->AddAnimation(State::STATE::RELOAD, vecAnim[0], &pVecBone, false, 1.85f);
 	_pAnimator->AddAnimation(State::STATE::IDLE, vecAnim[1], &pVecBone, true);
-	_pAnimator->AddAnimation(State::STATE::SHOOT, vecAnim[2], &pVecBone, false, 2.f);
+	_pAnimator->AddAnimation(State::STATE::SHOOT, vecAnim[2], &pVecBone, false, 2.25f);
 
 
 	_pStateMachine->SetAnimator(_pAnimator);

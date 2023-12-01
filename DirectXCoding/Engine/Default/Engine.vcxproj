@@ -110,6 +110,7 @@
     <ClInclude Include="..\Public\VIBufferNormalRect.h" />
     <ClInclude Include="..\Public\VIBufferRect.h" />
     <ClInclude Include="..\Public\VIBufferTerrain.h" />
+    <ClInclude Include="..\Public\VIBuffer_PointInstance.h" />
     <ClInclude Include="..\Public\VIBuffer_RectInstance.h" />
     <ClInclude Include="..\Public\Viewport.h" />
     <ClInclude Include="pch.h" />
@@ -226,6 +227,7 @@
     <ClCompile Include="..\Private\VIBufferNormalRect.cpp" />
     <ClCompile Include="..\Private\VIBufferRect.cpp" />
     <ClCompile Include="..\Private\VIBufferTerrain.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_PointInstance.cpp" />
     <ClCompile Include="..\Private\VIBuffer_RectInstance.cpp" />
     <ClCompile Include="..\Private\Viewport.cpp" />
     <ClCompile Include="pch.cpp">
